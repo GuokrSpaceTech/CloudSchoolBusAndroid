@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:padding="2dp"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="15dip"
+        android:paddingTop="15dp"
+        android:background="#FF93DEEF" >
+
+        <Button
+            android:id="@+id/reply"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:layout_marginLeft="40dip"
+            android:layout_marginRight="40dip"
+            android:background="@drawable/logging_button_selector"
+            android:text="@string/huifu"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:layout_marginTop="15dip"
+            android:layout_marginLeft="40dip"
+            android:layout_marginRight="40dip"
+            android:layout_below="@+id/reply"
+            android:background="@drawable/logging_button_selector"
+            android:text="@string/comment_de"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:layout_marginTop="15dip"
+            android:layout_below="@+id/delete"
+            android:layout_marginLeft="40dip"
+            android:layout_marginRight="40dip"
+            android:background="@drawable/select_cancel_button"
+            android:text="@string/cancel"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

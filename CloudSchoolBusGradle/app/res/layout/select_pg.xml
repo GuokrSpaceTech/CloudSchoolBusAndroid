@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="37dip"
+            android:layout_height="37dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dip"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="close" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textColor="#FFFFFFFF"
+            android:text="@string/selectbg_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/setting_scro"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/top"
+        android:background="#EDEAE3" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="fill_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp" >
+
+            <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="100dp" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback01"
+                        android:onClick="OnClickSettingback01" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect01 "
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback02"
+                        android:onClick="OnClickSettingback02" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect02"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback03"
+                        android:onClick="OnClickSettingback03" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect03"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/linearLayout1" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback04"
+                        android:onClick="OnClickSettingback04" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect04"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback05"
+                        android:onClick="OnClickSettingback05" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect05"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback06"
+                        android:onClick="OnClickSettingback06" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect06"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/linearLayout2" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback07"
+                        android:onClick="OnClickSettingback07" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect07"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback08"
+                        android:onClick="OnClickSettingback08" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect08"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback09"
+                        android:onClick="OnClickSettingback09" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect09"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/linearLayout3" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback10"
+                        android:onClick="OnClickSettingback10" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect10"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback11"
+                        android:onClick="OnClickSettingback11" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect11"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/settingback12"
+                        android:onClick="OnClickSettingback12" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="20dp" >
+
+                        <ImageView
+                            android:id="@+id/imgselect12"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/backgroundkeyselect" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

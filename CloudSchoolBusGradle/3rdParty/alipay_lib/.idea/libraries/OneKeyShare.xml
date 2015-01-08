@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="OneKeyShare">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../build/intermediates/exploded-aar/CloudSchoolBusGradle/3rdParty/OneKeyShare/unspecified/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../build/intermediates/exploded-aar/CloudSchoolBusGradle/3rdParty/OneKeyShare/unspecified/res" />
+      <root url="jar://$PROJECT_DIR$/../../build/intermediates/exploded-aar/CloudSchoolBusGradle/3rdParty/OneKeyShare/unspecified/libs/android-support-v4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

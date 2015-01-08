@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/select_bg" >
+
+    <RelativeLayout
+        android:id="@+id/relativelayout111"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00ffffff"
+        android:theme="@android:style/Theme.Translucent" >
+<!-- The top title  -->
+        <RelativeLayout
+            android:id="@+id/view1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </RelativeLayout>
+<!-- The main body of the 9 cells -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="175dp"
+                android:background="#00000000"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout_head"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txt_Message"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+					android:layout_marginTop="135dp"
+                    android:text=""
+                    android:textColor="#FF000000" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="100dp"
+                android:background="#00000000"
+                android:baselineAligned="false"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|right" >
+
+                    <ImageView
+                        android:id="@+id/select1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/select2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|left" >
+
+                    <ImageView
+                        android:id="@+id/select3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="#00000000"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|right" >
+
+                    <ImageView
+                        android:id="@+id/select4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/select5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|left" >
+
+                    <ImageView
+                        android:id="@+id/select6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="#00000000"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|right" >
+
+                    <ImageView
+                        android:id="@+id/select7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/select8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|left" >
+
+                    <ImageView
+                        android:id="@+id/select9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/select_key" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+<!-- Forget gesture password -->
+        <RelativeLayout
+           	android:layout_alignParentBottom="true"
+            android:id="@+id/view2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/select_forgotbg"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="close" >
+
+            <TextView
+                android:id="@+id/txt_forgotbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="忘记手势密码？"
+                android:textColor="#FF000000" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>

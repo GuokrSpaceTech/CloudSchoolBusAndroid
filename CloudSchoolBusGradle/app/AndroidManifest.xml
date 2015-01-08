@@ -1,0 +1,354 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+    package="com.Manga.Activity"
+    android:versionCode="10"
+    android:versionName="3.4.5" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="18" />
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:name="com.cytx.CYTXApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        tools:replace="android:icon, android:theme"
+        android:theme="@android:style/Theme.NoTitleBar" >
+        <activity
+            android:name="com.Manga.Activity.WelcomeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.alipay.android.app.sdk.WapPayActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Msg.SelectChildrenActivity"
+            android:theme="@style/myDialogTheme" />
+        <activity
+            android:name=".Msg.SelectHeadActivity"
+            android:theme="@style/myDialogTheme" />
+        <activity
+            android:name=".Msg.MsgVersionActivity"
+            android:theme="@style/myDialogTheme" />
+        <activity
+            android:name=".Msg.HappyBirthdayActivity"
+            android:theme="@style/myDialogTheme" />
+        <activity
+            android:name=".Msg.MsgActivity"
+            android:theme="@style/myDialogTheme" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.MyChildrenActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.DoctorConsult.DoctorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.morningCheck.CheckPictureActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.Reports.ReportSearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.FamilyMembers.FamilyMembersActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.FamilyMembers.AddFamilyMemberActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.FamilyMembers.SetPortaitActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.ClassUpdate.TagDialogActivity"
+            android:theme="@style/myDialogTheme" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.morningCheck.HealthActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.Reports.ReportActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.Reports.ReportDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.Streaming.IpcSelectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.Streaming.Preview"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.morningCheck.MoringCheckActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.Shuttlebus.ShuttlebusActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.Shuttlebus.ShuttlebusNoticeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".growthFiles.GrowFilesMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".growthFiles.GrowFilesCommentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".growthFiles.GrowFilesRecordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".growthFiles.GrowFilesWorksActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".bindingPhone.BindingPhoneActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".base.BaseInfoNewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TeacherMessageBox.InboxActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TeacherMessageBox.TeacherMessageBoxActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".bindingPhone.BindingPhoneChangeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".bindingPhone.BindingPhoneVerificationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".bindingPhone.BindingPhoneVerificationChangeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".account.MyAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SelectBg.SelectBackgroundActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".help.HelpSupportActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ChangeBg.ChangeBgActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.myChildren.SwitchChildren.ManageChildrenActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.GuideActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="BaseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".base.BaseInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LeftSetting.LeftSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.calender.BaseCalendarActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modifi.NikeNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Gestures.GesturesSetActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Gestures.GesturesOpenActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modifi.SetPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".managepw.ManagePasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".about.AboutUsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".about.ShowHtmlPolicyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feekback.IderFeekBackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.HomeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".notification.NotificationActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".bigPicture.BigPictureActivity"
+            android:configChanges="orientation|keyboardHidden" >
+        </activity>
+        <activity android:name=".bigPicture.BigPictureNoticeActivity" >
+        </activity>
+        <activity
+            android:name="com.Manga.Activity.ClassUpdate.ClassUpdateActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensor"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <activity
+            android:name="com.Manga.Activity.ClassUpdate.ClassUpdateMainBodyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.ClassUpdate.ClassUpdateCommentActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.ClassUpdate.ReplyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".cookbook.FoodMenuActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ActivityRegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ShowActivityRegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".syllabus.SyllabusActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".forget.InputPhoneNumActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".forget.InputKeyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".forget.AgainSetPwActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.sharesdk.demo.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cytx.QuestionActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cytx.BaseActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name="com.cytx.ConsultActivity" >
+        </activity>
+        <activity
+            android:name="com.cytx.DetailActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity android:name="com.cytx.DoctorInfoActivity" >
+        </activity>
+        <activity
+            android:name="com.cytx.AssessActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity android:name="com.cytx.ShowPictureActivity" >
+        </activity>
+        <activity
+            android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <!-- push应用定义消息receiver声明 -->
+        <receiver android:name="com.Manga.Activity.utils.PushMessageReceiver">
+            <intent-filter>
+                <!-- 接收push消息 -->
+                <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
+                <!-- 接收bind,unbind,fetch,delete等反馈消息 -->
+                <action android:name="com.baidu.android.pushservice.action.RECEIVE" />
+                <action android:name="com.baidu.android.pushservice.action.notification.CLICK" />
+            </intent-filter>
+        </receiver>
+       
+        <!-- push必须的receviver和service声明 -->
+        <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver"
+            android:process=":bdservice_v1" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="com.baidu.android.pushservice.action.notification.SHOW" />
+                <action android:name="com.baidu.android.pushservice.action.media.CLICK" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.baidu.android.pushservice.RegistrationReceiver"
+            android:process=":bdservice_v1" >
+            <intent-filter>
+                <action android:name="com.baidu.android.pushservice.action.METHOD" />
+                <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />
+            </intent-filter>
+         </receiver>
+           <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+           </intent-filter>                   
+
+        <service
+            android:name="com.baidu.android.pushservice.PushService"
+            android:exported="true"
+            android:process=":bdservice_v1" >
+            <intent-filter >
+                <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE" />
+            </intent-filter>
+        </service>
+        <!-- push结束 -->
+
+        <meta-data
+            android:name="api_key"
+            android:value="qFaOUDHv7xFOz3yT1dgsPAtT" />
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="53a150ec56240bdfe40affc1" >
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="ClouldSchoolBus" />
+                <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="TnbKjnQlMKKrj5g0iyopnHIB" />
+    </application>
+
+</manifest>

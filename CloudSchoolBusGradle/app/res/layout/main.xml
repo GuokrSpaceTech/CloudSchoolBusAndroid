@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2C3942" >
+
+    <RelativeLayout
+        android:id="@+id/main_top_ly"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/main_top_more_bg"
+        android:clickable="true"
+        android:onClick="home" >
+
+        <View
+            android:id="@+id/back_home"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="28dip"
+            android:background="@drawable/home_button_selector" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/main_top_ly"
+        android:paddingBottom="15dip" >
+
+        <RelativeLayout
+            android:id="@+id/main_myaccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/account_selector"
+            android:clickable="true"
+            android:onClick="myaccount" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="80dip"
+                android:text="@string/myaccount"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/account_btn_bg" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/main_messagebox"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/main_myaccount"
+            android:background="@drawable/bg_home_menu_item"
+            android:clickable="true"
+            android:onClick="teacher_msgbox" >
+
+            <ImageView
+                android:id="@+id/imageView_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="36dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_information_xml" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="80dip"
+                android:text="@string/teachermessagebox"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/account_btn_bg" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/divider_messagebox"
+            android:layout_below="@+id/main_messagebox"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@android:color/black" />
+
+        <RelativeLayout
+            android:id="@+id/main_cookbook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider_messagebox"
+            android:background="@drawable/cookbook_selector"
+            android:clickable="true"
+            android:onClick="foodmenu" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="80dip"
+                android:text="@string/cookbook"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/account_btn_bg" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/main_syllabus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_cookbook"
+            android:background="@drawable/syllabus_selector"
+            android:clickable="true"
+            android:onClick="syllabus" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="80dip"
+                android:text="@string/syllabus"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/account_btn_bg" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/main_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_syllabus"
+            android:background="@drawable/setting_selector"
+            android:clickable="true"
+            android:onClick="setting" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="80dip"
+                android:text="@string/setting_setting"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/account_btn_bg" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/main_ider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_setting"
+            android:background="@drawable/idea_selector"
+            android:clickable="true"
+            android:onClick="ider" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="80dip"
+                android:text="@string/idea"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/account_btn_bg" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/exit_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:onClick="exitOut">
+
+            <View
+                android:id="@+id/exit_out_view"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dip"
+                android:background="@drawable/exit_bg" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dip"
+                android:layout_toRightOf="@id/exit_out_view"
+                android:text="@string/exit_out"
+                android:textColor="#BCA958"
+                android:textSize="20sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <com.Manga.Activity.widget.ScrollRelaLayout
+        android:id="@+id/more_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true"
+        android:background="#00000000" >
+
+        <RelativeLayout
+            android:id="@+id/con_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" >
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/blackframe"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/main_top"
+            android:background="#50000000"
+            android:clickable="true"
+            android:onClick="frame"
+            android:visibility="gone" >
+        </RelativeLayout>
+    </com.Manga.Activity.widget.ScrollRelaLayout>
+
+</RelativeLayout>

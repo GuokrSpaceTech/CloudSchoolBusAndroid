@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/about_us_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="37dip"
+            android:layout_height="37dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dip"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="backMenu" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/help_suppert"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <com.Manga.Activity.widget.ProgressWebView
+        android:id="@+id/help_web"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/about_us_top"
+        android:background="#EEEBE4" />
+
+    <TextView
+        android:id="@+id/help_web_no"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/about_us_top"
+        android:background="#EEEBE4"
+        android:gravity="center"
+        android:text="@string/no_network_cannt_modifi_gender"
+        android:visibility="gone" />
+
+</RelativeLayout>

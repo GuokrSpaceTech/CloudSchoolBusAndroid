@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:padding="2dp"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="10dip"
+        android:background="#FF93DEEF" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dip"
+            android:textSize="20sp"
+            android:text="@string/student_gender"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#05375a" />
+
+        <Button
+            android:id="@+id/boy"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:layout_below="@id/textView1"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:layout_marginTop="15dip"
+            android:background="@drawable/logging_button_selector"
+            android:text="@string/boy"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/girl"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:layout_below="@id/boy"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:layout_marginTop="15dip"
+            android:background="@drawable/logging_button_selector"
+            android:text="@string/girl"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:layout_below="@id/girl"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:layout_marginTop="15dip"
+            android:background="@drawable/select_cancel_button"
+            android:text="@string/cancel"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

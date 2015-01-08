@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true" >
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="37dip"
+            android:layout_height="37dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dip"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="close" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/account_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/top"
+        android:background="#EEEBE2" >
+
+        <RelativeLayout
+            android:id="@+id/accountbg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp" >
+
+            <RelativeLayout
+                android:id="@+id/accountname"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/setting_content_bg_selector_top"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp" >
+
+                <View
+                    android:id="@+id/accountnameview"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/account_accountview" />
+
+                <TextView
+                    android:id="@+id/accountnamelabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/accountnameview"
+                    android:text="@string/account_account_label"
+                    android:textColor="#FF000000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/accountnametxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/accountnamelabel"
+                    android:textColor="#FFB5B5B5"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/accountphone"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@+id/accountname"
+                android:layout_marginTop="-1dp"
+                android:background="@drawable/setting_content_bg_selector_white"
+                android:clickable="true"
+                android:onClick="clickphone"
+                android:paddingLeft="20dp"
+                android:paddingRight="15dp" >
+
+                <View
+                    android:id="@+id/accountphoneview"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/account_phone" />
+
+                <TextView
+                    android:id="@+id/accountphonelabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/accountphoneview"
+                    android:text="@string/account_phone_label_not"
+                    android:textColor="#FF000000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/accountphonetxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/accountphonelabel"
+                    android:textColor="#FFB5B5B5"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/accountphonetext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/accountphoneright"
+                    android:text="@string/account_phone_text_binding"
+                    android:textColor="#FF65B7CD"
+                    android:textSize="13sp" />
+
+                <View
+                    android:id="@+id/accountphoneright"
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/account_btn_bg" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/accountchildren"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@+id/accountphone"
+                android:layout_marginTop="-1dp"
+                android:background="@drawable/setting_content_bg_selector_white"
+                android:clickable="true"
+                android:onClick="clickchildren"
+                android:paddingLeft="20dp"
+                android:paddingRight="15dp" >
+
+                <View
+                    android:id="@+id/accountchildrenview"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/account_children" />
+
+                <TextView
+                    android:id="@+id/accountchildrenlabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/accountchildrenview"
+                    android:text="@string/account_children_label_prev"
+                    android:textColor="#FF000000"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/account_btn_bg" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/accounthealth"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@+id/accountchildren"
+                android:layout_marginTop="-1dp"
+                android:background="@drawable/setting_content_bg_selector_bottom"
+                android:clickable="true"
+                android:onClick="health"
+                android:paddingLeft="20dp"
+                android:paddingRight="15dp" >
+
+                <View
+                    android:id="@+id/accounthealthview"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/health" />
+
+                <TextView
+                    android:id="@+id/accounthealthlabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/accounthealthview"
+                    android:lines="2"
+                    android:textColor="#FF000000"
+                    android:textSize="13sp" />
+
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/account_btn_bg" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/accountbg"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/account_label"
+            android:textColor="#808080" />
+    </RelativeLayout>
+
+</RelativeLayout>

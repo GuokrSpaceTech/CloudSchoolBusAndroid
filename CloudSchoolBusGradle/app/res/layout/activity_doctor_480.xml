@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout_doctor_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/top_bg_480" >
+
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/top_title_480"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/doctor_title" />
+
+        <Button
+            android:id="@+id/button_back"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/button_back_480" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView_doctor"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/relativeLayout_doctor_title"
+        android:background="@color/white"
+        android:paddingBottom="10dp" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout_scrollView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_base_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="10dp" >
+
+                <ImageView
+                    android:id="@+id/imageView_portrait"
+                    android:layout_width="71dp"
+                    android:layout_height="71dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="22dp"
+                    android:src="@drawable/detail_doctor_portrait_480" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/imageView_portrait"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/textView_name"
+                        style="@style/doctor_info_title_name_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/textView_duty"
+                        style="@style/doctor_info_title_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/textView_hospital"
+                        style="@style/doctor_info_title_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_sign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relativeLayout_base_info"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/doctor_sign_480" >
+
+                <TextView
+                    android:id="@+id/textView_sign"
+                    style="@style/doctor_info_service_480"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:ellipsize="end"
+                    android:lines="2"
+                    android:text="" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout_service"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relativeLayout_sign"
+                android:layout_margin="10dp"
+                android:background="@drawable/doctor_info_bg_480"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0" >
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginRight="5dp"
+                        android:text="@string/doctor_recommend" />
+
+                    <TextView
+                        android:id="@+id/textView_recommend_score"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/textView2"
+                        android:text=""
+                        android:textColor="#ff0000" />
+
+                    <TextView
+                        android:id="@+id/textView_recommend_percent"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:text="" />
+
+                    <ImageView
+                        android:id="@+id/imageView_low_high"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_toLeftOf="@id/textView_recommend_percent"
+                        android:src="@drawable/doctor_info_jiantou_480" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0" >
+
+                    <View
+                        android:id="@+id/view1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="@drawable/line_parting_480" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginRight="5dp"
+                        android:text="@string/doctor_attitude" />
+
+                    <TextView
+                        android:id="@+id/textView_attitude_score"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/textView3"
+                        android:text=""
+                        android:textColor="#ff0000" />
+
+                    <TextView
+                        android:id="@+id/textView_attitude_percent"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:text="" />
+
+                    <ImageView
+                        android:id="@+id/imageView_attitude_low_high"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_toLeftOf="@id/textView_attitude_percent"
+                        android:src="@drawable/doctor_info_jiantou_480" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0" >
+
+                    <View
+                        android:id="@+id/view2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="@drawable/line_parting_480" />
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginRight="5dp"
+                        android:text="@string/doctor_level" />
+
+                    <TextView
+                        android:id="@+id/textView_ability_score"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/textView4"
+                        android:text=""
+                        android:textColor="#ff0000" />
+
+                    <TextView
+                        android:id="@+id/textView_ability_percent"
+                        style="@style/doctor_info_service_480"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:text="" />
+
+                    <ImageView
+                        android:id="@+id/imageView_ability_low_high"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_toLeftOf="@id/textView_ability_percent"
+                        android:src="@drawable/doctor_info_jiantou_480" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout_prove_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/linearLayout_service"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/doctor_info_bg_480"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/linearLayout_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/consult_clinic_480"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        style="@style/consult_clinic_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="34dp"
+                        android:text="@string/doctor_authentication" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <View
+                        android:id="@+id/view3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="@drawable/line_parting_480" />
+
+                    <TextView
+                        android:id="@+id/textView6"
+                        style="@style/doctor_info_rz_key_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/doctor_education" />
+
+                    <TextView
+                        android:id="@+id/textView_education"
+                        style="@style/doctor_info_rz_value_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginRight="30dp"
+                        android:text="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical" >
+
+                    <View
+                        android:id="@+id/view4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="@drawable/line_parting_480" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        style="@style/doctor_info_rz_key_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/doctor_good_at" />
+
+                    <TextView
+                        android:id="@+id/textView_good_clinic"
+                        style="@style/doctor_info_rz_value_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginRight="30dp"
+                        android:text="" />
+                </LinearLayout>
+
+                <!--
+                <LinearLayout
+                    android:id="@+id/linearLayout3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" >
+
+                    <View
+                        android:id="@+id/view4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="@drawable/line_parting_480" />
+
+                    <TextView
+                        android:id="@+id/textView7"
+                        style="@style/doctor_info_rz_key_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/doctor_stuy" />
+
+                    <TextView
+                        android:id="@+id/textView_study"
+                        style="@style/doctor_info_rz_value_480"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="34dp"
+                        android:layout_marginRight="30dp"
+                        android:text="" />
+                </LinearLayout>
+                -->
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

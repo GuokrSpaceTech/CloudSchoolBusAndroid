@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="100dip"
+        android:layout_height="30dip" >
+        <View
+            android:id="@+id/image"
+            android:layout_width="28dip"
+            android:layout_height="20dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/comment" />
+
+        <TextView
+            android:id="@+id/zan_num"
+            android:layout_width="80dip"
+            android:layout_height="25dip"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/image"
+            android:gravity="center_vertical"
+            android:textColor="#6BBDD2"
+            android:textSize="12sp" />
+</RelativeLayout>

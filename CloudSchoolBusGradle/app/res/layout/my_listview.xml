@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000" >
+
+    <ScrollView
+        android:id="@+id/my_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#B4CDE6" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/buffer_view"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/header"
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_below="@id/buffer_view"
+                android:background="#B4CDE6" >
+
+                <TextView
+                    android:id="@+id/resfrishNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dip"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="@string/pull_down"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <View
+                    android:id="@+id/showImage"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="20dip"
+                    android:layout_toLeftOf="@id/resfrishNote"
+                    android:background="@drawable/refresh_up" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/my_listview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/header"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:layout_below="@id/my_listview" >
+
+                <TextView
+                    android:id="@+id/resfrish_Note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dip"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="@string/pull_down"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <View
+                    android:id="@+id/show_Image"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:layout_marginRight="20dip"
+                    android:layout_toLeftOf="@id/resfrish_Note"
+                    android:background="@drawable/refresh_down" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">AndroidSupportJHF</string>
+    <string name="day_name_format">EEE</string>
+    <string name="invalid_date">Date must be between %1$s and %2$s.</string>
+    <string name="month_name_format">MMMM yyyy</string>
+
+    <!-- 网络连接提示 -->
+    <string name="err_net_conn">网络连接错误</string>
+    <string name="err_net_timeout">网络连接超时</string>
+    
+</resources>

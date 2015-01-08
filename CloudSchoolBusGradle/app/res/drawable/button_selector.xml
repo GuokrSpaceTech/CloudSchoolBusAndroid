@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_pressed="true">
+        <shape >
+            <!-- 渐变 -->
+             <!-- android:angle="90"背景图旋转（更改线性方向使用） -->
+            <gradient
+                android:startColor="#ff8c00"
+                android:endColor="#FFFFFF"
+                android:type="linear"
+                android:centerX="0"
+                android:angle="90"
+                />
+            <!-- 描边 -->
+            <stroke
+                android:width="2dp"
+                android:color="#dcdcdc"
+                android:dashWidth="5dp" 
+                android:dashGap="3dp" />
+            <!-- 圆角 -->
+            <corners
+                android:radius="2dp" />
+            <padding
+                android:left="10dp"
+                android:top="10dp"
+                android:right="10dp"
+                android:bottom="10dp" />
+        </shape>
+    </item>
+    <item >
+        <shape >
+            	实心颜色
+            <solid android:color="#999999"/>
+            <!-- 渐变 -->
+            <!-- android:angle="270"渐变角度 必须是45的倍数 -->
+            <gradient
+                android:startColor="#ff8c00"
+                android:endColor="#555555"
+                android:type="radial"
+                android:gradientRadius="50" />
+            <!-- 描边 -->
+            	 <!-- android:width 描边的宽度 -->
+            	 <!-- android:color 描边的颜色 -->
+            	 <!-- android:dashWidth表示'-'这样一个横线的宽度 -->
+            	 <!-- android:dashGap表示之间隔开的距离 -->
+            <stroke
+                android:width="2dp" 
+                android:color="#dcdcdc"
+                android:dashWidth="5dp" 
+                android:dashGap="3dp" />
+            <!-- 圆角 -->
+            <corners
+                android:radius="20dp" />
+            <padding
+                android:left="50dp"
+                android:top="10dp"
+                android:right="10dp"
+                android:bottom="10dp" />
+        </shape>
+    </item>
+</selector>

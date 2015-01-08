@@ -1,0 +1,7 @@
+include ':alipay_lib', ':OneKeyShare', ':MainLibs', ':pulltorefresh', ':AndroidSupportJHF'
+include 'app'
+project(':OneKeyShare').projectDir = new File('3rdParty/OneKeyShare')
+project(':MainLibs').projectDir = new File('3rdParty/MainLibs')
+project(':pulltorefresh').projectDir = new File('3rdParty/pulltorefresh')
+project(':alipay_lib').projectDir = new File('3rdParty/alipay_lib')
+project(':AndroidSupportJHF').projectDir = new File('3rdParty/AndroidSupportJHF')

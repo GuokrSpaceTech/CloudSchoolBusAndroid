@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EFECE4" >
+
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dip"
+        android:background="@color/white"
+        android:longClickable="true"
+        android:paddingBottom="10dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:paddingTop="25dip" >
+
+        <TextView
+            android:id="@+id/share_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textColor="#505050"
+            android:textSize="16sp" />
+
+        <com.Manga.Activity.widget.ShareImage
+            android:id="@+id/just_one"
+            android:layout_width="150dip"
+            android:layout_height="150dip"
+            android:layout_below="@id/share_content"
+            android:layout_marginLeft="8dip"
+            android:visibility="gone" >
+        </com.Manga.Activity.widget.ShareImage>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/share_message"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/content_layout"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="5dip" >
+
+        <TextView
+            android:id="@+id/share_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dip"
+            android:textColor="#CFCFCF" />
+
+        <com.Manga.Activity.widget.CommentButton
+            android:id="@+id/comment"
+            android:layout_width="100dip"
+            android:layout_height="30dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" >
+        </com.Manga.Activity.widget.CommentButton>
+
+        <com.Manga.Activity.widget.ZanButton
+            android:id="@+id/zan"
+            android:layout_width="80dip"
+            android:layout_height="30dip"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/comment" >
+        </com.Manga.Activity.widget.ZanButton>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/yellow"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/share_message"
+        android:background="#DABD91" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/yellow"
+        android:background="#FFFFFFFF" />
+
+</RelativeLayout>

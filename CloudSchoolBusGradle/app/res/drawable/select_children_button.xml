@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"> 
+	<!-- 点击 -->
+    <item android:state_pressed="true" android:drawable="@drawable/select_children1" />
+    <!-- 聚焦 -->
+    <item android:drawable="@drawable/select_children0" android:state_focused="true" />
+    <!-- 普通 -->
+    <item android:drawable="@drawable/select_children1" /> 
+</selector>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="37dip"
+            android:layout_height="37dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dip"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="close" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="@string/binding_phone_title"
+            android:textColor="#FFFFFFFF"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/top"
+        android:background="#EEEBE2" >
+
+        <TextView
+            android:id="@+id/bindingphonelabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/binding_phone_verification_label1_prev"
+            android:textColor="#849199" />
+
+        <EditText
+            android:id="@+id/editphonenumber1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bindingphonelabel"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/binding_text_bg"
+            android:hint="@string/binding_phone_verification_hint"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:textColor="#B5B5B5"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnbindingphone"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_below="@+id/editphonenumber1"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/logging_button_selector"
+            android:clickable="true"
+            android:onClick="next"
+            android:text="@string/binding_phone_verification_btn"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:id="@+id/relativelayoutresend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnbindingphone"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/textlabel1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/binding_phone_verification_label3"
+                android:textColor="#FF000000" />
+
+            <TextView
+                android:id="@+id/textlabel2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/textlabel1"
+                android:clickable="true"
+                android:onClick="reSend"
+                android:text="@string/binding_phone_verification_label4"
+                android:textColor="#FF0C5F7A" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

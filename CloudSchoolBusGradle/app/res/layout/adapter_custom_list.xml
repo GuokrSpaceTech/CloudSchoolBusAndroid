@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/simpleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dip"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itemTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_simple_list_selected_xml"
+            android:gravity="center"
+            android:text="itemTextView"
+            android:textColor="@android:color/black" />
+    </RelativeLayout>
+
+</LinearLayout>

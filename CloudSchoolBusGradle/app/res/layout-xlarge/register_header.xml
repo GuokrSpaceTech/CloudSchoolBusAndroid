@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/share_header"
+        android:layout_width="fill_parent"
+        android:layout_height="250dip"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/bg01" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="30dip"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="100dip"
+            android:background="#B0000000" >
+
+            <TextView
+                android:id="@+id/share_student_name"
+                android:layout_width="95dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="150dp"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/share_student_school_name"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="14dip"
+                android:singleLine="true"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/share_student_header_bg_la"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="40dip"
+            android:layout_marginTop="60dip">
+
+            <com.Manga.Activity.widget.StudentHeaderView
+                android:id="@+id/share_student_header_bg"
+                android:layout_width="80dip"
+                android:layout_height="80dip"
+                android:layout_marginTop="10dp"
+                android:onClick="headerPic" >
+            </com.Manga.Activity.widget.StudentHeaderView>
+
+            <ImageView
+                android:id="@+id/guoshengri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/guoshengri"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/type"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:background="#B0000000"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/my_register"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@drawable/notice_button_select"
+                android:text="@string/my_register"
+                android:textColor="#FFFFFFFF" />
+
+            <Button
+                android:id="@+id/all_register"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@drawable/notice_button_select"
+                android:text="@string/all_register"
+                android:textColor="#FFFFFFFF" />
+
+            <Button
+                android:id="@+id/can_register"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@drawable/notice_button_select"
+                android:text="@string/can_register"
+                android:textColor="#FFFFFFFF" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

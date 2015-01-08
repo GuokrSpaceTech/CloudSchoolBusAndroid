@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/about_us_top"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="backMenu" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/about_us"
+            android:textColor="#FFFFFFFF"
+            android:textSize="25sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/about_us_top"
+        android:background="#EEEBE4" >
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dip"
+            android:background="@drawable/aboutlogo" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/image"
+            android:layout_marginBottom="40dip"
+            android:layout_marginLeft="40dip"
+            android:layout_marginRight="40dip" >
+
+            <RelativeLayout
+                android:id="@+id/one"
+                android:layout_width="match_parent"
+                android:layout_height="80dip"
+                android:background="@drawable/setting_content_bg_selector_top"
+                android:clickable="true"
+                android:onClick="phone"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" >
+
+                <ImageView
+                    android:id="@+id/telephone"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dip"
+                    android:background="@drawable/telephone" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/telephone"
+                    android:text="400-606-3996"
+                    android:textSize="23sp"
+                    android:textColor="#FF000000" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/two"
+                android:layout_width="match_parent"
+                android:layout_height="80dip"
+                android:layout_below="@id/one"
+                android:layout_marginTop="-1dp"
+                android:background="@drawable/setting_content_bg_selector_white"
+                android:clickable="true"
+                android:onClick="yunxiaoche"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" >
+
+                <ImageView
+                    android:id="@+id/yun"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dip"
+                    android:background="@drawable/about_net" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/yun"
+                    android:textSize="23sp"
+                    android:text="@string/yun_net"
+                    android:textColor="#2D7E91" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/three"
+                android:layout_width="match_parent"
+                android:layout_height="80dip"
+                android:layout_marginTop="-1dp"
+                android:layout_below="@id/two"
+                android:background="@drawable/setting_content_bg_selector_bottom"
+                android:clickable="true"
+                android:onClick="guokr"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" >
+
+                <ImageView
+                    android:id="@+id/guan"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dip"
+                    android:background="@drawable/about_mail" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/guan"
+                    android:text="@string/guan_net"
+                    android:textSize="23sp"
+                    android:textColor="#2D7E91" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textlabel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relativeLayout_main"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:onClick="termsofuse"
+            android:text="@string/about_us_label1"
+            android:textColor="#2D7E91" />
+
+        <TextView
+            android:id="@+id/textlabel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textlabel1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="@string/about_us_label2"
+            android:textColor="#505050" />
+
+        <TextView
+            android:id="@+id/textlabel3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textlabel2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="@string/about_us_label3"
+            android:textColor="#505050" />
+    </RelativeLayout>
+
+</RelativeLayout>

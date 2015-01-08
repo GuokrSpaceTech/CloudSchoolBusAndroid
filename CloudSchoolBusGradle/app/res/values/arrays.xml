@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+     <string-array name="clinic_key">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+    </string-array>
+    <string-array name="clinic_value">
+        <item>@string/obsterics</item>
+        <item>@string/pediatrics</item>
+        <item>@string/medical</item>
+        <item>@string/skin</item>
+        <item>@string/endocrinology</item>
+        <item>@string/nutrition</item>
+        <item>@string/orthopedics</item>
+        <item>@string/urology</item>
+        <item>@string/surgery</item>
+        <item>@string/cardiovascular</item>
+        <item>@string/oncoloty</item>
+        <item>@string/TCM</item>
+        <item>@string/stomatology</item>
+        <item>@string/ENT</item>
+        <item>@string/ophtalmoloty</item>
+        <item>@string/plastic_surgery</item>
+        <item>@string/psychology</item>
+        <item>@string/neurology</item>
+    </string-array>
+    <string-array name="status_key">
+        <item>i</item>
+        <item>n</item>
+        <item>a</item>
+        <item>s</item>
+        <item>c</item>
+        <item>v</item>
+        <item>p</item>
+        <item>d</item>
+    </string-array>
+    <string-array name="status_value">
+        <item>@string/detail_null</item>
+        <item>@string/detail_new_question</item>
+        <item>@string/detail_waiting</item>
+        <item>@string/detail_have_a_reply</item>
+        <item>@string/detail_to_evaluate</item>
+        <item>@string/detail_have_a_reply</item>
+        <item>@string/detail_reported</item>
+        <item>@string/detail_evaluated</item>
+    </string-array>
+    <string-array name="clinic_value_zh">
+        <item>妇产科</item>
+        <item>儿科</item>
+        <item>内科</item>
+        <item>皮肤性病科</item>
+        <item>内分泌科</item>
+        <item>营养科</item>
+        <item>骨科</item>
+        <item>男性泌尿科</item>
+        <item>外科</item>
+        <item>心血管科</item>
+        <item>肿瘤科</item>
+        <item>中医科</item>
+        <item>口腔科</item>
+        <item>耳鼻喉科</item>
+        <item>眼科</item>
+        <item>整形美容科</item>
+        <item>心理科</item>
+        <item>脑神经科</item>
+    </string-array>
+    <string-array name="star_assess">
+        <item>@string/very_bad</item>
+        <item>@string/bad</item>
+        <item>@string/so_so</item>
+        <item>@string/good</item>
+        <item>@string/very_good</item>
+    </string-array>
+    
+   
+
+</resources>

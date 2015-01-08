@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="alipay_lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../build/intermediates/exploded-aar/CloudSchoolBusGradle/3rdParty/alipay_lib/unspecified/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../build/intermediates/exploded-aar/CloudSchoolBusGradle/3rdParty/alipay_lib/unspecified/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

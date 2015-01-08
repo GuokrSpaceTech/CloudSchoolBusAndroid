@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/shuttlebus_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/shuttlebus_back"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dip"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="backMenu" />
+
+        <TextView
+            android:id="@+id/shuttlebus_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="@string/shuttlebus_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/shuttlebus_top"
+        android:background="#edeae3" >
+
+        <ListView
+            android:id="@+id/shuttlebusstop_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#edeae3"
+            android:cacheColorHint="#00000000"
+            android:drawSelectorOnTop="false"
+            android:fadingEdge="none"
+            android:listSelector="@android:color/transparent" />
+
+<!--         <com.Manga.Activity.widget.ModifiListView -->
+<!--             android:divider="#74bace" -->
+<!--             android:dividerHeight="1.0dip" -->
+<!--             android:id="@+id/shuttlebusstop_listview" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="fill_parent" -->
+<!--             android:background="#edeae3" -->
+<!--             android:longClickable="true" -->
+<!--             android:overScrollMode="never" > -->
+<!--         </com.Manga.Activity.widget.ModifiListView> -->
+
+        <RelativeLayout
+            android:id="@+id/no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:paddingBottom="25dp"
+            android:visibility="gone" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/no_data"
+                android:visibility="visible" >
+            </ImageView>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

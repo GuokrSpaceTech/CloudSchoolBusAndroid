@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="400dp"
+    android:paddingBottom="30dp"
+    android:paddingTop="30dp" >
+
+    <TextView
+        android:id="@+id/textView_clinic"
+        style="@style/dialog_title_text_480"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="@string/qeustion_clinic_choose" />
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/textView_clinic"
+        android:background="#017C93" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        style="@style/dialog_button_text_480"
+        android:layout_width="225dp"
+        android:layout_height="38dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/tanchukuang_cancel_480"
+        android:text="@string/cancel" />
+
+    <ListView
+        android:id="@+id/listView_clinic"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/button_cancel"
+        android:layout_below="@id/view1"
+        android:layout_marginBottom="30dp"
+        android:cacheColorHint="#00000000"
+        android:divider="#2f6877"
+        android:dividerHeight="1dp"
+        android:fadingEdge="none"
+        android:listSelector="#017C93" />
+
+</RelativeLayout>

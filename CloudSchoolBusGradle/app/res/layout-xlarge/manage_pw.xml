@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/setting_top"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dip"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="backMenu" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/mange_pw"
+            android:textColor="#FFFFFFFF"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/setting_top"
+        android:background="#EDEAE3" >
+
+        <RelativeLayout
+            android:id="@+id/manage_top"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dip"
+            android:background="@drawable/setting_content_bg_selector"
+            android:clickable="true"
+            android:onClick="changePW"
+            android:paddingBottom="15dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:paddingTop="15dp" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/modifi_pw"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/account_btn_bg" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/manage_min"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/manage_top"
+            android:layout_margin="40dip" >
+
+            <RelativeLayout
+                android:id="@+id/check_relative"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/setting_content_bg_selector_bottom"
+                android:clickable="true"
+                android:onClick="checkBox"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:paddingTop="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="18dip"
+                    android:text="@string/gesture_pw"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/checkBox"
+                    android:layout_width="90dip"
+                    android:layout_height="32dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:onClick="checkBox"
+                    android:background="@drawable/close"
+                     />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/change_relative"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/check_relative"
+                android:layout_marginTop="-1dp"
+                android:background="@drawable/setting_content_bg_selector_bottom"
+                android:clickable="true"
+                android:onClick="modifiGesturePw"
+                android:paddingBottom="15dip"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:paddingTop="15dip" >
+
+                <TextView
+                    android:id="@+id/modifiGesturePw"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/modifi_gesture"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:visibility="visible" />
+
+                <View
+                    android:id="@+id/modifiGesturePwview"
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/account_btn_bg"
+                    android:visibility="visible" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical" >
+
+    <!-- 顶部菜单栏 -->
+    <RelativeLayout
+        android:id="@+id/relativeLayout_detail_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/top_bg" >
+
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/top_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/detail_title" />
+
+        <Button
+            android:id="@+id/button_back"
+            android:layout_width="51dp"
+            android:layout_height="51dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_back" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout_detail_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/relativeLayout_detail_title"
+        android:background="@color/white" >
+
+        <!-- 底部，可以提交问题 -->
+        <RelativeLayout
+            android:id="@+id/relativeLayout_bottom_bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bottom_bg" >
+
+            <ImageView
+                android:id="@+id/imageView_choose_image"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:src="@drawable/detail_upload" />
+
+            <Button
+                android:id="@+id/button_commit"
+                style="@style/button_commit"
+                android:layout_width="97dp"
+                android:layout_height="44dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_commit"
+                android:gravity="center"
+                android:text="@string/question_submit" />
+
+            <EditText
+                android:id="@+id/editText_contact"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textColor="@color/black"
+                android:layout_toLeftOf="@id/button_commit"
+                android:layout_toRightOf="@id/imageView_choose_image"
+                android:background="@drawable/detail_edittext"
+                android:hint="@string/detail_input" />
+        </RelativeLayout>
+
+        <!-- 问题已解决，请评价 -->
+        <RelativeLayout
+            android:id="@+id/relativeLayout_question_ok_and_assess"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bottom_bg"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/button_begin_assess"
+                style="@style/detail_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/detail_question_closed"
+                android:text="@string/button_question_solved_evaluate" />
+        </RelativeLayout>
+
+        <!-- 问题已关闭 -->
+        <RelativeLayout
+            android:id="@+id/relativeLayout_question_closed"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bottom_bg"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/x" />
+
+                <TextView
+                    style="@style/detail_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/question_closed" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- 问题详情 -->
+        <ListView
+            android:id="@+id/listView_question_detail"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/relativeLayout_bottom_bottom"
+            android:background="@color/white"
+            android:cacheColorHint="#00000000"
+            android:divider="#00000000"
+            android:dividerHeight="5dp"
+            android:fadingEdge="none"
+            android:listSelector="#00000000" />
+    </RelativeLayout>
+
+</RelativeLayout>

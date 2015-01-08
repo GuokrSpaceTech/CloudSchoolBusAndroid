@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:paddingBottom="20dp"
+    android:paddingTop="30dp" >
+
+    <TextView
+        android:id="@+id/textView_image"
+        style="@style/dialog_title_text_480"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/upload_image" />
+    
+    <View android:id="@+id/view1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+      	android:layout_marginTop="15dp"
+      	android:layout_marginBottom="15dp"
+        android:layout_below="@id/textView_image"
+        android:background="#017C93"/>
+    
+    <TextView
+        android:id="@+id/textView_tip"
+        android:layout_below="@id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/default_color"
+        android:text="@string/upload_image_font" />
+
+    <Button
+        android:id="@+id/button_camera"
+        style="@style/dialog_button_text_480"
+        android:layout_width="225dp"
+        android:layout_height="38dp"
+        android:background="@drawable/tanchukuang_480"
+        android:layout_below="@+id/textView_tip"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="@string/camera" />
+
+    <Button
+        android:id="@+id/button_photo"
+        style="@style/dialog_button_text_480"
+        android:layout_width="225dp"
+        android:layout_height="38dp"
+        android:background="@drawable/tanchukuang_480"
+        android:layout_below="@+id/button_camera"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="@string/photo" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        style="@style/dialog_button_text_480"
+        android:layout_width="225dp"
+        android:background="@drawable/tanchukuang_cancel_480"
+        android:layout_height="38dp"
+        android:layout_below="@+id/button_photo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="@string/cancel" />
+
+</RelativeLayout>

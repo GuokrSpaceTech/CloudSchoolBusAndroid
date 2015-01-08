@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#FFFFFFFF"
+        android:padding="2dp" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="#FF93DEEF"
+            android:paddingBottom="15dip" >
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="30dip"
+                android:layout_marginTop="15dip"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/arrearage_notification_title"
+                android:textColor="#125467"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/line_one"
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_below="@id/title"
+                android:layout_marginTop="10dip"
+                android:background="#ffffff" />
+
+            <TextView
+                android:id="@+id/mess"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/line_one"
+                android:layout_margin="20dip"
+                android:gravity="left|top"
+                android:text="@string/arrearage_notification_content"
+                android:textColor="#125467"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/arrearage_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@id/mess"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/logging_button_selector"
+                android:orientation="horizontal"
+                android:text="@string/send_up"
+                android:textColor="#FFFFFFFF" >
+            </Button>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

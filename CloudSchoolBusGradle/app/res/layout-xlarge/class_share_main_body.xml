@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.Manga.Activity.ClassUpdate.ResizeRelativeLayout
+        android:id="@+id/relativeLayoutall"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/class_share_top_bg" >
+
+            <Button
+                android:id="@+id/back"
+                android:layout_width="45dip"
+                android:layout_height="45dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:background="@drawable/class_share_main_body_top_selector"
+                android:onClick="close" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/class_share_body_title"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFFFF"
+                android:textSize="25sp" />
+        </RelativeLayout>
+
+        <ScrollView
+            android:id="@+id/sc"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/class_share_bottom"
+            android:layout_below="@id/top"
+            android:background="#EDEAE3" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/titl_e"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginTop="5dip"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000000"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/titl_e"
+                    android:layout_below="@id/titl_e"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="5dip"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#505050"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/layout_tip"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/content"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/layout_tip_row1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/tv_tip1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:background="@drawable/tip_bg"
+                                android:textColor="#ffffff"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/tv_tip2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:background="@drawable/tip_bg"
+                                android:textColor="#ffffff"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/tv_tip3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:background="@drawable/tip_bg"
+                                android:textColor="#ffffff"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_tip_row2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/tv_tip4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:background="@drawable/tip_bg"
+                                android:textColor="#ffffff"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/tv_tip5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:background="@drawable/tip_bg"
+                                android:textColor="#ffffff"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/tv_tip6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:background="@drawable/tip_bg"
+                                android:textColor="#ffffff"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_one"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/layout_tip"
+                    android:layout_marginLeft="40dip"
+                    android:layout_marginRight="5dip"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_two"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_below="@id/layout_tip"
+                    android:layout_marginRight="5dip"
+                    android:layout_toRightOf="@id/share_image_one"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_three"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_below="@id/layout_tip"
+                    android:layout_toRightOf="@id/share_image_two"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_four"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/share_image_one"
+                    android:layout_marginLeft="40dip"
+                    android:layout_marginRight="5dip"
+                    android:layout_marginTop="5dip"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_five"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_below="@id/share_image_two"
+                    android:layout_marginRight="5dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_toRightOf="@id/share_image_four"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_six"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_below="@id/share_image_three"
+                    android:layout_marginTop="5dip"
+                    android:layout_toRightOf="@id/share_image_five"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_seven"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/share_image_four"
+                    android:layout_marginLeft="40dip"
+                    android:layout_marginRight="5dip"
+                    android:layout_marginTop="5dip"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_eight"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_below="@id/share_image_five"
+                    android:layout_marginRight="5dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_toRightOf="@id/share_image_seven"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.ShareImage
+                    android:id="@+id/share_image_nine"
+                    android:layout_width="80dip"
+                    android:layout_height="80dip"
+                    android:layout_below="@id/share_image_six"
+                    android:layout_marginTop="5dip"
+                    android:layout_toRightOf="@id/share_image_eight"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.ShareImage>
+
+                <com.Manga.Activity.widget.MyVideoView
+                    android:id="@+id/myVideo"
+                    android:layout_width="380dp"
+                    android:layout_height="380dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/share_image_seven"
+                    android:layout_marginLeft="40dip"
+                    android:layout_marginRight="40dip"
+                    android:visibility="gone" >
+                </com.Manga.Activity.widget.MyVideoView>
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/myVideo"
+                    android:layout_marginBottom="3dip"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginTop="3dip"
+                    android:textColor="#969696" />
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/time"
+                    android:layout_marginLeft="40dip"
+                    android:layout_marginRight="40dip"
+                    android:background="#FFFFFF"
+                    android:paddingBottom="15dp" >
+
+                    <RelativeLayout
+                        android:id="@+id/shang"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true" >
+
+                        <Button
+                            android:id="@+id/heart"
+                            android:layout_width="28dip"
+                            android:layout_height="20dip"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dip"
+                            android:background="@drawable/zan_qian" />
+
+                        <HorizontalScrollView
+                            android:id="@+id/horizontal_scroll"
+                            android:layout_width="fill_parent"
+                            android:layout_height="50dip"
+                            android:layout_marginLeft="10dip"
+                            android:layout_toRightOf="@id/heart" >
+
+                            <LinearLayout
+                                android:id="@+id/zan_list"
+                                android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal" >
+                            </LinearLayout>
+                        </HorizontalScrollView>
+                    </RelativeLayout>
+
+                    <View
+                        android:id="@+id/lis"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1px"
+                        android:layout_below="@id/shang"
+                        android:background="#E9E9E9" />
+
+                    <Button
+                        android:id="@+id/commtent"
+                        android:layout_width="28dp"
+                        android:layout_height="20dip"
+                        android:layout_below="@id/lis"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginTop="10dip"
+                        android:background="@drawable/comment" />
+
+                    <LinearLayout
+                        android:id="@+id/comment_list"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/shang"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dip"
+                        android:layout_toRightOf="@id/commtent"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </ScrollView>
+
+        <RelativeLayout
+            android:id="@+id/class_share_bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="60dip"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/class_main_body_bottom_bg"
+            android:paddingBottom="5dip"
+            android:paddingTop="5dip" >
+
+            <Button
+                android:id="@+id/like"
+                android:layout_width="37dip"
+                android:layout_height="37dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dip"
+                android:onClick="like" />
+
+            <EditText
+                android:id="@+id/input_content"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="10dip"
+                android:layout_toLeftOf="@id/like"
+                android:background="@drawable/login_edit_bg"
+                android:hint="@string/comment"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true" />
+        </RelativeLayout>
+    </com.Manga.Activity.ClassUpdate.ResizeRelativeLayout>
+
+</RelativeLayout>

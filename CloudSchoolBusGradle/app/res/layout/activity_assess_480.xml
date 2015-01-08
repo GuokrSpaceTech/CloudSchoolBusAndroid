@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout_cosult_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/top_bg_480" >
+
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/top_title_480"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/assess_title" />
+
+        <Button
+            android:id="@+id/button_back"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/button_back_480" />
+
+        <Button
+            android:id="@+id/button_assess"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button_check_480" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/relativeLayout_cosult_title"
+        android:background="@color/white" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white" >
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_assess_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="10dp"
+                android:background="@drawable/assess_total_bg_480" >
+
+                <TextView
+                    android:id="@+id/textView2"
+                    style="@style/assess_total_480"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="20dp"
+                    android:text="@string/assess_total" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="@style/star_item_ratingbar_style_480"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView2"
+                    android:layout_centerHorizontal="true"
+                    android:maxHeight="24dp"
+                    android:minHeight="24dp"
+                    android:rating="2.5" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    style="@style/assess_star_480"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ratingBar"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="20dp"
+                    android:text="@string/assess_start" />
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/editText_assess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relativeLayout_assess_total"
+                android:layout_margin="10dp"
+                android:background="@drawable/assess_editext_480"
+                android:gravity="top"
+                android:hint="@string/assess_input"
+                android:padding="8dp"
+                android:textSize="15sp"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

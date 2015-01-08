@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="pulltorefresh">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../build/intermediates/exploded-aar/CloudSchoolBusGradle/3rdParty/pulltorefresh/unspecified/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../build/intermediates/exploded-aar/CloudSchoolBusGradle/3rdParty/pulltorefresh/unspecified/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

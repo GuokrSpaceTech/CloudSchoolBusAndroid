@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#FFFFFFFF"
+        android:padding="2dp" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="15dip"
+            android:background="#FF93DEEF" >
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="30dip"
+                android:layout_marginTop="15dip"
+                android:singleLine="true"
+                android:gravity="center"
+                android:text="@string/lond_ing"
+                android:textColor="#125467"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/line_one"
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_below="@id/title"
+                android:layout_marginTop="10dip"
+                android:background="#ffffff" />
+
+            <TextView
+                android:id="@+id/mess"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/line_one"
+                android:layout_margin="20dip"
+                android:gravity="left|top"
+                android:text="@string/londing_content"
+                android:textColor="#125467"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dip"
+                android:layout_below="@id/mess"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/logging_button_selector"
+                    android:text="@string/cancel"
+                    android:textColor="#FFFFFFFF"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginRight="10dip"
+                    android:textSize="18sp" />
+                <Button
+                    android:id="@+id/relog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/logging_button_selector"
+                    android:text="@string/confirm"
+                    android:layout_marginRight="20dip"
+                    android:layout_marginLeft="10dip"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

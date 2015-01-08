@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ScrollView
+        android:id="@+id/setting_scro"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:background="#EDEAE3" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/min"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dip"
+                android:background="@drawable/setting_content_bg_selector" >
+
+                <RelativeLayout
+                    android:id="@+id/nickname_ly"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/setting_content_bg_selector"
+                    android:clickable="true"
+                    android:onClick="baseinfo"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp" >
+
+                    <TextView
+                        android:id="@+id/txt_nikename"
+                        android:layout_width="140dp"
+                        android:layout_height="40dip"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="100dip"
+                        android:gravity="left|center_vertical"
+                        android:singleLine="true"
+                        android:text="@string/student_header_pic"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/txt_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_nikename"
+                        android:layout_marginLeft="100dip"
+                        android:layout_marginTop="10dp"
+                        android:gravity="left|center_vertical"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:visibility="visible" />
+
+                    <View
+                        android:id="@+id/header_pic_content"
+                        android:layout_width="80dip"
+                        android:layout_height="80dip"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
+                        android:background="#000000" />
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/account_btn_bg" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <!-- 晨检与考勤 -->
+
+            <RelativeLayout
+                android:id="@+id/relativelayout_check"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/min"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="15dip"
+                android:background="@drawable/setting_content_bg_selector"
+                android:clickable="true"
+                android:onClick="morningChecking" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:paddingTop="15dp" >
+
+                    <View
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/check_image" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="55dip"
+                        android:text="@string/setting_vip_01_text"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/account_btn_bg" >
+                    </View>
+                </RelativeLayout>
+            </RelativeLayout>
+
+            
+            
+            <!-- 班级报告 -->
+
+            <RelativeLayout
+                android:id="@+id/relativelayout_report"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relativelayout_check"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="15dip"
+                android:background="@drawable/setting_content_bg_selector"
+                android:clickable="true"
+                android:onClick="childReport" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:paddingTop="15dp" >
+
+                    <View
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/setting_report" />
+
+                    <TextView
+                        android:id="@+id/tv_reprot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="55dip"
+                        android:text="@string/setting_vip_02_text"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/image_update"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/tv_reprot"
+                        android:src="@drawable/setting_update_point"
+                        android:visibility="gone" />
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/account_btn_bg" >
+                    </View>
+                </RelativeLayout>
+            </RelativeLayout>
+            
+            <!-- Video Streaming -->
+            <RelativeLayout
+                android:id="@+id/relativelayout_streaming"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relativelayout_report"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="15dip"
+                android:background="@drawable/setting_content_bg_selector"
+                android:clickable="false"
+                android:onClick="classVideostreaming" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:paddingTop="15dp" >
+
+                    <View
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/video_streaming" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="55dip"
+                        android:text="@string/setting_vip_05_text"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/account_btn_bg" >
+                    </View>
+                </RelativeLayout>
+            </RelativeLayout>
+            
+            <!-- 医生咨询 -->
+
+            <RelativeLayout
+                android:id="@+id/relativelayout_doctor"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/RelativeLayoutShuttlebusStop"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="15dip"
+                android:background="@drawable/setting_content_bg_selector"
+                android:clickable="true"
+                android:onClick="doctorConsult" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:paddingTop="15dp" >
+
+                    <View
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/setting_doctor" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="55dip"
+                        android:text="@string/setting_vip_03_text"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/account_btn_bg" >
+                    </View>
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/RelativeLayoutShuttlebusStop"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relativelayout_streaming"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="15dip"                
+                android:background="@drawable/setting_content_bg_selector"
+                android:clickable="false"
+                android:onClick="ShuttlebusStop" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="55dp"
+                    android:paddingTop="15dp" >
+
+                    <View
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/shuttlebusstopnotice" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="55dip"
+                        android:text="@string/setting_vip_06_text"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/account_btn_bg" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

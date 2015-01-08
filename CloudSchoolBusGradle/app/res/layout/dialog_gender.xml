@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="340dp"
+    android:layout_height="match_parent"
+    android:paddingBottom="30dp"
+    android:paddingTop="30dp" >
+
+    <TextView
+        android:id="@+id/textView_gender"
+        style="@style/dialog_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="@string/gender" />
+
+    <Button
+        android:id="@+id/button_male"
+        style="@style/dialog_button_text"
+        android:layout_width="227dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/textView_gender"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/tanchukuang"
+        android:text="@string/male" />
+
+    <Button
+        android:id="@+id/button_female"
+        style="@style/dialog_button_text"
+        android:layout_width="227dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/button_male"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/tanchukuang"
+        android:text="@string/female" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        style="@style/dialog_button_text"
+        android:layout_width="227dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/button_female"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/tanchukuang_cancel"
+        android:text="@string/cancel" />
+
+</RelativeLayout>

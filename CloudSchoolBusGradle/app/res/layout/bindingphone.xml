@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="37dip"
+            android:layout_height="37dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dip"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="close" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="@string/binding_phone_title"
+            android:textColor="#FFFFFFFF"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/top"
+        android:background="#EEEBE2" >
+
+        <TextView
+            android:id="@+id/bindingphonelabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:textSize="15sp"
+            android:text="@string/binding_phone_content"
+            android:textColor="#849199" />
+        <RelativeLayout
+            android:id="@+id/relativelayoutphonenumber2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/bindingphonelabel" >
+
+        <EditText
+            android:id="@+id/editphonenumber1"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/binding_text_bg"
+            android:hint="@string/binding_phone_content_hint"
+            android:inputType="number"
+            android:paddingLeft="10dip"
+            android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/button_get"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/editphonenumber1"
+                android:layout_centerVertical="true"
+                android:text="@string/getverification"
+                android:textSize="12sp"
+                android:paddingLeft="5dip"
+                android:paddingRight="5dip"
+                android:textColor="#FFFFFFFF"
+                android:onClick="next"
+                android:background="@drawable/getyanzheng" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/bindingphonelabel4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relativelayoutphonenumber2"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:textSize="15sp"
+            android:text="@string/binding_phone_verification_hint"
+            android:textColor="#849199" />
+        <EditText
+            android:id="@+id/editphonenumber3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bindingphonelabel4"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/binding_text_bg"
+            android:hint="@string/binding_phone_verification_hint_new"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:textSize="14sp" />
+        <Button
+            android:id="@+id/btnbindingphone"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/logging_button_selector"
+            android:onClick="send"
+            android:text="@string/send_up"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

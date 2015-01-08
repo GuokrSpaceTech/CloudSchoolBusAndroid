@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/setting_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/class_share_top_bg" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dip"
+            android:background="@drawable/class_share_main_body_top_selector"
+            android:onClick="backMenu" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="@string/report_titile"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/setting_top"
+        android:background="#edeae3" >
+
+        <RelativeLayout
+            android:id="@+id/layout_search"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp" >
+
+            <EditText
+                android:id="@+id/ed_search"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"
+                android:background="@drawable/search_bg"
+                android:hint="@string/search_tips"
+                android:imeOptions="actionSearch"
+                android:paddingLeft="50dp"
+                android:singleLine="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/ed_search"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/btn_search"
+                android:clickable="true"
+                android:onClick="search" />
+        </RelativeLayout>
+
+<!--         <ListView -->
+<!--             android:id="@+id/search_listview" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="fill_parent" -->
+<!--             android:layout_below="@id/layout_search" -->
+<!--             android:layout_marginBottom="10dp" -->
+<!--             android:layout_marginTop="10dp" -->
+<!--             android:background="#ffffff" -->
+<!--             android:cacheColorHint="#00000000" -->
+<!--             android:divider="#74bace" -->
+<!--             android:dividerHeight="1.0dip" -->
+<!--             android:drawSelectorOnTop="false" -->
+<!--             android:fadingEdge="none" -->
+<!--             android:listSelector="@android:color/transparent" /> -->
+
+        <com.Manga.Activity.widget.ModifiListView
+            android:id="@+id/report_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/layout_search"
+            android:layout_marginTop="10dp"
+            android:background="#edeae3"
+            android:longClickable="true"
+            android:overScrollMode="never" >
+        </com.Manga.Activity.widget.ModifiListView>
+
+        <RelativeLayout
+            android:id="@+id/no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/layout_search"
+            android:layout_centerHorizontal="true"
+            android:paddingBottom="25dp"
+            android:visibility="gone" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/no_data"
+                android:visibility="visible" >
+            </ImageView>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

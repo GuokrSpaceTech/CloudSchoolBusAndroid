@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="300dp"
+        android:layout_height="300dp" >
+
+<!--         <ImageView -->
+<!--             android:id="@+id/suo_lue" -->
+<!--             android:layout_width="300dp" -->
+<!--             android:layout_height="300dp" -->
+<!--             android:layout_alignParentTop="true" -->
+<!--             android:visibility="gone" /> -->
+
+        <TextView
+            android:id="@+id/progress"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:gravity="center"
+            android:text="0\t%"
+            android:textColor="#E25B02"
+            android:visibility="gone" />
+
+        <com.Manga.Activity.widget.FullScreenVideoView
+            android:id="@+id/videoView"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="#00000000"
+            android:visibility="gone"/>
+
+         <ImageView
+             android:id="@+id/play_icon"
+             android:layout_width="150dp"
+             android:layout_height="150dp"
+             android:layout_centerHorizontal="true"
+             android:layout_centerVertical="true"
+             android:background="#00000000"
+             android:visibility="gone"
+             android:src="@drawable/play"/>
+
+</RelativeLayout>

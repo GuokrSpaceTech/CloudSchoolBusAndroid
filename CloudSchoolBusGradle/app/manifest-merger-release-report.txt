@@ -1,0 +1,745 @@
+-- Merging decision tree log ---
+manifest
+ADDED from AndroidManifest.xml:1:1
+	xmlns:tools
+		ADDED from AndroidManifest.xml:2:11
+	xmlns:android
+		ADDED from AndroidManifest.xml:1:11
+	package
+		ADDED from AndroidManifest.xml:3:5
+	android:versionName
+		ADDED from AndroidManifest.xml:5:5
+	android:versionCode
+		ADDED from AndroidManifest.xml:4:5
+		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from AndroidManifest.xml:0:0
+uses-sdk
+ADDED from AndroidManifest.xml:7:5
+MERGED from CloudSchoolBusGradle:alipay_lib:unspecified:7:5
+MERGED from CloudSchoolBusGradle:OneKeyShare:unspecified:7:5
+MERGED from CloudSchoolBusGradle:MainLibs:unspecified:7:5
+MERGED from CloudSchoolBusGradle:AndroidSupportJHF:unspecified:7:5
+	android:targetSdkVersion
+		ADDED from AndroidManifest.xml:9:9
+	android:minSdkVersion
+		ADDED from AndroidManifest.xml:8:9
+uses-permission#android.permission.WRITE_SETTINGS
+ADDED from AndroidManifest.xml:11:5
+	android:name
+		ADDED from AndroidManifest.xml:11:22
+uses-permission#android.permission.READ_PHONE_STATE
+ADDED from AndroidManifest.xml:12:5
+	android:name
+		ADDED from AndroidManifest.xml:12:22
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from AndroidManifest.xml:13:5
+	android:name
+		ADDED from AndroidManifest.xml:13:22
+uses-permission#android.permission.BROADCAST_STICKY
+ADDED from AndroidManifest.xml:14:5
+	android:name
+		ADDED from AndroidManifest.xml:14:22
+uses-permission#android.permission.VIBRATE
+ADDED from AndroidManifest.xml:15:5
+	android:name
+		ADDED from AndroidManifest.xml:15:22
+uses-permission#android.permission.SYSTEM_ALERT_WINDOW
+ADDED from AndroidManifest.xml:16:5
+	android:name
+		ADDED from AndroidManifest.xml:16:22
+uses-permission#android.permission.GET_TASKS
+ADDED from AndroidManifest.xml:17:5
+	android:name
+		ADDED from AndroidManifest.xml:17:22
+uses-permission#android.permission.INTERNET
+ADDED from AndroidManifest.xml:18:5
+	android:name
+		ADDED from AndroidManifest.xml:18:22
+uses-permission#android.permission.CALL_PHONE
+ADDED from AndroidManifest.xml:19:5
+	android:name
+		ADDED from AndroidManifest.xml:19:22
+uses-permission#android.permission.ACCESS_DOWNLOAD_MANAGER
+ADDED from AndroidManifest.xml:20:5
+	android:name
+		ADDED from AndroidManifest.xml:20:22
+uses-permission#android.permission.DOWNLOAD_WITHOUT_NOTIFICATION
+ADDED from AndroidManifest.xml:21:5
+	android:name
+		ADDED from AndroidManifest.xml:21:22
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from AndroidManifest.xml:22:5
+	android:name
+		ADDED from AndroidManifest.xml:22:22
+uses-permission#android.permission.DISABLE_KEYGUARD
+ADDED from AndroidManifest.xml:23:5
+	android:name
+		ADDED from AndroidManifest.xml:23:22
+uses-permission#android.permission.RESTART_PACKAGES
+ADDED from AndroidManifest.xml:24:5
+	android:name
+		ADDED from AndroidManifest.xml:24:22
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from AndroidManifest.xml:25:5
+	android:name
+		ADDED from AndroidManifest.xml:25:22
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from AndroidManifest.xml:26:5
+	android:name
+		ADDED from AndroidManifest.xml:26:22
+uses-permission#android.permission.CHANGE_NETWORK_STATE
+ADDED from AndroidManifest.xml:27:5
+	android:name
+		ADDED from AndroidManifest.xml:27:22
+uses-permission#android.permission.CHANGE_WIFI_STATE
+ADDED from AndroidManifest.xml:28:5
+	android:name
+		ADDED from AndroidManifest.xml:28:22
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from AndroidManifest.xml:29:5
+	android:name
+		ADDED from AndroidManifest.xml:29:22
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from AndroidManifest.xml:30:5
+	android:name
+		ADDED from AndroidManifest.xml:30:22
+uses-permission#android.permission.MOUNT_UNMOUNT_FILESYSTEMS
+ADDED from AndroidManifest.xml:31:5
+	android:name
+		ADDED from AndroidManifest.xml:31:22
+uses-permission#android.permission.WAKE_LOCK
+ADDED from AndroidManifest.xml:32:5
+	android:name
+		ADDED from AndroidManifest.xml:32:22
+application
+ADDED from AndroidManifest.xml:34:5
+MERGED from CloudSchoolBusGradle:alipay_lib:unspecified:11:5
+MERGED from CloudSchoolBusGradle:OneKeyShare:unspecified:18:5
+MERGED from CloudSchoolBusGradle:MainLibs:unspecified:11:5
+MERGED from CloudSchoolBusGradle:pulltorefresh:unspecified:7:5
+MERGED from CloudSchoolBusGradle:AndroidSupportJHF:unspecified:11:5
+	android:debuggable
+		ADDED from CloudSchoolBusGradle:OneKeyShare:unspecified:20:9
+	android:label
+		ADDED from AndroidManifest.xml:38:9
+	android:allowBackup
+		ADDED from AndroidManifest.xml:36:9
+	android:icon
+		ADDED from AndroidManifest.xml:37:9
+		REJECTED from CloudSchoolBusGradle:AndroidSupportJHF:unspecified:12:9
+	android:theme
+		ADDED from AndroidManifest.xml:40:9
+		REJECTED from CloudSchoolBusGradle:alipay_lib:unspecified:13:9
+	tools:replace
+		ADDED from AndroidManifest.xml:39:9
+	android:name
+		ADDED from AndroidManifest.xml:35:9
+activity#com.Manga.Activity.WelcomeActivity
+ADDED from AndroidManifest.xml:41:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:44:13
+	android:label
+		ADDED from AndroidManifest.xml:43:13
+	android:name
+		ADDED from AndroidManifest.xml:42:13
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:45:13
+action#android.intent.action.MAIN
+ADDED from AndroidManifest.xml:46:17
+	android:name
+		ADDED from AndroidManifest.xml:46:25
+category#android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:47:17
+	android:name
+		ADDED from AndroidManifest.xml:47:27
+activity#com.alipay.android.app.sdk.WapPayActivity
+ADDED from AndroidManifest.xml:50:9
+MERGED from CloudSchoolBusGradle:alipay_lib:unspecified:14:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:52:13
+	android:name
+		ADDED from AndroidManifest.xml:51:13
+activity#com.Manga.Activity.Msg.SelectChildrenActivity
+ADDED from AndroidManifest.xml:54:9
+	android:theme
+		ADDED from AndroidManifest.xml:56:13
+	android:name
+		ADDED from AndroidManifest.xml:55:13
+activity#com.Manga.Activity.Msg.SelectHeadActivity
+ADDED from AndroidManifest.xml:57:9
+	android:theme
+		ADDED from AndroidManifest.xml:59:13
+	android:name
+		ADDED from AndroidManifest.xml:58:13
+activity#com.Manga.Activity.Msg.MsgVersionActivity
+ADDED from AndroidManifest.xml:60:9
+	android:theme
+		ADDED from AndroidManifest.xml:62:13
+	android:name
+		ADDED from AndroidManifest.xml:61:13
+activity#com.Manga.Activity.Msg.HappyBirthdayActivity
+ADDED from AndroidManifest.xml:63:9
+	android:theme
+		ADDED from AndroidManifest.xml:65:13
+	android:name
+		ADDED from AndroidManifest.xml:64:13
+activity#com.Manga.Activity.Msg.MsgActivity
+ADDED from AndroidManifest.xml:66:9
+	android:theme
+		ADDED from AndroidManifest.xml:68:13
+	android:name
+		ADDED from AndroidManifest.xml:67:13
+activity#com.Manga.Activity.myChildren.MyChildrenActivity
+ADDED from AndroidManifest.xml:69:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:71:13
+	android:name
+		ADDED from AndroidManifest.xml:70:13
+activity#com.Manga.Activity.myChildren.DoctorConsult.DoctorActivity
+ADDED from AndroidManifest.xml:72:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:74:13
+	android:name
+		ADDED from AndroidManifest.xml:73:13
+activity#com.Manga.Activity.myChildren.morningCheck.CheckPictureActivity
+ADDED from AndroidManifest.xml:75:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:77:13
+	android:name
+		ADDED from AndroidManifest.xml:76:13
+activity#com.Manga.Activity.myChildren.Reports.ReportSearchActivity
+ADDED from AndroidManifest.xml:78:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:80:13
+	android:name
+		ADDED from AndroidManifest.xml:79:13
+activity#com.Manga.Activity.myChildren.FamilyMembers.FamilyMembersActivity
+ADDED from AndroidManifest.xml:81:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:83:13
+	android:name
+		ADDED from AndroidManifest.xml:82:13
+activity#com.Manga.Activity.myChildren.FamilyMembers.AddFamilyMemberActivity
+ADDED from AndroidManifest.xml:84:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:86:13
+	android:name
+		ADDED from AndroidManifest.xml:85:13
+activity#com.Manga.Activity.myChildren.FamilyMembers.SetPortaitActivity
+ADDED from AndroidManifest.xml:87:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:89:13
+	android:name
+		ADDED from AndroidManifest.xml:88:13
+activity#com.Manga.Activity.ClassUpdate.TagDialogActivity
+ADDED from AndroidManifest.xml:90:9
+	android:theme
+		ADDED from AndroidManifest.xml:92:13
+	android:name
+		ADDED from AndroidManifest.xml:91:13
+activity#com.Manga.Activity.myChildren.morningCheck.HealthActivity
+ADDED from AndroidManifest.xml:93:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:95:13
+	android:name
+		ADDED from AndroidManifest.xml:94:13
+activity#com.Manga.Activity.myChildren.Reports.ReportActivity
+ADDED from AndroidManifest.xml:96:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:98:13
+	android:name
+		ADDED from AndroidManifest.xml:97:13
+activity#com.Manga.Activity.myChildren.Reports.ReportDetailActivity
+ADDED from AndroidManifest.xml:99:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:101:13
+	android:name
+		ADDED from AndroidManifest.xml:100:13
+activity#com.Manga.Activity.myChildren.Streaming.IpcSelectionActivity
+ADDED from AndroidManifest.xml:102:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:104:13
+	android:name
+		ADDED from AndroidManifest.xml:103:13
+activity#com.Manga.Activity.myChildren.Streaming.Preview
+ADDED from AndroidManifest.xml:105:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:107:13
+	android:name
+		ADDED from AndroidManifest.xml:106:13
+activity#com.Manga.Activity.myChildren.morningCheck.MoringCheckActivity
+ADDED from AndroidManifest.xml:108:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:110:13
+	android:name
+		ADDED from AndroidManifest.xml:109:13
+activity#com.Manga.Activity.myChildren.Shuttlebus.ShuttlebusActivity
+ADDED from AndroidManifest.xml:111:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:113:13
+	android:name
+		ADDED from AndroidManifest.xml:112:13
+activity#com.Manga.Activity.myChildren.Shuttlebus.ShuttlebusNoticeActivity
+ADDED from AndroidManifest.xml:114:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:116:13
+	android:name
+		ADDED from AndroidManifest.xml:115:13
+activity#com.Manga.Activity.growthFiles.GrowFilesMainActivity
+ADDED from AndroidManifest.xml:117:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:119:13
+	android:name
+		ADDED from AndroidManifest.xml:118:13
+activity#com.Manga.Activity.growthFiles.GrowFilesCommentActivity
+ADDED from AndroidManifest.xml:120:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:122:13
+	android:name
+		ADDED from AndroidManifest.xml:121:13
+activity#com.Manga.Activity.growthFiles.GrowFilesRecordActivity
+ADDED from AndroidManifest.xml:123:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:125:13
+	android:name
+		ADDED from AndroidManifest.xml:124:13
+activity#com.Manga.Activity.growthFiles.GrowFilesWorksActivity
+ADDED from AndroidManifest.xml:126:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:128:13
+	android:name
+		ADDED from AndroidManifest.xml:127:13
+activity#com.Manga.Activity.bindingPhone.BindingPhoneActivity
+ADDED from AndroidManifest.xml:129:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:131:13
+	android:name
+		ADDED from AndroidManifest.xml:130:13
+activity#com.Manga.Activity.base.BaseInfoNewActivity
+ADDED from AndroidManifest.xml:132:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:134:13
+	android:name
+		ADDED from AndroidManifest.xml:133:13
+activity#com.Manga.Activity.TeacherMessageBox.InboxActivity
+ADDED from AndroidManifest.xml:135:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:137:13
+	android:name
+		ADDED from AndroidManifest.xml:136:13
+activity#com.Manga.Activity.TeacherMessageBox.TeacherMessageBoxActivity
+ADDED from AndroidManifest.xml:138:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:140:13
+	android:name
+		ADDED from AndroidManifest.xml:139:13
+activity#com.Manga.Activity.bindingPhone.BindingPhoneChangeActivity
+ADDED from AndroidManifest.xml:141:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:143:13
+	android:name
+		ADDED from AndroidManifest.xml:142:13
+activity#com.Manga.Activity.bindingPhone.BindingPhoneVerificationActivity
+ADDED from AndroidManifest.xml:144:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:146:13
+	android:name
+		ADDED from AndroidManifest.xml:145:13
+activity#com.Manga.Activity.bindingPhone.BindingPhoneVerificationChangeActivity
+ADDED from AndroidManifest.xml:147:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:149:13
+	android:name
+		ADDED from AndroidManifest.xml:148:13
+activity#com.Manga.Activity.account.MyAccountActivity
+ADDED from AndroidManifest.xml:150:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:152:13
+	android:name
+		ADDED from AndroidManifest.xml:151:13
+activity#com.Manga.Activity.SelectBg.SelectBackgroundActivity
+ADDED from AndroidManifest.xml:153:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:155:13
+	android:name
+		ADDED from AndroidManifest.xml:154:13
+activity#com.Manga.Activity.help.HelpSupportActivity
+ADDED from AndroidManifest.xml:156:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:158:13
+	android:name
+		ADDED from AndroidManifest.xml:157:13
+activity#com.Manga.Activity.ChangeBg.ChangeBgActivity
+ADDED from AndroidManifest.xml:160:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:162:13
+	android:name
+		ADDED from AndroidManifest.xml:161:13
+activity#com.Manga.Activity.myChildren.SwitchChildren.ManageChildrenActivity
+ADDED from AndroidManifest.xml:163:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:165:13
+	android:name
+		ADDED from AndroidManifest.xml:164:13
+activity#com.Manga.Activity.GuideActivity
+ADDED from AndroidManifest.xml:166:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:168:13
+	android:name
+		ADDED from AndroidManifest.xml:167:13
+activity#com.Manga.Activity.LoginActivity
+ADDED from AndroidManifest.xml:169:9
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:172:13
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:171:13
+	android:name
+		ADDED from AndroidManifest.xml:170:13
+activity#com.Manga.Activity.MainActivity
+ADDED from AndroidManifest.xml:173:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:175:13
+	android:name
+		ADDED from AndroidManifest.xml:174:13
+activity#com.Manga.Activity.BaseActivity
+ADDED from AndroidManifest.xml:176:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:178:13
+	android:name
+		ADDED from AndroidManifest.xml:177:13
+activity#com.Manga.Activity.base.BaseInfoActivity
+ADDED from AndroidManifest.xml:179:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:181:13
+	android:name
+		ADDED from AndroidManifest.xml:180:13
+activity#com.Manga.Activity.LeftSetting.LeftSettingActivity
+ADDED from AndroidManifest.xml:182:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:184:13
+	android:name
+		ADDED from AndroidManifest.xml:183:13
+activity#com.Manga.Activity.calender.BaseCalendarActivity
+ADDED from AndroidManifest.xml:185:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:187:13
+	android:name
+		ADDED from AndroidManifest.xml:186:13
+activity#com.Manga.Activity.modifi.NikeNameActivity
+ADDED from AndroidManifest.xml:188:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:190:13
+	android:name
+		ADDED from AndroidManifest.xml:189:13
+activity#com.Manga.Activity.Gestures.GesturesSetActivity
+ADDED from AndroidManifest.xml:191:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:193:13
+	android:name
+		ADDED from AndroidManifest.xml:192:13
+activity#com.Manga.Activity.Gestures.GesturesOpenActivity
+ADDED from AndroidManifest.xml:194:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:196:13
+	android:name
+		ADDED from AndroidManifest.xml:195:13
+activity#com.Manga.Activity.modifi.SetPasswordActivity
+ADDED from AndroidManifest.xml:197:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:199:13
+	android:name
+		ADDED from AndroidManifest.xml:198:13
+activity#com.Manga.Activity.managepw.ManagePasswordActivity
+ADDED from AndroidManifest.xml:200:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:202:13
+	android:name
+		ADDED from AndroidManifest.xml:201:13
+activity#com.Manga.Activity.about.AboutUsActivity
+ADDED from AndroidManifest.xml:203:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:205:13
+	android:name
+		ADDED from AndroidManifest.xml:204:13
+activity#com.Manga.Activity.about.ShowHtmlPolicyActivity
+ADDED from AndroidManifest.xml:206:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:208:13
+	android:name
+		ADDED from AndroidManifest.xml:207:13
+activity#com.Manga.Activity.feekback.IderFeekBackActivity
+ADDED from AndroidManifest.xml:209:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:211:13
+	android:name
+		ADDED from AndroidManifest.xml:210:13
+activity#com.Manga.Activity.HomeActivity
+ADDED from AndroidManifest.xml:212:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:214:13
+	android:name
+		ADDED from AndroidManifest.xml:213:13
+activity#com.Manga.Activity.notification.NotificationActivity
+ADDED from AndroidManifest.xml:216:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:218:13
+	android:name
+		ADDED from AndroidManifest.xml:217:13
+activity#com.Manga.Activity.bigPicture.BigPictureActivity
+ADDED from AndroidManifest.xml:220:9
+	android:configChanges
+		ADDED from AndroidManifest.xml:222:13
+	android:name
+		ADDED from AndroidManifest.xml:221:13
+activity#com.Manga.Activity.bigPicture.BigPictureNoticeActivity
+ADDED from AndroidManifest.xml:224:9
+	android:name
+		ADDED from AndroidManifest.xml:224:19
+activity#com.Manga.Activity.ClassUpdate.ClassUpdateActivity
+ADDED from AndroidManifest.xml:226:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:229:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:228:13
+	android:theme
+		ADDED from AndroidManifest.xml:230:13
+	android:name
+		ADDED from AndroidManifest.xml:227:13
+activity#com.Manga.Activity.ClassUpdate.ClassUpdateMainBodyActivity
+ADDED from AndroidManifest.xml:231:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:233:13
+	android:name
+		ADDED from AndroidManifest.xml:232:13
+activity#com.Manga.Activity.ClassUpdate.ClassUpdateCommentActivity
+ADDED from AndroidManifest.xml:234:9
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:236:13
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:237:13
+	android:name
+		ADDED from AndroidManifest.xml:235:13
+activity#com.Manga.Activity.ClassUpdate.ReplyActivity
+ADDED from AndroidManifest.xml:238:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:240:13
+	android:name
+		ADDED from AndroidManifest.xml:239:13
+activity#com.Manga.Activity.cookbook.FoodMenuActivity
+ADDED from AndroidManifest.xml:241:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:243:13
+	android:name
+		ADDED from AndroidManifest.xml:242:13
+activity#com.Manga.Activity.activity.ActivityRegisterActivity
+ADDED from AndroidManifest.xml:244:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:246:13
+	android:name
+		ADDED from AndroidManifest.xml:245:13
+activity#com.Manga.Activity.activity.ShowActivityRegisterActivity
+ADDED from AndroidManifest.xml:247:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:249:13
+	android:name
+		ADDED from AndroidManifest.xml:248:13
+activity#com.Manga.Activity.syllabus.SyllabusActivity
+ADDED from AndroidManifest.xml:250:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:252:13
+	android:name
+		ADDED from AndroidManifest.xml:251:13
+activity#com.Manga.Activity.forget.InputPhoneNumActivity
+ADDED from AndroidManifest.xml:253:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:255:13
+	android:name
+		ADDED from AndroidManifest.xml:254:13
+activity#com.Manga.Activity.forget.InputKeyActivity
+ADDED from AndroidManifest.xml:256:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:258:13
+	android:name
+		ADDED from AndroidManifest.xml:257:13
+activity#com.Manga.Activity.forget.AgainSetPwActivity
+ADDED from AndroidManifest.xml:259:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:261:13
+	android:name
+		ADDED from AndroidManifest.xml:260:13
+activity#cn.sharesdk.demo.wxapi.WXEntryActivity
+ADDED from AndroidManifest.xml:262:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:265:13
+	android:exported
+		ADDED from AndroidManifest.xml:264:13
+	android:name
+		ADDED from AndroidManifest.xml:263:13
+activity#com.cytx.QuestionActivity
+ADDED from AndroidManifest.xml:266:9
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:268:13
+	android:name
+		ADDED from AndroidManifest.xml:267:13
+activity#com.cytx.BaseActivity
+ADDED from AndroidManifest.xml:270:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:273:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:272:13
+	android:name
+		ADDED from AndroidManifest.xml:271:13
+activity#com.cytx.ConsultActivity
+ADDED from AndroidManifest.xml:275:9
+	android:name
+		ADDED from AndroidManifest.xml:275:19
+activity#com.cytx.DetailActivity
+ADDED from AndroidManifest.xml:277:9
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:279:13
+	android:name
+		ADDED from AndroidManifest.xml:278:13
+activity#com.cytx.DoctorInfoActivity
+ADDED from AndroidManifest.xml:281:9
+	android:name
+		ADDED from AndroidManifest.xml:281:19
+activity#com.cytx.AssessActivity
+ADDED from AndroidManifest.xml:283:9
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:285:13
+	android:name
+		ADDED from AndroidManifest.xml:284:13
+activity#com.cytx.ShowPictureActivity
+ADDED from AndroidManifest.xml:287:9
+	android:name
+		ADDED from AndroidManifest.xml:287:19
+activity#cn.sharesdk.framework.ShareSDKUIShell
+ADDED from AndroidManifest.xml:289:9
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:294:13
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:292:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:291:13
+	android:theme
+		ADDED from AndroidManifest.xml:293:13
+	android:name
+		ADDED from AndroidManifest.xml:290:13
+receiver#com.Manga.Activity.utils.PushMessageReceiver
+ADDED from AndroidManifest.xml:297:9
+	android:name
+		ADDED from AndroidManifest.xml:297:19
+intent-filter#com.baidu.android.pushservice.action.MESSAGE+com.baidu.android.pushservice.action.RECEIVE+com.baidu.android.pushservice.action.notification.CLICK
+ADDED from AndroidManifest.xml:298:13
+action#com.baidu.android.pushservice.action.MESSAGE
+ADDED from AndroidManifest.xml:300:17
+	android:name
+		ADDED from AndroidManifest.xml:300:25
+action#com.baidu.android.pushservice.action.RECEIVE
+ADDED from AndroidManifest.xml:302:17
+	android:name
+		ADDED from AndroidManifest.xml:302:25
+action#com.baidu.android.pushservice.action.notification.CLICK
+ADDED from AndroidManifest.xml:303:17
+	android:name
+		ADDED from AndroidManifest.xml:303:25
+receiver#com.baidu.android.pushservice.PushServiceReceiver
+ADDED from AndroidManifest.xml:308:9
+	android:process
+		ADDED from AndroidManifest.xml:309:13
+	android:name
+		ADDED from AndroidManifest.xml:308:19
+intent-filter#android.intent.action.BOOT_COMPLETED+android.net.conn.CONNECTIVITY_CHANGE+com.baidu.android.pushservice.action.media.CLICK+com.baidu.android.pushservice.action.notification.SHOW
+ADDED from AndroidManifest.xml:310:13
+action#android.intent.action.BOOT_COMPLETED
+ADDED from AndroidManifest.xml:311:17
+	android:name
+		ADDED from AndroidManifest.xml:311:25
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from AndroidManifest.xml:312:17
+	android:name
+		ADDED from AndroidManifest.xml:312:25
+action#com.baidu.android.pushservice.action.notification.SHOW
+ADDED from AndroidManifest.xml:313:17
+	android:name
+		ADDED from AndroidManifest.xml:313:25
+action#com.baidu.android.pushservice.action.media.CLICK
+ADDED from AndroidManifest.xml:314:17
+	android:name
+		ADDED from AndroidManifest.xml:314:25
+receiver#com.baidu.android.pushservice.RegistrationReceiver
+ADDED from AndroidManifest.xml:317:9
+	android:process
+		ADDED from AndroidManifest.xml:318:13
+	android:name
+		ADDED from AndroidManifest.xml:317:19
+intent-filter#com.baidu.android.pushservice.action.BIND_SYNC+com.baidu.android.pushservice.action.METHOD
+ADDED from AndroidManifest.xml:319:13
+action#com.baidu.android.pushservice.action.METHOD
+ADDED from AndroidManifest.xml:320:17
+	android:name
+		ADDED from AndroidManifest.xml:320:25
+action#com.baidu.android.pushservice.action.BIND_SYNC
+ADDED from AndroidManifest.xml:321:17
+	android:name
+		ADDED from AndroidManifest.xml:321:25
+intent-filter#android.intent.action.PACKAGE_REMOVED
+ADDED from AndroidManifest.xml:324:12
+action#android.intent.action.PACKAGE_REMOVED
+ADDED from AndroidManifest.xml:325:17
+	android:name
+		ADDED from AndroidManifest.xml:325:25
+data
+ADDED from AndroidManifest.xml:326:17
+	android:scheme
+		ADDED from AndroidManifest.xml:326:23
+service#com.baidu.android.pushservice.PushService
+ADDED from AndroidManifest.xml:329:9
+	android:process
+		ADDED from AndroidManifest.xml:332:13
+	android:exported
+		ADDED from AndroidManifest.xml:331:13
+	android:name
+		ADDED from AndroidManifest.xml:330:13
+intent-filter#com.baidu.android.pushservice.action.PUSH_SERVICE
+ADDED from AndroidManifest.xml:333:13
+action#com.baidu.android.pushservice.action.PUSH_SERVICE
+ADDED from AndroidManifest.xml:334:17
+	android:name
+		ADDED from AndroidManifest.xml:334:25
+meta-data#api_key
+ADDED from AndroidManifest.xml:339:9
+	android:name
+		ADDED from AndroidManifest.xml:340:13
+	android:value
+		ADDED from AndroidManifest.xml:341:13
+meta-data#UMENG_APPKEY
+ADDED from AndroidManifest.xml:342:9
+	android:name
+		ADDED from AndroidManifest.xml:343:13
+	android:value
+		ADDED from AndroidManifest.xml:344:13
+meta-data#UMENG_CHANNEL
+ADDED from AndroidManifest.xml:346:9
+	android:name
+		ADDED from AndroidManifest.xml:347:13
+	android:value
+		ADDED from AndroidManifest.xml:348:13
+meta-data#com.baidu.lbsapi.API_KEY
+ADDED from AndroidManifest.xml:349:17
+	android:name
+		ADDED from AndroidManifest.xml:350:13
+	android:value
+		ADDED from AndroidManifest.xml:351:13
+supports-screens
+ADDED from CloudSchoolBusGradle:OneKeyShare:unspecified:11:5
+	android:resizeable
+		ADDED from CloudSchoolBusGradle:OneKeyShare:unspecified:15:9
+	android:largeScreens
+		ADDED from CloudSchoolBusGradle:OneKeyShare:unspecified:13:9
+	android:anyDensity
+		ADDED from CloudSchoolBusGradle:OneKeyShare:unspecified:12:9
+	android:normalScreens
+		ADDED from CloudSchoolBusGradle:OneKeyShare:unspecified:14:9
+	android:smallScreens
+		ADDED from CloudSchoolBusGradle:OneKeyShare:unspecified:16:9

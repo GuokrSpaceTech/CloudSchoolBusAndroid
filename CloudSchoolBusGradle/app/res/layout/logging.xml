@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activityRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/logging_bg"
+    android:paddingBottom="15dip" >
+
+    <RelativeLayout
+        android:id="@+id/logging_tap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/log_top_bg_" >
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/logging_below"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logging_tap"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="15dip"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/log_content_bg"
+        android:paddingBottom="20dip" >
+
+        <ImageView
+            android:id="@+id/log_content_tap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dip"
+            android:background="@drawable/log_content_bg_tap_text" />
+
+        <View
+            android:id="@+id/log_line_"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/log_content_tap"
+            android:layout_marginLeft="15dip"
+            android:layout_marginRight="15dip"
+            android:layout_marginTop="10dip"
+            android:background="#DBDBDB" />
+
+        <RelativeLayout
+            android:id="@+id/logging_below_uersname"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/log_line_"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginTop="30dip" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/log_content_eidt_bg" >
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/log_name_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:background="@drawable/log_name_tag" />
+
+            <EditText
+                android:id="@+id/logging__username"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="8dip"
+                android:layout_toRightOf="@id/log_name_tag"
+                android:background="@drawable/login_edit_bg"
+                android:hint="@string/please_input_suername"
+                android:paddingLeft="10dp"
+                android:paddingRight="3dp"
+                android:singleLine="true"
+                android:textColorHint="#828282"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/logging_below_password"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/logging_below_uersname"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginTop="25dip" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/log_content_eidt_bg" >
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/log_password_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:background="@drawable/log_password_tag" />
+
+            <EditText
+                android:id="@+id/logging_password"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="8dip"
+                android:layout_toRightOf="@id/log_password_tag"
+                android:background="@drawable/login_edit_bg"
+                android:hint="@string/please_input_password"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:paddingRight="3dp"
+                android:singleLine="true"
+                android:textColorHint="#828282"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+<!--         <CheckBox -->
+<!--             android:id="@+id/remmberpw" -->
+<!--             style="@style/MyCheckBox" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_alignLeft="@+id/logging_below_password" -->
+<!--             android:layout_below="@+id/logging_below_password" -->
+<!--             android:layout_marginTop="18dip" -->
+<!--             android:checked="true" -->
+<!--             android:text="@string/remmberpw" -->
+<!--             android:textColor="#818181" -->
+<!--             android:visibility="gone" /> -->
+
+<!--         <CheckBox -->
+<!--             android:id="@+id/autologging" -->
+<!--             style="@style/MyCheckBox" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_alignRight="@+id/logging_below_password" -->
+<!--             android:layout_below="@+id/logging_below_password" -->
+<!--             android:layout_marginTop="18dip" -->
+<!--             android:checked="true" -->
+<!--             android:text="@string/auto_logging" -->
+<!--             android:textColor="#818181" -->
+<!--             android:visibility="gone" /> -->
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_below="@id/logging_below_password"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="30dip"
+            android:layout_marginRight="30dip"
+            android:layout_marginTop="35dip"
+            android:background="@drawable/logging_button_select"
+            android:onClick="login"
+            android:text="@string/logging"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/logging_below"
+        android:layout_marginRight="30dip"
+        android:layout_marginTop="5dip"
+        android:clickable="true"
+        android:onClick="forgetPW"
+        android:text="@string/forgetpw"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>
