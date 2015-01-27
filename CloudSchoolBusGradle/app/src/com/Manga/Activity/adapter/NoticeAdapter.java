@@ -534,6 +534,7 @@ public class NoticeAdapter extends ArrayAdapter<Map<String, String>> {
 				if (result == null) {
 					handler.sendEmptyMessage(NETISNOTWORKING);
 				} else if ("1".equals(result.getCode())) {
+                    //Nubia Phone Issue Protection -- 1/22/2015 Youmeng Log
 					Map<String, String> map_ = getList().get(index);
 					map_.put("haveisconfirm", "1");
 					DB db = new DB(getContext());

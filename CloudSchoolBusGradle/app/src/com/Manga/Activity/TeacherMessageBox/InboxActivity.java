@@ -58,7 +58,7 @@ public class InboxActivity extends BaseActivity implements AdapterView.OnItemCli
     //Back button pressed
     public void close(View v)
     {
-        finish();
+        ActivityUtil.main.move();
     }
 
     @Override
