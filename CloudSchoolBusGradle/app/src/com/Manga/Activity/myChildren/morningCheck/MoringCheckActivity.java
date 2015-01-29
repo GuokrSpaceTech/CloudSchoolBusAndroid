@@ -187,9 +187,8 @@ public class MoringCheckActivity extends BaseActivity {
 				header_title_date.setText(str_title);
 				
 				//Set the footer
-				int days = attendanceMap.get(date.substring(0, date.lastIndexOf("-")))
-						                .getAttendance()
-						                .size();
+                AttendanceManagerDto attendance = attendanceMap.get(date.substring(0, date.lastIndexOf("-")));
+				int days = attendance==null?0:attendance.getAttendance().size();
 				
 				str_title = days 
 						+ "  |  " 
