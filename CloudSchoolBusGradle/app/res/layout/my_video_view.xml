@@ -23,7 +23,7 @@
             android:textColor="#E25B02"
             android:visibility="gone" />
 
-        <com.Manga.Activity.widget.FullScreenVideoView
+        <com.Manga.Activity.ClassUpdate.Widget.ResizableVideoView
             android:id="@+id/videoView"
             android:layout_width="300dp"
             android:layout_height="300dp"

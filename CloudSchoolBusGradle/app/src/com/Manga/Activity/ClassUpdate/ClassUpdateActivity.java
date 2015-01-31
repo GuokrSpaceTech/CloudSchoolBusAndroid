@@ -1,3 +1,8 @@
+/*
+ * This is the main activity of the class update moduel
+ *
+ */
+
 package com.Manga.Activity.ClassUpdate;
 
 import java.io.ByteArrayOutputStream;
@@ -40,6 +45,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Manga.Activity.BaseActivity;
+import com.Manga.Activity.ClassUpdate.Adapter.ArticleAdapter;
+import com.Manga.Activity.ClassUpdate.Model.ArticleDto;
+import com.Manga.Activity.ClassUpdate.Model.ArticleListDto;
+import com.Manga.Activity.ClassUpdate.Model.TagDto;
 import com.Manga.Activity.R;
 import com.Manga.Activity.DB.DB;
 import com.Manga.Activity.Msg.SelectHeadActivity;

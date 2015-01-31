@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
     package="com.Manga.Activity"
-    android:versionCode="10"
+    android:versionCode="13"
     android:versionName="3.4.5" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -237,6 +237,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.Manga.Activity.ClassUpdate.ReplyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.Manga.Activity.ClassUpdate.full_screen_video_player"
             android:screenOrientation="portrait" />
         <activity
             android:name=".cookbook.FoodMenuActivity"

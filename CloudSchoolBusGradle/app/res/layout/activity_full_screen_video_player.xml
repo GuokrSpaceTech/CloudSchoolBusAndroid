@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     android:background="@android:color/background_dark">
 
-    <com.cloud.school.bus.teacherhelper.modules.classupdate.CacheableVideoView
+    <com.Manga.Activity.ClassUpdate.Widget.CachedVideoViewLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:id="@+id/cacheable_videoview" />
+        android:id="@+id/cacheable_videoview_layout" />
 </RelativeLayout>

@@ -403,6 +403,7 @@
     <string name="take_photo">拍照</string>
     <string name="choose_existing">从手机相册中选择</string>
     <string name="failed_to_send">发送失败</string>
+    <string name="no_sd_card">没有SD开存储空间</string>
 
     <!-- 通用 -->
     <string name="upload_image">上传图片</string>

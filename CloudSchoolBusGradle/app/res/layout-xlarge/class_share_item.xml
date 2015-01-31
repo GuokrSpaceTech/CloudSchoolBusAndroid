@@ -54,21 +54,21 @@
             android:layout_marginLeft="15dip"
             android:textColor="#CFCFCF" />
 
-        <com.Manga.Activity.widget.CommentButton
+        <com.Manga.Activity.ClassUpdate.Widget.CommentButton
             android:id="@+id/comment"
             android:layout_width="100dip"
             android:layout_height="30dip"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true" >
-        </com.Manga.Activity.widget.CommentButton>
+        </com.Manga.Activity.ClassUpdate.Widget.CommentButton>
 
-        <com.Manga.Activity.widget.ZanButton
+        <com.Manga.Activity.ClassUpdate.Widget.ZanButton
             android:id="@+id/zan"
             android:layout_width="80dip"
             android:layout_height="30dip"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/comment" >
-        </com.Manga.Activity.widget.ZanButton>
+        </com.Manga.Activity.ClassUpdate.Widget.ZanButton>
     </RelativeLayout>
 
     <View

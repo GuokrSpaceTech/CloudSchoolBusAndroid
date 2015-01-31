@@ -43,7 +43,7 @@
 	            android:visibility = "gone"
 	            android:layout_centerInParent="true"
 	            android:background="@drawable/play" />    
-            <com.Manga.Activity.widget.MyVideoView
+            <com.Manga.Activity.ClassUpdate.Widget.CachedVideoViewLayout
 	            android:id="@+id/videoView"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
@@ -156,13 +156,13 @@
               android:layout_centerVertical="true" 
               android:background="#F0F0F0" />
         
-        <com.Manga.Activity.widget.ZanButton
+        <com.Manga.Activity.ClassUpdate.Widget.ZanButton
             android:id="@+id/zan"
             android:layout_width="75dip"
             android:layout_height="35dip"
             android:layout_centerInParent="true"
             android:layout_toLeftOf="@+id/comment" >
-        </com.Manga.Activity.widget.ZanButton>
+        </com.Manga.Activity.ClassUpdate.Widget.ZanButton>
         
         <View
 	        android:layout_width="1px"
@@ -171,13 +171,13 @@
 	        android:layout_centerVertical="true"
 	        android:layout_toLeftOf="@+id/comment" />
         
-        <com.Manga.Activity.widget.CommentButton 
+        <com.Manga.Activity.ClassUpdate.Widget.CommentButton
             android:id="@+id/comment" 
             android:layout_width="75dip" 
             android:layout_height="35dip"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true">
-        </com.Manga.Activity.widget.CommentButton>
+        </com.Manga.Activity.ClassUpdate.Widget.CommentButton>
 
     </RelativeLayout>
     <View

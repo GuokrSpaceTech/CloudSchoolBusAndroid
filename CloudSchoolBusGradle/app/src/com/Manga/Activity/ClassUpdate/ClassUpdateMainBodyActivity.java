@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Manga.Activity.BaseActivity;
+import com.Manga.Activity.ClassUpdate.Model.TagDto;
 import com.Manga.Activity.R;
 import com.Manga.Activity.DB.DB;
 import com.Manga.Activity.bigPicture.BigPictureActivity;
@@ -51,7 +52,7 @@ import com.Manga.Activity.utils.ActivityUtil;
 import com.Manga.Activity.utils.DensityUtil;
 import com.Manga.Activity.utils.Student_Info;
 import com.Manga.Activity.widget.LisStudentHeaderView;
-import com.Manga.Activity.widget.MyVideoView;
+import com.Manga.Activity.ClassUpdate.Widget.CachedVideoViewLayout;
 import com.Manga.Activity.widget.ShareImage;
 import com.Manga.Activity.widget.StudentHeaderView;
 import com.umeng.analytics.MobclickAgent;
@@ -138,7 +139,7 @@ public class ClassUpdateMainBodyActivity extends BaseActivity {
 	private String havezan;
 	private Button like;
 	private ScrollView sc;
-	private MyVideoView myVideo;
+	private CachedVideoViewLayout myVideo;
 	private ProgressBar progress_image;
 	private Handler handler = new Handler(new Callback() {
 
@@ -604,7 +605,7 @@ public class ClassUpdateMainBodyActivity extends BaseActivity {
 		like = (Button) findViewById(R.id.like);
 		TextView title = (TextView) findViewById(R.id.titl_e);
 		TextView content = (TextView) findViewById(R.id.content);
-		myVideo = (MyVideoView) findViewById(R.id.myVideo);
+		myVideo = (CachedVideoViewLayout) findViewById(R.id.myVideo);
 		TextView time = (TextView) findViewById(R.id.time);
 		inputContent = (EditText) findViewById(R.id.input_content);
 		ShareImage image01 = (ShareImage) findViewById(R.id.share_image_one);

@@ -8,13 +8,17 @@ import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.widget.MediaController;
 
+import com.Manga.Activity.BaseActivity;
+import com.Manga.Activity.ClassUpdate.Widget.CachedVideoViewLayout;
+import com.Manga.Activity.R;
+
 
 /**
  * Created by wangjianfeng on 14-12-7.
  */
 public class full_screen_video_player extends BaseActivity {
 
-    private CacheableVideoView theVideoView;
+    private CachedVideoViewLayout theVideoView;
     private MediaController mediaController;
 
     @Override
@@ -22,22 +26,21 @@ public class full_screen_video_player extends BaseActivity {
         super.onCreate(savedInstanceState);
 //        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_full_screen_video_player);
-        getSupportActionBar().setTitle(getString(R.string.video_play));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle(getString(R.string.video_play));
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         init();
     }
 
-    @Override
     protected void init() {
-        super.init();
+//        super.init();
 
         Intent intent = getIntent();
         String file = intent.getStringExtra("path");
 
-        theVideoView = (CacheableVideoView)findViewById(R.id.cacheable_videoview);
+        theVideoView = (CachedVideoViewLayout)findViewById(R.id.cacheable_videoview_layout);
 
-        Resources resources = mContext.getResources();
+        Resources resources = getResources();
         Configuration config = resources.getConfiguration();
         DisplayMetrics dm = resources.getDisplayMetrics();
         double screenWidthInPixels = (double)config.screenWidthDp * dm.density;
@@ -53,11 +56,6 @@ public class full_screen_video_player extends BaseActivity {
         //The video is square
         mediaController = new MediaController(this);
         theVideoView.getmVideoView().setMediaController(mediaController);
-    }
-
-    @Override
-    protected void setListener() {
-        super.setListener();
     }
 
     @Override

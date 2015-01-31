@@ -31,6 +31,7 @@ import com.Manga.Activity.ClassUpdate.ClassUpdateCommentActivity;
 import com.Manga.Activity.ClassUpdate.Model.ArticleDto;
 import com.Manga.Activity.ClassUpdate.Model.TagDto;
 import com.Manga.Activity.ClassUpdate.TagDialogActivity;
+import com.Manga.Activity.ClassUpdate.full_screen_video_player;
 import com.Manga.Activity.R;
 import com.Manga.Activity.DB.DB;
 import com.Manga.Activity.bigPicture.BigPictureActivity;
@@ -40,11 +41,11 @@ import com.Manga.Activity.httputils.Result;
 import com.Manga.Activity.utils.ActivityUtil;
 import com.Manga.Activity.utils.ImageUtil;
 import com.Manga.Activity.utils.Student_Info;
-import com.Manga.Activity.widget.CommentButton;
-import com.Manga.Activity.widget.FullScreenVideoView;
-import com.Manga.Activity.widget.MyVideoView;
+import com.Manga.Activity.ClassUpdate.Widget.CommentButton;
+import com.Manga.Activity.ClassUpdate.Widget.ResizableVideoView;
+import com.Manga.Activity.ClassUpdate.Widget.CachedVideoViewLayout;
 import com.Manga.Activity.widget.ShareButton;
-import com.Manga.Activity.widget.ZanButton;
+import com.Manga.Activity.ClassUpdate.Widget.ZanButton;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -61,7 +62,7 @@ public class ArticleAdapter extends BaseAdapter {
 	ImageLoaderConfiguration config;
 	Context cntx;
 	TagDto tag;
-	MyVideoView currentPlayingVideoView = null;
+	CachedVideoViewLayout currentPlayingVideoView = null;
 	
 
 	/**
@@ -154,7 +155,7 @@ public class ArticleAdapter extends BaseAdapter {
 			holder.shareTime = (TextView) convertView.findViewById(R.id.share_time);
 			holder.justOne = (ImageView) convertView.findViewById(R.id.just_one);
 			holder.playIcon = (ImageView) convertView.findViewById(R.id.play_icon);
-			holder.videoView = (MyVideoView)convertView.findViewById(R.id.videoView);
+			holder.videoView = (CachedVideoViewLayout)convertView.findViewById(R.id.videoView);
 			holder.tag1 = (Button)convertView.findViewById(R.id.tag1);
 			holder.tag2 = (Button)convertView.findViewById(R.id.tag2);
 			holder.tag3 = (Button)convertView.findViewById(R.id.tag3);			
@@ -366,45 +367,18 @@ public class ArticleAdapter extends BaseAdapter {
 		holder.justOne.setImageResource(R.drawable.play_clean);
 		if ("mp4".equals(fext)) {
 			// 如果是视频
-			//imageLoader.displayImage(file + ".jpg", holder.justOne, options);
-			holder.videoView.setVisibility(View.VISIBLE);
-			FullScreenVideoView tempVideoView = holder.videoView.getmVideoView();
-			RelativeLayout reLayout = (RelativeLayout) holder.videoView.getParent();
-			
-			//The video is square
-			tempVideoView.setVideoHeight(reLayout.getWidth());
-			tempVideoView.setVideoWidth(reLayout.getWidth());
-			
-			//Start the video stop the previously played first
-			if(currentPlayingVideoView != null)
-				currentPlayingVideoView.stop();
-			holder.videoView.loading(newfile);
-			currentPlayingVideoView = holder.videoView;
-			
-				imageLoader.displayImage(file + ".jpg", holder.justOne, options);
-				holder.justOne.setVisibility(View.VISIBLE);
-				holder.playIcon.setVisibility(View.VISIBLE);
+            holder.playIcon.setVisibility(View.VISIBLE);
+            holder.justOne.setVisibility(View.VISIBLE);
+            imageLoader.displayImage(file + ".jpg", holder.justOne, options);
+            holder.justOne.setOnClickListener(new OnClickListener() {
 
-				holder.justOne.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View arg0) {
-
-						//The pic and icon gone
-						holder.justOne.setVisibility(View.INVISIBLE);
-						holder.playIcon.setVisibility(View.INVISIBLE);
-
-						//The video comes out
-						holder.videoView.setVisibility(View.VISIBLE);
-						FullScreenVideoView tempVideoView = holder.videoView.getmVideoView();
-						tempVideoView.setVideoHeight(holder.justOne.getHeight());
-						tempVideoView.setVideoWidth(holder.justOne.getWidth());
-						holder.videoView.loading(file);
-					}
-				});
-
-
-
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(cntx, full_screen_video_player.class);
+                    intent.putExtra("path", file);
+                    cntx.startActivity(intent);
+                }
+            });
 		} else {
 			// 如果是图片
 				imageLoader.displayImage(file + ImageUtil.SMALL, holder.justOne, options);
@@ -442,7 +416,7 @@ public class ArticleAdapter extends BaseAdapter {
 		TextView shareTime;
 		ImageView justOne;
 		ImageView playIcon;
-		MyVideoView videoView;
+		CachedVideoViewLayout videoView;
 		Button tag1;
 		Button tag2;
 		Button tag3;

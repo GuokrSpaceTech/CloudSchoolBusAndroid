@@ -24,7 +24,7 @@
         <!--android:layout_centerInParent="true"-->
         <!--android:background="@drawable/icn_play_big" />-->
 
-    <com.cloud.school.bus.teacherhelper.modules.classupdate.VideoView
+    <com.Manga.Activity.ClassUpdate.Widget.VideoView
         android:id="@+id/videoView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

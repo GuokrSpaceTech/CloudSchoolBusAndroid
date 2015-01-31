@@ -27,6 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Manga.Activity.BaseActivity;
+import com.Manga.Activity.ClassUpdate.Model.CommentDto;
+import com.Manga.Activity.ClassUpdate.Model.LikeDto;
+import com.Manga.Activity.ClassUpdate.Model.TagDto;
 import com.Manga.Activity.R;
 import com.Manga.Activity.httputils.HttpUtil;
 import com.Manga.Activity.httputils.Params;
@@ -35,7 +38,7 @@ import com.Manga.Activity.utils.ActivityUtil;
 import com.Manga.Activity.utils.DensityUtil;
 import com.Manga.Activity.utils.ImageUtil;
 import com.Manga.Activity.widget.LisStudentHeaderView;
-import com.Manga.Activity.widget.MyVideoView;
+import com.Manga.Activity.ClassUpdate.Widget.CachedVideoViewLayout;
 import com.cytx.utility.FastJsonTools;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -47,10 +50,6 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.umeng.analytics.MobclickAgent;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import static android.widget.RelativeLayout.LayoutParams;
 
@@ -98,7 +97,7 @@ public class ClassUpdateCommentActivity extends BaseActivity {
     ImageLoaderConfiguration config;
 	private Button like;
 	private ScrollView sc;
-	private MyVideoView myVideo;
+	private CachedVideoViewLayout myVideo;
 	private ProgressBar progress_image;
     private Handler handler;
     {
