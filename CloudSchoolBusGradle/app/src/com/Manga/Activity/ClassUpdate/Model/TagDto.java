@@ -1,4 +1,4 @@
-package com.Manga.Activity.ClassUpdate;
+package com.Manga.Activity.ClassUpdate.Model;
 
 public class TagDto {
 	private String tagid;

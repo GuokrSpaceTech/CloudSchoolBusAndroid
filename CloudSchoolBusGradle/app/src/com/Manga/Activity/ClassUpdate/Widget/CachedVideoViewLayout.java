@@ -1,4 +1,4 @@
-package com.Manga.Activity.widget;
+package com.Manga.Activity.ClassUpdate.Widget;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,19 +21,17 @@ import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.Manga.Activity.R;
 
-public class MyVideoView extends RelativeLayout {
+public class CachedVideoViewLayout extends RelativeLayout {
 	private TextView progressTXT;
-	private FullScreenVideoView mVideoView;
+	private ResizableVideoView mVideoView;
 	//private ShareImage image;
 	private ImageView playIcon;
 	private float maxSize;
@@ -50,7 +48,6 @@ public class MyVideoView extends RelativeLayout {
 
 		@Override
 		public boolean handleMessage(Message msg) {
-			// TODO Auto-generated method stub
 			switch (msg.what) {
 			case NO_SDAR:
 				// 无卡通知
@@ -84,14 +81,14 @@ public class MyVideoView extends RelativeLayout {
 				mUri = Uri.parse((String) msg.obj);
 				mVideoView.setVideoURI(mUri);
 				//R.drawable.play
-				if (checkPlay()) {
+//				if (checkPlay()) {
 					mVideoView.setVisibility(View.VISIBLE);
 					mVideoView.start();
 					//image.setVisibility(View.GONE);
 					playing = true;
-				}else{
-					playIcon.setVisibility(View.VISIBLE);
-				}
+//				}else{
+//					playIcon.setVisibility(View.VISIBLE);
+//				}
 				mVideoView.requestFocus();
 				mVideoView.setOnCompletionListener(new OnCompletionListener() {
 
@@ -108,7 +105,7 @@ public class MyVideoView extends RelativeLayout {
 		}
 	});
 
-	public MyVideoView(Context context) {
+	public CachedVideoViewLayout(Context context) {
 		super(context);
 		init();
 	}
@@ -117,18 +114,16 @@ public class MyVideoView extends RelativeLayout {
 	 * @param context
 	 * @param attrs
 	 */
-	public MyVideoView(Context context, AttributeSet attrs) {
+	public CachedVideoViewLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
 
 	private void init() {
 		View view = View.inflate(getContext(), R.layout.my_video_view, null);
-		//image = (ShareImage) view.findViewById(R.id.suo_lue);
 		progressTXT = (TextView) view.findViewById(R.id.progress);
-		mVideoView = (FullScreenVideoView) view.findViewById(R.id.videoView);
+		mVideoView = (ResizableVideoView) view.findViewById(R.id.videoView);
 		playIcon=(ImageView) view.findViewById(R.id.play_icon);
-		//addView(view, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 	    addView(view);
 	}
 
@@ -137,7 +132,6 @@ public class MyVideoView extends RelativeLayout {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 					String name = url.substring(url.lastIndexOf("/"));
 					String sdpath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/云中校车/";
@@ -181,7 +175,6 @@ public class MyVideoView extends RelativeLayout {
 								}
 								handler.sendEmptyMessage(CURRENT_SIZE);
 								float showNum = (currentSize / maxSize)* 100f;
-								Log.v("sss", showNum+"");
 							}
 							fos.close();
 							is.close();
@@ -250,11 +243,11 @@ public class MyVideoView extends RelativeLayout {
 		}
 	}
 
-	public FullScreenVideoView getmVideoView() {
+	public ResizableVideoView getmVideoView() {
 		return mVideoView;
 	}
 
-	public void setmVideoView(FullScreenVideoView mVideoView) {
+	public void setmVideoView(ResizableVideoView mVideoView) {
 		this.mVideoView = mVideoView;
 	}
 }

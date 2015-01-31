@@ -1,4 +1,4 @@
-package com.Manga.Activity.widget;
+package com.Manga.Activity.ClassUpdate.Widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

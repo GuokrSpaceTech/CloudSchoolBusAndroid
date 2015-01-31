@@ -1,4 +1,7 @@
-package com.Manga.Activity.ClassUpdate;
+package com.Manga.Activity.ClassUpdate.Model;
+
+import com.Manga.Activity.ClassUpdate.ImageFileDto;
+import com.Manga.Activity.ClassUpdate.TagDto;
 
 import java.util.List;
 

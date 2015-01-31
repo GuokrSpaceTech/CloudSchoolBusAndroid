@@ -1,4 +1,4 @@
-package com.Manga.Activity.ClassUpdate;
+package com.Manga.Activity.ClassUpdate.Model;
 
 /**
  * Created by YangQingSu on 2014/11/13.

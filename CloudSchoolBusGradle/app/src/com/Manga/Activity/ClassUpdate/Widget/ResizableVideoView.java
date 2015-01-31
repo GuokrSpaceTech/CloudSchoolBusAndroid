@@ -1,4 +1,4 @@
-package com.Manga.Activity.widget;
+package com.Manga.Activity.ClassUpdate.Widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,20 +7,20 @@ import android.widget.VideoView;
 /**
  * 自动全屏的VideoView
  */
-public class FullScreenVideoView extends VideoView {
+public class ResizableVideoView extends VideoView {
 
 	private int videoWidth;
 	private int videoHeight;
 
-	public FullScreenVideoView(Context context) {
+	public ResizableVideoView(Context context) {
 		super(context);
 	}
 
-	public FullScreenVideoView(Context context, AttributeSet attrs) {
+	public ResizableVideoView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public FullScreenVideoView(Context context, AttributeSet attrs, int defStyle) {
+	public ResizableVideoView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 

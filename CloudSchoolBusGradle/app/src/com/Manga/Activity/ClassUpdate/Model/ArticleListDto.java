@@ -1,4 +1,6 @@
-package com.Manga.Activity.ClassUpdate;
+package com.Manga.Activity.ClassUpdate.Model;
+
+import com.Manga.Activity.ClassUpdate.Model.ArticleDto;
 
 import java.util.List;
 

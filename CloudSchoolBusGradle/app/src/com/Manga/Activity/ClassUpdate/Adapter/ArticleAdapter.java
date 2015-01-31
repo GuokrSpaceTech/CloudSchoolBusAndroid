@@ -1,4 +1,4 @@
-package com.Manga.Activity.ClassUpdate;
+package com.Manga.Activity.ClassUpdate.Adapter;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +27,10 @@ import android.widget.Toast;
 
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
+import com.Manga.Activity.ClassUpdate.ClassUpdateCommentActivity;
+import com.Manga.Activity.ClassUpdate.Model.ArticleDto;
+import com.Manga.Activity.ClassUpdate.Model.TagDto;
+import com.Manga.Activity.ClassUpdate.TagDialogActivity;
 import com.Manga.Activity.R;
 import com.Manga.Activity.DB.DB;
 import com.Manga.Activity.bigPicture.BigPictureActivity;
@@ -49,7 +52,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
-@SuppressLint("SimpleDateFormat")
 public class ArticleAdapter extends BaseAdapter {
 	private SimpleDateFormat spl = new SimpleDateFormat("yyyy-MM-dd");
 	private SimpleDateFormat toYearSdf = new SimpleDateFormat("MM-dd HH:mm");
@@ -320,6 +322,16 @@ public class ArticleAdapter extends BaseAdapter {
 		
 		final String file = article.getPlist().get(0).getSource();
 		final String fext = article.getPlist().get(0).getFext();
+
+		 //Hack for S3 use https instead of http
+        final String newfile;
+        if(file.contains("s3"))
+        {
+            newfile = file.replace("http://","https://");
+        }
+        else
+            newfile = file;
+
 		holder.comment.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -366,30 +378,33 @@ public class ArticleAdapter extends BaseAdapter {
 			//Start the video stop the previously played first
 			if(currentPlayingVideoView != null)
 				currentPlayingVideoView.stop();
-			holder.videoView.loading(file);
+			holder.videoView.loading(newfile);
 			currentPlayingVideoView = holder.videoView;
 			
-//				imageLoader.displayImage(file + ".jpg", holder.justOne, options);
-//				holder.justOne.setVisibility(View.VISIBLE);
-//				holder.playIcon.setVisibility(View.VISIBLE);
-//				
-//				holder.justOne.setOnClickListener(new OnClickListener() {
-//
-//					@Override
-//					public void onClick(View arg0) {
-//
-//						//The pic and icon gone
-//						holder.justOne.setVisibility(View.INVISIBLE);
-//						holder.playIcon.setVisibility(View.INVISIBLE);
-//						
-//						//The video comes out
-//						holder.videoView.setVisibility(View.VISIBLE);
-//						FullScreenVideoView tempVideoView = holder.videoView.getmVideoView();
-//						tempVideoView.setVideoHeight(holder.justOne.getHeight());
-//						tempVideoView.setVideoWidth(holder.justOne.getWidth());
-//						holder.videoView.loading(file);
-//					}
-//				});
+				imageLoader.displayImage(file + ".jpg", holder.justOne, options);
+				holder.justOne.setVisibility(View.VISIBLE);
+				holder.playIcon.setVisibility(View.VISIBLE);
+
+				holder.justOne.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+
+						//The pic and icon gone
+						holder.justOne.setVisibility(View.INVISIBLE);
+						holder.playIcon.setVisibility(View.INVISIBLE);
+
+						//The video comes out
+						holder.videoView.setVisibility(View.VISIBLE);
+						FullScreenVideoView tempVideoView = holder.videoView.getmVideoView();
+						tempVideoView.setVideoHeight(holder.justOne.getHeight());
+						tempVideoView.setVideoWidth(holder.justOne.getWidth());
+						holder.videoView.loading(file);
+					}
+				});
+
+
+
 		} else {
 			// 如果是图片
 				imageLoader.displayImage(file + ImageUtil.SMALL, holder.justOne, options);
