@@ -8,14 +8,14 @@ import java.util.List;
 
 public class ShuttlebusStopListDto {
 	private List<ShuttlebusStopDto> allstop;
-	private String currentstop;
-	private int currentstopid;
+    private String currentstop;
+    private int currentstopid = 0;
     private List<ShuttlebusStopNoticeDto> notice;
-    
+
 	public List<ShuttlebusStopDto> getAllstop() {
 		return allstop;
 	}
-	
+
 	public void setAllstop(List<ShuttlebusStopDto> allstop) {
 		this.allstop = allstop;
 	}
@@ -27,20 +27,20 @@ public class ShuttlebusStopListDto {
 	public void setNotice(List<ShuttlebusStopNoticeDto> notice) {
 		this.notice = notice;
 	}
+    public String getCurrentstop() {
+        return currentstop;
+    }
 
-	public String getCurrentstop() {
-		return currentstop;
-	}
+    public void setCurrentstop(String currentstop) {
+        this.currentstop = currentstop;
+    }
 
-	public void setCurrentstop(String currentstop) {
-		this.currentstop = currentstop;
-	}
+    public int getCurrentstopid() {
+        return currentstopid;
+    }
 
-	public int getCurrentstopid() {
-		return currentstopid;
-	}
+    public void setCurrentstopid(int currentstopid) {
+        this.currentstopid = currentstopid;
+    }
 
-	public void setCurrentstopid(int currentstopid) {
-		this.currentstopid = currentstopid;
-	}
 }

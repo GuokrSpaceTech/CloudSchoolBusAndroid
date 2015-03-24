@@ -39,15 +39,16 @@
         android:layout_below="@+id/shuttlebus_top"
         android:background="#edeae3" >
 
-        <ListView
-            android:id="@+id/shuttlebusstop_listview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="#edeae3"
-            android:cacheColorHint="#00000000"
-            android:drawSelectorOnTop="false"
-            android:fadingEdge="none"
-            android:listSelector="@android:color/transparent" />
+
+        <!--<ListView-->
+            <!--android:id="@+id/shuttlebusstop_listview"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:background="#edeae3"-->
+            <!--android:cacheColorHint="#00000000"-->
+            <!--android:drawSelectorOnTop="false"-->
+            <!--android:fadingEdge="none"-->
+            <!--android:listSelector="@android:color/transparent" />-->
 
 <!--         <com.Manga.Activity.widget.ModifiListView -->
 <!--             android:divider="#74bace" -->
@@ -59,6 +60,17 @@
 <!--             android:longClickable="true" -->
 <!--             android:overScrollMode="never" > -->
 <!--         </com.Manga.Activity.widget.ModifiListView> -->
+
+        <ExpandableListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/shuttlebusstop_listview"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="#edeae3"
+            android:cacheColorHint="#00000000"
+            android:clickable="true" />
 
         <RelativeLayout
             android:id="@+id/no_data"

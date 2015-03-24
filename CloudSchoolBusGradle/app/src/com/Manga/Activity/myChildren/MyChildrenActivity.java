@@ -301,7 +301,12 @@ public class MyChildrenActivity extends BaseActivity {
                         if(mIpcparam!=null)
                         {
                             m_sStreamIP = mIpcparam.getDdns();
-                            m_iStreamPort = Integer.parseInt(mIpcparam.getPort());
+                            try {
+                                m_iStreamPort = Integer.parseInt(mIpcparam.getPort());
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                                m_iStreamPort = 600; //TODO this number shall be updated to a default one
+                            }
                             mDvrList = mIpcparam.getDvr();
                         }
 

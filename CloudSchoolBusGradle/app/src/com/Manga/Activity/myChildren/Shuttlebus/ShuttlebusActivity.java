@@ -11,6 +11,7 @@ import android.os.Message;
 import android.os.Handler.Callback;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -37,12 +38,13 @@ public class ShuttlebusActivity extends BaseActivity {
 	static final int MSG_NO_SERVICE = 7;
 	
 	//static final 
-	
-	ListView mListView;
+
+    ExpandableListView mListView;
 	ShuttlebusStopListDto mShuttlebusstopList;
 	ShuttlebusStopAdapter mAdapter;
 	List<ShuttlebusStopNoticeDto> mNoticeList;
 	private int mBusStopId = -1;
+    private int mBusLineId = -1;
 	private String mBusStopName;
 	private Handler handler = new Handler(new Callback() {
 		@Override
@@ -105,23 +107,34 @@ public class ShuttlebusActivity extends BaseActivity {
 		
 		ActivityUtil.shuttlebusactivity = this;
 		
-		mListView = (ListView)findViewById(R.id.shuttlebusstop_listview);
+		mListView = (ExpandableListView)findViewById(R.id.shuttlebusstop_listview);
 		mAdapter = new ShuttlebusStopAdapter(ShuttlebusActivity.this);
 		mListView.setAdapter(mAdapter);
 		mListView.setLongClickable(true);
 		mListView.setDivider(null);
-		
-		mListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				
-				mBusStopId = mShuttlebusstopList.getAllstop().get(arg2).getGeofenceid();
-                mBusStopName = mShuttlebusstopList.getAllstop().get(arg2).getName();
-                
-				followBusStop(mBusStopId);
-			}
-		});
+
+        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                mBusStopId = mShuttlebusstopList.getAllstop().get(groupPosition).getStop().get(childPosition).getGeofenceid();
+                mBusStopName = mShuttlebusstopList.getAllstop().get(groupPosition).getStop().get(childPosition).getName();
+                mBusLineId = mShuttlebusstopList.getAllstop().get(groupPosition).getLineid();
+
+                followBusStop(mBusLineId, mBusStopId);
+                return true;
+            }
+        });
+//		mListView.setOnItemClickListener(new OnItemClickListener() {
+//			@Override
+//			public void onItemClick(AdapterView<?> arg0, View arg1, int itemIndex,
+//					long arg3) {
+//
+//				mBusStopId = mShuttlebusstopList.getAllstop().get(itemIndex).getGeofenceid();
+//                mBusStopName = mShuttlebusstopList.getAllstop().get(itemIndex).getName();
+//
+//				followBusStop(mBusStopId);
+//			}
+//		});
 		
 		init_data();
 	}
@@ -182,7 +195,7 @@ public class ShuttlebusActivity extends BaseActivity {
 		thread.start();
 	}
 	
-	private void followBusStop(final int busStopId)
+	private void followBusStop(int busLineId, final int busStopId)
 	{
 		Thread thread = new Thread(new Runnable() {
 			@Override

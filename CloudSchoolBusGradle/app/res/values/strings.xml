@@ -529,7 +529,7 @@
     <string name="current_day_attendance_records">当日考勤次数：</string>
     <string name="total_attendance_records">本月考勤总数</string>
      
-    <!-- ShuttlebusActivity --> 
+    <!-- ShuttlebusActivity -->
     <string name="shuttlebus_title">请选择校车站点</string>
     <string name="shuttlebus_notice_title">校车到站通知</string>
     <string name="no_shuttlebus">没有班车或者未开通服务</string>

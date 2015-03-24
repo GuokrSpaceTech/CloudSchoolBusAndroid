@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
     package="com.Manga.Activity"
-    android:versionCode="13"
-    android:versionName="3.4.5" >
+    android:versionCode="14"
+    android:versionName="3.4.7" >
 
     <uses-sdk
         android:minSdkVersion="14"
