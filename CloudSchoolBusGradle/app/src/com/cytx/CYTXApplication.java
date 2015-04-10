@@ -34,6 +34,7 @@ public class CYTXApplication extends FrontiaApplication {
 				.threadPoolSize(5).memoryCache(new WeakMemoryCache()).build();
 		ImageLoader.getInstance().init(config);
 		cytxApplication = this;
+        Mint.initAndStartSession(MyActivity.this, "ed4e94f2");
 	}
 	
 	public static CYTXApplication getInstance(){

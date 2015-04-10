@@ -389,7 +389,13 @@ public class MoringCheckActivity extends BaseActivity {
 				if(url != "null")
 				{
 				    intent.putExtra("image", "http://"+url);
-				    ActivityUtil.startActivity(ActivityUtil.share, intent);
+                    if(ActivityUtil.share != null) {
+                        ActivityUtil.startActivity(ActivityUtil.share, intent);
+                    }
+                    else
+                    {
+                        startActivity(intent);
+                    }
 				}
 			}
 		});

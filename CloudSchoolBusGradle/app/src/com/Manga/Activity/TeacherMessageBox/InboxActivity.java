@@ -66,16 +66,23 @@ public class InboxActivity extends BaseActivity implements AdapterView.OnItemCli
 
     private void getTeacherList()
     {
-        Baseinfo baseinfo = ActivityUtil.login.getmBaseInfo();
-        mTeacherList = baseinfo.getTeacherlist();
-
-        if(mTeacherList!=null)
+        if(ActivityUtil.login != null)
         {
-            TeacherListAdapter teacherListAdapter = new TeacherListAdapter(getApplicationContext(), mTeacherList);
-            mlistView.setAdapter(teacherListAdapter);
-        }
+            Baseinfo baseinfo = ActivityUtil.login.getmBaseInfo();
+            mTeacherList = baseinfo.getTeacherlist();
 
-        GetPrivateLetters();
+            if(mTeacherList!=null)
+            {
+                TeacherListAdapter teacherListAdapter = new TeacherListAdapter(getApplicationContext(), mTeacherList);
+                mlistView.setAdapter(teacherListAdapter);
+            }
+
+            GetPrivateLetters();
+        }
+        else
+        {
+            DebugClass.displayCurrentStack("Error: no techer info got!");
+        }
     }
 
     public void GetPrivateLetters() {

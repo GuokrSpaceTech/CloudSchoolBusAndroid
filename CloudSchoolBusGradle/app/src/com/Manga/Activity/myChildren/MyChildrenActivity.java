@@ -231,29 +231,32 @@ public class MyChildrenActivity extends BaseActivity {
 
 	@SuppressWarnings("deprecation")
 	public void init() {
-		DB db = new DB(this);
-		SQLiteDatabase sql = db.getReadableDatabase();
-		Cursor cursor = sql.query("student_info", null, "uid=?", new String[] { Student_Info.uid }, null, null, null);
-		if (cursor == null || cursor.getCount() == 0) {
+        if(Student_Info.uid != null)
+        {
+            DB db = new DB(this);
+            SQLiteDatabase sql = db.getReadableDatabase();
+            Cursor cursor = sql.query("student_info", null, "uid=?", new String[] { Student_Info.uid }, null, null, null);
+            if (cursor == null || cursor.getCount() == 0) {
 
-		} else {
-			cursor.moveToFirst();
-			avatarImg.setBackgroundDrawable(new BitmapDrawable(ImageUtil.base64ToBitmap(cursor.getString(cursor
-					.getColumnIndex("avatar")))));
-			nickName.setText(cursor.getString(cursor.getColumnIndex("nikename")));
-			String tmp = "";
-			tmp = cursor.getString(cursor.getColumnIndex("orderendtime"));
-			if ("".equals(tmp)) {
-				serverStatus = tmp;
-			} else {
-				SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd");
-				tmp = foo.format(new Date(Long.parseLong(tmp) * 1000));
-				serverStatus = tmp + getResources().getString(R.string.dao_qi);
-				tuitionDue.setText(serverStatus);
-			}
-		}
-		sql.close();
-		db.close();
+            } else {
+                cursor.moveToFirst();
+                avatarImg.setBackgroundDrawable(new BitmapDrawable(ImageUtil.base64ToBitmap(cursor.getString(cursor
+                        .getColumnIndex("avatar")))));
+                nickName.setText(cursor.getString(cursor.getColumnIndex("nikename")));
+                String tmp = "";
+                tmp = cursor.getString(cursor.getColumnIndex("orderendtime"));
+                if ("".equals(tmp)) {
+                    serverStatus = tmp;
+                } else {
+                    SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd");
+                    tmp = foo.format(new Date(Long.parseLong(tmp) * 1000));
+                    serverStatus = tmp + getResources().getString(R.string.dao_qi);
+                    tuitionDue.setText(serverStatus);
+                }
+            }
+            sql.close();
+            db.close();
+        }
 	}
 
 	private void getClassReport() {

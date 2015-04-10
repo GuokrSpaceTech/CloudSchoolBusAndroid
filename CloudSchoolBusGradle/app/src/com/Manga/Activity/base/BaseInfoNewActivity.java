@@ -704,17 +704,19 @@ public class BaseInfoNewActivity extends BaseActivity {
 	 */
 
 	private void inite() {
-		DB db = new DB(this);
-		SQLiteDatabase sql = db.getReadableDatabase();
-		Cursor cur = sql.query("student_info", null, "uid=?", new String[] { Student_Info.uid }, null, null, null);
-		if (cur != null) {
-			cur.moveToFirst();
-			name.setText(cur.getString(cur.getColumnIndex("cnname")));
-			className.setText(cur.getString(cur.getColumnIndex("classname")));
-			cur.close();
-		}
-		sql.close();
-		db.close();
+        if(Student_Info.uid != null) {
+            DB db = new DB(this);
+            SQLiteDatabase sql = db.getReadableDatabase();
+            Cursor cur = sql.query("student_info", null, "uid=?", new String[]{Student_Info.uid}, null, null, null);
+            if (cur != null) {
+                cur.moveToFirst();
+                name.setText(cur.getString(cur.getColumnIndexOrThrow("cnname")));
+                className.setText(cur.getString(cur.getColumnIndexOrThrow("classname")));
+                cur.close();
+            }
+            sql.close();
+            db.close();
+        }
 	}
 
 	private void initSchool() {

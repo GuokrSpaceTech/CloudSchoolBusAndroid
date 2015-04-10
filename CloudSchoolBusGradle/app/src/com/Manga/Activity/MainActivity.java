@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivityGroup {
 				progressDialog.show();
 				break;
 			case DISMISSPROGRESS:
-				progressDialog.dismiss();
+				if(progressDialog != null) progressDialog.dismiss();
 				break;
 				case OUTEXIT:
 				try {

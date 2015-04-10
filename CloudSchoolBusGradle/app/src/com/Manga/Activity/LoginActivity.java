@@ -392,7 +392,7 @@ public class LoginActivity extends Activity {
 					map.put("uid_student", uid_student[0]);
 					map.put("uid_class", uid_class[0]);
 					Result result = HttpUtil.httpPost(LoginActivity.this, new Params("unit", map));
-					if ("1".equals(result.getCode())) {
+					if ((result != null) && ("1".equals(result.getCode()))) {
 						try {
 							SharedPreferences shp = LoginActivity.this.getSharedPreferences("sid", Context.MODE_PRIVATE);
 							Editor editor = shp.edit();
