@@ -81,7 +81,7 @@ public class InboxActivity extends BaseActivity implements AdapterView.OnItemCli
         }
         else
         {
-            DebugClass.displayCurrentStack("Error: no techer info got!");
+            //DebugClass.displayCurrentStack("Error: no techer info got!");
         }
     }
 

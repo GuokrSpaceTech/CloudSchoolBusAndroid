@@ -3,22 +3,24 @@
   <component name="FacetManager">
     <facet type="android" name="Android">
       <configuration>
-        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../CloudSchoolBusAndroid-Parents/gen" />
-        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../CloudSchoolBusAndroid-Parents/gen" />
-        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents/AndroidManifest.xml" />
-        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents/res" />
-        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents/assets" />
-        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents/libs" />
-        <option name="PROGUARD_LOGS_FOLDER_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents/proguard_logs" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../CloudSchoolBusAndroid-Parents-github/gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../CloudSchoolBusAndroid-Parents-github/gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents-github/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents-github/res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents-github/assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents-github/libs" />
+        <option name="PROGUARD_LOGS_FOLDER_RELATIVE_PATH" value="/../../CloudSchoolBusAndroid-Parents-github/proguard_logs" />
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file:///product/CloudSchoolBusAndroid-Parents-github" />
+    <output-test url="file:///test/CloudSchoolBusAndroid-Parents-github" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 17 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 8 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
