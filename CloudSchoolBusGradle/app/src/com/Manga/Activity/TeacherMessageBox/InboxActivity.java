@@ -103,7 +103,11 @@ public class InboxActivity extends BaseActivity implements AdapterView.OnItemCli
                         String listAddTime = "-1";
                         for (int i = 0; i < resultList.size(); i++) {
                             long addtime = 0L;
-                            addtime = Long.parseLong(resultList.get(i).getAddtime()) * 1000;
+                            try {
+                                addtime = Long.parseLong(resultList.get(i).getAddtime()) * 1000;
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }
                             String date = DateUtils.dateFormat(addtime, "yyyy-MM-dd");
                             if ("-1".equals(listAddTime) || !date.equals(listAddTime)) {
                                 resultList.get(i).isShowDate = true;

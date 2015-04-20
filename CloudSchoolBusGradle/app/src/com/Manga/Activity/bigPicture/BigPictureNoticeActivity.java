@@ -142,7 +142,7 @@ public class BigPictureNoticeActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.big_picture);
 		image = (ShowBigPic) findViewById(R.id.image);
-		//biaoti = (TextView) findViewById(R.id.biaoti);
+//		biaoti = (TextView) findViewById(R.id.biaoti);
 		Intent intent = getIntent();
 		reImage = intent.getStringArrayExtra("image");
 		position = intent.getIntExtra("position", 0);
@@ -255,7 +255,7 @@ public class BigPictureNoticeActivity extends BaseActivity {
 		thread.start();
 	}
 	private void checkTitle() {
-		biaoti.setText(position + 1 + "/" + reImage.length);
+		if(biaoti!=null) biaoti.setText(position + 1 + "/" + reImage.length);
 	}
 
 	public void backMenu(View v) {
