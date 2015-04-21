@@ -7,6 +7,7 @@ import java.util.List;
  * Created by kai on 12/25/14.
  */
 public class Baseinfo implements Serializable {
+    private String istrain;
     private List<Teacher> teacherlist;
     private Classinfo classinfo;
 
@@ -25,5 +26,14 @@ public class Baseinfo implements Serializable {
     public void setClassinfo(Classinfo classinfo) {
         this.classinfo = classinfo;
     }
+
+    public String getIstrain() {
+        return istrain;
+    }
+
+    public void setIstrain(String istrain) {
+        this.istrain = istrain;
+    }
+
 }
 

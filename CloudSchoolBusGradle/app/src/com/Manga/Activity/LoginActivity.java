@@ -37,6 +37,7 @@ import com.Manga.Activity.httputils.HttpUtil;
 import com.Manga.Activity.httputils.Params;
 import com.Manga.Activity.httputils.Result;
 import com.Manga.Activity.utils.ActivityUtil;
+import com.Manga.Activity.utils.DebugClass;
 import com.Manga.Activity.utils.Student_Info;
 import com.cytx.utility.FastJsonTools;
 import com.umeng.analytics.MobclickAgent;
@@ -286,6 +287,7 @@ public class LoginActivity extends Activity {
 //                        sql.close();
 //                        db.close();
                         handler.sendEmptyMessage(RECEIVED_CLASS_INFO);
+                        DebugClass.displayCurrentStack("class info: istrain="+mBaseInfo.getIstrain()+" techerNum="+mBaseInfo.getTeacherlist().size());
                     } else {
                         handler.sendEmptyMessage(RECEIVED_DATA_ERROR);
                     }

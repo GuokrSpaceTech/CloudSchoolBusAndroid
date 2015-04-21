@@ -21,6 +21,7 @@ import com.Manga.Activity.httputils.HttpUtil;
 import com.Manga.Activity.httputils.Params;
 import com.Manga.Activity.httputils.Result;
 import com.Manga.Activity.utils.ActivityUtil;
+import com.Manga.Activity.utils.DebugClass;
 import com.android.support.jhf.utils.DateUtils;
 import com.cytx.utility.FastJsonTools;
 
@@ -76,55 +77,17 @@ public class InboxActivity extends BaseActivity implements AdapterView.OnItemCli
                 TeacherListAdapter teacherListAdapter = new TeacherListAdapter(getApplicationContext(), mTeacherList);
                 mlistView.setAdapter(teacherListAdapter);
             }
+            else
+            {
+                DebugClass.displayCurrentStack("Error: no teach list got!");
+            }
 
-            GetPrivateLetters();
+//            GetPrivateLetters();
         }
         else
         {
-            //DebugClass.displayCurrentStack("Error: no techer info got!");
+            DebugClass.displayCurrentStack("Error: has not login!");
         }
-    }
-
-    public void GetPrivateLetters() {
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (HttpUtil.isNetworkConnected(InboxActivity.this)) {
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    ActivityUtil.main.disPRO();
-                    Result result = HttpUtil.httpGet(InboxActivity.this, new Params("latestletter", map));
-                    if (result == null) {
-                        mHandler.sendEmptyMessage(1);
-                    } else if ("1".equals(result.getCode())) {
-                        List<LetterDto> resultList = FastJsonTools.getListObject(result.getContent(), LetterDto.class);
-
-                        //Update the isShowDate flag for each record
-                        String listAddTime = "-1";
-                        for (int i = 0; i < resultList.size(); i++) {
-                            long addtime = 0L;
-                            try {
-                                addtime = Long.parseLong(resultList.get(i).getAddtime()) * 1000;
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                            }
-                            String date = DateUtils.dateFormat(addtime, "yyyy-MM-dd");
-                            if ("-1".equals(listAddTime) || !date.equals(listAddTime)) {
-                                resultList.get(i).isShowDate = true;
-                                listAddTime = date;
-                            } else {
-                                resultList.get(i).isShowDate = false;
-                            }
-                        }
-
-                        mHandler.sendEmptyMessage(GOTMESSAGE);
-                    }
-                } else {
-                    mHandler.sendEmptyMessage(NONETWORK);
-                }
-            }
-        });
-        thread.start();
     }
 
 

@@ -4,7 +4,6 @@ package com.Manga.Activity.TeacherMessageBox;
  * Created by kai on 12/27/14.
  */
 public class LetterDto {
-
     private String letterid;
     private String letter_type;
     private String from_role;
@@ -78,4 +77,5 @@ public class LetterDto {
     public void setContent(String content) {
         this.content = content;
     }
+
 }

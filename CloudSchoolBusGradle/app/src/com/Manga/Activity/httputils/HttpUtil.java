@@ -40,6 +40,7 @@ import android.widget.Button;
 
 import com.Manga.Activity.LoginActivity;
 import com.Manga.Activity.R;
+import com.Manga.Activity.utils.DebugClass;
 
 public class HttpUtil {
 	private static final int SHOW = 0;
@@ -102,6 +103,7 @@ public class HttpUtil {
 			}
 		}
 		Log.v("访问", param.toString());
+        DebugClass.displayCurrentStack("post: "+ param.toString());
 		HttpPost httpPost = new HttpPost(param.getUrl());
 		httpPost.setHeader("apikey", "mactoprestphone");
 		httpPost.setHeader("sid", getSid(context));
@@ -172,6 +174,7 @@ public class HttpUtil {
 			}
 			backMap.setContent(EntityUtils.toString(httpResponse.getEntity(), "UTF-8"));
 			Log.v("返回", backMap + "");
+            DebugClass.displayCurrentStack("response of "+request.getURI()+" with code("+backMap.getCode()+"):  "+backMap.getContent());
 			if ("-11131".equals(backMap.getCode())) {
 				LooperThread looperThread = new LooperThread();
 				looperThread.start();

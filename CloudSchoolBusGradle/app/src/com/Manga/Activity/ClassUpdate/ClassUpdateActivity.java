@@ -49,6 +49,7 @@ import com.Manga.Activity.ClassUpdate.Adapter.ArticleAdapter;
 import com.Manga.Activity.ClassUpdate.Model.ArticleDto;
 import com.Manga.Activity.ClassUpdate.Model.ArticleListDto;
 import com.Manga.Activity.ClassUpdate.Model.TagDto;
+import com.Manga.Activity.Entity.Baseinfo;
 import com.Manga.Activity.R;
 import com.Manga.Activity.DB.DB;
 import com.Manga.Activity.Msg.SelectHeadActivity;
@@ -305,11 +306,12 @@ public class ClassUpdateActivity extends BaseActivity implements IXListViewListe
 
 								} else if ("1".equals(result1.getCode())) {
 									try {
-										JSONObject object = new JSONObject(result1.getContent());
-										JSONObject objectContent = new JSONObject(object.getString("classinfo"));
+                                        Baseinfo baseInfo = FastJsonTools.getObject(result1.getContent(),Baseinfo.class);
+                                        ActivityUtil.login.setmBaseInfo(baseInfo);
+
 										ContentValues values1 = new ContentValues();
 										values1.put("u_id", Student_Info.uid);
-										values1.put("schoolname", objectContent.getString("schoolname"));
+										values1.put("schoolname", baseInfo.getClassinfo().getSchoolname());
 										Cursor cursor = sql.query("school", null, "u_id=?",
 												new String[] { Student_Info.uid }, null, null, null);
 										if (cursor == null || cursor.getCount() == 0) {
@@ -318,7 +320,7 @@ public class ClassUpdateActivity extends BaseActivity implements IXListViewListe
 											sql.update("school", values1, "u_id=?", new String[] { Student_Info.uid });
 										}
 										cursor.close();
-									} catch (JSONException e) {
+									} catch (Exception e) {
 										e.printStackTrace();
 									}
 									sql.close();
