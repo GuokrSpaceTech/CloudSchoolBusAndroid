@@ -35,8 +35,7 @@ public class Preview extends BaseActivity{
 	static final String KEY_DEVICE = "device";
 	static final String KEY_SVRNAME = "svrname";
 	static final String KEY_STATUS = "Status";
-	static final int ERROR_COUNT_REACHED = 1;
-	
+
 	/**
 	 * 检查版本网络超时
 	 */	
@@ -50,8 +49,6 @@ public class Preview extends BaseActivity{
 	public final static int SIZE_BEST_FIT = 4;
 	public final static int SIZE_FULLSCREEN = 8;
 
-
-	public Decoder h264Decoder = null;
 	public SocketClient  source;
 	
 	@Override
@@ -89,9 +86,7 @@ public class Preview extends BaseActivity{
 		
 	    wakeLock.acquire();
 	}
-	
-	
-	
+
 	@Override
 	public void onResume()
 	{
@@ -179,7 +174,7 @@ public class Preview extends BaseActivity{
 		if (client.IsOpen())
 		{
 			//Send request to server
-		    client.getDeviceList();
+            client.getDeviceInfo(client.m_sDVRName);
 			
 		    //Receive data
 		    client.RecvData();
@@ -189,28 +184,63 @@ public class Preview extends BaseActivity{
       		xmlStringDocParsor parser = new xmlStringDocParsor();
 			Document doc = parser.getDomElement(xml); // getting DOM element
 			Element root = doc.getDocumentElement();
-			NodeList nl = root.getElementsByTagName(KEY_DEVICE);
+			NodeList nl = root.getElementsByTagName(KEY_SVRNAME);
 	            
 			// looping through all item nodes <item>
-			//ArrayList<HashMap<String, String>> device_list = new ArrayList<HashMap<String, String>>();
 			for (i = 0; i < nl.getLength(); i++) {
-	            Element nDevice = (Element)nl.item(i);
-	            
-                Element elCamName = (Element)nDevice.getElementsByTagName(KEY_SVRNAME).item(0);
-                String camName = elCamName.getTextContent();
-        		if(camName.equals(device))
-        		{
-        			String status = elCamName.getAttribute(KEY_STATUS);
-            		if (status.equals("1"))
-            		{
-            			isOnline = true;
-            			break;
-            		}
-        		}
+	            Element nSvrname = (Element)nl.item(i);
+
+                if(nSvrname.getAttribute(KEY_STATUS).equals("1"))
+                {
+                    isOnline = true;
+                }
 	        }
 		}
 		return isOnline;
 	}
+
+    /**
+     * HBGK Streaming Server 9.0
+     */
+    private boolean getDeviceListStatus(String device) {
+        int i;
+        boolean isOnline = false;
+        if (client.IsOpen())
+        {
+            //Send request to server
+            // Version I Server: client.getDeviceList();
+            client.getDeviceInfo(client.m_sDVRName);
+
+            //Receive data
+            client.RecvData();
+
+            String xml = client.m_sRecvXmlData;
+
+            xmlStringDocParsor parser = new xmlStringDocParsor();
+            Document doc = parser.getDomElement(xml); // getting DOM element
+            Element root = doc.getDocumentElement();
+            NodeList nl = root.getElementsByTagName(KEY_DEVICE);
+
+            // looping through all item nodes <item>
+            //ArrayList<HashMap<String, String>> device_list = new ArrayList<HashMap<String, String>>();
+            for (i = 0; i < nl.getLength(); i++) {
+                Element nDevice = (Element)nl.item(i);
+
+                Element elCamName = (Element)nDevice.getElementsByTagName(KEY_SVRNAME).item(0);
+                String camName = elCamName.getTextContent();
+                if(camName.equals(device))
+                {
+                    String status = elCamName.getAttribute(KEY_STATUS);
+                    if (status.equals("1"))
+                    {
+                        isOnline = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return isOnline;
+    }
 	
 	private void startStream()
 	{
@@ -223,7 +253,6 @@ public class Preview extends BaseActivity{
 		    if( client.RecvData() >= 0)
 		    {
 		    	result = client.m_sRecvXmlData;
-		    	
 		    	if(result.contains("SUCCESS"))
 		    	{
 		    	   startShowVideo();

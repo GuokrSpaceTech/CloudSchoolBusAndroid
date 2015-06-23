@@ -2,9 +2,7 @@ package com.Manga.Activity.myChildren.Streaming;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -12,34 +10,16 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.util.HashMap;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import com.Manga.Activity.myChildren.Streaming.Messages.NET_LAYER;
-import com.Manga.Activity.utils.xmlStringDocParsor;
 
 import android.util.Log;
 
 public class SocketClient {
 
-	private static final int NET_BUFFER_LEN = (8*1024);
-	private static final int ALIGNMENT = 3;
-	private static final int HEADLEN = (4+1+3*1+4*4+1);
-	private static final int ALIGN_HEADLEN = (HEADLEN+ALIGNMENT);
-	private static final int Net_LAYER_STRUCT_LEN = (NET_BUFFER_LEN + ALIGN_HEADLEN);
 	private static final int SOCKET_ERROR = -1;
-	
-	static final String KEY_ITEM = ""; // parent node
-	static final String KEY_LINK = "LinkReturn";
-	static final String KEY_DVRTYPE = "DVRType";
-	static final String KEY_DEVICE = "device";
-	static final String KEY_SVRNAME = "svrname";
+
 	
 	private Socket client = null;
 	public BufferedInputStream in = null;
@@ -56,22 +36,17 @@ public class SocketClient {
 	public int        m_iStreamFrameLen;
 	
 	
-	public String m_sStreamIP = "54.223.156.59";//222.128.71.186
-	//String m_sStreamIP = "221.122.97.78";//221.122.97.78
-	//String m_sStreamIP = "192.168.2.48";//221.122.97.78
-	public int m_iStreamPort = 600;
-	//private static String m_sDVRName = "hk";
-    //public String m_sDVRName = "c8-9c-dc-d3-bd-1d";
-    public String m_sDVRName = "dvr";
-	public boolean hadServerSetting = false;
-	
+	public String m_sStreamIP;//222.128.71.186
+	public int m_iStreamPort;
+    public String m_sDVRName;
+
 	public int m_iChnNo = 0;
 	private static int m_iStreamType = 1;
 	private String user = "super";
 	private String pass = "super";
 	
 	int iRecvBytes = 0;
-	int iHeadLen=ALIGN_HEADLEN-ALIGNMENT;//25
+	int iHeadLen= NET_LAYER.PACKET_EXTRA_LEN;//28
 	NET_LAYER pPackage = new NET_LAYER();
 	int	 iDataType;
 	int  iDataLen;
@@ -81,7 +56,7 @@ public class SocketClient {
 	
 	public SocketClient() {
 		m_pStreamData = ByteBuffer.allocate(512*1024);
-		m_pRecvBuff   = ByteBuffer.allocate(Net_LAYER_STRUCT_LEN);
+		m_pRecvBuff   = ByteBuffer.allocate(NET_LAYER.NET_LAYER_STRUCT_LEN);
 		m_sRecvXmlData = "";
 	}
 
@@ -124,6 +99,8 @@ public class SocketClient {
 	public void openConnect() throws IOException {
 		if (client == null) {
 			InetAddress serverAddr = InetAddress.getByName(m_sStreamIP);//
+            //InetAddress serverAddr = InetAddress.getByName("192.168.1.109");
+            //InetAddress serverAddr = InetAddress.getByName("54.223.197.23");
 			SocketAddress socAddress = new InetSocketAddress(serverAddr, m_iStreamPort); 
 			client = new Socket();
 			client.connect(socAddress, 30000);
@@ -148,58 +125,64 @@ public class SocketClient {
 		int iLastBlockLength;	//拆分后，前面包有效数据长度为8K，最后一包的长度
 		
 		_NetLayer = new NET_LAYER();
+        _NetLayer.byProtocolType = 0;
+        _NetLayer.byProtocolVer = 9;
 		_NetLayer.byDataType=BigInteger.valueOf(iDataType).byteValue();
-		_NetLayer.byFilepercentOrFrameType=0;//无效
+		_NetLayer.byFrameType=0;//无效
+        _NetLayer.iTimeStampHigh=0;
+        _NetLayer.iTimeStampLow=0;
+        _NetLayer.iVodFilePercent=0;
+        _NetLayer.iVodCurFrameNo=0;
 		
-		if (iLength%NET_BUFFER_LEN==0)
+		if (iLength%NET_LAYER.NET_BUFFER_LEN==0)
 		{
-			iSplit=iLength/NET_BUFFER_LEN;
-			iLastBlockLength=NET_BUFFER_LEN;
+			iSplit=iLength/NET_LAYER.NET_BUFFER_LEN;
+			iLastBlockLength=NET_LAYER.NET_BUFFER_LEN;
 		}
 		else
 		{
-			iSplit=(iLength+NET_BUFFER_LEN)/NET_BUFFER_LEN;
-			iLastBlockLength=iLength%NET_BUFFER_LEN;
+			iSplit=(iLength+NET_LAYER.NET_BUFFER_LEN)/NET_LAYER.NET_BUFFER_LEN;
+			iLastBlockLength=iLength%NET_LAYER.NET_BUFFER_LEN;
 		}
-		_NetLayer.iTotalSplits=iSplit;
+		//_NetLayer.iTotalSplits=iSplit;
 		for(i=0;i<iSplit;i++)
 		{
-			_NetLayer.iCurSplit=i;
-			pSrcOffset=i*NET_BUFFER_LEN;
+			//_NetLayer.iCurSplit=i;
+			pSrcOffset=i*NET_LAYER.NET_BUFFER_LEN;
 			if (i==iSplit-1)//最后一包
 			{
-				_NetLayer.iActLength=ALIGN_HEADLEN+iLastBlockLength;
+				_NetLayer.iActLength= NET_LAYER.PACKET_EXTRA_LEN+iLastBlockLength;
 				
 				for(int j=pSrcOffset; j<pSrcOffset+iLastBlockLength; j++ )
 				    _NetLayer.cBuffer[j-pSrcOffset]=srcdata[j];
 				
 				if(iSplit==1)
 				{
-					_NetLayer.iBlockHeadFlag=1;
-					_NetLayer.iBlockEndFlag=1;
+					_NetLayer.byBlockHeadFlag=1;
+					_NetLayer.byBlockEndFlag=1;
 				}
 				else
 				{
-					_NetLayer.iBlockHeadFlag=0;
-					_NetLayer.iBlockEndFlag=0;
+					_NetLayer.byBlockHeadFlag=0;
+					_NetLayer.byBlockEndFlag=0;
 				}
 			}
 			else//前面的包
 			{
-				_NetLayer.iActLength=Net_LAYER_STRUCT_LEN;
+				_NetLayer.iActLength=NET_LAYER.NET_LAYER_STRUCT_LEN;
 				
-				for(int j=pSrcOffset; j<pSrcOffset+NET_BUFFER_LEN; j++ )
+				for(int j=pSrcOffset; j<pSrcOffset+NET_LAYER.NET_BUFFER_LEN; j++ )
 					_NetLayer.cBuffer[j-pSrcOffset]=srcdata[j];
 				
 				if(i==0)
 				{
-					_NetLayer.iBlockHeadFlag=1;
-					_NetLayer.iBlockEndFlag=0;
+					_NetLayer.byBlockHeadFlag=1;
+					_NetLayer.byBlockEndFlag=0;
 				}
 				else
 				{
-					_NetLayer.iBlockHeadFlag=0;
-					_NetLayer.iBlockEndFlag=0;
+					_NetLayer.byBlockHeadFlag=0;
+					_NetLayer.byBlockEndFlag=0;
 				}
 			}
 			
@@ -228,7 +211,7 @@ RecvData:
 			
 				//iRecvBytes=recv(m_hSocket,(char *)m_pRecvBuff+m_iPreRecvLen,Net_LAYER_STRUCT_LEN-m_iPreRecvLen,0);
 				
-				byte[] content = new byte[Net_LAYER_STRUCT_LEN-m_iPreRecvLen];
+				byte[] content = new byte[NET_LAYER.NET_LAYER_STRUCT_LEN-m_iPreRecvLen];
 				
 				try {
 					iRecvBytes = in.read(content);
@@ -237,7 +220,7 @@ RecvData:
 					iRecvBytes=-1;
 				}
 				m_pRecvBuff.position(m_iPreRecvLen);
-				m_pRecvBuff.put(content,0, Net_LAYER_STRUCT_LEN-m_iPreRecvLen);
+				m_pRecvBuff.put(content,0, NET_LAYER.NET_LAYER_STRUCT_LEN-m_iPreRecvLen);
 				
 				pPackage.initWithInputStream(m_pRecvBuff);
 			}
@@ -262,7 +245,7 @@ Process_More_Data:
 					if(m_iPreRecvLen+iRecvBytes >= m_iPackageLen)
 					{
 						iDataType=pPackage.byDataType;
-						iDataLen=m_iPackageLen-ALIGN_HEADLEN;//减28
+						iDataLen=m_iPackageLen-NET_LAYER.PACKET_EXTRA_LEN;//减28
 
 						if(iDataType==12||iDataType==9)//DATA_TYPE_SMS_CMD,或者 DATA_TYPE_REAL_XML
 						{
@@ -283,7 +266,7 @@ Process_More_Data:
 						}
 						else if(iDataType==13)//音视频数据
 						{
-							if(pPackage.byFilepercentOrFrameType==0||pPackage.byFilepercentOrFrameType==1)//BP帧或I帧
+							if(pPackage.byFrameType==0||pPackage.byFrameType==1||pPackage.byFrameType==4)//BP帧或I帧
 							{
 								m_pStreamData.position(m_iFrameLen);
 								m_pStreamData.put(pPackage.cBuffer, 0 , iDataLen);//未做最大单帧校验......,可能越界
@@ -291,13 +274,13 @@ Process_More_Data:
 								m_iFrameLen+=iDataLen;
 							}
 							
-							if(pPackage.iBlockEndFlag==1)
+							if(pPackage.byBlockEndFlag==1)
 							{
-								if(pPackage.byFilepercentOrFrameType==0||pPackage.byFilepercentOrFrameType==1)//BP帧或I帧
+								if(pPackage.byFrameType==0||pPackage.byFrameType==1||pPackage.byFrameType==4)//BP帧或I帧
 								{
 									//if(pPackage->byFilepercentOrFrameType==1)
 									{
-										sTemp = String.format("Len:%d FrameType:%d\n",m_iFrameLen,pPackage.byFilepercentOrFrameType);
+										sTemp = String.format("Len:%d FrameType:%d\n",m_iFrameLen,pPackage.byFrameType);
 										Log.d("",sTemp);
 										int a=9;
 									}
@@ -315,7 +298,7 @@ Process_More_Data:
 						{
 							m_iPreRecvLen=0;//复位
 							m_iPackageLen=0;
-							if(pPackage.iBlockEndFlag==1)//拆包的最后一包
+							if(pPackage.byBlockEndFlag==1)//拆包的最后一包
 							{
 								break;
 							}
@@ -373,16 +356,21 @@ Process_More_Data:
 		RecvData();
 	}
 	
-	public void getDeviceList() {
-		String msg_body = "<TYPE>GetDeviceList</TYPE>";
+	public void getDeviceInfo(String sDVRName) {
+		String msg_body = String.format("<TYPE>GetDeviceInfo</TYPE><DVRName>%s</DVRName><DVCID></DVCID>", sDVRName);
 		SendData(msg_body.getBytes(), msg_body.length(), 9);
 		//RecvData();
 	}
+
+    public void getDeviceList() {
+        String msg_body = "<TYPE>GetDeviceList</TYPE>";
+        SendData(msg_body.getBytes(), msg_body.length(), 9);
+        //RecvData();
+    }
 	
 	public void startStream()
 	{
 		String sXmlStartStream = String.format("<TYPE>StartStream</TYPE><DVRName>%s</DVRName><ChnNo>%d</ChnNo><StreamType>%d</StreamType>",m_sDVRName,m_iChnNo,m_iStreamType);
-
 		SendData(sXmlStartStream.getBytes(),sXmlStartStream.length(),12);//参数12为流媒体命令
 		//RecvData();
 	    //返回<LinkReturn>SUCCESS</LinkReturn><DVRType>PCH264</DVRType><Width>352</Width><Height>288</Height><Interval>100</Interval><AudioCodeID>86017</AudioCodeID><HZ>44100</HZ><SampleWidth>16</SampleWidth><AudioChns>2</AudioChns><BitRate>8000</BitRate>
@@ -392,7 +380,6 @@ Process_More_Data:
 	public void imOK()
 	{
 		String sImOk = "<TYPE>ImOK</TYPE>";
-
 		SendData(sImOk.getBytes(),sImOk.length(),12);//ImOK
 		//RecvData();
 	}

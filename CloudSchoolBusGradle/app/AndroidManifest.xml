@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
     package="com.Manga.Activity"
-    android:versionCode="14"
-    android:versionName="3.4.7" >
+    android:versionCode="15"
+    android:versionName="3.4.8" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -245,10 +245,10 @@
             android:name=".cookbook.FoodMenuActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ActivityRegisterActivity"
+            android:name=".Events.EventsRegisterActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ShowActivityRegisterActivity"
+            android:name=".Events.ShowEventsRegisterActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".syllabus.SyllabusActivity"

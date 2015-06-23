@@ -37,6 +37,7 @@ public class H264Decoder {
   public static final int COLOR_FORMAT_YUV420 = 0;
   public static final int COLOR_FORMAT_RGB565LE = 1;
   public static final int COLOR_FORMAT_BGR32 = 2;
+  public static final Long AV_NOPTS_VALUE  = 0x8000000000000000L;
   
   public H264Decoder(int colorFormat) {
     nativeInit(colorFormat);

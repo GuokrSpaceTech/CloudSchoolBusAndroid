@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.Manga.Activity.BaseActivity;
 import com.Manga.Activity.R;
-import com.Manga.Activity.activity.ShowActivityRegisterActivity;
 import com.Manga.Activity.utils.ActivityUtil;
 import com.umeng.analytics.MobclickAgent;
 

@@ -20,9 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.Manga.Activity.R;
 import com.Manga.Activity.ClassUpdate.ClassUpdateActivity;
-import com.Manga.Activity.activity.ActivityRegisterActivity;
+import com.Manga.Activity.Events.EventsRegisterActivity;
 import com.Manga.Activity.httputils.HttpUtil;
 import com.Manga.Activity.httputils.Params;
 import com.Manga.Activity.httputils.Result;
@@ -309,7 +308,7 @@ public class HomeActivity extends BaseActivityGroup {
 		notificationBtn.setBackgroundResource(R.drawable.bottom_notice);
 		activityBtn.setBackgroundResource(R.drawable.down_bottom_activity);
 		mychildrenBtn.setBackgroundResource(R.drawable.bottom_education);
-		Intent intent = new Intent(this, ActivityRegisterActivity.class);
+		Intent intent = new Intent(this, EventsRegisterActivity.class);
 		change("activity", intent);
 	}
 

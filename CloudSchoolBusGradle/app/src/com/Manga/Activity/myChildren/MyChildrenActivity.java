@@ -210,7 +210,6 @@ public class MyChildrenActivity extends BaseActivity {
 			intent.putExtra("ip", this.m_sStreamIP);
 			intent.putExtra("device", this.m_sDVRName);
 			intent.putExtra("port", this.m_iStreamPort);
-            intent.putExtra("ip", "54.223.156.59");
             intent.putExtra("device", "dvr");
             intent.putExtra("port", 600);
 			

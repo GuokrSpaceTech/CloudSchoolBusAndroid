@@ -37,11 +37,20 @@ android {
             }
         }
     }
-    defaultConfig {}
+    defaultConfig {
+        ndk {
+            moduleName 'videodecoder'
+        }
+    }
 
     productFlavors {}
 
-    buildTypes {}
+    buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable true
+        }
+    }
 
     configurations {
         all*.exclude group: 'com.android.support', module: 'support-v4'

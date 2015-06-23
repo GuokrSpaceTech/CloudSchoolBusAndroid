@@ -11,9 +11,13 @@ build/
 local.properties
 .settings/
 .loadpath
+*.o
+*.o.d
+
 
 # External tool builders
 .externalToolBuilders/
+app/jni/ffmpeg/*
 
 # Locally stored "Eclipse launch configurations"
 *.launch

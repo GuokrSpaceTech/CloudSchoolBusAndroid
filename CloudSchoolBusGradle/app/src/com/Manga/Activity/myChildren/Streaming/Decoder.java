@@ -5,8 +5,10 @@ import android.util.Log;
 public class Decoder {
 	
 	static {
-		System.loadLibrary("H264Decoder");
-		Log.i("H264Decoder", "Load Library");
+//		System.loadLibrary("H264Decoder");
+        System.loadLibrary("videodecoder");
+
+        Log.i("H264Decoder", "Load Library");
 	}
 	public native int Init();
 

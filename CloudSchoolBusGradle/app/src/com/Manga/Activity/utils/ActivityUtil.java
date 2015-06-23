@@ -14,7 +14,7 @@ import com.Manga.Activity.Gestures.GesturesSetActivity;
 import com.Manga.Activity.LeftSetting.LeftSettingActivity;
 import com.Manga.Activity.Msg.SelectChildrenActivity;
 import com.Manga.Activity.account.MyAccountActivity;
-import com.Manga.Activity.activity.ActivityRegisterActivity;
+import com.Manga.Activity.Events.EventsRegisterActivity;
 import com.Manga.Activity.base.BaseInfoNewActivity;
 import com.Manga.Activity.managepw.ManagePasswordActivity;
 import com.Manga.Activity.myChildren.MyChildrenActivity;
@@ -40,7 +40,7 @@ public class ActivityUtil {
 	public static MainActivity main;
 	public static ClassUpdateActivity share;
 	public static NotificationActivity notice;
-	public static ActivityRegisterActivity activityRegister;
+	public static EventsRegisterActivity activityRegister;
 	public static MyChildrenActivity mychildren;
 	public static BaseInfoNewActivity baseinfo;
 	public static GesturesSetActivity select1;
