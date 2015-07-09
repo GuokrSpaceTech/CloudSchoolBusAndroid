@@ -6,10 +6,12 @@ dependencies {
     compile fileTree(dir: '../dependancies', include: ['*.jar'])
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile project(':AndroidSupport')
+    //    compile 'com.avast.android-styled-dialogs:2.2.0'
+    compile project(':android-styled-dialogs')
 }
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion '21.1.2'
 
     defaultConfig {

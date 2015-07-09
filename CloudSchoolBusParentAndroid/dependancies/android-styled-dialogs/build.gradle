@@ -1,0 +1,25 @@
+apply plugin: 'com.android.library'
+
+ext {
+    PUBLISH_GROUP_ID = 'com.avast'
+    PUBLISH_ARTIFACT_ID = 'android-styled-dialogs'
+    PUBLISH_VERSION = project.VERSION_NAME
+}
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 22
+        versionName project.VERSION_NAME
+        versionCode project.VERSION_CODE
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:22.0.0'
+}
+
+apply from: 'android-release-aar.gradle'

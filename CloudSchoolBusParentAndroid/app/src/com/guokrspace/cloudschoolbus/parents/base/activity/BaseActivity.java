@@ -9,6 +9,9 @@ import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.internal.widget.ActionBarContainer;
 
 
 import com.android.support.debug.DebugLog;
@@ -27,7 +30,7 @@ import java.util.List;
  * @author lenovo
  * 
  */
-abstract public class BaseActivity extends FragmentActivity {
+abstract public class BaseActivity extends ActionBarActivity {
 
 	protected Context mContext;
 

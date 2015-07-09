@@ -1,4 +1,5 @@
-include ':pagerSlidingTabStrip', ':AndroidSupport'
+include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs'
 include 'app'
 project(':pagerSlidingTabStrip').projectDir = new File('dependancies/pagerSlidingTabStrip')
 project(':AndroidSupport').projectDir = new File('dependancies/AndroidSupport')
+project(':android-styled-dialogs').projectDir = new File('dependancies/android-styled-dialogs')

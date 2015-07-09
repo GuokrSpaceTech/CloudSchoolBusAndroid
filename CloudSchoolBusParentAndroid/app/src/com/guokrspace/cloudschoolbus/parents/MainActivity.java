@@ -25,7 +25,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -33,6 +32,8 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -42,6 +43,9 @@ import com.android.support.debug.DebugLog;
 import com.astuetz.PagerSlidingTabStrip;
 //http://stackoverflow.com/questions/24838668/icon-selector-not-working-with-pagerslidingtabstrips
 
+import com.avast.android.dialogs.fragment.ListDialogFragment;
+import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.avast.android.dialogs.iface.IListDialogListener;
 import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
@@ -59,16 +63,29 @@ import java.util.List;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements IListDialogListener
+{
 
 	private final Handler handler = new Handler();
 
 	private PagerSlidingTabStrip tabs;
 	private ViewPager pager;
 	private MyPagerAdapter adapter;
+	private Student current_student;
+	private List<Student> students = null;
 
 	private Drawable oldBackground = null;
 	private int currentColor = 0xFF666666;
+
+	private static final int REQUEST_PROGRESS = 1;
+	private static final int REQUEST_LIST_SIMPLE = 9;
+	private static final int REQUEST_LIST_MULTIPLE = 10;
+	private static final int REQUEST_LIST_SINGLE = 11;
+	private static final int REQUEST_DATE_PICKER = 12;
+	private static final int REQUEST_TIME_PICKER = 13;
+	private static final int REQUEST_SIMPLE_DIALOG = 42;
+
+	MainActivity c = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +104,7 @@ public class MainActivity extends BaseActivity {
 
 		tabs.setViewPager(pager);
 
-		changeColor(currentColor);
+//		changeColor(currentColor);
 
 //		PushManager.startWork(getApplicationContext(),
 //				PushConstants.LOGIN_TYPE_API_KEY,
@@ -216,7 +233,8 @@ public class MainActivity extends BaseActivity {
             public void onSuccess(int statusCode, Header[] headers, org.json.JSONArray response) {
 
                 String retCode = "";
-                List<Student> students = null;
+
+				int num_kids = 0;
 
                 for (int i = 0; i < headers.length; i++) {
                     Header header = headers[i];
@@ -231,8 +249,40 @@ public class MainActivity extends BaseActivity {
                     students = FastJsonTools.getListObject(response.toString(), Student.class);
                 }
 
+				num_kids = students.size();
 
+				if(num_kids == 1)
+				{
+					String kids[] = new String[num_kids];
 
+					for(int i=0; i<num_kids; i++)
+						kids[i] = students.get(i).getNikename();
+
+					ListDialogFragment
+							.createBuilder(c, getSupportFragmentManager())
+							.setTitle("请选择您的孩子：")
+                            .setItems(kids)
+							.setRequestCode(REQUEST_LIST_SINGLE)
+							.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
+							.show();
+//                    SimpleDialogFragment.createBuilder(c, getSupportFragmentManager())
+//                            .setTitle("More Firefly quotes:").setMessage
+//                            ("Wash: \"Psychic, though? That sounds like something out of science fiction.\"\n\nZoe: \"We live" +
+//                                    " " +
+//                                    "in a space ship, dear.\"\nWash: \"Here lies my beloved Zoe, " +
+//                                    ("my autumn flower ... somewhat less attractive now that she's all corpsified and gross" +
+//                                            ".\"\n\nRiver Tam: \"Also? I can kill you with my brain.\"\n\nKayle: \"Going on a year now, nothins twixed my neathers not run on batteries.\" \n" +
+//                                            "Mal: \"I can't know that.\" \n" +
+//                                            "Jayne: \"I can stand to hear a little more.\"\n\nWash: \"I've been under fire before. " +
+//                                            "Well ... I've been in a fire. Actually, I was fired. I can handle myself.\""))
+//                            .setNegativeButtonText("Close")
+//                            .show();
+
+				}
+				else if(num_kids == 1)
+				{
+					current_student = students.get(0);
+				}
             }
 
             @Override
@@ -240,6 +290,14 @@ public class MainActivity extends BaseActivity {
                 System.out.println(errorResponse);
             }
         });
+	}
+
+	@Override
+	public void onListItemSelected(CharSequence value, int number, int requestCode) {
+		if (requestCode == REQUEST_LIST_SIMPLE || requestCode == REQUEST_LIST_SINGLE) {
+			Toast.makeText(c, "Selected: " + value, Toast.LENGTH_SHORT).show();
+			current_student = students.get(number);
+		}
 	}
 
 	public class MyPagerAdapter extends FragmentPagerAdapter
