@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:state_pressed="false" android:drawable="@drawable/android_support_jhf_edittext_clear" />
+	<item android:state_pressed="true" android:drawable="@drawable/android_support_jhf_edittext_clear_pressed" />
+</selector>
