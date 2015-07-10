@@ -53,6 +53,7 @@ import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
+import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -247,6 +248,7 @@ public class MainActivity extends BaseActivity implements IListDialogListener
                 if( retCode.equals("1") )
                 {
                     students = FastJsonTools.getListObject(response.toString(), Student.class);
+					mApplication.mStudentList = students;
                 }
 
 				num_kids = students.size();
@@ -265,23 +267,11 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 							.setRequestCode(REQUEST_LIST_SINGLE)
 							.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
 							.show();
-//                    SimpleDialogFragment.createBuilder(c, getSupportFragmentManager())
-//                            .setTitle("More Firefly quotes:").setMessage
-//                            ("Wash: \"Psychic, though? That sounds like something out of science fiction.\"\n\nZoe: \"We live" +
-//                                    " " +
-//                                    "in a space ship, dear.\"\nWash: \"Here lies my beloved Zoe, " +
-//                                    ("my autumn flower ... somewhat less attractive now that she's all corpsified and gross" +
-//                                            ".\"\n\nRiver Tam: \"Also? I can kill you with my brain.\"\n\nKayle: \"Going on a year now, nothins twixed my neathers not run on batteries.\" \n" +
-//                                            "Mal: \"I can't know that.\" \n" +
-//                                            "Jayne: \"I can stand to hear a little more.\"\n\nWash: \"I've been under fire before. " +
-//                                            "Well ... I've been in a fire. Actually, I was fired. I can handle myself.\""))
-//                            .setNegativeButtonText("Close")
-//                            .show();
 
 				}
 				else if(num_kids == 1)
 				{
-					current_student = students.get(0);
+					mApplication.mCurrentStudent = students.get(0);
 				}
             }
 
@@ -296,7 +286,7 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 	public void onListItemSelected(CharSequence value, int number, int requestCode) {
 		if (requestCode == REQUEST_LIST_SIMPLE || requestCode == REQUEST_LIST_SINGLE) {
 			Toast.makeText(c, "Selected: " + value, Toast.LENGTH_SHORT).show();
-			current_student = students.get(number);
+			mApplication.mCurrentStudent = students.get(number);
 		}
 	}
 
@@ -323,7 +313,14 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 
 		@Override
 		public Fragment getItem(int position) {
-			return SuperAwesomeCardFragment.newInstance(position);
+
+			switch (position)
+			{
+				case 1:
+					return ClassFragment.newInstance();
+				default:
+					return SuperAwesomeCardFragment.newInstance(position);
+			}
 		}
 
         @Override

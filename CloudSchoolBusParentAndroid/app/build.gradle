@@ -8,6 +8,7 @@ dependencies {
     compile project(':AndroidSupport')
     //    compile 'com.avast.android-styled-dialogs:2.2.0'
     compile project(':android-styled-dialogs')
+    compile project(':dynamicgrid')
 }
 
 android {

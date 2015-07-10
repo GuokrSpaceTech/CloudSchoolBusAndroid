@@ -1,5 +1,6 @@
-include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs'
+include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs', ':dynamicgrid'
 include 'app'
 project(':pagerSlidingTabStrip').projectDir = new File('dependancies/pagerSlidingTabStrip')
 project(':AndroidSupport').projectDir = new File('dependancies/AndroidSupport')
 project(':android-styled-dialogs').projectDir = new File('dependancies/android-styled-dialogs')
+project(':dynamicgrid').projectDir = new File('dependancies/dynamicgrid')

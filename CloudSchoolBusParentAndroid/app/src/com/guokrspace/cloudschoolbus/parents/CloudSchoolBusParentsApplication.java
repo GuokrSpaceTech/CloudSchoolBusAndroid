@@ -25,6 +25,8 @@ public class CloudSchoolBusParentsApplication extends Application {
 	//public Teacher mTeacher;
 	/** 教师账号中的学生列表 */
 	public List<Student> mStudentList = new ArrayList<Student>();
+
+	public Student mCurrentStudent = new Student();
     //public Reminder mReminders;
     //public List<ReportTemplates> mReportTemplates = new ArrayList<ReportTemplates>();
 	/** 班级信息 */
