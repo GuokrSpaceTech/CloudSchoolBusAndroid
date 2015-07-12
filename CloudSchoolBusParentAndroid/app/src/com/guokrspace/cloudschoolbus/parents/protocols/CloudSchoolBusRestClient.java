@@ -19,14 +19,14 @@ public class CloudSchoolBusRestClient {
     private static AsyncHttpClient client = new AsyncHttpClient();
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        client.addHeader("apikey", "mactoprest");
+        client.addHeader("apikey", "mactoprestphone");
         client.addHeader("Accept","application/json");
         client.addHeader("Version", Version.versionName.substring(1));
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 
     public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        client.addHeader("apikey", "mactoprest");
+        client.addHeader("apikey", "mactoprestphone");
         client.addHeader("Accept","application/json");
         client.addHeader("Version", Version.versionName.substring(1));
         client.post(getAbsoluteUrl(url), params, responseHandler);
@@ -34,5 +34,10 @@ public class CloudSchoolBusRestClient {
 
     private static String getAbsoluteUrl(String relativeUrl) {
         return BASE_URL + relativeUrl;
+    }
+
+    public static void updateSessionid(String sid)
+    {
+        client.addHeader("sid",sid);
     }
 }

@@ -25,13 +25,13 @@ public class CloudSchoolBusParentsApplication extends Application {
 	//public Teacher mTeacher;
 	/** 教师账号中的学生列表 */
 	public List<Student> mStudentList = new ArrayList<Student>();
-
 	public Student mCurrentStudent = new Student();
     //public Reminder mReminders;
     //public List<ReportTemplates> mReportTemplates = new ArrayList<ReportTemplates>();
 	/** 班级信息 */
 	public ClassInfo mClassInfo;
 	/**登陆设置*/
+	public String mSid;
 	//public LoginSetting mLoginSetting;
 
 	/** 带缓存的，内存缓存和磁盘缓存，设置再调用displayImage()有效,使用loadImage()无效 */

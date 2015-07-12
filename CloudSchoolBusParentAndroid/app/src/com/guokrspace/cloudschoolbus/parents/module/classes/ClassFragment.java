@@ -16,6 +16,7 @@
 
 package com.guokrspace.cloudschoolbus.parents.module.classes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,7 +26,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity;
 
 import org.askerov.dynamicgrid.DynamicGridView;
 
@@ -101,6 +104,13 @@ public class ClassFragment extends Fragment {
                 ClassModule classModule = (ClassModule)parent.getAdapter().getItem(position);
                 Toast.makeText(getActivity(), classModule.getTitle(),
                         Toast.LENGTH_SHORT).show();
+
+                switch (classModule.getTitle())
+                {
+                    case "视频公开课":
+                        Intent intent = new Intent(getActivity(), IpcSelectionActivity.class);
+                        startActivity(intent);
+                }
             }
         });
 

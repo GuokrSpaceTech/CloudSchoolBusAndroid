@@ -4,5 +4,8 @@
     <string name="app_name">PagerSlidingTabStrip</string>
     <string name="action_contact">Contact</string>
     <string name="headerCode">Code</string>
+    <string name="out_time">Error</string>
+    <string name="streaming_error">Error</string>
+    <string name="isLoading">Loading</string>
 
 </resources>

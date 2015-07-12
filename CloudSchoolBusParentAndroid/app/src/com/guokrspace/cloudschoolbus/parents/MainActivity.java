@@ -24,6 +24,7 @@ import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -67,8 +68,6 @@ import static com.guokrspace.cloudschoolbus.parents.R.string;
 public class MainActivity extends BaseActivity implements IListDialogListener
 {
 
-	private final Handler handler = new Handler();
-
 	private PagerSlidingTabStrip tabs;
 	private ViewPager pager;
 	private MyPagerAdapter adapter;
@@ -77,7 +76,7 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 
 	private Drawable oldBackground = null;
 	private int currentColor = 0xFF666666;
-
+	private static final int CURRENT_STUDENT = 0;
 	private static final int REQUEST_PROGRESS = 1;
 	private static final int REQUEST_LIST_SIMPLE = 9;
 	private static final int REQUEST_LIST_MULTIPLE = 10;
@@ -87,6 +86,20 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 	private static final int REQUEST_SIMPLE_DIALOG = 42;
 
 	MainActivity c = this;
+
+	private Handler handler = new Handler(new Handler.Callback() {
+
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch (msg.what) {
+				case CURRENT_STUDENT:
+                    unit();
+					break;
+			}
+
+			return false;
+		}
+	});
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +213,7 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		currentColor = savedInstanceState.getInt("currentColor");
-		changeColor(currentColor);
+//		changeColor(currentColor);
 	}
 
 	private Drawable.Callback drawableCallback = new Drawable.Callback() {
@@ -272,6 +285,7 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 				else if(num_kids == 1)
 				{
 					mApplication.mCurrentStudent = students.get(0);
+					handler.sendEmptyMessage(CURRENT_STUDENT);
 				}
             }
 
@@ -282,11 +296,82 @@ public class MainActivity extends BaseActivity implements IListDialogListener
         });
 	}
 
+    public void unit() throws  JSONException{
+        RequestParams params = new RequestParams();
+        params.put("uid_student", mApplication.mCurrentStudent.getUid_student());
+		params.put("uid_class", mApplication.mCurrentStudent.getUid_class());
+
+        CloudSchoolBusRestClient.post("unit",params,new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
+                String retCode = "";
+
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+
+                if (retCode.equals("1")) {
+                    try {
+                        String sid = response.getString("sid");
+                        CloudSchoolBusRestClient.updateSessionid(sid);
+                    } catch (org.json.JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+    }
+
+//	public void unit() throws JSONException {
+//		RequestParams params = new RequestParams();
+//		params.put("uid_student", mApplication.mCurrentStudent.getUid_student());
+//		params.put("uid_class", mApplication.mCurrentStudent.getUid_class());
+//		CloudSchoolBusRestClient.post("unit", params, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, org.json.JSONArray response) {
+//
+//                String retCode = "";
+//
+//                for (int i = 0; i < headers.length; i++) {
+//                    Header header = headers[i];
+//                    if("code".equalsIgnoreCase(header.getName())){
+//                        retCode = header.getValue();
+//                        break;
+//                    }
+//                }
+//
+//                if( retCode.equals("1") )
+//                {
+//                    students = FastJsonTools.getListObject(response.toString(), Student.class);
+//                    mApplication.mStudentList = students;
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONArray errorResponse) {
+//                System.out.println(errorResponse);
+//            }
+//		});
+//	}
+
+
 	@Override
 	public void onListItemSelected(CharSequence value, int number, int requestCode) {
 		if (requestCode == REQUEST_LIST_SIMPLE || requestCode == REQUEST_LIST_SINGLE) {
 			Toast.makeText(c, "Selected: " + value, Toast.LENGTH_SHORT).show();
 			mApplication.mCurrentStudent = students.get(number);
+            handler.sendEmptyMessage(CURRENT_STUDENT);
 		}
 	}
 
