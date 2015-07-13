@@ -16,6 +16,7 @@
 
 package com.guokrspace.cloudschoolbus.parents;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -53,6 +54,8 @@ import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
@@ -71,13 +74,17 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 	private PagerSlidingTabStrip tabs;
 	private ViewPager pager;
 	private MyPagerAdapter adapter;
-	private Student current_student;
+	private short current_student;
 	private List<Student> students = null;
+	private String username;
+	private String passowrd;
+	private String sid;
 
 	private Drawable oldBackground = null;
 	private int currentColor = 0xFF666666;
 	private static final int CURRENT_STUDENT = 0;
-	private static final int REQUEST_PROGRESS = 1;
+	private static final int GET_SESIONID = 1;
+    private static final int LOGGEDIN = 2;
 	private static final int REQUEST_LIST_SIMPLE = 9;
 	private static final int REQUEST_LIST_MULTIPLE = 10;
 	private static final int REQUEST_LIST_SINGLE = 11;
@@ -93,10 +100,15 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 		public boolean handleMessage(Message msg) {
 			switch (msg.what) {
 				case CURRENT_STUDENT:
-                    unit();
+                    unit(); //Try to get sessionid
 					break;
+                case GET_SESIONID:
+                    //Save key information into Global var and database
+                    mApplication.mConfig = new ConfigEntity(null,sid,current_student,username,passowrd);
+                    ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
+                    configEntityDao.insert(mApplication.mConfig);
+                    break;
 			}
-
 			return false;
 		}
 	});
@@ -234,15 +246,22 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 	};
 
 	public void login() throws JSONException {
+        username = "802347";
+        passowrd = "111111";
+
+        SQLiteDatabase db = mApplication.mDBhelper.getReadableDatabase();
+        ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
+
+        List configs =  configEntityDao.queryBuilder().list();
+
+        if(configs.size()!=0) {
+            mApplication.mConfig = (ConfigEntity) configs.get(0);
+        }
+
 		RequestParams params = new RequestParams();
 		params.put("username", "802347");
 		params.put("password", ooo.h("111111", "mactop", 0));
 		CloudSchoolBusRestClient.post("signin", params, new JsonHttpResponseHandler() {
-//			@Override
-//			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//				// If the response is JSONObject instead of expected JSONArray
-//			}
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, org.json.JSONArray response) {
 
@@ -261,6 +280,7 @@ public class MainActivity extends BaseActivity implements IListDialogListener
                 if( retCode.equals("1") )
                 {
                     students = FastJsonTools.getListObject(response.toString(), Student.class);
+
 					mApplication.mStudentList = students;
                 }
 
@@ -285,8 +305,13 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 				else if(num_kids == 1)
 				{
 					mApplication.mCurrentStudent = students.get(0);
+                    current_student = 0;
 					handler.sendEmptyMessage(CURRENT_STUDENT);
 				}
+                else
+                {
+                    //Error handling
+                }
             }
 
             @Override
@@ -317,8 +342,9 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 
                 if (retCode.equals("1")) {
                     try {
-                        String sid = response.getString("sid");
+                        sid = response.getString("sid");
                         CloudSchoolBusRestClient.updateSessionid(sid);
+                        handler.sendEmptyMessage(GET_SESIONID);
                     } catch (org.json.JSONException e) {
                         e.printStackTrace();
                     }
@@ -332,38 +358,6 @@ public class MainActivity extends BaseActivity implements IListDialogListener
         });
     }
 
-//	public void unit() throws JSONException {
-//		RequestParams params = new RequestParams();
-//		params.put("uid_student", mApplication.mCurrentStudent.getUid_student());
-//		params.put("uid_class", mApplication.mCurrentStudent.getUid_class());
-//		CloudSchoolBusRestClient.post("unit", params, new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, org.json.JSONArray response) {
-//
-//                String retCode = "";
-//
-//                for (int i = 0; i < headers.length; i++) {
-//                    Header header = headers[i];
-//                    if("code".equalsIgnoreCase(header.getName())){
-//                        retCode = header.getValue();
-//                        break;
-//                    }
-//                }
-//
-//                if( retCode.equals("1") )
-//                {
-//                    students = FastJsonTools.getListObject(response.toString(), Student.class);
-//                    mApplication.mStudentList = students;
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONArray errorResponse) {
-//                System.out.println(errorResponse);
-//            }
-//		});
-//	}
 
 
 	@Override
@@ -371,6 +365,7 @@ public class MainActivity extends BaseActivity implements IListDialogListener
 		if (requestCode == REQUEST_LIST_SIMPLE || requestCode == REQUEST_LIST_SINGLE) {
 			Toast.makeText(c, "Selected: " + value, Toast.LENGTH_SHORT).show();
 			mApplication.mCurrentStudent = students.get(number);
+			current_student = (short)number;
             handler.sendEmptyMessage(CURRENT_STUDENT);
 		}
 	}

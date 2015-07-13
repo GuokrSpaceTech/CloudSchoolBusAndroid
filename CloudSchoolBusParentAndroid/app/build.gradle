@@ -65,3 +65,10 @@ if (propFile.exists()) {
 } else {
     android.buildTypes.release.signingConfig = null
 }
+
+android {
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}

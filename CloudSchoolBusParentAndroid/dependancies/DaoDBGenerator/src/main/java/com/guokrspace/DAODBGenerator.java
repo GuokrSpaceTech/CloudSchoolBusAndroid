@@ -11,43 +11,59 @@ public class DAODBGenerator {
 
     /**
      * Generates entities and DAOs for the example project DaoExample.
-     *
+     * <p/>
      * Run it as a Java application (not Android).
      *
      * @author Markus
      */
 
-        public static void main(String[] args) throws Exception {
-            Schema schema = new Schema(1000, "com.guokrspace.daodb");
+    public static void main(String[] args) throws Exception {
+        Schema schema = new Schema(1000, "com.guokrspace.daodb");
 
-            addNote(schema);
-            addCustomerOrder(schema);
+        addConfig(schema);
+        addStudent(schema);
 
-            new DaoGenerator().generateAll(schema, "src-gen");
-        }
+        new DaoGenerator().generateAll(schema, "src-gen");
+    }
 
-        private static void addNote(Schema schema) {
-            Entity note = schema.addEntity("Note");
-            note.addIdProperty();
-            note.addStringProperty("text").notNull();
-            note.addStringProperty("comment");
-            note.addDateProperty("date");
-        }
+    private static void addConfig(Schema schema) {
+        Entity note = schema.addEntity("ConfigEntity");
+        note.addIdProperty();
+        note.addStringProperty("sid");
+        note.addShortProperty("currentStudent");
+        note.addStringProperty("username");
+        note.addStringProperty("password");
+    }
 
-        private static void addCustomerOrder(Schema schema) {
-            Entity customer = schema.addEntity("Customer");
-            customer.addIdProperty();
-            customer.addStringProperty("name").notNull();
 
-            Entity order = schema.addEntity("Order");
-            order.setTableName("ORDERS"); // "ORDER" is a reserved keyword
-            order.addIdProperty();
-            Property orderDate = order.addDateProperty("date").getProperty();
-            Property customerId = order.addLongProperty("customerId").notNull().getProperty();
-            order.addToOne(customer, customerId);
+//        private static void addCustomerOrder(Schema schema) {
+//            Entity customer = schema.addEntity("Customer");
+//            customer.addIdProperty();
+//            customer.addStringProperty("name").notNull();
+//
+//            Entity order = schema.addEntity("Order");
+//            order.setTableName("ORDERS"); // "ORDER" is a reserved keyword
+//            order.addIdProperty();
+//            Property orderDate = order.addDateProperty("date").getProperty();
+//            Property customerId = order.addLongProperty("customerId").notNull().getProperty();
+//            order.addToOne(customer, customerId);
+//
+//            ToMany customerToOrders = customer.addToMany(order, customerId);
+//            customerToOrders.setName("orders");
+//            customerToOrders.orderAsc(orderDate);
+//        }
 
-            ToMany customerToOrders = customer.addToMany(order, customerId);
-            customerToOrders.setName("orders");
-            customerToOrders.orderAsc(orderDate);
-        }
+    private static void addStudent(Schema schema) {
+        Entity student = schema.addEntity("StudentEntity");
+        student.addStringProperty("uid_student").notNull();
+        student.addStringProperty("uid_class");
+        student.addStringProperty("inactive");
+        student.addStringProperty("birthday");
+        student.addStringProperty("cnname");
+        student.addStringProperty("nikename");
+        student.addStringProperty("sex");
+        student.addStringProperty("classname");
+        student.addStringProperty("schoolid");
+    }
+
 }

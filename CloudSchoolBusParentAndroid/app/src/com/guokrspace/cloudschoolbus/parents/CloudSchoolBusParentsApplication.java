@@ -1,10 +1,14 @@
 package com.guokrspace.cloudschoolbus.parents;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
 
 
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoMaster;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
 import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -40,6 +44,14 @@ public class CloudSchoolBusParentsApplication extends Application {
 	public DisplayImageOptions mNoCacheDisplayImageOptions;
 	/** 带缓存的，默认图片是头像，用户学生头像显示 */
 	public DisplayImageOptions mStudentCacheDisplayImageOptions;
+
+    public DaoMaster.DevOpenHelper mDBhelper;
+	public DaoMaster mDaoMaster;
+
+	public DaoSession mDaoSession;
+
+    public ConfigEntity mConfig;
+
 	/** 判断应用主界面是否运行,false没有运行，true运行 */
 	public boolean mFlagHome = false;
     public Integer isTrain = 0;
@@ -50,22 +62,19 @@ public class CloudSchoolBusParentsApplication extends Application {
 		Log.i(TAG, "onCreate");
 
 		initImageLoader();
+
+        initDB();
 	}
 
-	public void imageLoaderInit() {
+	private void initDB()
+	{
+		SQLiteDatabase db;
+        mDBhelper =  new DaoMaster.DevOpenHelper(this,"cloudschoolbusparents-db",null);
+		db = mDBhelper.getWritableDatabase();
 
-		ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(this);
-		config.threadPriority(Thread.NORM_PRIORITY - 2);
-		config.denyCacheImageMultipleSizesInMemory();
-		config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
-		config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
-		config.tasksProcessingOrder(QueueProcessingType.LIFO);
-		config.writeDebugLogs(); // Remove for release app
-
-		// Initialize ImageLoader with configuration.
-		ImageLoader.getInstance().init(config.build());
+		mDaoMaster = new DaoMaster(db);
+		mDaoSession = mDaoMaster.newSession();
 	}
-
 	private void initImageLoader() {
 		// 以下的设置再调用displayImage()有效，使用loadImage()无效
 		mCacheDisplayImageOptions = new DisplayImageOptions.Builder()
@@ -104,6 +113,20 @@ public class CloudSchoolBusParentsApplication extends Application {
 
 		imageLoaderInit();
 
+	}
+
+	public void imageLoaderInit() {
+
+		ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(this);
+		config.threadPriority(Thread.NORM_PRIORITY - 2);
+		config.denyCacheImageMultipleSizesInMemory();
+		config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
+		config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
+		config.tasksProcessingOrder(QueueProcessingType.LIFO);
+		config.writeDebugLogs(); // Remove for release app
+
+		// Initialize ImageLoader with configuration.
+		ImageLoader.getInstance().init(config.build());
 	}
 
 }
