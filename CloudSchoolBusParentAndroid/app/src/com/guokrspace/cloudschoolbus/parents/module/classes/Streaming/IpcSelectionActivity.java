@@ -106,7 +106,7 @@ public class IpcSelectionActivity extends BaseActivity implements AdapterView.On
     {
         RequestParams params = new RequestParams();
 
-        CloudSchoolBusRestClient.get("camera", null, new JsonHttpResponseHandler() {
+        CloudSchoolBusRestClient.get("camera", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 String retCode = "";

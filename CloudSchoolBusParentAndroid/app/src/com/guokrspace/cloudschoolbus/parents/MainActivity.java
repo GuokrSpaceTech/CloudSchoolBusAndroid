@@ -59,6 +59,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.ClassUpdatesFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -69,7 +70,7 @@ import java.util.List;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends BaseActivity implements ClassUpdatesFragment.OnFragmentInteractionListener
 {
 
 	private PagerSlidingTabStrip tabs;
@@ -79,11 +80,20 @@ public class MainActivity extends BaseActivity
 	private Drawable oldBackground = null;
 	private int currentColor = 0xFF666666;
 
+    private static final int MSG_LOGIN_SUCCESS = 0;
+    private static final int RESULT_OK = 0;
+
 	MainActivity c = this;
 
 	private Handler handler = new Handler(new Handler.Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
+            switch (msg.what)
+            {
+                case MSG_LOGIN_SUCCESS:
+                    setupViewAdapter();
+                    break;
+            }
 			return false;
 		}
 	});
@@ -93,17 +103,9 @@ public class MainActivity extends BaseActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		pager = (ViewPager) findViewById(R.id.pager);
-		adapter = new MyPagerAdapter(getSupportFragmentManager());
+        login();
 
-		pager.setAdapter(adapter);
 
-		final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
-				.getDisplayMetrics());
-		pager.setPageMargin(pageMargin);
-
-		tabs.setViewPager(pager);
 
 //		changeColor(currentColor);
 
@@ -111,10 +113,24 @@ public class MainActivity extends BaseActivity
 //				PushConstants.LOGIN_TYPE_API_KEY,
 //				BaiduPushUtils.getMetaValue(MainActivity.this, "api_key"));
 
-		login();
 	}
 
-	@Override
+    void setupViewAdapter()
+    {
+        tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        pager = (ViewPager) findViewById(R.id.pager);
+        adapter = new MyPagerAdapter(getSupportFragmentManager());
+
+        pager.setAdapter(adapter);
+
+        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
+                .getDisplayMetrics());
+        pager.setPageMargin(pageMargin);
+
+        tabs.setViewPager(pager);
+    }
+
+    @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
@@ -230,17 +246,37 @@ public class MainActivity extends BaseActivity
         if (configs.size() != 0) {
             mApplication.mConfig = (ConfigEntity) configs.get(0);
             CloudSchoolBusRestClient.updateSessionid(mApplication.mConfig.getSid());
+            handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
         }
         //Prompt Login Activity to ask for a login
         else {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent,0);
         }
 
         return;
     }
 
-	public class MyPagerAdapter extends FragmentPagerAdapter
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(resultCode)
+        {
+            case RESULT_OK:
+                handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(String id) {
+        return;
+    }
+
+    public class MyPagerAdapter extends FragmentPagerAdapter
     implements PagerSlidingTabStrip.IconTabProvider{
 
 		private final String[] TITLES = { "Discover", "Class", "Hobby", "Me" };
@@ -266,6 +302,8 @@ public class MainActivity extends BaseActivity
 
 			switch (position)
 			{
+                case 0:
+                    return ClassUpdatesFragment.newInstance(null,null);
 				case 1:
 					return ClassFragment.newInstance();
 				default:

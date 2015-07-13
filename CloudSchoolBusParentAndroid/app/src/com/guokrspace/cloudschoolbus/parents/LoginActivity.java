@@ -80,6 +80,8 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     private static final int REQUEST_TIME_PICKER = 13;
     private static final int REQUEST_SIMPLE_DIALOG = 42;
 
+    private static final int RESULT_OK = 0;
+
     private Handler handler = new Handler(new Handler.Callback() {
 
         @Override
@@ -95,6 +97,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                     ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
                     configEntityDao.insert(mApplication.mConfig);
                     CloudSchoolBusRestClient.updateSessionid(sid);
+                    setResult(RESULT_OK);
                     finish();
                     break;
                 default:
