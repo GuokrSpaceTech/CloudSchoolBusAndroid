@@ -1,17 +1,27 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.android.support.utils.DateUtils;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseListFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ArticleEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ArticleEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ImageEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ImageEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Article;
 import com.guokrspace.cloudschoolbus.parents.entity.ArticleList;
+import com.guokrspace.cloudschoolbus.parents.entity.ImageFile;
+import com.guokrspace.cloudschoolbus.parents.entity.Tag;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.entity.Ipcparam;
 import com.guokrspace.cloudschoolbus.parents.module.explore.dummy.DummyContent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
@@ -22,7 +32,10 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.security.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -43,6 +56,8 @@ public class ClassUpdatesFragment extends BaseListFragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private ArrayList<ArticleEntity> mArticleEntities = new ArrayList<ArticleEntity>();
 
     // TODO: Rename and change types of parameters
     public static ClassUpdatesFragment newInstance(String param1, String param2) {
@@ -70,11 +85,20 @@ public class ClassUpdatesFragment extends BaseListFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        GetArticleList();
+        GetArticlesFromCache();
+
+        if(mArticleEntities.size() == 0)
+            GetLasteArticlesFromServer();
+        else
+        {
+            ArticleEntity articleEntity = mArticleEntities.get(mArticleEntities.size()-1);
+            String starttime = articleEntity.getAddtime();
+            UpdateArticlesCacheForward(starttime);
+        }
 
         // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+        setListAdapter(new ArrayAdapter<ArticleEntity>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, mArticleEntities));
     }
 
 
@@ -121,14 +145,43 @@ public class ClassUpdatesFragment extends BaseListFragment {
         public void onFragmentInteraction(String id);
     }
 
-    private void GetArticleList()
+
+    //Get all articles from cache
+    private void GetArticlesFromCache()
     {
-//        RequestParams params = new RequestParams();
-//        params.put("starttime","");
-//        params.put("endtime","");
+        final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
+        mArticleEntities = (ArrayList<ArticleEntity>)articleEntityDao.queryBuilder().list();
+    }
+
+    //Get all articles from newest in Cache to newest in Server
+    private void UpdateArticlesCacheForward(String starttime)
+    {
+        String endtime = DateUtils.currentMillisString();
+        GetArticlesFromServer(starttime,  endtime);
+    }
+
+    //Get the older 20 articles from server then update the cache
+    private void UpdateArticlesCacheDownward(String endtime)
+    {
+        GetArticlesFromServer( "",  endtime);
+    }
+
+    //Get Lastest 20 Articles from server, only used when there is no cache
+    private void GetLasteArticlesFromServer()
+    {
+        GetArticlesFromServer("", "");
+    }
+
+    private void GetArticlesFromServer(String starttime, String endtime)
+    {
+        SQLiteDatabase db = mApplication.mDBhelper.getWritableDatabase();
+        final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
+        final ImageEntityDao   imageEntityDao   = mApplication.mDaoSession.getImageEntityDao();
+        final TagEntityDao     tagEntityDao     = mApplication.mDaoSession.getTagEntityDao();
+
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("starttime", "");
-        params.put("endtime", "");
+        params.put("starttime", starttime);
+        params.put("endtime", endtime);
 
         CloudSchoolBusRestClient.get("article", params, new JsonHttpResponseHandler() {
             @Override
@@ -145,6 +198,53 @@ public class ClassUpdatesFragment extends BaseListFragment {
                     // Errro Handling
                 }
                 ArticleList articleList = (ArticleList)FastJsonTools.getObject(response.toString(), ArticleList.class);
+
+                for(int i=0; i<articleList.getArticlelist().size(); i++)
+                {
+                    Article article = articleList.getArticlelist().get(i);
+                    ArticleEntity articleEntity = new ArticleEntity(
+                            article.getArticlekey(),
+                            article.getTag(),
+                            article.getArticleid(),
+                            article.getTitle(),
+                            article.getContent(),
+                            article.getPublishtime(),
+                            article.getAddtime(),
+                            article.getUpnum(),
+                            article.getCommentnum(),
+                            article.getHavezan()
+                    );
+                    articleEntityDao.insert(articleEntity);
+
+                    for(int j=0; j<article.getPlist().size(); j++)
+                    {
+                        ImageFile imageFile = article.getPlist().get(j);
+                        ImageEntity imageEntity = new ImageEntity(
+                                imageFile.getFilename(),
+                                imageFile.getSource(),
+                                imageFile.getFext(),
+                                imageFile.getSize(),
+                                imageFile.getIsCloud(),
+                                article.getArticlekey());
+                        imageEntityDao.insert(imageEntity);
+                    }
+
+                    for(int j=0; j<article.getTaglist().size(); j++)
+                    {
+                        Tag tag = article.getTaglist().get(j);
+                        TagEntity tagEntity = new TagEntity(
+                                tag.getTagid(),
+                                tag.getTagName(),
+                                tag.getTagnamedesc(),
+                                tag.getTagname_en(),
+                                tag.getTagnamedesc_en(),
+                                article.getArticlekey());
+                        tagEntityDao.insert(tagEntity);
+                    }
+                }
+
+                //Update mArticleEntities
+                mArticleEntities = (ArrayList<ArticleEntity>)articleEntityDao.queryBuilder().list();
             }
 
             @Override

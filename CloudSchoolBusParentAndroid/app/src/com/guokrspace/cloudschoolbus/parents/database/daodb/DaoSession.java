@@ -20,9 +20,15 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig configEntityDaoConfig;
     private final DaoConfig studentEntityDaoConfig;
+    private final DaoConfig articleEntityDaoConfig;
+    private final DaoConfig imageEntityDaoConfig;
+    private final DaoConfig tagEntityDaoConfig;
 
     private final ConfigEntityDao configEntityDao;
     private final StudentEntityDao studentEntityDao;
+    private final ArticleEntityDao articleEntityDao;
+    private final ImageEntityDao imageEntityDao;
+    private final TagEntityDao tagEntityDao;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -34,16 +40,34 @@ public class DaoSession extends AbstractDaoSession {
         studentEntityDaoConfig = daoConfigMap.get(StudentEntityDao.class).clone();
         studentEntityDaoConfig.initIdentityScope(type);
 
+        articleEntityDaoConfig = daoConfigMap.get(ArticleEntityDao.class).clone();
+        articleEntityDaoConfig.initIdentityScope(type);
+
+        imageEntityDaoConfig = daoConfigMap.get(ImageEntityDao.class).clone();
+        imageEntityDaoConfig.initIdentityScope(type);
+
+        tagEntityDaoConfig = daoConfigMap.get(TagEntityDao.class).clone();
+        tagEntityDaoConfig.initIdentityScope(type);
+
         configEntityDao = new ConfigEntityDao(configEntityDaoConfig, this);
         studentEntityDao = new StudentEntityDao(studentEntityDaoConfig, this);
+        articleEntityDao = new ArticleEntityDao(articleEntityDaoConfig, this);
+        imageEntityDao = new ImageEntityDao(imageEntityDaoConfig, this);
+        tagEntityDao = new TagEntityDao(tagEntityDaoConfig, this);
 
         registerDao(ConfigEntity.class, configEntityDao);
         registerDao(StudentEntity.class, studentEntityDao);
+        registerDao(ArticleEntity.class, articleEntityDao);
+        registerDao(ImageEntity.class, imageEntityDao);
+        registerDao(TagEntity.class, tagEntityDao);
     }
     
     public void clear() {
         configEntityDaoConfig.getIdentityScope().clear();
         studentEntityDaoConfig.getIdentityScope().clear();
+        articleEntityDaoConfig.getIdentityScope().clear();
+        imageEntityDaoConfig.getIdentityScope().clear();
+        tagEntityDaoConfig.getIdentityScope().clear();
     }
 
     public ConfigEntityDao getConfigEntityDao() {
@@ -52,6 +76,18 @@ public class DaoSession extends AbstractDaoSession {
 
     public StudentEntityDao getStudentEntityDao() {
         return studentEntityDao;
+    }
+
+    public ArticleEntityDao getArticleEntityDao() {
+        return articleEntityDao;
+    }
+
+    public ImageEntityDao getImageEntityDao() {
+        return imageEntityDao;
+    }
+
+    public TagEntityDao getTagEntityDao() {
+        return tagEntityDao;
     }
 
 }

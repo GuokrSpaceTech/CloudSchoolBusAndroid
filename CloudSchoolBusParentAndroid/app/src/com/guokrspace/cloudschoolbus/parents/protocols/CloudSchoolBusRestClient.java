@@ -49,7 +49,7 @@ public class CloudSchoolBusRestClient {
         client.addHeader("apikey", "mactoprestphone");
         client.addHeader("Accept","application/json");
         client.addHeader("Version", Version.versionName.substring(1));
-        client.post(getAbsoluteUrl(url, null), params, responseHandler);
+        client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 
     private static String getAbsoluteUrl(String relativeUrl, Map<String, String> params) {

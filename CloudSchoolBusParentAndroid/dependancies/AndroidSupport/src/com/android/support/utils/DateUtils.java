@@ -34,6 +34,13 @@ public class DateUtils {
 
 		return millionSeconds;
 	}
+
+	public static String currentMillisString()
+	{
+		Long tsLong = System.currentTimeMillis()/1000;
+		String ts=tsLong.toString();
+		return ts;
+	}
 	
 	/**
 	 * 格式化输入的millis

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 import de.greenrobot.dao.AbstractDaoMaster;
 import de.greenrobot.dao.identityscope.IdentityScopeType;
 
@@ -20,12 +21,18 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
         ConfigEntityDao.createTable(db, ifNotExists);
         StudentEntityDao.createTable(db, ifNotExists);
+        ArticleEntityDao.createTable(db, ifNotExists);
+        ImageEntityDao.createTable(db, ifNotExists);
+        TagEntityDao.createTable(db, ifNotExists);
     }
     
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
         ConfigEntityDao.dropTable(db, ifExists);
         StudentEntityDao.dropTable(db, ifExists);
+        ArticleEntityDao.dropTable(db, ifExists);
+        ImageEntityDao.dropTable(db, ifExists);
+        TagEntityDao.dropTable(db, ifExists);
     }
     
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -59,6 +66,9 @@ public class DaoMaster extends AbstractDaoMaster {
         super(db, SCHEMA_VERSION);
         registerDaoClass(ConfigEntityDao.class);
         registerDaoClass(StudentEntityDao.class);
+        registerDaoClass(ArticleEntityDao.class);
+        registerDaoClass(ImageEntityDao.class);
+        registerDaoClass(TagEntityDao.class);
     }
     
     public DaoSession newSession() {

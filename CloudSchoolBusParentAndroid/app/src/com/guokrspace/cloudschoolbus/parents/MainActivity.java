@@ -105,8 +105,6 @@ public class MainActivity extends BaseActivity implements ClassUpdatesFragment.O
 
         login();
 
-
-
 //		changeColor(currentColor);
 
 //		PushManager.startWork(getApplicationContext(),
