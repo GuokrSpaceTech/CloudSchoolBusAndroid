@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MaterialList</string>
+    <string name="minute_befor">分钟前</string>
+    <string name="hour_befor">小时前</string>
+</resources>

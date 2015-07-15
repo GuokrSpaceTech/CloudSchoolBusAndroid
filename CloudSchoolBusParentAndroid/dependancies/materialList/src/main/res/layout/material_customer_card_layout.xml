@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.dexafree.materialList.cards.internal.CustomCardItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MainLayout">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardView"
+        style="@style/MainCardView"
+        card_view:cardCornerRadius="@dimen/card_corner_radius">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/card_header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/teacher_avatar"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/ic_launcher" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/teacehr_name"
+                        style="@style/CardTitle"
+                        android:layout_above="@+id/kindergarten_name"
+                        android:layout_alignParentTop="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_toRightOf="@+id/teacher_avatar"
+                        android:text="小花老师"
+                        android:textColor="@color/material_blue_grey_950" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/kindergarten_name"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/teacher_avatar"
+                            android:padding="@dimen/big_padding"
+                            android:textColor="@color/description_color"
+                            android:textSize="@dimen/description_size"
+                            tools:text="星星幼儿园" />
+
+                        <TextView
+                            android:id="@+id/timestamp"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/teacher_avatar"
+                            android:padding="@dimen/big_padding"
+                            android:textColor="@color/description_color"
+                            android:textSize="@dimen/description_size"
+                            tools:text="2小时前" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/card_header"
+                android:id="@+id/card_body">
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:adjustViewBounds="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:id="@+id/imageView"/>
+
+                <TextView
+                    style="@style/CardTitle"
+                    android:layout_alignBottom="@+id/imageView"
+                    android:id="@+id/titleTextView"
+                    tools:text="Title"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_content"
+                    android:textColor="@color/description_color"
+                    android:padding="@dimen/big_padding"
+                    android:textSize="@dimen/description_size"
+                    android:layout_below="@+id/imageView"
+                    tools:text="Test description"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/card_bottom"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/card_body">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentLeft="true"
+                    android:adjustViewBounds="true"
+                    android:id="@+id/icon_tag"
+                    android:background="@drawable/ic_launcher" />
+
+                <HorizontalScrollView
+                    android:id="@+id/horizontal_scroll_tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_toRightOf="@+id/icon_tag">
+
+                    <LinearLayout
+                        android:id="@+id/linear_layout_tag_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <Button
+                    android:id="@+id/like"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:background="#F7F6ee"
+                    android:layout_toLeftOf="@+id/comment">
+                </Button>
+
+                <Button
+                    android:id="@+id/comment"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:background="#F7F6ee"
+                    android:layout_alignParentRight="true">
+                </Button>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</com.dexafree.materialList.cards.internal.CustomCardItemView>

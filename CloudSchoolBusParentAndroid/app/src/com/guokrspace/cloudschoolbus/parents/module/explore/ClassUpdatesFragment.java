@@ -3,14 +3,19 @@ package com.guokrspace.cloudschoolbus.parents.module.explore;
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.support.utils.DateUtils;
+import com.dexafree.materialList.cards.BigImageCard;
+import com.dexafree.materialList.cards.CustomCard;
+import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseListFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ArticleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ArticleEntityDao;
@@ -22,20 +27,16 @@ import com.guokrspace.cloudschoolbus.parents.entity.Article;
 import com.guokrspace.cloudschoolbus.parents.entity.ArticleList;
 import com.guokrspace.cloudschoolbus.parents.entity.ImageFile;
 import com.guokrspace.cloudschoolbus.parents.entity.Tag;
-import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.entity.Ipcparam;
 import com.guokrspace.cloudschoolbus.parents.module.explore.dummy.DummyContent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -44,7 +45,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class ClassUpdatesFragment extends BaseListFragment {
+public class ClassUpdatesFragment extends BaseFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,6 +59,8 @@ public class ClassUpdatesFragment extends BaseListFragment {
     private OnFragmentInteractionListener mListener;
 
     private ArrayList<ArticleEntity> mArticleEntities = new ArrayList<ArticleEntity>();
+    private MaterialListView         mMaterialListView;
+    private ArticlesAdapter          mAdapter;
 
     // TODO: Rename and change types of parameters
     public static ClassUpdatesFragment newInstance(String param1, String param2) {
@@ -95,12 +98,32 @@ public class ClassUpdatesFragment extends BaseListFragment {
             String starttime = articleEntity.getAddtime();
             UpdateArticlesCacheForward(starttime);
         }
-
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<ArticleEntity>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, mArticleEntities));
+//        mAdapter = new ArticlesAdapter(mArticleEntities,mApplication.getApplicationContext());
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.activity_article_list, container, false);
+        mMaterialListView = (MaterialListView)root.findViewById(R.id.material_listview);
+
+//        mMaterialListView.setAdapter(mAdapter);
+
+        for(int i=0; i<mArticleEntities.size(); i++)
+        {
+            ArticleEntity articleEntity = mArticleEntities.get(i);
+            CustomCard card = new CustomCard(mApplication.getApplicationContext());
+            card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
+            card.setTeacherName("小花老师");
+            card.setKindergarten("星星幼儿园");
+            card.setSentTime(articleEntity.getAddtime());
+            card.setTitle(articleEntity.getTitle() + "Title");
+            card.setDescription(articleEntity.getContent() + "Test Content: this is a content...");
+            card.setDrawable(articleEntity.getImages().get(0).getSource());
+            mMaterialListView.add(card);
+        }
+
+        return root;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -119,16 +142,16 @@ public class ClassUpdatesFragment extends BaseListFragment {
         mListener = null;
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
-        }
-    }
+//    @Override
+//    public void onListItemClick(ListView l, View v, int position, long id) {
+//        super.onListItemClick(l, v, position, id);
+//
+//        if (null != mListener) {
+//            // Notify the active callbacks interface (the activity, if the
+//            // fragment is attached to one) that an item has been selected.
+//            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+//        }
+//    }
 
     /**
      * This interface must be implemented by activities that contain this
