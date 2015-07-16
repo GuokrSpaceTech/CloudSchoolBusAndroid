@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="80dip"
+        android:layout_height="30dip" >
+        <View
+            android:id="@+id/likes_button"
+            android:layout_width="21dip"
+            android:layout_height="15dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/ic_check" />
+</RelativeLayout>

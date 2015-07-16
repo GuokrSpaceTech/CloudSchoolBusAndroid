@@ -2,6 +2,9 @@ package com.dexafree.materialList.cards.internal;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.v7.widget.LikesButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,7 +29,6 @@ public class CustomCardItemView extends CardItemView<CustomCard> {
 
     public CustomCardItemView(Context context) {
         super(context);
-        mCntx = context;
     }
 
     public CustomCardItemView(Context context, AttributeSet attrs) {
@@ -78,10 +80,10 @@ public class CustomCardItemView extends CardItemView<CustomCard> {
                         if (tmp <= 60 * 1000) {
                             sentTime.setText("1" + mCntx.getResources().getString(R.string.minute_befor));
                         } else {
-                            sentTime.setText(tmp / (60 * 1000) + mCntx.getResources().getString(R.string.minute_befor));
+                            sentTime.setText(tmp / (60 * 1000) + card.getContext().getResources().getString(R.string.minute_befor));
                         }
                     } else {
-                        sentTime.setText(tmp / (60 * 60 * 1000) + mCntx.getResources().getString(R.string.hour_befor));
+                        sentTime.setText(tmp / (60 * 60 * 1000) + card.getContext().getResources().getString(R.string.hour_befor));
                     }
                 } else {
                     sentTime.setText(toYearSdf.format(new Date(foo)));
@@ -118,5 +120,30 @@ public class CustomCardItemView extends CardItemView<CustomCard> {
                 Picasso.with(getContext()).load(card.getUrlImage()).into(imageView);
             }
         }
+
+        /*
+         * Card Bottom
+         */
+        //Tags
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.tags_recycler_view);
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(card.getContext());
+        linearLayoutManager.setOrientation(HORIZONTAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        // specify an adapter (see also next example)
+        recyclerView.setAdapter(card.getAdapter());
+
+        //Likes
+        LikesButton likesButton = (LikesButton)findViewById(R.id.like_button);
+        //Test Purpose
+        if(card.getLikesNum()==null)
+            likesButton.setLikesNum("3");
+        else
+            likesButton.setLikesNum(card.getLikesNum());
     }
 }

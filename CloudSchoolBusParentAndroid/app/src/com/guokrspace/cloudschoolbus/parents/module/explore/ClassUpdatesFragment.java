@@ -1,8 +1,11 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +40,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -60,7 +64,39 @@ public class ClassUpdatesFragment extends BaseFragment {
 
     private ArrayList<ArticleEntity> mArticleEntities = new ArrayList<ArticleEntity>();
     private MaterialListView         mMaterialListView;
-    private ArticlesAdapter          mAdapter;
+    private Context                  mContext;
+
+    final private static int MSG_DATASET_RECEIVED  = 1;
+    private Handler mHandler = new Handler( new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            switch(msg.what)
+            {
+                case MSG_DATASET_RECEIVED:
+                    for(int i=0; i<mArticleEntities.size(); i++)
+                    {
+                        ArticleEntity articleEntity = mArticleEntities.get(i);
+                        CustomCard card = new CustomCard(mParentContext);
+                        card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
+                        card.setTeacherName("小花老师");
+                        card.setKindergarten("星星幼儿园");
+                        card.setSentTime(articleEntity.getAddtime());
+
+                        card.setTitle(articleEntity.getTitle() + "Title");
+                        card.setDescription(articleEntity.getContent() + "Test Content: this is a content...");
+                        card.setDrawable(articleEntity.getImages().get(0).getSource());
+
+                        List<TagEntity> tagEntities = articleEntity.getTags();
+                        ArticlesRecycleViewAdapter adapter = new ArticlesRecycleViewAdapter(tagEntities);
+                        card.setAdapter(adapter);
+                        mMaterialListView.add(card);
+                    }
+                    break;
+            }
+            return false;
+        }
+    });
 
     // TODO: Rename and change types of parameters
     public static ClassUpdatesFragment newInstance(String param1, String param2) {
@@ -98,6 +134,8 @@ public class ClassUpdatesFragment extends BaseFragment {
             String starttime = articleEntity.getAddtime();
             UpdateArticlesCacheForward(starttime);
         }
+
+        mContext = mParentContext;
 //        mAdapter = new ArticlesAdapter(mArticleEntities,mApplication.getApplicationContext());
     }
 
@@ -107,21 +145,6 @@ public class ClassUpdatesFragment extends BaseFragment {
         mMaterialListView = (MaterialListView)root.findViewById(R.id.material_listview);
 
 //        mMaterialListView.setAdapter(mAdapter);
-
-        for(int i=0; i<mArticleEntities.size(); i++)
-        {
-            ArticleEntity articleEntity = mArticleEntities.get(i);
-            CustomCard card = new CustomCard(mApplication.getApplicationContext());
-            card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
-            card.setTeacherName("小花老师");
-            card.setKindergarten("星星幼儿园");
-            card.setSentTime(articleEntity.getAddtime());
-            card.setTitle(articleEntity.getTitle() + "Title");
-            card.setDescription(articleEntity.getContent() + "Test Content: this is a content...");
-            card.setDrawable(articleEntity.getImages().get(0).getSource());
-            mMaterialListView.add(card);
-        }
-
         return root;
     }
 
@@ -174,6 +197,7 @@ public class ClassUpdatesFragment extends BaseFragment {
     {
         final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
         mArticleEntities = (ArrayList<ArticleEntity>)articleEntityDao.queryBuilder().list();
+        mHandler.sendEmptyMessage(MSG_DATASET_RECEIVED);
     }
 
     //Get all articles from newest in Cache to newest in Server
@@ -268,6 +292,7 @@ public class ClassUpdatesFragment extends BaseFragment {
 
                 //Update mArticleEntities
                 mArticleEntities = (ArrayList<ArticleEntity>)articleEntityDao.queryBuilder().list();
+                mHandler.sendEmptyMessage(MSG_DATASET_RECEIVED);
             }
 
             @Override

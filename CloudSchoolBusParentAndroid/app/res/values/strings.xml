@@ -7,5 +7,7 @@
     <string name="out_time">Error</string>
     <string name="streaming_error">Error</string>
     <string name="isLoading">Loading</string>
+    <string name="minute_befor">分钟前</string>
+    <string name="hour_befor">小时前</string>
 
 </resources>

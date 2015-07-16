@@ -78,7 +78,7 @@
 
                 <ImageView
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
@@ -102,58 +102,41 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/card_bottom"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:orientation="vertical"
                 android:layout_below="@+id/card_body">
 
-                <ImageView
+                <!-- A RecyclerView with some commonly used attributes -->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/tags_recycler_view"
+                    android:scrollbars="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"/>
+
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_alignParentLeft="true"
-                    android:adjustViewBounds="true"
-                    android:id="@+id/icon_tag"
-                    android:background="@drawable/ic_launcher" />
 
-                <HorizontalScrollView
-                    android:id="@+id/horizontal_scroll_tags"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dip"
-                    android:layout_marginLeft="10dip"
-                    android:layout_toRightOf="@+id/icon_tag">
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:id="@+id/linear_layout_tag_list"
+                    <android.support.v7.widget.LikesButton
+                        android:id="@+id/like_button"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-                    </LinearLayout>
-                </HorizontalScrollView>
+                        android:layout_height="match_parent"
+                        android:layout_toLeftOf="@+id/comment"/>
 
-                <Button
-                    android:id="@+id/like"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:background="#F7F6ee"
-                    android:layout_toLeftOf="@+id/comment">
-                </Button>
-
-                <Button
-                    android:id="@+id/comment"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:background="#F7F6ee"
-                    android:layout_alignParentRight="true">
-                </Button>
-
-            </RelativeLayout>
+                    <Button
+                        android:id="@+id/comment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="#F7F6ee"
+                        android:textSize="12sp"
+                        android:layout_alignParentRight="true"/>
+                </RelativeLayout>
+            </LinearLayout>
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

@@ -1,6 +1,8 @@
 package com.dexafree.materialList.cards;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+
 import com.dexafree.materialList.R;
 
 /**
@@ -12,6 +14,9 @@ public class CustomCard extends SimpleCard{
     private String teacherName;
     private String kindergarten;
     private String sentTime;
+    private RecyclerView.Adapter adapter;
+    private String likesNum;
+    private Context context;
 
     public String getKindergarten() {
         return kindergarten;
@@ -45,8 +50,33 @@ public class CustomCard extends SimpleCard{
         this.teacherAvatarUrl = teacherAvatarUrl;
     }
 
+    public RecyclerView.Adapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(RecyclerView.Adapter adapter) {
+        this.adapter = adapter;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public String getLikesNum() {
+        return likesNum;
+    }
+
+    public void setLikesNum(String likesNum) {
+        this.likesNum = likesNum;
+    }
+
     public CustomCard(Context context) {
         super(context);
+        this.setContext(context);
     }
 
     @Override
