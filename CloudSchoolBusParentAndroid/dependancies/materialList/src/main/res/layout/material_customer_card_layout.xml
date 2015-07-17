@@ -105,7 +105,7 @@
             <LinearLayout
                 android:id="@+id/card_bottom"
                 android:layout_width="fill_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_below="@+id/card_body">
 
@@ -115,19 +115,15 @@
                     android:scrollbars="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"/>
-
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:orientation="horizontal">
-
                     <android.support.v7.widget.LikesButton
                         android:id="@+id/like_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="80dp"
+                        android:layout_height="60dp"
                         android:layout_toLeftOf="@+id/comment"/>
-
                     <Button
                         android:id="@+id/comment"
                         android:layout_width="wrap_content"

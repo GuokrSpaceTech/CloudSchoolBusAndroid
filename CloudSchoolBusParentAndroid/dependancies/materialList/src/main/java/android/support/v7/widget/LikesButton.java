@@ -9,16 +9,15 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.dexafree.materialList.R;
 
 public class LikesButton extends RelativeLayout {
     private BadgeView likesNum;
-    private Context   mContext;
 
     public LikesButton(Context context) {
         super(context);
-        mContext = context;
         initView(context);
     }
 
@@ -28,15 +27,15 @@ public class LikesButton extends RelativeLayout {
     }
 
 	private void initView(Context context) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         RelativeLayout likesButtonLayout = (RelativeLayout)(LayoutInflater.from(context).inflate(R.layout.likes_button_layout, null));
-        View buttonImage = likesButtonLayout.findViewById(R.id.likes_button);
+        //TextView likesNumber = (TextView) likesButtonLayout.findViewById(R.id.likes_number);
+        View likesButton = likesButtonLayout.findViewById(R.id.likes_button);
 
-        buttonImage.setBackgroundResource(R.drawable.ic_launcher);
-        likesNum = new BadgeView(context);
-        likesNum.setTargetView(buttonImage);
-        likesNum.setBadgeGravity(Gravity.TOP | Gravity.LEFT);
-        likesNum.setBadgeMargin(0, 0, 8, 0);
+//        likesNum = new BadgeView(context);
+//        likesNum.setTargetView(likesButton);
+//        likesNum.setBadgeGravity(Gravity.TOP|Gravity.LEFT);
+//        likesNum.setBadgeMargin(0, 0, 0, 0);
 
         addView(likesButtonLayout,params);
 
