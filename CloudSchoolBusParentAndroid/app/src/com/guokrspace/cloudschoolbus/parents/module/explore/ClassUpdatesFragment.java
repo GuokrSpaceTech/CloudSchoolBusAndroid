@@ -1,15 +1,15 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Toast;
 
 import com.android.support.utils.DateUtils;
@@ -29,7 +29,6 @@ import com.guokrspace.cloudschoolbus.parents.entity.Article;
 import com.guokrspace.cloudschoolbus.parents.entity.ArticleList;
 import com.guokrspace.cloudschoolbus.parents.entity.ImageFile;
 import com.guokrspace.cloudschoolbus.parents.entity.Tag;
-import com.guokrspace.cloudschoolbus.parents.module.explore.dummy.DummyContent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -63,7 +62,6 @@ public class ClassUpdatesFragment extends BaseFragment {
 
     private ArrayList<ArticleEntity> mArticleEntities = new ArrayList<ArticleEntity>();
     private MaterialListView mMaterialListView;
-    private Context                  mContext;
 
     final private static int MSG_DATASET_RECEIVED  = 1;
     private Handler mHandler = new Handler( new Handler.Callback() {
@@ -73,64 +71,7 @@ public class ClassUpdatesFragment extends BaseFragment {
             switch(msg.what)
             {
                 case MSG_DATASET_RECEIVED:
-                    for(int i=0; i<mArticleEntities.size(); i++)
-                    {
-                        ArticleEntity articleEntity = mArticleEntities.get(i);
-                        CustomCard card = new CustomCard(mParentContext);
-                        card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
-                        card.setTeacherName("小花老师");
-                        card.setKindergarten("星星幼儿园");
-                        card.setSentTime(articleEntity.getAddtime());
-
-                        card.setTitle(articleEntity.getTitle() + "Title");
-                        card.setDescription(articleEntity.getContent() + "Test Content: this is a content...");
-                        card.setDrawable(articleEntity.getImages().get(0).getSource());
-
-                        List<TagEntity> tagEntities = articleEntity.getTags();
-                        ArticlesRecycleViewAdapter adapter = new ArticlesRecycleViewAdapter(tagEntities);
-                        card.setAdapter(adapter);
-
-                        CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-                                Toast.makeText(mParentContext, "haha" + position, Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onItemLongClick(View view, int position) {
-
-                            }
-                        });
-                        card.setmOnItemSelectedListener(tagClickListener);
-
-                        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
-                            }
-                        };
-                        card.setmShareButtonClickListener(shareButtonClickListener);
-
-                        View.OnClickListener likeButtonClickListener = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
-                            }
-                        };
-                        card.setmLikeButtonClickListener(likeButtonClickListener);
-
-                        View.OnClickListener commentButtonClickListener = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
-                            }
-                        };
-                        card.setmCommentButtonClickListener(commentButtonClickListener);
-                        card.setLikesNum(articleEntity.getUpnum());
-                        card.setCommentNum(articleEntity.getCommentnum());
-
-                        mMaterialListView.add(card);
-                    }
+                    cardMakeup();
                     break;
             }
             return false;
@@ -173,17 +114,12 @@ public class ClassUpdatesFragment extends BaseFragment {
             String starttime = articleEntity.getAddtime();
             UpdateArticlesCacheForward(starttime);
         }
-
-        mContext = mParentContext;
-//        mAdapter = new ArticlesAdapter(mArticleEntities,mApplication.getApplicationContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_article_list, container, false);
         mMaterialListView = (MaterialListView)root.findViewById(R.id.material_listview);
-
-//        mMaterialListView.setAdapter(mAdapter);
         return root;
     }
 
@@ -203,17 +139,6 @@ public class ClassUpdatesFragment extends BaseFragment {
         super.onDetach();
         mListener = null;
     }
-
-//    @Override
-//    public void onListItemClick(ListView l, View v, int position, long id) {
-//        super.onListItemClick(l, v, position, id);
-//
-//        if (null != mListener) {
-//            // Notify the active callbacks interface (the activity, if the
-//            // fragment is attached to one) that an item has been selected.
-//            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
-//        }
-//    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -360,5 +285,79 @@ public class ClassUpdatesFragment extends BaseFragment {
             }
         });
 
+    }
+
+
+
+    private void cardMakeup()
+    {
+        for(int i=0; i<mArticleEntities.size(); i++)
+        {
+            ArticleEntity articleEntity = mArticleEntities.get(i);
+            CustomCard card = new CustomCard(mParentContext);
+            card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
+            card.setTeacherName("小花老师");
+            card.setKindergarten("星星幼儿园");
+            card.setSentTime(articleEntity.getAddtime());
+
+            card.setTitle(articleEntity.getTitle() + "Title");
+            card.setDescription(articleEntity.getContent() + "Test Content: this is a content...");
+            card.setDrawable(articleEntity.getImages().get(0).getSource());
+
+            List<TagEntity> tagEntities = articleEntity.getTags();
+            ArticlesRecycleViewAdapter adapter = new ArticlesRecycleViewAdapter(tagEntities);
+            card.setAdapter(adapter);
+
+            CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Toast.makeText(mParentContext, "haha" + position, Toast.LENGTH_SHORT).show();
+                    animation(view);
+                }
+
+                @Override
+                public void onItemLongClick(View view, int position) {
+
+                }
+            });
+            card.setmOnItemSelectedListener(tagClickListener);
+
+            View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                }
+            };
+            card.setmShareButtonClickListener(shareButtonClickListener);
+
+            View.OnClickListener likeButtonClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                    animation(v);
+                }
+            };
+            card.setmLikeButtonClickListener(likeButtonClickListener);
+
+            View.OnClickListener commentButtonClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                    animation(v);
+                }
+            };
+            card.setmCommentButtonClickListener(commentButtonClickListener);
+            card.setLikesNum(articleEntity.getUpnum());
+            card.setCommentNum(articleEntity.getCommentnum());
+
+            mMaterialListView.add(card);
+        }
+    }
+
+    public  void animation(View v){
+        v.clearAnimation();
+        ScaleAnimation animation =new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(300);
+        v.setAnimation(animation);
     }
 }
