@@ -6,20 +6,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.support.utils.DateUtils;
-import com.dexafree.materialList.cards.BigImageCard;
 import com.dexafree.materialList.cards.CustomCard;
+import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseListFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ArticleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ArticleEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ImageEntity;
@@ -63,7 +62,7 @@ public class ClassUpdatesFragment extends BaseFragment {
     private OnFragmentInteractionListener mListener;
 
     private ArrayList<ArticleEntity> mArticleEntities = new ArrayList<ArticleEntity>();
-    private MaterialListView         mMaterialListView;
+    private MaterialListView mMaterialListView;
     private Context                  mContext;
 
     final private static int MSG_DATASET_RECEIVED  = 1;
@@ -90,6 +89,46 @@ public class ClassUpdatesFragment extends BaseFragment {
                         List<TagEntity> tagEntities = articleEntity.getTags();
                         ArticlesRecycleViewAdapter adapter = new ArticlesRecycleViewAdapter(tagEntities);
                         card.setAdapter(adapter);
+
+                        CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                Toast.makeText(mParentContext, "haha" + position, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onItemLongClick(View view, int position) {
+
+                            }
+                        });
+                        card.setmOnItemSelectedListener(tagClickListener);
+
+                        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                            }
+                        };
+                        card.setmShareButtonClickListener(shareButtonClickListener);
+
+                        View.OnClickListener likeButtonClickListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                            }
+                        };
+                        card.setmLikeButtonClickListener(likeButtonClickListener);
+
+                        View.OnClickListener commentButtonClickListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                            }
+                        };
+                        card.setmCommentButtonClickListener(commentButtonClickListener);
+                        card.setLikesNum(articleEntity.getUpnum());
+                        card.setCommentNum(articleEntity.getCommentnum());
+
                         mMaterialListView.add(card);
                     }
                     break;

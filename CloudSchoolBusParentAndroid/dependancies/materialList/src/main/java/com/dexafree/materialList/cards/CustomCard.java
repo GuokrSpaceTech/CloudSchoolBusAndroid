@@ -2,8 +2,12 @@ package com.dexafree.materialList.cards;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.dexafree.materialList.R;
+import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
+import com.dexafree.materialList.controller.RecyclerItemClickListener;
 
 /**
  * Created by Yang Kai on 15/7/14.
@@ -16,6 +20,11 @@ public class CustomCard extends SimpleCard{
     private String sentTime;
     private RecyclerView.Adapter adapter;
     private String likesNum;
+    private String commentNum;
+    private CommonRecyclerItemClickListener mOnItemSelectedListener;
+    private View.OnClickListener mShareButtonClickListener;
+    private View.OnClickListener mLikeButtonClickListener;
+    private View.OnClickListener mCommentButtonClickListener;
     private Context context;
 
     public String getKindergarten() {
@@ -72,6 +81,46 @@ public class CustomCard extends SimpleCard{
 
     public void setLikesNum(String likesNum) {
         this.likesNum = likesNum;
+    }
+
+    public String getCommentNum() {
+        return commentNum;
+    }
+
+    public void setCommentNum(String commentNum) {
+        this.commentNum = commentNum;
+    }
+
+    public CommonRecyclerItemClickListener getmOnItemSelectedListener() {
+        return mOnItemSelectedListener;
+    }
+
+    public void setmOnItemSelectedListener(CommonRecyclerItemClickListener mOnItemSelectedListener) {
+        this.mOnItemSelectedListener = mOnItemSelectedListener;
+    }
+
+    public View.OnClickListener getmShareButtonClickListener() {
+        return mShareButtonClickListener;
+    }
+
+    public void setmShareButtonClickListener(View.OnClickListener mShareButtonClickListener) {
+        this.mShareButtonClickListener = mShareButtonClickListener;
+    }
+
+    public View.OnClickListener getmLikeButtonClickListener() {
+        return mLikeButtonClickListener;
+    }
+
+    public void setmLikeButtonClickListener(View.OnClickListener mLikeButtonClickListener) {
+        this.mLikeButtonClickListener = mLikeButtonClickListener;
+    }
+
+    public View.OnClickListener getmCommentButtonClickListener() {
+        return mCommentButtonClickListener;
+    }
+
+    public void setmCommentButtonClickListener(View.OnClickListener mCommentButtonClickListener) {
+        this.mCommentButtonClickListener = mCommentButtonClickListener;
     }
 
     public CustomCard(Context context) {

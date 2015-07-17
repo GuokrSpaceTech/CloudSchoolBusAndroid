@@ -1,11 +1,12 @@
 package com.dexafree.materialList.cards.internal;
 
 import android.content.Context;
-import android.net.Uri;
-import android.support.v7.widget.LikesButton;
+import android.support.v7.widget.BadgeView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -138,12 +139,38 @@ public class CustomCardItemView extends CardItemView<CustomCard> {
         // specify an adapter (see also next example)
         recyclerView.setAdapter(card.getAdapter());
 
+        recyclerView.addOnItemTouchListener(card.getmOnItemSelectedListener());
+
+        //ShareButton
+        ImageView shareButton = (ImageView)findViewById(R.id.share_button);
+        shareButton.setOnClickListener(card.getmShareButtonClickListener());
+
         //Likes
-        LikesButton likesButton = (LikesButton)findViewById(R.id.like_button);
+        ImageView likesButton = (ImageView)findViewById(R.id.likes_button);
+        BadgeView likesNumber = new BadgeView(card.getContext());
+        likesNumber.setTargetView(likesButton);
+        likesNumber.setBadgeGravity(Gravity.LEFT);
+        likesNumber.setBadgeMargin(0, 0, 0, 0);
+        likesButton.setOnClickListener(card.getmLikeButtonClickListener());
+
         //Test Purpose
-        if(card.getLikesNum()==null)
-            likesButton.setLikesNum("3");
+        if(card.getLikesNum()==null || card.getLikesNum().equals("0"))
+            likesNumber.setBadgeCount(3);
         else
-            likesButton.setLikesNum(card.getLikesNum());
+            likesNumber.setBadgeCount(Integer.parseInt(card.getLikesNum()));
+
+        // Comments
+        ImageView commentsButton = (ImageView)findViewById(R.id.comments_button);
+        BadgeView commentsNumber = new BadgeView(card.getContext());
+        commentsNumber.setTargetView(commentsButton);
+        commentsNumber.setBadgeGravity(Gravity.LEFT);
+        commentsNumber.setBadgeMargin(0, 0, 0, 0);
+
+        if(card.getCommentNum()==null|| card.getCommentNum().equals("0"))
+            commentsNumber.setBadgeCount(3);
+        else
+            commentsNumber.setBadgeCount(Integer.parseInt(card.getCommentNum()));
+
+        commentsButton.setOnClickListener(card.getmCommentButtonClickListener());
     }
 }
