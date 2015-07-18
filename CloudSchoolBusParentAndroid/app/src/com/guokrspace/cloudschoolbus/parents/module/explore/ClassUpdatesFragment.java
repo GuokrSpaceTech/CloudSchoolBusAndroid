@@ -5,11 +5,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.support.utils.DateUtils;
@@ -40,6 +45,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.greenrobot.dao.query.QueryBuilder;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -62,17 +69,41 @@ public class ClassUpdatesFragment extends BaseFragment {
 
     private ArrayList<ArticleEntity> mArticleEntities = new ArrayList<ArticleEntity>();
     private MaterialListView mMaterialListView;
+    private LinearLayoutManager mLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    final private static int MSG_DATASET_RECEIVED  = 1;
+    private String mLocalArticleStartTime;
+    private String mLocalArticleEndTime;
+
+    private int previousTotal = 0;
+    private int visibleThreshold = 3;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
+
+    final private static int MSG_ONREFRESH  = 1;
+    final private static int MSG_ONLOADMORE  = 2;
+    final private static int MSG_ONCACHE  = 3;
+    final private static int MSG_NOCHANGE  = 4;
+
     private Handler mHandler = new Handler( new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
 
             switch(msg.what)
             {
-                case MSG_DATASET_RECEIVED:
-                    cardMakeup();
+                case MSG_ONREFRESH:
+                    InsertCardsAtBeginning();
+                    if(mSwipeRefreshLayout.isRefreshing())
+                        mSwipeRefreshLayout.setRefreshing(false);
                     break;
+                case MSG_ONLOADMORE:
+                    AppendCards();
+                    break;
+                case MSG_ONCACHE:
+                    AppendCards();
+                    break;
+                case MSG_NOCHANGE:
+                    if(mSwipeRefreshLayout.isRefreshing())
+                        mSwipeRefreshLayout.setRefreshing(false);
             }
             return false;
         }
@@ -110,16 +141,71 @@ public class ClassUpdatesFragment extends BaseFragment {
             GetLasteArticlesFromServer();
         else
         {
-            ArticleEntity articleEntity = mArticleEntities.get(mArticleEntities.size()-1);
-            String starttime = articleEntity.getAddtime();
-            UpdateArticlesCacheForward(starttime);
+            ArticleEntity articleEntity = mArticleEntities.get(0);
+            String endtime = articleEntity.getAddtime();
+            UpdateArticlesCacheForward(endtime);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_article_list, container, false);
-        mMaterialListView = (MaterialListView)root.findViewById(R.id.material_listview);
+        mMaterialListView = (MaterialListView) root.findViewById(R.id.material_listview);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                ArticleEntity articleEntity = mArticleEntities.get(0);
+                String endtime = articleEntity.getPublishtime();
+                UpdateArticlesCacheForward(endtime);
+            }
+        });
+        mLayoutManager = (LinearLayoutManager)mMaterialListView.getLayoutManager();
+        mMaterialListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            private boolean loading = true;
+
+            @Override
+            public void onScrollStateChanged(android.support.v7.widget.RecyclerView recyclerView, int newState) {
+
+            }
+
+            @Override
+            public void onScrolled(android.support.v7.widget.RecyclerView recyclerView, int dx, int dy) {
+                //Log.d("Aing", "dx:" + dx + ", dy:" + dy);
+
+                visibleItemCount = mMaterialListView.getChildCount();
+                totalItemCount = mLayoutManager.getItemCount();
+                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+
+                if (loading) {
+                    if (totalItemCount > previousTotal) {
+                        loading = false;
+                        previousTotal = totalItemCount;
+                    }
+                }
+                if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+                    // End has been reached
+
+                    Log.i("...", "end called");
+                    ArticleEntity articleEntity = mArticleEntities.get(mArticleEntities.size()-1);
+                    String starttime = articleEntity.getAddtime();
+                    UpdateArticlesCacheDownward(starttime);
+
+                    // Do something
+//                    new LoadTask(MainActivity.this, start).execute();
+
+                    loading = true;
+                }
+            }
+        });
+
+
         return root;
     }
 
@@ -161,20 +247,20 @@ public class ClassUpdatesFragment extends BaseFragment {
     {
         final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
         mArticleEntities = (ArrayList<ArticleEntity>)articleEntityDao.queryBuilder().list();
-        mHandler.sendEmptyMessage(MSG_DATASET_RECEIVED);
+        if(mArticleEntities.size()!=0)
+            mHandler.sendEmptyMessage(MSG_ONCACHE);
     }
 
     //Get all articles from newest in Cache to newest in Server
-    private void UpdateArticlesCacheForward(String starttime)
+    private void UpdateArticlesCacheForward(String endtime)
     {
-        String endtime = DateUtils.currentMillisString();
-        GetArticlesFromServer(starttime,  endtime);
+        GetArticlesFromServer("0",  endtime);
     }
 
     //Get the older 20 articles from server then update the cache
-    private void UpdateArticlesCacheDownward(String endtime)
+    private void UpdateArticlesCacheDownward(String starttime)
     {
-        GetArticlesFromServer( "",  endtime);
+        GetArticlesFromServer( starttime,  "0");
     }
 
     //Get Lastest 20 Articles from server, only used when there is no cache
@@ -183,7 +269,7 @@ public class ClassUpdatesFragment extends BaseFragment {
         GetArticlesFromServer("", "");
     }
 
-    private void GetArticlesFromServer(String starttime, String endtime)
+    private void GetArticlesFromServer( final String starttime, final String endtime)
     {
         SQLiteDatabase db = mApplication.mDBhelper.getWritableDatabase();
         final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
@@ -225,7 +311,7 @@ public class ClassUpdatesFragment extends BaseFragment {
                             article.getCommentnum(),
                             article.getHavezan()
                     );
-                    articleEntityDao.insert(articleEntity);
+                    articleEntityDao.insertOrReplace(articleEntity);
 
                     for(int j=0; j<article.getPlist().size(); j++)
                     {
@@ -237,7 +323,7 @@ public class ClassUpdatesFragment extends BaseFragment {
                                 imageFile.getSize(),
                                 imageFile.getIsCloud(),
                                 article.getArticlekey());
-                        imageEntityDao.insert(imageEntity);
+                        imageEntityDao.insertOrReplace(imageEntity);
                     }
 
                     for(int j=0; j<article.getTaglist().size(); j++)
@@ -250,13 +336,24 @@ public class ClassUpdatesFragment extends BaseFragment {
                                 tag.getTagname_en(),
                                 tag.getTagnamedesc_en(),
                                 article.getArticlekey());
-                        tagEntityDao.insert(tagEntity);
+                        tagEntityDao.insertOrReplace(tagEntity);
                     }
                 }
 
                 //Update mArticleEntities
-                mArticleEntities = (ArrayList<ArticleEntity>)articleEntityDao.queryBuilder().list();
-                mHandler.sendEmptyMessage(MSG_DATASET_RECEIVED);
+                String start = articleList.getArticlelist().get(0).getAddtime();
+                String end   = articleList.getArticlelist().get(articleList.getArticlelist().size()-1).getAddtime();
+                QueryBuilder queryBuilder = articleEntityDao.queryBuilder();
+                queryBuilder.where(ArticleEntityDao.Properties.Addtime.between(end,start));
+                mArticleEntities = (ArrayList<ArticleEntity>)queryBuilder.list();
+
+                if(starttime.equals("0") && endtime.equals("0"))
+                    mHandler.sendEmptyMessage(MSG_ONREFRESH);
+                else if(endtime.equals("0"))
+                    mHandler.sendEmptyMessage(MSG_ONLOADMORE);
+                else if(starttime.equals("0"))
+                    mHandler.sendEmptyMessage(MSG_ONREFRESH);
+
             }
 
             @Override
@@ -277,6 +374,18 @@ public class ClassUpdatesFragment extends BaseFragment {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
+                String retCode = "";
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+                if (retCode != "-2") {
+                    // No New Records are found
+                    mHandler.sendEmptyMessage(MSG_NOCHANGE);
+                }
             }
 
             @Override
@@ -284,12 +393,9 @@ public class ClassUpdatesFragment extends BaseFragment {
                 super.onSuccess(statusCode, headers, responseString);
             }
         });
-
     }
 
-
-
-    private void cardMakeup()
+    private void AppendCards()
     {
         for(int i=0; i<mArticleEntities.size(); i++)
         {
@@ -305,7 +411,7 @@ public class ClassUpdatesFragment extends BaseFragment {
             card.setDrawable(articleEntity.getImages().get(0).getSource());
 
             List<TagEntity> tagEntities = articleEntity.getTags();
-            ArticlesRecycleViewAdapter adapter = new ArticlesRecycleViewAdapter(tagEntities);
+            TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
             card.setAdapter(adapter);
 
             CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
@@ -353,6 +459,72 @@ public class ClassUpdatesFragment extends BaseFragment {
             mMaterialListView.add(card);
         }
     }
+
+    private void InsertCardsAtBeginning()
+    {
+        for(int i=mArticleEntities.size()-1; i>=0; i--)
+        {
+            ArticleEntity articleEntity = mArticleEntities.get(i);
+            CustomCard card = new CustomCard(mParentContext);
+            card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
+            card.setTeacherName("小花老师");
+            card.setKindergarten("星星幼儿园");
+            card.setSentTime(articleEntity.getAddtime());
+
+            card.setTitle(articleEntity.getTitle() + "Title");
+            card.setDescription(articleEntity.getContent() + "Test Content: this is a content...");
+            card.setDrawable(articleEntity.getImages().get(0).getSource());
+
+            List<TagEntity> tagEntities = articleEntity.getTags();
+            TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
+            card.setAdapter(adapter);
+
+            CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Toast.makeText(mParentContext, "haha" + position, Toast.LENGTH_SHORT).show();
+                    animation(view);
+                }
+
+                @Override
+                public void onItemLongClick(View view, int position) {
+
+                }
+            });
+            card.setmOnItemSelectedListener(tagClickListener);
+
+            View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                }
+            };
+            card.setmShareButtonClickListener(shareButtonClickListener);
+
+            View.OnClickListener likeButtonClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                    animation(v);
+                }
+            };
+            card.setmLikeButtonClickListener(likeButtonClickListener);
+
+            View.OnClickListener commentButtonClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
+                    animation(v);
+                }
+            };
+            card.setmCommentButtonClickListener(commentButtonClickListener);
+            card.setLikesNum(articleEntity.getUpnum());
+            card.setCommentNum(articleEntity.getCommentnum());
+
+            mMaterialListView.addAtStart(card);
+        }
+    }
+
 
     public  void animation(View v){
         v.clearAnimation();
