@@ -134,17 +134,6 @@ public class ClassUpdatesFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        GetArticlesFromCache();
-
-        if(mArticleEntities.size() == 0)
-            GetLasteArticlesFromServer();
-        else
-        {
-            ArticleEntity articleEntity = mArticleEntities.get(0);
-            String endtime = articleEntity.getAddtime();
-            UpdateArticlesCacheForward(endtime);
-        }
     }
 
     @Override
@@ -165,6 +154,7 @@ public class ClassUpdatesFragment extends BaseFragment {
                 UpdateArticlesCacheForward(endtime);
             }
         });
+
         mLayoutManager = (LinearLayoutManager)mMaterialListView.getLayoutManager();
         mMaterialListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -206,6 +196,16 @@ public class ClassUpdatesFragment extends BaseFragment {
         });
 
 
+        GetArticlesFromCache();
+
+        if(mArticleEntities.size() == 0)
+            GetLasteArticlesFromServer();
+        else
+        {
+            ArticleEntity articleEntity = mArticleEntities.get(0);
+            String endtime = articleEntity.getAddtime();
+            UpdateArticlesCacheForward(endtime);
+        }
         return root;
     }
 
@@ -224,6 +224,21 @@ public class ClassUpdatesFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -266,7 +281,7 @@ public class ClassUpdatesFragment extends BaseFragment {
     //Get Lastest 20 Articles from server, only used when there is no cache
     private void GetLasteArticlesFromServer()
     {
-        GetArticlesFromServer("", "");
+        GetArticlesFromServer("0", "0");
     }
 
     private void GetArticlesFromServer( final String starttime, final String endtime)
