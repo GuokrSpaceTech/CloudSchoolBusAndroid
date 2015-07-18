@@ -1,6 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore;
 
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,7 @@ import java.util.List;
 /**
  * Created by kai on 7/16/15.
  */
-public class ArticlesRecycleViewAdapter extends RecyclerView.Adapter<ArticlesRecycleViewAdapter.ViewHolder> {
+public class TagRecycleViewAdapter extends RecyclerView.Adapter<TagRecycleViewAdapter.ViewHolder> {
     private List<TagEntity> mDataset;
 
     // Provide a reference to the views for each data item
@@ -31,13 +30,13 @@ public class ArticlesRecycleViewAdapter extends RecyclerView.Adapter<ArticlesRec
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ArticlesRecycleViewAdapter(List<TagEntity> myDataset) {
+    public TagRecycleViewAdapter(List<TagEntity> myDataset) {
         mDataset = myDataset;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ArticlesRecycleViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TagRecycleViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.tag_button, parent, false);
