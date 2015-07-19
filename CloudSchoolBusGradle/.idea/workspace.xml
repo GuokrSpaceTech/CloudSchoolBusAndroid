@@ -10,7 +10,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbf4cd7e-e61d-4fb8-ac04-6532e8746fc1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/ClassUpdatesFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/ClassUpdatesFragment.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/Notice.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/NoticeCard.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/internal/NoticeCardItemView.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/NoticeEntity.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/NoticeEntityDao.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/notice/NoticeFragment.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/NoticeImageEntity.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/NoticeImageEntityDao.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_notice_card_layout.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/ClassFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/ClassFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/DaoDBGenerator/src/main/java/com/guokrspace/DAODBGenerator.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/DaoDBGenerator/src/main/java/com/guokrspace/DAODBGenerator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/DaoMaster.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/DaoMaster.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/DaoSession.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/DaoSession.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/MainActivity.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/MainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_class_grid.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_class_grid.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/values/dimens.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/values/dimens.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/values/styles.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/values/styles.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="CloudSchoolBusGradle.iws" />
@@ -163,8 +179,8 @@
       <file leaf-file-name="class_share_item.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/res/layout/class_share_item.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+            <state vertical-scroll-proportion="-0.0">
+              <caret line="63" column="36" selection-start-line="63" selection-start-column="36" selection-end-line="63" selection-end-column="36" />
               <folding>
                 <element signature="n#RelativeLayout#1;n#RelativeLayout#0;n#!!top" expanded="false" />
               </folding>
@@ -175,43 +191,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ArticleAdapter.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ArticleAdapter.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/ClassUpdate/Adapter/ArticleAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="300" column="56" selection-start-line="300" selection-start-column="56" selection-end-line="300" selection-end-column="56" />
+            <state vertical-scroll-proportion="0.4066339">
+              <caret line="297" column="33" selection-start-line="297" selection-start-column="33" selection-end-line="297" selection-end-column="33" />
               <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#3046#3818#0" expanded="false" />
-                <element signature="e#3817#3818#0" expanded="false" />
-                <element signature="e#6426#6621#0" expanded="false" />
-                <element signature="e#6620#6621#0" expanded="false" />
-                <element signature="e#7004#7286#0" expanded="false" />
-                <element signature="e#7285#7286#0" expanded="false" />
-                <element signature="e#7477#7759#0" expanded="false" />
-                <element signature="e#7758#7759#0" expanded="false" />
-                <element signature="e#7947#8229#0" expanded="false" />
-                <element signature="e#8228#8229#0" expanded="false" />
-                <element signature="e#8417#8699#0" expanded="false" />
-                <element signature="e#8698#8699#0" expanded="false" />
-                <element signature="e#9226#9497#0" expanded="false" />
-                <element signature="e#9496#9497#0" expanded="false" />
-                <element signature="e#11019#11525#0" expanded="false" />
-                <element signature="e#11524#11525#0" expanded="false" />
-                <element signature="e#12456#12769#0" expanded="false" />
-                <element signature="e#12768#12769#0" expanded="false" />
-                <element signature="e#13274#13719#0" expanded="false" />
-                <element signature="e#13718#13719#0" expanded="false" />
-                <element signature="e#14157#15347#0" expanded="false" />
-                <element signature="e#14256#14272#0" expanded="false" />
-                <element signature="e#15346#15347#0" expanded="false" />
-                <element signature="e#15477#16577#0" expanded="false" />
-                <element signature="e#15576#15592#0" expanded="false" />
-                <element signature="e#16576#16577#0" expanded="false" />
-                <element signature="e#16651#16652#0" expanded="false" />
-                <element signature="e#16674#16675#0" expanded="false" />
-                <element signature="e#17357#17358#0" expanded="false" />
-                <element signature="e#17379#17380#0" expanded="false" />
+                <element signature="e#10087#10151#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -222,34 +208,31 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#4041#14950#0" expanded="false" />
-                <element signature="e#14949#14950#0" expanded="false" />
-                <element signature="e#35264#35265#0" expanded="false" />
-                <element signature="e#35304#35305#0" expanded="false" />
-                <element signature="e#35389#37529#0" expanded="false" />
-                <element signature="e#35501#35517#0" expanded="false" />
-                <element signature="e#37528#37529#0" expanded="false" />
-                <element signature="e#37639#38216#0" expanded="false" />
-                <element signature="e#37739#37755#0" expanded="false" />
-                <element signature="e#38215#38216#0" expanded="false" />
-                <element signature="e#38660#39413#0" expanded="false" />
-                <element signature="e#38801#38817#0" expanded="false" />
-                <element signature="e#39412#39413#0" expanded="false" />
-                <element signature="e#43893#43894#0" expanded="false" />
-                <element signature="e#43917#43918#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ClassUpdateActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ClassUpdateActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/ClassUpdate/ClassUpdateActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6325803">
+            <state vertical-scroll-proportion="0.0">
               <caret line="644" column="103" selection-start-line="644" selection-start-column="40" selection-end-line="644" selection-end-column="103" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="NotificationActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/notification/NotificationActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="396" column="68" selection-start-line="396" selection-start-column="68" selection-end-line="396" selection-end-column="68" />
+              <folding>
+                <element signature="e#5707#6120#0" expanded="true" />
+                <element signature="e#6119#6120#0" expanded="true" />
+                <element signature="e#8452#8468#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -274,36 +257,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ShareImage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/widget/ShareImage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#849#1297#0" expanded="false" />
-                <element signature="e#1296#1297#0" expanded="false" />
-                <element signature="e#1806#2787#0" expanded="false" />
-                <element signature="e#2786#2787#0" expanded="false" />
-                <element signature="e#2937#3949#0" expanded="false" />
-                <element signature="e#3948#3949#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ShareButton.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/widget/ShareButton.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#1569#1570#0" expanded="false" />
-                <element signature="e#1595#1596#0" expanded="false" />
-                <element signature="e#2466#2467#0" expanded="false" />
-                <element signature="e#2485#2486#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -313,9 +272,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -325,13 +282,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#880#1270#0" expanded="false" />
-                <element signature="e#1269#1270#0" expanded="false" />
-                <element signature="e#2153#3207#0" expanded="false" />
-                <element signature="e#3206#3207#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -4033,7 +3984,7 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="287" />
+    <option name="x" value="688" />
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="985" />
@@ -4061,7 +4012,9 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -4160,7 +4113,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -4179,9 +4131,182 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Activity" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Activity" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="notification" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Activity" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ClassUpdate" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Activity" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ClassUpdate" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Adapter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudSchoolBusGradle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -4352,11 +4477,12 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="287" y="23" width="1920" height="985" extended-state="0" />
+    <frame x="688" y="23" width="1920" height="985" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -4364,7 +4490,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -4376,7 +4502,6 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.12341407" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298731" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34098738" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -4416,16 +4541,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/res/layout/select_children.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Documents/AndroidDevelopment/android-sdk-macosx/sources/android-21/android/app/ProgressDialog.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.36511156">
@@ -4700,7 +4815,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4719,15 +4833,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#849#1297#0" expanded="false" />
-            <element signature="e#1296#1297#0" expanded="false" />
-            <element signature="e#1806#2787#0" expanded="false" />
-            <element signature="e#2786#2787#0" expanded="false" />
-            <element signature="e#2937#3949#0" expanded="false" />
-            <element signature="e#3948#3949#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -4735,13 +4840,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1569#1570#0" expanded="false" />
-            <element signature="e#1595#1596#0" expanded="false" />
-            <element signature="e#2466#2467#0" expanded="false" />
-            <element signature="e#2485#2486#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -4749,9 +4848,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -4767,13 +4864,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#880#1270#0" expanded="false" />
-            <element signature="e#1269#1270#0" expanded="false" />
-            <element signature="e#2153#3207#0" expanded="false" />
-            <element signature="e#3206#3207#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -4803,10 +4894,46 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/res/layout/class_share_item.xml">
+    <entry file="file://$PROJECT_DIR$/app/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43611795">
+          <caret line="172" column="0" selection-start-line="172" selection-start-column="0" selection-end-line="173" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/ClassUpdate/ClassUpdateCommentActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+          <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/ClassUpdate/ClassUpdateActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="644" column="103" selection-start-line="644" selection-start-column="40" selection-end-line="644" selection-end-column="103" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/notification/NotificationActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="396" column="68" selection-start-line="396" selection-start-column="68" selection-end-line="396" selection-end-column="68" />
+          <folding>
+            <element signature="e#5707#6120#0" expanded="true" />
+            <element signature="e#6119#6120#0" expanded="true" />
+            <element signature="e#8452#8468#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/res/layout/class_share_item.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="63" column="36" selection-start-line="63" selection-start-column="36" selection-end-line="63" selection-end-column="36" />
           <folding>
             <element signature="n#RelativeLayout#1;n#RelativeLayout#0;n#!!top" expanded="false" />
           </folding>
@@ -4816,84 +4943,13 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43611795">
-          <caret line="172" column="0" selection-start-line="172" selection-start-column="0" selection-end-line="173" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/ClassUpdate/Adapter/ArticleAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="300" column="56" selection-start-line="300" selection-start-column="56" selection-end-line="300" selection-end-column="56" />
+        <state vertical-scroll-proportion="0.4066339">
+          <caret line="297" column="33" selection-start-line="297" selection-start-column="33" selection-end-line="297" selection-end-column="33" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#3046#3818#0" expanded="false" />
-            <element signature="e#3817#3818#0" expanded="false" />
-            <element signature="e#6426#6621#0" expanded="false" />
-            <element signature="e#6620#6621#0" expanded="false" />
-            <element signature="e#7004#7286#0" expanded="false" />
-            <element signature="e#7285#7286#0" expanded="false" />
-            <element signature="e#7477#7759#0" expanded="false" />
-            <element signature="e#7758#7759#0" expanded="false" />
-            <element signature="e#7947#8229#0" expanded="false" />
-            <element signature="e#8228#8229#0" expanded="false" />
-            <element signature="e#8417#8699#0" expanded="false" />
-            <element signature="e#8698#8699#0" expanded="false" />
-            <element signature="e#9226#9497#0" expanded="false" />
-            <element signature="e#9496#9497#0" expanded="false" />
-            <element signature="e#11019#11525#0" expanded="false" />
-            <element signature="e#11524#11525#0" expanded="false" />
-            <element signature="e#12456#12769#0" expanded="false" />
-            <element signature="e#12768#12769#0" expanded="false" />
-            <element signature="e#13274#13719#0" expanded="false" />
-            <element signature="e#13718#13719#0" expanded="false" />
-            <element signature="e#14157#15347#0" expanded="false" />
-            <element signature="e#14256#14272#0" expanded="false" />
-            <element signature="e#15346#15347#0" expanded="false" />
-            <element signature="e#15477#16577#0" expanded="false" />
-            <element signature="e#15576#15592#0" expanded="false" />
-            <element signature="e#16576#16577#0" expanded="false" />
-            <element signature="e#16651#16652#0" expanded="false" />
-            <element signature="e#16674#16675#0" expanded="false" />
-            <element signature="e#17357#17358#0" expanded="false" />
-            <element signature="e#17379#17380#0" expanded="false" />
+            <element signature="e#10087#10151#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/ClassUpdate/ClassUpdateCommentActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#4041#14950#0" expanded="false" />
-            <element signature="e#14949#14950#0" expanded="false" />
-            <element signature="e#35264#35265#0" expanded="false" />
-            <element signature="e#35304#35305#0" expanded="false" />
-            <element signature="e#35389#37529#0" expanded="false" />
-            <element signature="e#35501#35517#0" expanded="false" />
-            <element signature="e#37528#37529#0" expanded="false" />
-            <element signature="e#37639#38216#0" expanded="false" />
-            <element signature="e#37739#37755#0" expanded="false" />
-            <element signature="e#38215#38216#0" expanded="false" />
-            <element signature="e#38660#39413#0" expanded="false" />
-            <element signature="e#38801#38817#0" expanded="false" />
-            <element signature="e#39412#39413#0" expanded="false" />
-            <element signature="e#43893#43894#0" expanded="false" />
-            <element signature="e#43917#43918#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/ClassUpdate/ClassUpdateActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6325803">
-          <caret line="644" column="103" selection-start-line="644" selection-start-column="40" selection-end-line="644" selection-end-column="103" />
-          <folding />
         </state>
       </provider>
     </entry>

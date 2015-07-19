@@ -59,6 +59,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
+import com.guokrspace.cloudschoolbus.parents.module.classes.notice.NoticeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.ClassUpdatesFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -70,7 +71,8 @@ import java.util.List;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
-public class MainActivity extends BaseActivity implements ClassUpdatesFragment.OnFragmentInteractionListener
+public class MainActivity extends BaseActivity implements
+		ClassUpdatesFragment.OnFragmentInteractionListener, NoticeFragment.OnFragmentInteractionListener
 {
 
 	private PagerSlidingTabStrip tabs;

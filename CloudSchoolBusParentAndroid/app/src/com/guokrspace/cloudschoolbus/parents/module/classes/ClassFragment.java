@@ -18,7 +18,7 @@ package com.guokrspace.cloudschoolbus.parents.module.classes;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,16 +26,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity;
+import com.guokrspace.cloudschoolbus.parents.module.classes.notice.NoticeFragment;
 
 import org.askerov.dynamicgrid.DynamicGridView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ClassFragment extends Fragment {
+public class ClassFragment extends BaseFragment {
 
     private static final String ARG_POSITION = "position";
     private static final String TAG = ClassFragment.class.getName();
@@ -110,6 +111,14 @@ public class ClassFragment extends Fragment {
                     case "视频公开课":
                         Intent intent = new Intent(getActivity(), IpcSelectionActivity.class);
                         startActivity(intent);
+                        break;
+                    case "通知消息":
+                        NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.class_module_layout, noticeFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                        break;
                 }
             }
         });

@@ -11,6 +11,7 @@
 
     <dimen name="card_elevation">4dp</dimen>
     <dimen name="card_corner_radius">2dp</dimen>
+    <dimen name="card_corner_big_radius">4dp</dimen>
 
     <dimen name="title_size">24sp</dimen>
     <dimen name="bigger_title_size">28sp</dimen>

@@ -20,13 +20,14 @@ public class DAODBGenerator {
      */
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1000, "com.guokrspace.daodb");
+        Schema schema = new Schema(1000, "com.guokrspace");
 
         addConfig(schema);
         addStudent(schema);
         addAriticle(schema);
+        addNotice(schema);
 
-        new DaoGenerator().generateAll(schema, "src-gen");
+        new DaoGenerator().generateAll(schema,  "src-gen");
     }
 
     private static void addConfig(Schema schema) {
@@ -67,6 +68,28 @@ public class DAODBGenerator {
         student.addStringProperty("sex");
         student.addStringProperty("classname");
         student.addStringProperty("schoolid");
+    }
+
+    private static void addNotice(Schema schema)
+    {
+        Entity notice = schema.addEntity("NoticeEntity");
+        notice.addStringProperty("noticekey").notNull().primaryKey();
+        notice.addStringProperty("noticeid");
+        notice.addStringProperty("noticetitle");
+        notice.addStringProperty("noticecontent");
+        notice.addStringProperty("addtime");
+        notice.addStringProperty("isteacher");
+        notice.addStringProperty("isconfirm");
+        notice.addStringProperty("haveisconfirm");
+
+        Entity noticeImage =  schema.addEntity("NoticeImageEntity");
+        noticeImage.addStringProperty("source");
+        noticeImage.addStringProperty("filename");
+        noticeImage.addStringProperty("iscloud");
+        Property notice_key_image = noticeImage.addStringProperty("noticekey").notNull().getProperty();
+
+        noticeImage.addToOne(notice,notice_key_image);
+        notice.addToMany(noticeImage,notice_key_image).setName("noticeImages");
     }
 
     private static void addAriticle(Schema schema)
