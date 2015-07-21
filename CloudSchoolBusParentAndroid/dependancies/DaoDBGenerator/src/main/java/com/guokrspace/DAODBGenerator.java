@@ -26,6 +26,9 @@ public class DAODBGenerator {
         addStudent(schema);
         addAriticle(schema);
         addNotice(schema);
+        addAttendance(schema);
+        addFestival(schema);
+        addSchedule(schema);
 
         new DaoGenerator().generateAll(schema,  "src-gen");
     }
@@ -38,7 +41,6 @@ public class DAODBGenerator {
         note.addStringProperty("username");
         note.addStringProperty("password");
     }
-
 
 //        private static void addCustomerOrder(Schema schema) {
 //            Entity customer = schema.addEntity("Customer");
@@ -90,6 +92,35 @@ public class DAODBGenerator {
 
         noticeImage.addToOne(notice,notice_key_image);
         notice.addToMany(noticeImage,notice_key_image).setName("noticeImages");
+    }
+
+    private static void addAttendance(Schema schema)
+    {
+        Entity attendance = schema.addEntity("AttendanceEntity");
+        attendance.addStringProperty("month");
+        attendance.addStringProperty("day");
+        attendance.addLongProperty("timestamp").notNull().primaryKey();
+        attendance.addStringProperty("imageUrl");
+    }
+
+    private static void addFestival(Schema schema)
+    {
+        Entity festival = schema.addEntity("FestivalEntity");
+        festival.addStringProperty("date"); // 2015-04-17
+        festival.addStringProperty("festivalName");
+    }
+
+    private static void addSchedule(Schema schema)
+    {
+        Entity schedule = schema.addEntity("ScheduleEntity");
+        schedule.addIntProperty("starthour");
+        schedule.addIntProperty("startmin");
+        schedule.addIntProperty("endhour");
+        schedule.addIntProperty("endmin");
+        schedule.addStringProperty("cnname");
+        schedule.addStringProperty("enname");
+        schedule.addIntProperty("week");
+        schedule.addIntProperty("year");
     }
 
     private static void addAriticle(Schema schema)

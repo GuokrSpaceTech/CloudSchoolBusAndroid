@@ -25,6 +25,9 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig tagEntityDaoConfig;
     private final DaoConfig noticeEntityDaoConfig;
     private final DaoConfig noticeImageEntityDaoConfig;
+    private final DaoConfig attendanceEntityDaoConfig;
+    private final DaoConfig festivalEntityDaoConfig;
+    private final DaoConfig scheduleEntityDaoConfig;
 
     private final ConfigEntityDao configEntityDao;
     private final StudentEntityDao studentEntityDao;
@@ -33,6 +36,9 @@ public class DaoSession extends AbstractDaoSession {
     private final TagEntityDao tagEntityDao;
     private final NoticeEntityDao noticeEntityDao;
     private final NoticeImageEntityDao noticeImageEntityDao;
+    private final AttendanceEntityDao attendanceEntityDao;
+    private final FestivalEntityDao festivalEntityDao;
+    private final ScheduleEntityDao scheduleEntityDao;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -59,6 +65,15 @@ public class DaoSession extends AbstractDaoSession {
         noticeImageEntityDaoConfig = daoConfigMap.get(NoticeImageEntityDao.class).clone();
         noticeImageEntityDaoConfig.initIdentityScope(type);
 
+        attendanceEntityDaoConfig = daoConfigMap.get(AttendanceEntityDao.class).clone();
+        attendanceEntityDaoConfig.initIdentityScope(type);
+
+        festivalEntityDaoConfig = daoConfigMap.get(FestivalEntityDao.class).clone();
+        festivalEntityDaoConfig.initIdentityScope(type);
+
+        scheduleEntityDaoConfig = daoConfigMap.get(ScheduleEntityDao.class).clone();
+        scheduleEntityDaoConfig.initIdentityScope(type);
+
         configEntityDao = new ConfigEntityDao(configEntityDaoConfig, this);
         studentEntityDao = new StudentEntityDao(studentEntityDaoConfig, this);
         articleEntityDao = new ArticleEntityDao(articleEntityDaoConfig, this);
@@ -66,6 +81,9 @@ public class DaoSession extends AbstractDaoSession {
         tagEntityDao = new TagEntityDao(tagEntityDaoConfig, this);
         noticeEntityDao = new NoticeEntityDao(noticeEntityDaoConfig, this);
         noticeImageEntityDao = new NoticeImageEntityDao(noticeImageEntityDaoConfig, this);
+        attendanceEntityDao = new AttendanceEntityDao(attendanceEntityDaoConfig, this);
+        festivalEntityDao = new FestivalEntityDao(festivalEntityDaoConfig, this);
+        scheduleEntityDao = new ScheduleEntityDao(scheduleEntityDaoConfig, this);
 
         registerDao(ConfigEntity.class, configEntityDao);
         registerDao(StudentEntity.class, studentEntityDao);
@@ -74,6 +92,9 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(TagEntity.class, tagEntityDao);
         registerDao(NoticeEntity.class, noticeEntityDao);
         registerDao(NoticeImageEntity.class, noticeImageEntityDao);
+        registerDao(AttendanceEntity.class, attendanceEntityDao);
+        registerDao(FestivalEntity.class, festivalEntityDao);
+        registerDao(ScheduleEntity.class, scheduleEntityDao);
     }
     
     public void clear() {
@@ -84,6 +105,9 @@ public class DaoSession extends AbstractDaoSession {
         tagEntityDaoConfig.getIdentityScope().clear();
         noticeEntityDaoConfig.getIdentityScope().clear();
         noticeImageEntityDaoConfig.getIdentityScope().clear();
+        attendanceEntityDaoConfig.getIdentityScope().clear();
+        festivalEntityDaoConfig.getIdentityScope().clear();
+        scheduleEntityDaoConfig.getIdentityScope().clear();
     }
 
     public ConfigEntityDao getConfigEntityDao() {
@@ -112,6 +136,18 @@ public class DaoSession extends AbstractDaoSession {
 
     public NoticeImageEntityDao getNoticeImageEntityDao() {
         return noticeImageEntityDao;
+    }
+
+    public AttendanceEntityDao getAttendanceEntityDao() {
+        return attendanceEntityDao;
+    }
+
+    public FestivalEntityDao getFestivalEntityDao() {
+        return festivalEntityDao;
+    }
+
+    public ScheduleEntityDao getScheduleEntityDao() {
+        return scheduleEntityDao;
     }
 
 }

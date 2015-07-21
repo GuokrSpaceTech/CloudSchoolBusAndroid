@@ -1,0 +1,138 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ECE9E0" >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:background="#887E74" >
+
+                    <ImageView
+                        android:id="@+id/imbt_upmoth"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_btn_left" />
+
+                    <TextView
+                        android:id="@+id/calendar_title_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:singleLine="true"
+                        android:textColor="#1D1B18"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imbt_nextmoth"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_btn_right" />
+                </RelativeLayout>
+
+
+                <com.android.support.customview.KCalendar
+                    android:id="@+id/popupwindow_calendar"
+                    android:layout_width="fill_parent"
+                    android:layout_height="260dp" >
+                </com.android.support.customview.KCalendar>
+        </LinearLayout>
+    </ScrollView>
+    <RelativeLayout
+        android:id="@+id/layout_attendance_list_header"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/calendar"
+        android:background="#5FAFC7"
+        android:layout_height="35dp" >
+	    <TextView
+	            android:id="@+id/header_day"
+	            android:layout_width="52dp"
+	            android:layout_height="match_parent"
+	            android:gravity="center"
+	            android:src="@drawable/blue_dot" />
+        <TextView
+            android:id="@+id/tv_current_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/header_day"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_festival_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/tv_current_date"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layout_attendance_records"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/layout_attendance_list_header"
+        android:layout_above="@+id/layout_attendance_list_footer"
+        android:background="#FFFFFF"
+        android:layout_height="fill_parent" >
+        <ListView android:id="@+id/listView_attendance_records" 
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:cacheColorHint="#00000000"
+              android:divider="#dddddd"
+              android:dividerHeight="1px"
+              android:fadingEdge="none"
+              android:background="#FFFFFF"/>
+<!--          android:listSelector="#5FAFC7" /> -->
+    </RelativeLayout>
+    <RelativeLayout
+       android:id="@+id/layout_attendance_list_footer" 
+       android:layout_width="fill_parent" 
+       android:layout_height="35dp" 
+       android:background="#5FAFC7"
+       android:layout_alignParentBottom="true">
+
+       <TextView android:id="@+id/tv_countday_tips" 
+                 android:layout_width="wrap_content"
+                 android:layout_height="24dp"
+                 android:layout_centerVertical="true"
+                 android:layout_marginLeft="15dp"               
+                 android:gravity="center"
+                 android:text="@string/totalattendance"
+                 android:textColor="#FFFFFF"
+                 android:textSize="14sp" />
+
+       <TextView android:id="@+id/tv_cq_countday" 
+                 android:layout_width="wrap_content"
+                 android:layout_height="24dp"
+                 android:layout_centerVertical="true"
+                 android:layout_toRightOf="@id/tv_countday_tips"
+                 android:gravity="center"
+                 android:padding="3dp"
+                 android:textColor="#FFFFFF"
+                 android:textSize="14sp" />
+    </RelativeLayout>
+</RelativeLayout>

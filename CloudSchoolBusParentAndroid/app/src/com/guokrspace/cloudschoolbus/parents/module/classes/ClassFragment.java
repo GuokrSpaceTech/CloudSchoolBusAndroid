@@ -29,7 +29,9 @@ import android.widget.Toast;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity;
+import com.guokrspace.cloudschoolbus.parents.module.classes.attendance.AttendanceFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.notice.NoticeFragment;
+import com.guokrspace.cloudschoolbus.parents.module.classes.schedule.ScheduleFragment;
 
 import org.askerov.dynamicgrid.DynamicGridView;
 
@@ -106,6 +108,7 @@ public class ClassFragment extends BaseFragment {
                 Toast.makeText(getActivity(), classModule.getTitle(),
                         Toast.LENGTH_SHORT).show();
 
+                FragmentTransaction transaction;
                 switch (classModule.getTitle())
                 {
                     case "视频公开课":
@@ -114,8 +117,22 @@ public class ClassFragment extends BaseFragment {
                         break;
                     case "通知消息":
                         NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction = getFragmentManager().beginTransaction();
                         transaction.replace(R.id.class_module_layout, noticeFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                        break;
+                    case "晨检考勤":
+                        AttendanceFragment attendanceFragment  = AttendanceFragment.newInstance(null, null);
+                        transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.class_module_layout, attendanceFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                        break;
+                    case "课程表":
+                        ScheduleFragment scheduleFragment  = ScheduleFragment.newInstance(null, null);
+                        transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.class_module_layout, scheduleFragment);
                         transaction.addToBackStack(null);
                         transaction.commit();
                         break;

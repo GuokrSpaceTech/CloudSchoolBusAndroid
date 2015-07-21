@@ -9,5 +9,14 @@
     <string name="isLoading">Loading</string>
     <string name="minute_befor">分钟前</string>
     <string name="hour_befor">小时前</string>
+    <string name="totalattendance">出勤总数</string>
+    <string name="current_day_attendance_records">今日考勤次数</string>
+    <string name="total_attendance_records">本月考勤总次数</string>
+    <string name="action_today">Today</string>
+    <string name="action_day_view">Day view</string>
+    <string name="action_three_day_view">3 day view</string>
+    <string name="action_week_view">Week view</string>
+
+
 
 </resources>
