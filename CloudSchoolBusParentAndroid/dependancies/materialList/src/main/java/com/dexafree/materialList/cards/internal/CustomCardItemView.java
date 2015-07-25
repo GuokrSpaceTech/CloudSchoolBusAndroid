@@ -79,7 +79,7 @@ public class CustomCardItemView extends CardItemView<CustomCard> {
                 if (tmp < 12 * 60 * 60 * 1000) {
                     if (tmp < 60 * 60 * 1000) {
                         if (tmp <= 60 * 1000) {
-                            sentTime.setText("1" + mCntx.getResources().getString(R.string.minute_befor));
+                            sentTime.setText("1" + card.getContext().getString(R.string.minute_befor));
                         } else {
                             sentTime.setText(tmp / (60 * 1000) + card.getContext().getResources().getString(R.string.minute_befor));
                         }

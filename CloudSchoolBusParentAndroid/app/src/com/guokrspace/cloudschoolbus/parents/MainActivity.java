@@ -30,65 +30,76 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.android.support.authcode.ooo;
-import com.android.support.debug.DebugLog;
 import com.astuetz.PagerSlidingTabStrip;
-//http://stackoverflow.com/questions/24838668/icon-selector-not-working-with-pagerslidingtabstrips
-
-import com.avast.android.dialogs.fragment.ListDialogFragment;
-import com.avast.android.dialogs.fragment.SimpleDialogFragment;
-import com.avast.android.dialogs.iface.IListDialogListener;
-import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
-import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
-import com.guokrspace.cloudschoolbus.parents.entity.Student;
-import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
-import com.guokrspace.cloudschoolbus.parents.module.classes.attendance.AttendanceFragment;
-import com.guokrspace.cloudschoolbus.parents.module.classes.notice.NoticeFragment;
-import com.guokrspace.cloudschoolbus.parents.module.classes.schedule.ScheduleFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.ClassUpdatesFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
+import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.photosFragment;
+import com.guokrspace.cloudschoolbus.parents.module.messages.InboxFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.apache.http.Header;
 
 import java.util.List;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
+//http://stackoverflow.com/questions/24838668/icon-selector-not-working-with-pagerslidingtabstrips
+/*
+pstsIndicatorColor Color of the sliding indicator
+pstsUnderlineColor Color of the full-width line on the bottom of the view
+pstsDividerColor Color of the dividers between tabs
+pstsIndicatorHeightHeight of the sliding indicator
+pstsUnderlineHeight Height of the full-width line on the bottom of the view
+pstsDividerPadding Top and bottom padding of the dividers
+pstsTabPaddingLeftRight Left and right padding of each tab
+pstsScrollOffset Scroll offset of the selected tab
+pstsTabBackground Background drawable of each tab, should be a StateListDrawable
+pstsShouldExpand If set to true, each tab is given the same weight, default false
+pstsTextAllCaps If true, all tab titles will be upper case, default true
+ */
+
 public class MainActivity extends BaseActivity implements
-		ClassUpdatesFragment.OnFragmentInteractionListener,
+		photosFragment.OnFragmentInteractionListener,
 		NoticeFragment.OnFragmentInteractionListener,
 		AttendanceFragment.OnFragmentInteractionListener,
-		ScheduleFragment.OnFragmentInteractionListener
+		ScheduleFragment.OnFragmentInteractionListener,
+		ClassifyDialogFragment.OnCompleteListener
 {
 
 	private PagerSlidingTabStrip tabs;
 	private ViewPager pager;
 	private MyPagerAdapter adapter;
+	private BaseFragment[] mFragments = {null,null,null,null};
 
 	private Drawable oldBackground = null;
-	private int currentColor = 0xFF666666;
+	private int currentColor = R.color.accent;
 
     private static final int MSG_LOGIN_SUCCESS = 0;
-    private static final int RESULT_OK = 0;
+    private static final int MSG_LOGIN_FAIL = -1;
+	private static final int REQUEST_CODE = 1;
+	private static final int RESULT_FAIL = -1;
+	private static final int RESULT_OK = 0;
 
 	MainActivity c = this;
 
@@ -98,7 +109,14 @@ public class MainActivity extends BaseActivity implements
             switch (msg.what)
             {
                 case MSG_LOGIN_SUCCESS:
+					initFragments();
+					setupViewAdapter();
+					changeColor(currentColor);
+					break;
+                case MSG_LOGIN_FAIL:
+                    initFragments();
                     setupViewAdapter();
+                    changeColor(currentColor);
                     break;
             }
 			return false;
@@ -110,9 +128,14 @@ public class MainActivity extends BaseActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-        login();
+        //Customise the Action Bar
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		getSupportActionBar().setCustomView(R.layout.abs_layout);
+		View view = getSupportActionBar().getCustomView();
+		TextView textView = (TextView)view.findViewById(R.id.abs_layout_titleTextView);
+		textView.setText(getResources().getString(string.module_explore));
 
-//		changeColor(currentColor);
+        login();
 
 //		PushManager.startWork(getApplicationContext(),
 //				PushConstants.LOGIN_TYPE_API_KEY,
@@ -120,11 +143,19 @@ public class MainActivity extends BaseActivity implements
 
 	}
 
+	private void initFragments()
+	{
+		mFragments[0] = photosFragment.newInstance(null, null);
+		mFragments[1] = InboxFragment.newInstance(null, null);
+		mFragments[2] = NoticeFragment.newInstance(null,null);
+		mFragments[3] = NoticeFragment.newInstance(null,null);
+	}
+
     void setupViewAdapter()
     {
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.pager);
-        adapter = new MyPagerAdapter(getSupportFragmentManager());
+        adapter = new MyPagerAdapter(getSupportFragmentManager(), mFragments);
 
         pager.setAdapter(adapter);
 
@@ -147,12 +178,11 @@ public class MainActivity extends BaseActivity implements
 		switch (item.getItemId()) {
 
 		case R.id.action_contact:
-			QuickContactFragment dialog = new QuickContactFragment();
+			ClassifyDialogFragment dialog = new ClassifyDialogFragment();
 			dialog.show(getSupportFragmentManager(), "QuickContactFragment");
 			return true;
 
 		}
-
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -172,9 +202,8 @@ public class MainActivity extends BaseActivity implements
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
 					ld.setCallback(drawableCallback);
 				} else {
-					getActionBar().setBackgroundDrawable(ld);
+					getSupportActionBar().setBackgroundDrawable(ld);
 				}
-
 			} else {
 
 				TransitionDrawable td = new TransitionDrawable(new Drawable[] { oldBackground, ld });
@@ -185,30 +214,26 @@ public class MainActivity extends BaseActivity implements
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
 					td.setCallback(drawableCallback);
 				} else {
-					getActionBar().setBackgroundDrawable(td);
+					getSupportActionBar().setBackgroundDrawable(td);
 				}
 
 				td.startTransition(200);
-
 			}
 
 			oldBackground = ld;
 
 			// http://stackoverflow.com/questions/11002691/actionbar-setbackgrounddrawable-nulling-background-from-thread-handler
-			getActionBar().setDisplayShowTitleEnabled(false);
-			getActionBar().setDisplayShowTitleEnabled(true);
+			getSupportActionBar().setDisplayShowTitleEnabled(false);
+			getSupportActionBar().setDisplayShowTitleEnabled(true);
 
 		}
-
 		currentColor = newColor;
-
 	}
 
 	public void onColorClicked(View v) {
 
 		int color = Color.parseColor(v.getTag().toString());
 		changeColor(color);
-
 	}
 
 	@Override
@@ -221,13 +246,13 @@ public class MainActivity extends BaseActivity implements
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		currentColor = savedInstanceState.getInt("currentColor");
-//		changeColor(currentColor);
+		changeColor(currentColor);
 	}
 
 	private Drawable.Callback drawableCallback = new Drawable.Callback() {
 		@Override
 		public void invalidateDrawable(Drawable who) {
-			getActionBar().setBackgroundDrawable(who);
+			getSupportActionBar().setBackgroundDrawable(who);
 		}
 
 		@Override
@@ -243,23 +268,14 @@ public class MainActivity extends BaseActivity implements
 
 	public void login() throws JSONException {
 
-        SQLiteDatabase db = mApplication.mDBhelper.getReadableDatabase();
-        ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
-
-        List configs = configEntityDao.queryBuilder().list();
-
-        if (configs.size() != 0) {
-            mApplication.mConfig = (ConfigEntity) configs.get(0);
-            CloudSchoolBusRestClient.updateSessionid(mApplication.mConfig.getSid());
-            handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
-        }
-        //Prompt Login Activity to ask for a login
-        else {
+        if(mApplication.mConfig==null || mApplication.mBaseInfo==null)
+        {
+            //Ask for login
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivityForResult(intent,0);
+            startActivityForResult(intent,REQUEST_CODE);
         }
-
-        return;
+        else
+            handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
     }
 
     @Override
@@ -271,15 +287,52 @@ public class MainActivity extends BaseActivity implements
             case RESULT_OK:
                 handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
                 break;
+            case RESULT_FAIL:
+                handler.sendEmptyMessage(MSG_LOGIN_FAIL);
+                break;
             default:
                 break;
         }
     }
 
-    @Override
+	@Override
     public void onFragmentInteraction(String id) {
         return;
     }
+
+	public void onComplete(String module) {
+		// After the dialog fragment completes, it calls this callback.
+		// use the string here
+		FragmentTransaction transaction;
+		switch(module)
+		{
+			case "notice":
+				NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
+				transaction = getSupportFragmentManager().beginTransaction();
+				transaction.replace(R.id.article_module_layout, noticeFragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
+			case "attendance":
+				AttendanceFragment attendanceFragment  = AttendanceFragment.newInstance(null, null);
+				transaction = getSupportFragmentManager().beginTransaction();
+				transaction.replace(R.id.article_module_layout, attendanceFragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
+			case "schedule":
+				ScheduleFragment scheduleFragment  = ScheduleFragment.newInstance(null, null);
+				transaction = getSupportFragmentManager().beginTransaction();
+				transaction.replace(R.id.article_module_layout, scheduleFragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
+			default:
+				break;
+		}
+
+
+	}
 
     public class MyPagerAdapter extends FragmentPagerAdapter
     implements PagerSlidingTabStrip.IconTabProvider{
@@ -287,9 +340,11 @@ public class MainActivity extends BaseActivity implements
 		private final String[] TITLES = { "Discover", "Class", "Hobby", "Me" };
         private final int[] ICONS = { R.drawable.selector_ic_tab_discover, R.drawable.selector_ic_tab_class,
                 R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme };
+		private BaseFragment[] mFragments = {};
 
-		public MyPagerAdapter(FragmentManager fm) {
+		public MyPagerAdapter(FragmentManager fm, BaseFragment[] fragments) {
 			super(fm);
+			mFragments = fragments;
 		}
 
 		@Override
@@ -304,22 +359,19 @@ public class MainActivity extends BaseActivity implements
 
 		@Override
 		public Fragment getItem(int position) {
-
-			switch (position)
-			{
-                case 0:
-                    return ClassUpdatesFragment.newInstance(null,null);
-				case 1:
-					return ClassFragment.newInstance();
-				default:
-					return SuperAwesomeCardFragment.newInstance(position);
-			}
+			return mFragments[position];
 		}
 
-        @Override
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			return super.instantiateItem(container, position);
+		}
+
+		@Override
         public int getPageIconResId(int position) {
             return ICONS[position];
         }
     }
+
 
 }

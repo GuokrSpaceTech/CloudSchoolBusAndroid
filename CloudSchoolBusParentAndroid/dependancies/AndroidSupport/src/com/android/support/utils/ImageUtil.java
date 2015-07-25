@@ -333,4 +333,44 @@ public class ImageUtil {
         }
         return bitmap;
     }
+
+	/**
+	 * 获取照片byte转换成base64编码的String
+	 * @param picPathString
+	 * @param imageBound
+	 * @return
+	 */
+	public static String getPicString(String picPathString, int imageBound) {
+		String datePicString = null;
+		try {
+			int[] imageBounds = getImageBounds(new File(picPathString));
+			DebugLog.logI("imageBounds : " + imageBounds[0]);
+			Bitmap bitmap = null;
+			if (imageBounds[0] > imageBound) {
+				bitmap = ThumbnailUtils.setThumbnailBitmap(new File(
+						picPathString), imageBound, imageBound);
+			} else {
+				bitmap = BitmapFactory.decodeFile(picPathString);
+			}
+
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+			datePicString = Base64Util.encode(byteArrayOutputStream
+					.toByteArray());
+
+			DebugLog.logI("datePicString : " + datePicString.length());
+			DebugLog.logI("byteArrayOutputStream : "
+					+ byteArrayOutputStream.toByteArray().length);
+			byteArrayOutputStream.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return datePicString;
+	}
 }

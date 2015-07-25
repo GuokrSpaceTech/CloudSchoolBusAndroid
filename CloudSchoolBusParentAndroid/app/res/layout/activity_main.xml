@@ -21,9 +21,9 @@
         app:pstsIndicatorColor="#FFFFA500"
         app:pstsShouldExpand="true"
         app:pstsTabPaddingLeftRight="14dip"
+        app:pstsIndicatorHeight="1dip"
         app:pstsUnderlineColor="#FFFFA500"
         android:layout_alignParentBottom="true"
         android:fillViewport="false" />
-        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

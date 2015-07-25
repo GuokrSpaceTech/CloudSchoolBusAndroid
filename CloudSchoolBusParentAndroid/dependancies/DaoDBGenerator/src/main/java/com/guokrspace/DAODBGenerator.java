@@ -24,11 +24,13 @@ public class DAODBGenerator {
 
         addConfig(schema);
         addStudent(schema);
+        addClassInfo(schema);
         addAriticle(schema);
         addNotice(schema);
         addAttendance(schema);
         addFestival(schema);
         addSchedule(schema);
+        addLetter(schema);
 
         new DaoGenerator().generateAll(schema,  "src-gen");
     }
@@ -42,22 +44,25 @@ public class DAODBGenerator {
         note.addStringProperty("password");
     }
 
-//        private static void addCustomerOrder(Schema schema) {
-//            Entity customer = schema.addEntity("Customer");
-//            customer.addIdProperty();
-//            customer.addStringProperty("name").notNull();
-//
-//            Entity order = schema.addEntity("Order");
-//            order.setTableName("ORDERS"); // "ORDER" is a reserved keyword
-//            order.addIdProperty();
-//            Property orderDate = order.addDateProperty("date").getProperty();
-//            Property customerId = order.addLongProperty("customerId").notNull().getProperty();
-//            order.addToOne(customer, customerId);
-//
-//            ToMany customerToOrders = customer.addToMany(order, customerId);
-//            customerToOrders.setName("orders");
-//            customerToOrders.orderAsc(orderDate);
-//        }
+    private static void addClassInfo(Schema schema)
+    {
+        Entity teacher = schema.addEntity("TeacherEntity");
+        teacher.addStringProperty("teacherid").primaryKey();
+        teacher.addStringProperty("teachername");
+        Property classId = teacher.addStringProperty("classid").notNull().getProperty();
+
+        Entity classinfo = schema.addEntity("ClassEntity");
+        classinfo.addStringProperty("uid");
+        classinfo.addStringProperty("phone");
+        classinfo.addStringProperty("schoolname");
+        classinfo.addStringProperty("address");
+        classinfo.addStringProperty("classname");
+        classinfo.addStringProperty("province");
+        classinfo.addStringProperty("city");
+        classinfo.addStringProperty("classid").primaryKey();
+
+        ToMany classToTeachers = classinfo.addToMany(teacher,classId);
+    }
 
     private static void addStudent(Schema schema) {
         Entity student = schema.addEntity("StudentEntity");
@@ -164,4 +169,17 @@ public class DAODBGenerator {
 
     }
 
+    private static void addLetter(Schema schema)
+    {
+        Entity letters = schema.addEntity("LetterEntity");
+        letters.addStringProperty("letterid");
+        letters.addStringProperty("letter_type");
+        letters.addStringProperty("from_role");
+        letters.addStringProperty("from_id");
+        letters.addStringProperty("to_role");
+        letters.addStringProperty("to_id");
+        letters.addStringProperty("addtime");
+        letters.addStringProperty("content");
+        letters.addBooleanProperty("isShowDate");
+    }
 }

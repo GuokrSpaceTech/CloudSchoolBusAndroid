@@ -26,11 +26,9 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light" >
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,9 +41,9 @@
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
-            android:name=".module.classes.Streaming.IpcSelectionActivity"
+            android:name=".module.explore.classify.Streaming.IpcSelectionActivity"
             android:theme="@style/Theme.AppCompat.Light" />
-        <activity android:name=".module.classes.Streaming.Preview" />
+        <activity android:name=".module.explore.classify.Streaming.Preview" />
 
         <!-- push应用定义消息receiver声明 -->
         <receiver android:name=".base.baidupush.BaiduPushMessageReceiver" >

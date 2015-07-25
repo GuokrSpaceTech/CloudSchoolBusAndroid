@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,14 +37,23 @@ import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
+import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
+import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
+import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,11 +77,17 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     private short current_student;
     private List<Student> students = null;
     private String username;
-    private String passowrd;
+    private String password;
     private String sid;
 
     private static final int CURRENT_STUDENT = 0;
     private static final int GET_SESIONID = 1;
+    private static final int GET_BASEINFO = 2;
+    private static final int LOGIN_FAILED = 3;
+
+    private static final int RESULT_FAIL = -1;
+    private static final int RESULT_OK = 0;
+    private static final int REQUEST_CODE = 1;
 
     private static final int REQUEST_LIST_SIMPLE = 9;
     private static final int REQUEST_LIST_MULTIPLE = 10;
@@ -80,24 +96,35 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     private static final int REQUEST_TIME_PICKER = 13;
     private static final int REQUEST_SIMPLE_DIALOG = 42;
 
-    private static final int RESULT_OK = 0;
-
     private Handler handler = new Handler(new Handler.Callback() {
 
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                //Login success, select the current kid
                 case CURRENT_STUDENT:
                     unit(); //Ask for sessionid
                     break;
+                //Get Session ID
                 case GET_SESIONID:
                     //Save key information into Global var and database
                     showProgress(false);
-                    mApplication.mConfig = new ConfigEntity(null,sid,current_student,username,passowrd);
+                    mApplication.mConfig = new ConfigEntity(null,sid,current_student,username,password);
                     ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
                     configEntityDao.insert(mApplication.mConfig);
                     CloudSchoolBusRestClient.updateSessionid(sid);
-                    setResult(RESULT_OK);
+                    getClassInfoFromServer();
+                    break;
+                //Get the base info
+                case GET_BASEINFO:
+                    Intent resultIntent = new Intent();
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                    break;
+                //Login Process Failed
+                case LOGIN_FAILED:
+                    resultIntent = new Intent();
+                    setResult(RESULT_FAIL, resultIntent);
                     finish();
                     break;
                 default:
@@ -106,6 +133,8 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
             return false;
         }
     });
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,8 +195,8 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        username = mEmailView.getText().toString();
+        password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -198,7 +227,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            login(username,password);
+            login(username, password);
 
 //            mAuthTask = new UserLoginTask(email, password);
 //            mAuthTask.execute((Void) null);
@@ -291,7 +320,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         if (requestCode == REQUEST_LIST_SIMPLE || requestCode == REQUEST_LIST_SINGLE) {
             Toast.makeText(getApplicationContext(), "Selected: " + value, Toast.LENGTH_SHORT).show();
             mApplication.mCurrentStudent = students.get(number);
-            current_student = (short)number;
+            current_student = (short) number;
             handler.sendEmptyMessage(CURRENT_STUDENT);
         }
     }
@@ -349,8 +378,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public void login(String username, String password)
-    {
+    public void login(String username, String password) {
         RequestParams params = new RequestParams();
         params.put("username", username);
         params.put("password", ooo.h(password, "mactop", 0));
@@ -402,10 +430,108 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
             }
 
             @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                handler.sendEmptyMessage(LOGIN_FAILED);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                handler.sendEmptyMessage(LOGIN_FAILED);
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONArray errorResponse) {
+                handler.sendEmptyMessage(LOGIN_FAILED);
                 System.out.println(errorResponse);
             }
         });
+    }
+
+    private void getClassInfoFromServer() {
+        final ClassEntityDao classEntityDao = mApplication.mDaoSession.getClassEntityDao();
+        final TeacherEntityDao teacherEntityDao = mApplication.mDaoSession.getTeacherEntityDao();
+
+        RequestParams params = new RequestParams();
+
+        CloudSchoolBusRestClient.get("classinfo", params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
+                        String retCode = "";
+
+                        for (int i = 0; i < headers.length; i++) {
+                            Header header = headers[i];
+                            if ("code".equalsIgnoreCase(header.getName())) {
+                                retCode = header.getValue();
+                                break;
+                            }
+                        }
+
+                        if (!retCode.equals("1")) {
+                            //Error Handling
+                        }
+
+                        mApplication.mBaseInfo = (Baseinfo) FastJsonTools.getObject(response.toString(), Baseinfo.class);
+                        ClassEntity classEntity = new ClassEntity(
+                                mApplication.mBaseInfo.getClassinfo().getUid(),
+                                mApplication.mBaseInfo.getClassinfo().getPhone(),
+                                mApplication.mBaseInfo.getClassinfo().getSchoolname(),
+                                mApplication.mBaseInfo.getClassinfo().getAddress(),
+                                mApplication.mBaseInfo.getClassinfo().getClassname(),
+                                mApplication.mBaseInfo.getClassinfo().getProvince(),
+                                mApplication.mBaseInfo.getClassinfo().getCity(),
+                                mApplication.mBaseInfo.getClassinfo().getClassid()
+                        );
+                        classEntityDao.insertOrReplace(classEntity);
+
+                        for (int i = 0; i < mApplication.mBaseInfo.getTeacherlist().size(); i++) {
+                            Teacher teacher = mApplication.mBaseInfo.getTeacherlist().get(i);
+                            TeacherEntity teacherEntity = new TeacherEntity(teacher.getTeacherid(), teacher.getTeachername(), classEntity.getClassid());
+                            teacherEntityDao.insertOrReplace(teacherEntity);
+                        }
+                        handler.sendEmptyMessage(GET_BASEINFO);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        super.onSuccess(statusCode, headers, response);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        super.onSuccess(statusCode, headers, responseString);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        handler.sendEmptyMessage(LOGIN_FAILED);
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        handler.sendEmptyMessage(LOGIN_FAILED);
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        handler.sendEmptyMessage(LOGIN_FAILED);
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                    }
+                }
+        );
     }
 
 
@@ -414,7 +540,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         params.put("uid_student", mApplication.mCurrentStudent.getUid_student());
         params.put("uid_class", mApplication.mCurrentStudent.getUid_class());
 
-        CloudSchoolBusRestClient.post("unit",params,new JsonHttpResponseHandler() {
+        CloudSchoolBusRestClient.post("unit", params, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {

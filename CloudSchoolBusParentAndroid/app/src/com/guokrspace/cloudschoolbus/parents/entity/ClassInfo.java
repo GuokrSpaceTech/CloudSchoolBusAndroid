@@ -3,23 +3,80 @@ package com.guokrspace.cloudschoolbus.parents.entity;
 import java.io.Serializable;
 
 /**
- * 班级信息
- * 
- * @author lenovo
- * 
+ * Created by kai on 12/25/14.
  */
-public class ClassInfo implements Serializable {
-	
-	/**班级uid*/
-	public String uid;// ": "49375",
-	/**学校电话*/
-	public String phone;// ": "15210595058",
-	public String schoolname;// ": "果壳空间学校",
-	public String address;// ": "北京市朝阳区",
-	public String classname;// ": "果壳一班",
-	public String province;// ": "北京市",
-	public String city;// ": "北京",
-	/**班级id*/
-	public String classid;// ": "49375"
+public class Classinfo implements Serializable{
 
+    private String uid;
+    private String phone;
+    private String schoolname;
+    private String address;
+    private String classname;
+    private String province;
+    private String city;
+    private String classid;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getSchoolname() {
+        return schoolname;
+    }
+
+    public void setSchoolname(String schoolname) {
+        this.schoolname = schoolname;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getClassname() {
+        return classname;
+    }
+
+    public void setClassname(String classname) {
+        this.classname = classname;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getClassid() {
+        return classid;
+    }
+
+    public void setClassid(String classid) {
+        this.classid = classid;
+    }
 }

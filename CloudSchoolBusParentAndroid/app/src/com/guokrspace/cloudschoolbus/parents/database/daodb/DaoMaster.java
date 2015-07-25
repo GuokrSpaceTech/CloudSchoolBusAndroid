@@ -21,6 +21,8 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
         ConfigEntityDao.createTable(db, ifNotExists);
         StudentEntityDao.createTable(db, ifNotExists);
+        TeacherEntityDao.createTable(db, ifNotExists);
+        ClassEntityDao.createTable(db, ifNotExists);
         ArticleEntityDao.createTable(db, ifNotExists);
         ImageEntityDao.createTable(db, ifNotExists);
         TagEntityDao.createTable(db, ifNotExists);
@@ -29,12 +31,15 @@ public class DaoMaster extends AbstractDaoMaster {
         AttendanceEntityDao.createTable(db, ifNotExists);
         FestivalEntityDao.createTable(db, ifNotExists);
         ScheduleEntityDao.createTable(db, ifNotExists);
+        LetterEntityDao.createTable(db, ifNotExists);
     }
     
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
         ConfigEntityDao.dropTable(db, ifExists);
         StudentEntityDao.dropTable(db, ifExists);
+        TeacherEntityDao.dropTable(db, ifExists);
+        ClassEntityDao.dropTable(db, ifExists);
         ArticleEntityDao.dropTable(db, ifExists);
         ImageEntityDao.dropTable(db, ifExists);
         TagEntityDao.dropTable(db, ifExists);
@@ -43,6 +48,7 @@ public class DaoMaster extends AbstractDaoMaster {
         AttendanceEntityDao.dropTable(db, ifExists);
         FestivalEntityDao.dropTable(db, ifExists);
         ScheduleEntityDao.dropTable(db, ifExists);
+        LetterEntityDao.dropTable(db, ifExists);
     }
     
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -76,6 +82,8 @@ public class DaoMaster extends AbstractDaoMaster {
         super(db, SCHEMA_VERSION);
         registerDaoClass(ConfigEntityDao.class);
         registerDaoClass(StudentEntityDao.class);
+        registerDaoClass(TeacherEntityDao.class);
+        registerDaoClass(ClassEntityDao.class);
         registerDaoClass(ArticleEntityDao.class);
         registerDaoClass(ImageEntityDao.class);
         registerDaoClass(TagEntityDao.class);
@@ -84,6 +92,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(AttendanceEntityDao.class);
         registerDaoClass(FestivalEntityDao.class);
         registerDaoClass(ScheduleEntityDao.class);
+        registerDaoClass(LetterEntityDao.class);
     }
     
     public DaoSession newSession() {

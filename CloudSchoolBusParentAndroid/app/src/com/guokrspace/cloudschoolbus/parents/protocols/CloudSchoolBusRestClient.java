@@ -52,6 +52,13 @@ public class CloudSchoolBusRestClient {
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 
+    public static void post(String url, HashMap<String, String> params, AsyncHttpResponseHandler responseHandler) {
+        client.addHeader("apikey", "mactoprestphone");
+        client.addHeader("Accept","application/json");
+        client.addHeader("Version", Version.versionName.substring(1));
+        client.post(getAbsoluteUrl(url,params), responseHandler);
+    }
+
     private static String getAbsoluteUrl(String relativeUrl, Map<String, String> params) {
         StringBuilder sb = new StringBuilder();
         sb.append(BASE_URL);

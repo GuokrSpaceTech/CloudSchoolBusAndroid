@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PagerSlidingTabStrip</string>
+    <string name="app_name">云中校车</string>
     <string name="action_contact">Contact</string>
     <string name="headerCode">Code</string>
     <string name="out_time">Error</string>
@@ -16,7 +16,8 @@
     <string name="action_day_view">Day view</string>
     <string name="action_three_day_view">3 day view</string>
     <string name="action_week_view">Week view</string>
-
-
+    <string name="module_explore">发现</string>
+    <string name="module_teacher">教师</string>
+    <string name="reply">回复</string>
 
 </resources>

@@ -3,6 +3,7 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
+    android:tag="notice_fragment"
     android:layout_height="match_parent">
 
     <com.dexafree.materialList.view.MaterialListView

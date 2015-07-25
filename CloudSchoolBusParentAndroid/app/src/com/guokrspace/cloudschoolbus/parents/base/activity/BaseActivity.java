@@ -18,7 +18,7 @@ import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.android.support.dialog.*;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
+import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 
 import java.util.ArrayList;
@@ -124,7 +124,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 //		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
 //		outState.putString("loginToken", NetworkClient.getNetworkClient().getLoginToken());
 		outState.putSerializable("StudentList", (ArrayList<Student>) mApplication.mStudentList);
-		outState.putSerializable("ClassInfo", mApplication.mClassInfo);
+//		outState.putSerializable("ClassInfo", mApplication.mClassInfo);
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -137,7 +137,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 	//		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onRestoreInstanceState");
 //			NetworkClient.getNetworkClient().setLoginToken(savedInstanceState.getString("loginToken"));
 			mApplication.mStudentList = (List<Student>) savedInstanceState.getSerializable("StudentList");
-			mApplication.mClassInfo = (ClassInfo) savedInstanceState.getSerializable("ClassInfo");
+//			mApplication.mClassInfo = (Classinfo) savedInstanceState.getSerializable("ClassInfo");
 		}
 	}
 

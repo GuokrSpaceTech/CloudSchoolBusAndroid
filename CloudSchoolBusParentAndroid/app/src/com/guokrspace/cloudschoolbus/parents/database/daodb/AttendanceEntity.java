@@ -8,13 +8,17 @@ public class AttendanceEntity {
 
     private String month;
     private String day;
-    private Long timestamp;
+    private long timestamp;
     private String imageUrl;
 
     public AttendanceEntity() {
     }
 
-    public AttendanceEntity(String month, String day, Long timestamp, String imageUrl) {
+    public AttendanceEntity(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public AttendanceEntity(String month, String day, long timestamp, String imageUrl) {
         this.month = month;
         this.day = day;
         this.timestamp = timestamp;
@@ -37,11 +41,11 @@ public class AttendanceEntity {
         this.day = day;
     }
 
-    public Long getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Long timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

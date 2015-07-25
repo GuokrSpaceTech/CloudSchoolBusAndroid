@@ -2,16 +2,26 @@ package com.guokrspace.cloudschoolbus.parents.entity;
 
 import java.io.Serializable;
 
+/**
+ * Created by kai on 12/25/14.
+ */
 public class Teacher implements Serializable {
+    private String teacherid;
+    private String teachername;
 
-	public String teacherid;// ": "1073",
-	/** 学生性别 1为男 2为女 */
-	public String sex;// ": "2",
-	public String nikename;// ": "于湖新",
-	/** 是否主讲1为主讲0不是 */
-	public String ismainid;// ": "1",
-	/** 头像url */
-	public String avatar;// ": "http://cloud.yunxiaoche.com/images/teacher.jpg",
-	public String mobile;// ": "15210595058",
-	public String teachername;// ": "于湖新"
+    public String getTeacherid() {
+        return teacherid;
+    }
+
+    public void setTeacherid(String teacherid) {
+        this.teacherid = teacherid;
+    }
+
+    public String getTeachername() {
+        return teachername;
+    }
+
+    public void setTeachername(String teachername) {
+        this.teachername = teachername;
+    }
 }

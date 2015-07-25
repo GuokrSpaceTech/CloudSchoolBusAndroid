@@ -13,7 +13,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 /**
  * DAO for table ATTENDANCE_ENTITY.
 */
-public class AttendanceEntityDao extends AbstractDao<AttendanceEntity, Void> {
+public class AttendanceEntityDao extends AbstractDao<AttendanceEntity, Long> {
 
     public static final String TABLENAME = "ATTENDANCE_ENTITY";
 
@@ -24,7 +24,7 @@ public class AttendanceEntityDao extends AbstractDao<AttendanceEntity, Void> {
     public static class Properties {
         public final static Property Month = new Property(0, String.class, "month", false, "MONTH");
         public final static Property Day = new Property(1, String.class, "day", false, "DAY");
-        public final static Property Timestamp = new Property(2, Long.class, "timestamp", false, "TIMESTAMP");
+        public final static Property Timestamp = new Property(2, long.class, "timestamp", true, "TIMESTAMP");
         public final static Property ImageUrl = new Property(3, String.class, "imageUrl", false, "IMAGE_URL");
     };
 
@@ -43,7 +43,7 @@ public class AttendanceEntityDao extends AbstractDao<AttendanceEntity, Void> {
         db.execSQL("CREATE TABLE " + constraint + "'ATTENDANCE_ENTITY' (" + //
                 "'MONTH' TEXT," + // 0: month
                 "'DAY' TEXT," + // 1: day
-                "'TIMESTAMP' INTEGER," + // 2: timestamp
+                "'TIMESTAMP' INTEGER PRIMARY KEY NOT NULL ," + // 2: timestamp
                 "'IMAGE_URL' TEXT);"); // 3: imageUrl
     }
 
@@ -67,11 +67,7 @@ public class AttendanceEntityDao extends AbstractDao<AttendanceEntity, Void> {
         if (day != null) {
             stmt.bindString(2, day);
         }
- 
-        Long timestamp = entity.getTimestamp();
-        if (timestamp != null) {
-            stmt.bindLong(3, timestamp);
-        }
+        stmt.bindLong(3, entity.getTimestamp());
  
         String imageUrl = entity.getImageUrl();
         if (imageUrl != null) {
@@ -81,8 +77,8 @@ public class AttendanceEntityDao extends AbstractDao<AttendanceEntity, Void> {
 
     /** @inheritdoc */
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.getLong(offset + 2);
     }    
 
     /** @inheritdoc */
@@ -91,7 +87,7 @@ public class AttendanceEntityDao extends AbstractDao<AttendanceEntity, Void> {
         AttendanceEntity entity = new AttendanceEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // month
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // day
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // timestamp
+            cursor.getLong(offset + 2), // timestamp
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // imageUrl
         );
         return entity;
@@ -102,21 +98,25 @@ public class AttendanceEntityDao extends AbstractDao<AttendanceEntity, Void> {
     public void readEntity(Cursor cursor, AttendanceEntity entity, int offset) {
         entity.setMonth(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
         entity.setDay(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setTimestamp(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setTimestamp(cursor.getLong(offset + 2));
         entity.setImageUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     /** @inheritdoc */
     @Override
-    protected Void updateKeyAfterInsert(AttendanceEntity entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected Long updateKeyAfterInsert(AttendanceEntity entity, long rowId) {
+        entity.setTimestamp(rowId);
+        return rowId;
     }
     
     /** @inheritdoc */
     @Override
-    public Void getKey(AttendanceEntity entity) {
-        return null;
+    public Long getKey(AttendanceEntity entity) {
+        if(entity != null) {
+            return entity.getTimestamp();
+        } else {
+            return null;
+        }
     }
 
     /** @inheritdoc */

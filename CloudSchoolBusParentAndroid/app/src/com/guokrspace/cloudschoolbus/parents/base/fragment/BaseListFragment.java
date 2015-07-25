@@ -13,7 +13,7 @@ import com.android.support.debug.DebugLog;
 import com.android.support.dialog.CustomWaitDialog;
 import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
-import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
+import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class BaseListFragment extends ListFragment {
 //			NetworkClient.getNetworkClient().setLoginToken(savedInstanceState.getString("loginToken"));
 			mApplication.mStudentList = (List<Student>) savedInstanceState.getSerializable("StudentList");
 //			mApplication.mTeacher = (Teacher) savedInstanceState.getSerializable("Teacher");
-			mApplication.mClassInfo = (ClassInfo) savedInstanceState.getSerializable("ClassInfo");
+//			mApplication.mClassInfo = (Classinfo) savedInstanceState.getSerializable("ClassInfo");
 //			mApplication.mLoginSetting = (LoginSetting) savedInstanceState.getSerializable("LoginSetting");
 		}
 		return super.onCreateView(inflater, container, savedInstanceState);
@@ -123,7 +123,7 @@ public class BaseListFragment extends ListFragment {
 //		outState.putString("loginToken", NetworkClient.getNetworkClient().getLoginToken());
 		outState.putSerializable("StudentList", (ArrayList<Student>) mApplication.mStudentList);
 //		outState.putSerializable("Teacher", mApplication.mTeacher);
-		outState.putSerializable("ClassInfo", mApplication.mClassInfo);
+//		outState.putSerializable("ClassInfo", mApplication.mClassInfo);
 //		outState.putSerializable("LoginSetting", mApplication.mLoginSetting);
 		
 		super.onSaveInstanceState(outState);
