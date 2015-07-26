@@ -13,14 +13,7 @@ public class ChatMessageCard extends SimpleCard {
     private String roleType;
     private String letterType;
 
-    public ChatMessageCard(final Context context) {
-        super(context);
-    }
 
-    @Override
-    public int getLayout() {
-        return R.layout.material_chat_message_card;
-    }
 
     public String getSenderImageUrl() {
         return senderImageUrl;
@@ -60,5 +53,14 @@ public class ChatMessageCard extends SimpleCard {
 
     public void setLetterType(String letterType) {
         this.letterType = letterType;
+    }
+
+    public ChatMessageCard(final Context context) {
+        super(context);
+    }
+
+    @Override
+    public int getLayout() {
+        return R.layout.material_chat_message_card;
     }
 }

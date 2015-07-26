@@ -10,80 +10,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbf4cd7e-e61d-4fb8-ac04-6532e8746fc1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable/bg_comment_left.9.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable/bg_comment_right.9.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-hdpi/ic_action_attach.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-mdpi/ic_action_attach.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-xhdpi/ic_action_attach.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/libs/x86/libbdpush_V2_2.so" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/Baseinfo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/ChatMessageCard.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/internal/ChatMessageCardItemView.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/ClassEntity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/ClassEntityDao.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/messages/InboxFragment.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/LetterDto.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/LetterEntity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/LetterEntityDao.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/TeacherEntity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/TeacherEntityDao.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/messages/TeacherMessageBoxActivity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/abs_layout.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_inbox_list.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_teacher_messagebox.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_chat_message_card.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/res/drawable-hdpi/icon.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-hdpi/ic_launcher.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-xxhdpi/ic_launcher.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/QuickContactFragment.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/SuperAwesomeCardFragment.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/ClassInfo.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/Classinfo.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/ClassComponent.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/ClassifyComponent.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/ClassDynamicAdapter.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/ClassifyDynamicAdapter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/ClassFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/ClassifyDialogFragment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/ClassModule.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/ClassifyModule.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/Decoder.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/Decoder.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/H264Decoder.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/H264Decoder.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/IpcSelectionActivity.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/IpcSelectionActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/Messages/MsgLogin.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/Messages/MsgLogin.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/Messages/NET_LAYER.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/Messages/NET_LAYER.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/MjpegView.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/MjpegView.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/Preview.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/Preview.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/SocketClient.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/SocketClient.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/Utils.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/Utils.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/entity/Dvr.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/entity/Dvr.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/Streaming/entity/Ipcparam.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/Streaming/entity/Ipcparam.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/attendance/AttendanceFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/attendance/AttendanceFragment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/attendance/AttendanceRecordsAdapter.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/attendance/AttendanceRecordsAdapter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/notice/NoticeFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/notice/NoticeFragment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/classes/schedule/ScheduleFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/schedule/ScheduleFragment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/ClassUpdatesFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/photosFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-mdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-mdpi/ic_launcher.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-xhdpi/ic_launcher.png" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/drawable-xhdpi/ic_launcher.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/AndroidManifest.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/AttendanceEntity.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/AttendanceEntity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/AttendanceEntityDao.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/AttendanceEntityDao.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/base/activity/BaseActivity.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/base/activity/BaseActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/base/fragment/BaseFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/base/fragment/BaseFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/base/fragment/BaseListFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/base/fragment/BaseListFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/CloudSchoolBusParentsApplication.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/CloudSchoolBusParentsApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/protocols/CloudSchoolBusRestClient.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/protocols/CloudSchoolBusRestClient.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/Report.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/ReportEntity.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/ReportEntityDao.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/report/ReportFragment.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/ReportItem.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/ReportItemEntity.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/ReportItemEntityDao.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/views/ReportListCard.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/views/ReportListCardItemView.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_report_list.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/material_report_card.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/ChatMessageCard.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/ChatMessageCard.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/internal/ChatMessageCardItemView.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/internal/ChatMessageCardItemView.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/ClassifyDialogFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/explore/classify/ClassifyDialogFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/internal/CustomCardItemView.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/java/com/dexafree/materialList/cards/internal/CustomCardItemView.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/DaoDBGenerator/src/main/java/com/guokrspace/DAODBGenerator.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/DaoDBGenerator/src/main/java/com/guokrspace/DAODBGenerator.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/DaoMaster.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/DaoMaster.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/DaoSession.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/database/daodb/DaoSession.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/AndroidSupport/src/com/android/support/utils/ImageUtil.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/AndroidSupport/src/com/android/support/utils/ImageUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/LoginActivity.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/LoginActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/AndroidSupport/src/com/android/support/utils/DateUtils.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/AndroidSupport/src/com/android/support/utils/DateUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/messages/InboxFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/messages/InboxFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/MainActivity.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/Teacher.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/entity/Teacher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_article_list.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_article_list.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_notice_list.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_notice_list.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/menu/main.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/menu/main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/values/strings.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/values/styles.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/values/styles.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/values-v14/styles.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/values-v14/styles.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/values/theme.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/values/theme.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportActivity.java" afterPath="$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/messages/TeacherMessageBoxFragment.java" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/src/com/guokrspace/cloudschoolbus/parents/module/messages/TeacherMessageBoxFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_teacher_messagebox.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/app/res/layout/activity_teacher_messagebox.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_basic_buttons_card.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_basic_buttons_card.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_basic_image_buttons_card_layout.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_basic_image_buttons_card_layout.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_basic_list_card_layout.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_basic_list_card_layout.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_big_image_card_layout.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_big_image_card_layout.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_chat_message_card.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_chat_message_card.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_customer_card_layout.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_customer_card_layout.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_image_with_buttons_card.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_image_with_buttons_card.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_notice_card_layout.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_notice_card_layout.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_small_image_card.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_small_image_card.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_welcome_card_layout.xml" afterPath="$PROJECT_DIR$/../CloudSchoolBusParentAndroid/dependancies/materialList/src/main/res/layout/material_welcome_card_layout.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="CloudSchoolBusGradle.iws" />
@@ -257,17 +217,52 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LoginActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LoginActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/LoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.40472177">
-              <caret line="278" column="52" selection-start-line="278" selection-start-column="45" selection-end-line="278" selection-end-column="52" />
-              <folding>
-                <element signature="e#13920#13921#0" expanded="false" />
-                <element signature="e#13952#13953#0" expanded="false" />
-                <element signature="e#14004#14005#0" expanded="false" />
-                <element signature="e#14046#14047#0" expanded="false" />
-              </folding>
+            <state vertical-scroll-proportion="0.0">
+              <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ReportSearchActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportSearchActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ReportDetailActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportDetailActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ReportActivity.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.4684148">
+              <caret line="38" column="24" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ContentBean.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ContentBean.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -301,7 +296,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="9" column="30" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="30" />
-              <folding />
+              <folding>
+                <element signature="e#248#249#0" expanded="false" />
+                <element signature="e#280#281#0" expanded="false" />
+                <element signature="e#330#331#0" expanded="false" />
+                <element signature="e#372#373#0" expanded="false" />
+                <element signature="e#410#411#0" expanded="false" />
+                <element signature="e#444#445#0" expanded="false" />
+                <element signature="e#498#499#0" expanded="false" />
+                <element signature="e#544#545#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -3996,6 +4000,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/app/src/com/Manga/Activity/utils/ImageUtil.java" />
+        <option value="$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportActivity.java" />
       </list>
     </option>
   </component>
@@ -4003,10 +4008,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="317" />
+    <option name="x" value="541" />
     <option name="y" value="23" />
-    <option name="width" value="1603" />
-    <option name="height" value="737" />
+    <option name="width" value="1920" />
+    <option name="height" value="983" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -4031,7 +4036,7 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -4135,41 +4140,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="TeacherMessageBox" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TeacherMessageBoxActivity.java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudSchoolBusGradle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudSchoolBusGradle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Activity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TeacherMessageBox" />
+              <option name="myItemId" value="myChildren" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -4199,12 +4170,12 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="TeacherMessageBox" />
+              <option name="myItemId" value="myChildren" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="InboxActivity.java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
+              <option name="myItemId" value="Reports" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -4359,7 +4330,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -4458,6 +4428,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -4667,7 +4638,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="317" y="23" width="1603" height="737" extended-state="0" />
+    <frame x="541" y="23" width="1920" height="983" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -4679,22 +4650,22 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34080717" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23162939" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.12341407" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298731" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34059632" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -4737,35 +4708,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/morningCheck/HealthActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/res/layout/activity_health.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/morningCheck/AttendanceRecordDto.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/res/drawable-hdpi/btn_right.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/res/drawable-hdpi/btn_left.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -4793,10 +4735,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/res/drawable-hdpi/calendar_bg.9.png">
-      <provider editor-type-id="images">
+      <provider selected="true" editor-type-id="ninepatcheditor">
         <state />
       </provider>
-      <provider selected="true" editor-type-id="ninepatcheditor">
+      <provider editor-type-id="images">
         <state />
       </provider>
     </entry>
@@ -4846,10 +4788,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/res/drawable-hdpi/calendar_day_bg.9.png">
-      <provider editor-type-id="images">
+      <provider selected="true" editor-type-id="ninepatcheditor">
         <state />
       </provider>
-      <provider selected="true" editor-type-id="ninepatcheditor">
+      <provider editor-type-id="images">
         <state />
       </provider>
     </entry>
@@ -4900,23 +4842,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/res/layout/activity_attendance_manager.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/res/layout/activity_moring_check.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/res/layout/activity_moring_check.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-4.678571">
           <caret line="212" column="42" selection-start-line="212" selection-start-column="39" selection-end-line="212" selection-end-column="46" />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/res/drawable-hdpi/message.png">
@@ -5000,21 +4942,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/res/layout/activity_teacher_messagebox.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="49" column="41" selection-start-line="49" selection-start-column="35" selection-end-line="49" selection-end-column="51" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/TeacherMessageBox/TeacherMessageBoxActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.037037">
-          <caret line="344" column="51" selection-start-line="344" selection-start-column="51" selection-end-line="344" selection-end-column="51" />
-          <folding />
-        </state>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/utils/ImageUtil.java">
@@ -5025,39 +4959,39 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/res/layout/activity_teacher_messagebox_inbox_list_item.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/res/drawable/bg_comment_left.9.png">
-      <provider editor-type-id="images">
+      <provider selected="true" editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/res/drawable/bg_comment_left.9.png">
       <provider selected="true" editor-type-id="ninepatcheditor">
+        <state />
+      </provider>
+      <provider editor-type-id="images">
         <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/res/drawable/bg_comment_right.9.png">
-      <provider editor-type-id="images">
+      <provider selected="true" editor-type-id="ninepatcheditor">
         <state />
       </provider>
-      <provider selected="true" editor-type-id="ninepatcheditor">
+      <provider editor-type-id="images">
         <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/res/layout/activity_teacher_messagebox_list_item.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5895522">
           <caret line="80" column="46" selection-start-line="80" selection-start-column="38" selection-end-line="80" selection-end-column="54" />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/TeacherMessageBox/InboxActivity.java">
@@ -5116,20 +5050,69 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="9" column="30" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="30" />
-          <folding />
+          <folding>
+            <element signature="e#248#249#0" expanded="false" />
+            <element signature="e#280#281#0" expanded="false" />
+            <element signature="e#330#331#0" expanded="false" />
+            <element signature="e#372#373#0" expanded="false" />
+            <element signature="e#410#411#0" expanded="false" />
+            <element signature="e#444#445#0" expanded="false" />
+            <element signature="e#498#499#0" expanded="false" />
+            <element signature="e#544#545#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/TeacherMessageBox/TeacherMessageBoxActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33253872">
+          <caret line="328" column="17" selection-start-line="328" selection-start-column="17" selection-end-line="328" selection-end-column="17" />
+          <folding>
+            <element signature="e#6568#6865#0" expanded="true" />
+            <element signature="e#6864#6865#0" expanded="true" />
+            <element signature="e#13818#15592#0" expanded="true" />
+            <element signature="e#15591#15592#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/LoginActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.40472177">
-          <caret line="278" column="52" selection-start-line="278" selection-start-column="45" selection-end-line="278" selection-end-column="52" />
-          <folding>
-            <element signature="e#13920#13921#0" expanded="false" />
-            <element signature="e#13952#13953#0" expanded="false" />
-            <element signature="e#14004#14005#0" expanded="false" />
-            <element signature="e#14046#14047#0" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportSearchActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ContentBean.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportDetailActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/com/Manga/Activity/myChildren/Reports/ReportActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.4684148">
+          <caret line="38" column="24" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>

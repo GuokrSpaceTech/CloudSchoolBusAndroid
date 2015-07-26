@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.android.support.debug.DebugLog;
 import com.dexafree.materialList.cards.SmallCircleImageCard;
 import com.dexafree.materialList.controller.RecyclerItemClickListener;
 import com.dexafree.materialList.model.CardItemView;
@@ -140,7 +141,9 @@ public class InboxFragment extends BaseFragment {
                 mMaterialListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(CardItemView view, int position) {
-                        TeacherMessageBoxFragment teacherMessageBoxFragment = TeacherMessageBoxFragment.newInstance(mTeacherList.get(position));
+                        DebugLog.logI(String.format("%d", position));
+                        Teacher teacher = mTeacherList.get(position);
+                        TeacherMessageBoxFragment teacherMessageBoxFragment = TeacherMessageBoxFragment.newInstance(teacher);
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         transaction.replace(R.id.inbox_container_layout, teacherMessageBoxFragment);
                         transaction.addToBackStack(null);

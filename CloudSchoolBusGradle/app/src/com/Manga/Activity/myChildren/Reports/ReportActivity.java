@@ -36,7 +36,7 @@ import com.umeng.analytics.MobclickAgent;
 
 public class ReportActivity extends BaseActivity {
 	private ModifiListView myListview;
-	public ReportAdapter reportAdapter;
+	public ReportAdapterreportAdapter;
 	private RelativeLayout noData;
 	private EditText ed_search;
 	List<Map<String, String>> reportList;

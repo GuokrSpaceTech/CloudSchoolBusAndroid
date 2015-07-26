@@ -123,10 +123,13 @@ public class ClassifyDialogFragment extends DialogFragment {
                     case "晨检考勤":
                         mListener.onComplete("attendance");
                         dismiss();
-
                         break;
                     case "课程表":
                         mListener.onComplete("schedule");
+                        dismiss();
+                        break;
+                    case "班级报告":
+                        mListener.onComplete("report");
                         dismiss();
                         break;
                 }

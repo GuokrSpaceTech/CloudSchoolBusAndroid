@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.greenrobot.dao.query.QueryBuilder;
+
 /**
  * Created by kai on 12/25/14.
  */
@@ -52,11 +54,11 @@ public class TeacherMessageBoxFragment extends BaseFragment {
 
     private final int OUTTIME = -1;
     private final int NONETWORK = -2;
-    private final int GOTMESSAGE = 1;
-    private final int MESSAGESENT = 2;
     private final int MSG_NEW_DATA = 3;
     private final int MSG_OLD_DATA = 4;
     private final int MSG_NO_DATA = 5;
+    private final int REFRESH = 1;
+    private final int LOADMORE = 2;
 
     private Handler mHandler = new Handler(new Handler.Callback() {
 
@@ -67,11 +69,14 @@ public class TeacherMessageBoxFragment extends BaseFragment {
 //                    Toast.makeText(TeacherMessageBoxActivity.this, R.string.net_is_not_working, Toast.LENGTH_SHORT).show();
                     break;
                 case MSG_NEW_DATA:
+                    mSwipeRefreshLayout.setRefreshing(false);
                     insertCards();
                     break;
                 case MSG_OLD_DATA:
                     appendCards();
                     break;
+                case MSG_NO_DATA:
+                    mSwipeRefreshLayout.setRefreshing(false);
                 default:
                     break;
             }
@@ -88,7 +93,8 @@ public class TeacherMessageBoxFragment extends BaseFragment {
     public static TeacherMessageBoxFragment newInstance(Teacher teacher) {
         TeacherMessageBoxFragment fragment = new TeacherMessageBoxFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_TEACHER, (Parcelable) teacher);
+        args.putSerializable(ARG_TEACHER, teacher);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -101,7 +107,7 @@ public class TeacherMessageBoxFragment extends BaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mTeacher = (Teacher) getArguments().get(ARG_TEACHER);
+        mTeacher =  (Teacher)getArguments().get(ARG_TEACHER);
         GetLettersFromCache(mTeacher.getTeacherid());
         if (mLetterEntities.size() == 0)
             GetLettersLatest(mTeacher.getTeacherid());
@@ -164,7 +170,7 @@ public class TeacherMessageBoxFragment extends BaseFragment {
             }
         });
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return root;
     }
 
     @Override
@@ -196,25 +202,23 @@ public class TeacherMessageBoxFragment extends BaseFragment {
         final LetterEntityDao leetterEntityDao = mApplication.mDaoSession.getLetterEntityDao();
         mLetterEntities = (ArrayList<LetterEntity>) leetterEntityDao.queryBuilder().list();
         if (mLetterEntities.size() != 0)
-            mHandler.sendEmptyMessage(0);
+            mHandler.sendEmptyMessage(MSG_NEW_DATA);
     }
 
     private void GetLettersLatest(String teacherid) {
-        GetLetters("0", "0", teacherid);
+        GetLetters("0", "0", teacherid, REFRESH);
     }
 
     private void GetLettersNew(String endtime, String teacherid) {
-        GetLetters("0", endtime, teacherid);
-        mHandler.sendEmptyMessage(MSG_NEW_DATA);
-
+        GetLetters("0", endtime, teacherid, REFRESH);
     }
 
     private void GetLettersOld(String starttime, String teacherid) {
-        GetLetters(starttime, "0", teacherid);
+        GetLetters(starttime, "0", teacherid, LOADMORE);
         mHandler.sendEmptyMessage(MSG_OLD_DATA);
     }
 
-    public void GetLetters(final String starttime, final String endtime, final String teacherid) {
+    public void GetLetters(final String starttime, final String endtime, final String teacherid, final int direction) {
 
         final LetterEntityDao letterEntityDao = mApplication.mDaoSession.getLetterEntityDao();
 
@@ -247,7 +251,19 @@ public class TeacherMessageBoxFragment extends BaseFragment {
                 for (int i = 0; i < letters.size(); i++) {
                     LetterEntity letterEntity = new LetterEntity(letters.get(i).getLetterid(), letters.get(i).getLetter_type(), letters.get(i).getFrom_role(), letters.get(i).getFrom_id(), letters.get(i).getTo_role(), letters.get(i).getTo_id(), letters.get(i).getAddtime(), letters.get(i).getContent(), true);
                     letterEntityDao.insertOrReplace(letterEntity);
+                    if(direction==REFRESH)
+                        mLetterEntities.add(0,letterEntity);
+                    else if(direction==LOADMORE)
+                        mLetterEntities.add(letterEntity);
                 }
+
+                if(letters.size()!=0 && direction == REFRESH)
+                    mHandler.sendEmptyMessage(MSG_NEW_DATA);
+                else if(letters.size()!=0 && direction == LOADMORE)
+                    mHandler.sendEmptyMessage(MSG_OLD_DATA);
+                else if(letters.size()==0)
+                    mHandler.sendEmptyMessage(MSG_NO_DATA);
+
 
                 super.onSuccess(statusCode, headers, response);
             }
@@ -343,7 +359,6 @@ public class TeacherMessageBoxFragment extends BaseFragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                mHandler.sendEmptyMessage(MSG_NO_DATA);
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
 
@@ -357,10 +372,11 @@ public class TeacherMessageBoxFragment extends BaseFragment {
 
     private void insertCards() {
         ChatMessageCard chatMessageCard = new ChatMessageCard(mParentContext);
-        for (int i = mLetterEntities.size(); i > 0; i--) {
+        for (int i = mLetterEntities.size()-1; i > -1; i--) {
             chatMessageCard.setRoleType(mLetterEntities.get(i).getFrom_role());
             chatMessageCard.setLetterType(mLetterEntities.get(i).getLetter_type());
             chatMessageCard.setDescription(mLetterEntities.get(i).getContent());
+            chatMessageCard.setTimestamp(mLetterEntities.get(i).getAddtime());
         }
         mListView.addAtStart(chatMessageCard);
     }
@@ -371,6 +387,7 @@ public class TeacherMessageBoxFragment extends BaseFragment {
             chatMessageCard.setRoleType(mLetterEntities.get(i).getFrom_role());
             chatMessageCard.setLetterType(mLetterEntities.get(i).getLetter_type());
             chatMessageCard.setDescription(mLetterEntities.get(i).getContent());
+            chatMessageCard.setTimestamp(mLetterEntities.get(i).getAddtime());
         }
         mListView.add(chatMessageCard);
     }

@@ -31,6 +31,7 @@ public class DAODBGenerator {
         addFestival(schema);
         addSchedule(schema);
         addLetter(schema);
+        addReport(schema);
 
         new DaoGenerator().generateAll(schema,  "src-gen");
     }
@@ -63,6 +64,30 @@ public class DAODBGenerator {
 
         ToMany classToTeachers = classinfo.addToMany(teacher,classId);
     }
+
+    private static void addReport(Schema schema) {
+        Entity report = schema.addEntity("ReportEntity");
+        report.addStringProperty("id").notNull().primaryKey();
+        report.addStringProperty("title");
+        report.addStringProperty("cnname");
+        report.addStringProperty("reportname");
+        report.addStringProperty("studentlist");
+        report.addStringProperty("reporttime");
+        report.addStringProperty("createtime");
+        report.addStringProperty("type");
+        report.addStringProperty("adduserid");
+        report.addStringProperty("teachername");
+        report.addStringProperty("studentlistid");
+        report.addStringProperty("studentname");
+
+        Entity reportItem = schema.addEntity("ReportItemEntity");
+        reportItem.addStringProperty("title");
+        reportItem.addStringProperty("answer");
+        Property reportId = reportItem.addStringProperty("reportId").notNull().getProperty();
+
+        ToMany report2ReporItem = report.addToMany(reportItem,reportId);
+    }
+
 
     private static void addStudent(Schema schema) {
         Entity student = schema.addEntity("StudentEntity");

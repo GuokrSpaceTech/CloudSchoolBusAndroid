@@ -5,19 +5,18 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dexafree.materialList.R;
 import com.dexafree.materialList.cards.ChatMessageCard;
-import com.dexafree.materialList.cards.SimpleCard;
+import com.dexafree.materialList.model.CardItemView;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public abstract class ChatMessageCardItemView<T extends ChatMessageCard> extends BaseCardItemView<T> {
+public class ChatMessageCardItemView extends CardItemView<ChatMessageCard> {
     public ChatMessageCardItemView(Context context) {
         super(context);
     }
@@ -31,7 +30,7 @@ public abstract class ChatMessageCardItemView<T extends ChatMessageCard> extends
         super(context, attrs, defStyle);
     }
 
-    public void build(T card) {
+    public void build(ChatMessageCard card) {
 		super.build(card);
 
         // Description
@@ -81,8 +80,6 @@ public abstract class ChatMessageCardItemView<T extends ChatMessageCard> extends
         if (card.getDescriptionColor() != -1) {
             description.setTextColor(card.getDescriptionColor());
         }
-
-
     }
 
 }
