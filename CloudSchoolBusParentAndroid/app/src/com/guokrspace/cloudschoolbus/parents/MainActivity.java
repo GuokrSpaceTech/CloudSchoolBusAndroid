@@ -54,6 +54,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
@@ -332,6 +333,13 @@ public class MainActivity extends BaseActivity implements
 				ReportFragment reportFragment  = ReportFragment.newInstance(null, null);
 				transaction = getSupportFragmentManager().beginTransaction();
 				transaction.replace(R.id.article_module_layout, reportFragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
+			case "food":
+				FoodFragment foodFragment  = FoodFragment.newInstance(null, null);
+				transaction = getSupportFragmentManager().beginTransaction();
+				transaction.replace(R.id.article_module_layout, foodFragment);
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;

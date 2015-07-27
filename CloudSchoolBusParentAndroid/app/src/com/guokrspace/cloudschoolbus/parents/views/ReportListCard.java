@@ -3,6 +3,7 @@ package com.guokrspace.cloudschoolbus.parents.views;
 import android.content.Context;
 
 import com.dexafree.materialList.cards.SimpleCard;
+import com.guokrspace.cloudschoolbus.parents.R;
 
 /**
  * Created by wangjianfeng on 15/7/26.
@@ -19,7 +20,7 @@ public class ReportListCard extends SimpleCard {
 
     @Override
     public int getLayout() {
-        return 0;
+        return R.layout.material_report_card;
     }
 
     public String getReporttype() {

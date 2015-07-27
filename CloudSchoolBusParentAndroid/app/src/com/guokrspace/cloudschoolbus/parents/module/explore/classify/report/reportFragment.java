@@ -3,10 +3,19 @@ package com.guokrspace.cloudschoolbus.parents.module.explore.classify.report;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.support.debug.DebugLog;
+import com.dexafree.materialList.controller.RecyclerItemClickListener;
+import com.dexafree.materialList.model.CardItemView;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
@@ -17,6 +26,8 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ReportItemEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ReportItemEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Report;
 import com.guokrspace.cloudschoolbus.parents.entity.ReportItem;
+import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
+import com.guokrspace.cloudschoolbus.parents.module.messages.TeacherMessageBoxFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.views.ReportListCard;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -28,14 +39,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 /**
  * Created by wangjianfeng on 15/7/26.
  */
 public class ReportFragment extends BaseFragment {
     List<ReportEntity> mReportEntities = new ArrayList<>();
     MaterialListView materialListView;
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    LinearLayoutManager mLayoutManager;
+
+    private int previousTotal = 0;
+    private int visibleThreshold = 3;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
 
     final private static int MSG_ONREFRESH = 1;
     final private static int MSG_ONLOADMORE = 2;
@@ -49,19 +64,19 @@ public class ReportFragment extends BaseFragment {
 
             switch (msg.what) {
                 case MSG_ONREFRESH:
-//                    InsertCardsAtBeginning();
-//                    if (mSwipeRefreshLayout.isRefreshing())
-//                        mSwipeRefreshLayout.setRefreshing(false);
+                    addCardTop();
+                    if (mSwipeRefreshLayout.isRefreshing())
+                        mSwipeRefreshLayout.setRefreshing(false);
                     break;
                 case MSG_ONLOADMORE:
-//                    AppendCards();
+                    addCardBottom();
                     break;
                 case MSG_ONCACHE:
-//                    AppendCards();
+                    addCardTop();
                     break;
                 case MSG_NOCHANGE:
-//                    if (mSwipeRefreshLayout.isRefreshing())
-//                        mSwipeRefreshLayout.setRefreshing(false);
+                    if (mSwipeRefreshLayout.isRefreshing())
+                        mSwipeRefreshLayout.setRefreshing(false);
                     break;
             }
             return false;
@@ -89,6 +104,62 @@ public class ReportFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_report_list, container, false);
         materialListView = (MaterialListView)root.findViewById(R.id.material_listview);
+        mSwipeRefreshLayout = (SwipeRefreshLayout)root.findViewById(R.id.swipeRefreshLayout);
+        mLayoutManager = (LinearLayoutManager) materialListView.getLayoutManager();
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                GetReportsFromCache();
+            }
+        });
+        materialListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            private boolean loading = true;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                visibleItemCount = materialListView.getChildCount();
+                totalItemCount = mLayoutManager.getItemCount();
+                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+
+                if (loading) {
+                    if (totalItemCount > previousTotal) {
+                        loading = false;
+                        previousTotal = totalItemCount;
+                    }
+                }
+                if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+                    // End has been reached
+
+                    Log.i("...", "end called");
+
+                    // Do something
+//                    new LoadTask(MainActivity.this, start).execute();
+
+                    loading = true;
+                }
+            }
+        });
+        materialListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(CardItemView view, int position) {
+                DebugLog.logI(String.format("%d", position));
+                ReportEntity reportEntity = mReportEntities.get(position);
+//                TeacherMessageBoxFragment teacherMessageBoxFragment = TeacherMessageBoxFragment.newInstance(reportEntity);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//                transaction.replace(R.id.inbox_container_layout, teacherMessageBoxFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+
+            @Override
+            public void onItemLongClick(CardItemView view, int position) {
+
+            }
+        });
         return root;
     }
 

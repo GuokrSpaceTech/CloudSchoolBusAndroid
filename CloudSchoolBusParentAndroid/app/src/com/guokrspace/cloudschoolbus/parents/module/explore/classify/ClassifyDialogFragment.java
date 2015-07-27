@@ -132,6 +132,10 @@ public class ClassifyDialogFragment extends DialogFragment {
                         mListener.onComplete("report");
                         dismiss();
                         break;
+                    case "食谱":
+                        mListener.onComplete("food");
+                        dismiss();
+                        break;
                 }
             }
         });
