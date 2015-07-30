@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.guokrspace.cloudschoolbus.parents.views.ReportListCardItemView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.guokrspace.cloudschoolbus.parents.widget.ReportListCardItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MainLayout">
 
@@ -106,4 +106,4 @@
 
     </android.support.v7.widget.CardView>
 
-</com.guokrspace.cloudschoolbus.parents.views.ReportListCardItemView>
+</com.guokrspace.cloudschoolbus.parents.widget.ReportListCardItemView>

@@ -2,6 +2,8 @@ package com.guokrspace.cloudschoolbus.parents.base.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +16,8 @@ import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
+import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +28,8 @@ public class BaseFragment extends Fragment {
 	protected Fragment mFragment;
 	
 	protected CloudSchoolBusParentsApplication mApplication;
-
-	private CustomWaitDialog mCustomWaitDialog;
+	public    NetworkStatusEvent networkStatusEvent;
+	private   CustomWaitDialog mCustomWaitDialog;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -34,6 +38,19 @@ public class BaseFragment extends Fragment {
 		mFragment = this;
 		mApplication = (CloudSchoolBusParentsApplication) mParentContext
 				.getApplicationContext();
+		networkStatusEvent = new NetworkStatusEvent(false,false,false);
+		ConnectivityManager manager = (ConnectivityManager) mParentContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo        mobileInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		NetworkInfo        activeInfo = manager.getActiveNetworkInfo();
+		if(activeInfo!=null)
+		{
+			networkStatusEvent.setIsNetworkConnected(true);
+			if(wifiInfo.isConnected())
+				networkStatusEvent.setIsWifiConnected(true);
+			if(mobileInfo.isConnected())
+				networkStatusEvent.setIsMobileNetworkConnected(true);
+		}
 		DebugLog.setTag(mFragment.getClass().getName());
 	}
 	
@@ -125,6 +142,12 @@ public class BaseFragment extends Fragment {
 //		outState.putSerializable("LoginSetting", mApplication.mLoginSetting);
 		
 		super.onSaveInstanceState(outState);
+	}
+
+	@Subscribe
+	public void onNetworkStatusChange(NetworkStatusEvent event)
+	{
+		networkStatusEvent = event;
 	}
 	
 }

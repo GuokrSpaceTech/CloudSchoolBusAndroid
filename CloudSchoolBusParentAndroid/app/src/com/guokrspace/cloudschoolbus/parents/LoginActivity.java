@@ -3,28 +3,18 @@ package com.guokrspace.cloudschoolbus.parents;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build.VERSION;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +24,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONException;
 import com.android.support.authcode.ooo;
 import com.avast.android.dialogs.fragment.ListDialogFragment;
+import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
@@ -44,12 +35,14 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
-import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
+import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
+import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -61,12 +54,7 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends BaseActivity implements LoaderCallbacks<Cursor>, IListDialogListener {
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
+public class LoginActivity extends BaseActivity implements IListDialogListener {
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -84,6 +72,8 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     private static final int GET_SESIONID = 1;
     private static final int GET_BASEINFO = 2;
     private static final int LOGIN_FAILED = 3;
+    private static final int NO_NETOWRK   = 4;
+    private static final int SERVER_ERROR   = 5;
 
     private static final int RESULT_FAIL = -1;
     private static final int RESULT_OK = 0;
@@ -108,7 +98,6 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                 //Get Session ID
                 case GET_SESIONID:
                     //Save key information into Global var and database
-                    showProgress(false);
                     mApplication.mConfig = new ConfigEntity(null,sid,current_student,username,password);
                     ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
                     configEntityDao.insert(mApplication.mConfig);
@@ -123,18 +112,27 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                     break;
                 //Login Process Failed
                 case LOGIN_FAILED:
-                    resultIntent = new Intent();
-                    setResult(RESULT_FAIL, resultIntent);
-                    finish();
+                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager()).setMessage(getResources().getString(R.string.auth_failed))
+                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                    showProgress(false);
+                    break;
+                case NO_NETOWRK:
+                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager()).setMessage(getResources().getString(R.string.no_network))
+                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                    showProgress(false);
+                    break;
+                case SERVER_ERROR:
+                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager()).setMessage(getResources().getString(R.string.server_error))
+                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                    showProgress(false);
                     break;
                 default:
                     break;
             }
+
             return false;
         }
     });
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +141,6 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -169,16 +166,15 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    private void populateAutoComplete() {
-        if (VERSION.SDK_INT >= 14) {
-            // Use ContactsContract.Profile (API 14+)
-            getLoaderManager().initLoader(0, null, this);
-        } else if (VERSION.SDK_INT >= 8) {
-            // Use AccountManager (API 8+)
-            new SetupEmailAutoCompleteTask().execute(null, null);
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -186,9 +182,6 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -226,17 +219,8 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
             login(username, password);
-
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
@@ -280,40 +264,6 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-//        return new CursorLoader(this,
-//                // Retrieve data rows for the device user's 'profile' contact.
-//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-//
-//                // Select only email addresses.
-//                ContactsContract.Contacts.Data.MIMETYPE +
-//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-//                .CONTENT_ITEM_TYPE},
-//
-//                // Show primary email addresses first. Note that there won't be
-//                // a primary email address if the user hasn't specified one.
-//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<String>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
 
     @Override
     public void onListItemSelected(CharSequence value, int number, int requestCode) {
@@ -325,60 +275,19 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         }
     }
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-    /**
-     * Use an AsyncTask to fetch the user's email addresses on a background thread, and update
-     * the email text field with results on the main UI thread.
-     */
-    class SetupEmailAutoCompleteTask extends AsyncTask<Void, Void, List<String>> {
-
-        @Override
-        protected List<String> doInBackground(Void... voids) {
-            ArrayList<String> emailAddressCollection = new ArrayList<String>();
-
-            // Get all emails from the user's contacts and copy them to a list.
-            ContentResolver cr = getContentResolver();
-            Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                    null, null, null);
-            while (emailCur.moveToNext()) {
-                String email = emailCur.getString(emailCur.getColumnIndex(ContactsContract
-                        .CommonDataKinds.Email.DATA));
-                emailAddressCollection.add(email);
-            }
-            emailCur.close();
-
-            return emailAddressCollection;
-        }
-
-        @Override
-        protected void onPostExecute(List<String> emailAddressCollection) {
-            addEmailsToAutoComplete(emailAddressCollection);
-        }
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
     public void login(String username, String password) {
+
+        if(!networkStatusEvent.isNetworkConnected()) {
+            handler.sendEmptyMessage(NO_NETOWRK);
+            return;
+        }
+
+        showProgress(true);
+
         RequestParams params = new RequestParams();
         params.put("username", username);
         params.put("password", ooo.h(password, "mactop", 0));
@@ -398,9 +307,12 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                     }
                 }
 
-                if (retCode.equals("1")) {
+                if (!retCode.equals("1"))
+                {
+                    handler.sendEmptyMessage(SERVER_ERROR);
+                    return;
+                } else {
                     students = FastJsonTools.getListObject(response.toString(), Student.class);
-
                     mApplication.mStudentList = students;
                 }
 
@@ -460,12 +372,20 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     }
 
     private void getClassInfoFromServer() {
+
+        if(!networkStatusEvent.isNetworkConnected()) {
+            handler.sendEmptyMessage(NO_NETOWRK);
+            return;
+        }
+
+        showProgress(true);
+
         final ClassEntityDao classEntityDao = mApplication.mDaoSession.getClassEntityDao();
         final TeacherEntityDao teacherEntityDao = mApplication.mDaoSession.getTeacherEntityDao();
 
         RequestParams params = new RequestParams();
 
-        CloudSchoolBusRestClient.get("classinfo", params, new JsonHttpResponseHandler() {
+        CloudSchoolBusRestClient.get(ProtocolDef.METHOD_Classinfo, params, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
                         String retCode = "";
@@ -479,7 +399,8 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                         }
 
                         if (!retCode.equals("1")) {
-                            //Error Handling
+                            handler.sendEmptyMessage(SERVER_ERROR);
+                            return;
                         }
 
                         mApplication.mBaseInfo = (Baseinfo) FastJsonTools.getObject(response.toString(), Baseinfo.class);
@@ -536,6 +457,14 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
 
     public void unit() throws JSONException {
+
+        if(!networkStatusEvent.isNetworkConnected()) {
+            handler.sendEmptyMessage(NO_NETOWRK);
+            return;
+        }
+
+        showProgress(true);
+
         RequestParams params = new RequestParams();
         params.put("uid_student", mApplication.mCurrentStudent.getUid_student());
         params.put("uid_class", mApplication.mCurrentStudent.getUid_class());
@@ -554,7 +483,10 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                     }
                 }
 
-                if (retCode.equals("1")) {
+                if (!retCode.equals("1")) {
+                    handler.sendEmptyMessage(SERVER_ERROR);
+                    return;
+                } else {
                     try {
                         sid = response.getString("sid");
                         handler.sendEmptyMessage(GET_SESIONID);
@@ -571,58 +503,9 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         });
     }
 
-
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mEmail)) {
-//                    // Account exists, return true if the password matches.
-//                    return pieces[1].equals(mPassword);
-//                }
-//            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+    @Subscribe public void onNetworkStatusChange(NetworkStatusEvent event)
+    {
+        networkStatusEvent = event;
     }
 }
 

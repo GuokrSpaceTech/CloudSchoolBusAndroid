@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,10 +25,8 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ReportItemEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ReportItemEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Report;
 import com.guokrspace.cloudschoolbus.parents.entity.ReportItem;
-import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
-import com.guokrspace.cloudschoolbus.parents.module.messages.TeacherMessageBoxFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
-import com.guokrspace.cloudschoolbus.parents.views.ReportListCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;

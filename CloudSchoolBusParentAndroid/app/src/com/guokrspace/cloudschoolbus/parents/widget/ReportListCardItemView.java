@@ -1,4 +1,4 @@
-package com.guokrspace.cloudschoolbus.parents.views;
+package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,11 +8,6 @@ import android.widget.TextView;
 import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
-
-import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by wangjianfeng on 15/7/26.

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
@@ -20,6 +21,9 @@ import com.android.support.dialog.*;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
+import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +37,8 @@ import java.util.List;
 abstract public class BaseActivity extends ActionBarActivity {
 
 	protected Context mContext;
-
 	public CloudSchoolBusParentsApplication mApplication;
+	public NetworkStatusEvent networkStatusEvent;
 
 	private CustomWaitDialog mCustomWaitDialog;
 
@@ -43,11 +47,23 @@ abstract public class BaseActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 
 		getWindow().setFormat(PixelFormat.RGBA_8888);
-
 		mContext = this;
-
 		mApplication = (CloudSchoolBusParentsApplication) mContext
 				.getApplicationContext();
+
+		networkStatusEvent = new NetworkStatusEvent(false,false,false);
+		ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo        mobileInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		NetworkInfo        activeInfo = manager.getActiveNetworkInfo();
+		if(activeInfo!=null)
+		{
+			networkStatusEvent.setIsNetworkConnected(true);
+			if(wifiInfo.isConnected())
+				networkStatusEvent.setIsWifiConnected(true);
+			if(mobileInfo.isConnected())
+				networkStatusEvent.setIsMobileNetworkConnected(true);
+		}
 
 		DebugLog.setTag(mContext.getClass().getName());
 	}
@@ -101,21 +117,6 @@ abstract public class BaseActivity extends ActionBarActivity {
 			mCustomWaitDialog = null;
 		}
 	}
-
-	/**
-	 * 判断网络连接监听
-	 */
-	private BroadcastReceiver mNetConnectBroadcastReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent
-					.getAction())) {
-//				UploadFileUtils.getUploadUtils().setContext(mContext);
-//				UploadFileUtils.getUploadUtils().uploadFileService();
-			}
-		}
-	};
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -123,7 +124,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 		DebugLog.logI("Activity onSaveInstanceState");
 //		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
 //		outState.putString("loginToken", NetworkClient.getNetworkClient().getLoginToken());
-		outState.putSerializable("StudentList", (ArrayList<Student>) mApplication.mStudentList);
+//		outState.putSerializable("StudentList", (ArrayList<Student>) mApplication.mStudentList);
 //		outState.putSerializable("ClassInfo", mApplication.mClassInfo);
 		super.onSaveInstanceState(outState);
 	}
@@ -136,7 +137,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 			DebugLog.logI("Activity onRestoreInstanceState");
 	//		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onRestoreInstanceState");
 //			NetworkClient.getNetworkClient().setLoginToken(savedInstanceState.getString("loginToken"));
-			mApplication.mStudentList = (List<Student>) savedInstanceState.getSerializable("StudentList");
+//			mApplication.mStudentList = (List<Student>) savedInstanceState.getSerializable("StudentList");
 //			mApplication.mClassInfo = (Classinfo) savedInstanceState.getSerializable("ClassInfo");
 		}
 	}
@@ -144,28 +145,12 @@ abstract public class BaseActivity extends ActionBarActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		// 注册广播
-//		if (!(this instanceof LoginActivity) && !(this instanceof InitActivity)) {
-//			IntentFilter netConnectIntentFilter = new IntentFilter(
-//					ConnectivityManager.CONNECTIVITY_ACTION);
-//			mContext.registerReceiver(mNetConnectBroadcastReceiver,
-//					netConnectIntentFilter);
-//		}else {
-////			DebugLog.logI("onResume LoginActivity InitActivity");
-//		}
-//		MobclickAgent.onResumeume(this);
+		BusProvider.getInstance().register(this);
 	}
 
 	@Override
 	public void onPause() {
         super.onPause();
-//		if (!(this instanceof LoginActivity) && !(this instanceof InitActivity)) {
-//			mContext.unregisterReceiver(mNetConnectBroadcastReceiver);
-//		}else {
-////			DebugLog.logI("onPause LoginActivity InitActivity");
-//		}
-//
-////		MobclickAgent.onPause(this);
-//	}
+		BusProvider.getInstance().unregister(this);
     }
 }
