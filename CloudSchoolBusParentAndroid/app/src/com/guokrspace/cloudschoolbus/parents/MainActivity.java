@@ -17,7 +17,6 @@
 package com.guokrspace.cloudschoolbus.parents;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -42,27 +41,16 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONException;
 import com.astuetz.PagerSlidingTabStrip;
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
-import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
-import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.photosFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.TimelineFragment;
 import com.guokrspace.cloudschoolbus.parents.module.messages.InboxFragment;
-import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
-
-import java.util.List;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
@@ -82,7 +70,7 @@ pstsTextAllCaps If true, all tab titles will be upper case, default true
  */
 
 public class MainActivity extends BaseActivity implements
-		photosFragment.OnFragmentInteractionListener,
+		TimelineFragment.OnFragmentInteractionListener,
 		NoticeFragment.OnFragmentInteractionListener,
 		AttendanceFragment.OnFragmentInteractionListener,
 		ScheduleFragment.OnFragmentInteractionListener,
@@ -147,7 +135,7 @@ public class MainActivity extends BaseActivity implements
 
 	private void initFragments()
 	{
-		mFragments[0] = photosFragment.newInstance(null, null);
+		mFragments[0] = TimelineFragment.newInstance(null, null);
 		mFragments[1] = InboxFragment.newInstance(null, null);
 		mFragments[2] = NoticeFragment.newInstance(null,null);
 		mFragments[3] = NoticeFragment.newInstance(null,null);

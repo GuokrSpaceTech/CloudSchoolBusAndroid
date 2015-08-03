@@ -1,30 +1,27 @@
-package com.dexafree.materialList.cards;
+package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 
-import com.dexafree.materialList.R;
+import com.dexafree.materialList.cards.SimpleCard;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
-import com.dexafree.materialList.controller.RecyclerItemClickListener;
+import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.module.explore.ImageAdapter;
 
 /**
  * Created by Yang Kai on 15/7/14.
  */
-public class CustomCard extends SimpleCard{
+public class TimelineCard extends SimpleCard {
 
     private String teacherAvatarUrl;
     private String teacherName;
     private String kindergarten;
     private String sentTime;
-    private RecyclerView.Adapter adapter;
-    private String likesNum;
-    private String commentNum;
+    private ImageAdapter imageAdapter;
+    private RecyclerView.Adapter tagAdapter;
     private CommonRecyclerItemClickListener mOnItemSelectedListener;
     private View.OnClickListener mShareButtonClickListener;
-    private View.OnClickListener mLikeButtonClickListener;
-    private View.OnClickListener mCommentButtonClickListener;
     private Context context;
 
     public String getKindergarten() {
@@ -59,36 +56,12 @@ public class CustomCard extends SimpleCard{
         this.teacherAvatarUrl = teacherAvatarUrl;
     }
 
-    public RecyclerView.Adapter getAdapter() {
-        return adapter;
-    }
-
-    public void setAdapter(RecyclerView.Adapter adapter) {
-        this.adapter = adapter;
-    }
-
     public Context getContext() {
         return context;
     }
 
     public void setContext(Context context) {
         this.context = context;
-    }
-
-    public String getLikesNum() {
-        return likesNum;
-    }
-
-    public void setLikesNum(String likesNum) {
-        this.likesNum = likesNum;
-    }
-
-    public String getCommentNum() {
-        return commentNum;
-    }
-
-    public void setCommentNum(String commentNum) {
-        this.commentNum = commentNum;
     }
 
     public CommonRecyclerItemClickListener getmOnItemSelectedListener() {
@@ -107,29 +80,29 @@ public class CustomCard extends SimpleCard{
         this.mShareButtonClickListener = mShareButtonClickListener;
     }
 
-    public View.OnClickListener getmLikeButtonClickListener() {
-        return mLikeButtonClickListener;
+    public ImageAdapter getImageAdapter() {
+        return imageAdapter;
     }
 
-    public void setmLikeButtonClickListener(View.OnClickListener mLikeButtonClickListener) {
-        this.mLikeButtonClickListener = mLikeButtonClickListener;
+    public void setImageAdapter(ImageAdapter imageAdapter) {
+        this.imageAdapter = imageAdapter;
     }
 
-    public View.OnClickListener getmCommentButtonClickListener() {
-        return mCommentButtonClickListener;
+    public RecyclerView.Adapter getTagAdapter() {
+        return tagAdapter;
     }
 
-    public void setmCommentButtonClickListener(View.OnClickListener mCommentButtonClickListener) {
-        this.mCommentButtonClickListener = mCommentButtonClickListener;
+    public void setTagAdapter(RecyclerView.Adapter tagAdapter) {
+        this.tagAdapter = tagAdapter;
     }
 
-    public CustomCard(Context context) {
+    public TimelineCard(Context context) {
         super(context);
         this.setContext(context);
     }
 
     @Override
     public int getLayout() {
-        return R.layout.material_customer_card_layout;
+        return R.layout.material_timeline_card_layout;
     }
 }

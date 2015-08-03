@@ -16,7 +16,8 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Toast;
 
-import com.dexafree.materialList.cards.CustomCard;
+import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.guokrspace.cloudschoolbus.parents.widget.TimelineCard;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
@@ -52,7 +53,7 @@ import de.greenrobot.dao.query.QueryBuilder;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class photosFragment extends BaseFragment {
+public class TimelineFragment extends BaseFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,46 +71,58 @@ public class photosFragment extends BaseFragment {
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private String mLocalArticleStartTime;
-    private String mLocalArticleEndTime;
-
     private int previousTotal = 0;
     private int visibleThreshold = 3;
     int firstVisibleItem, visibleItemCount, totalItemCount;
 
-    final private static int MSG_ONREFRESH  = 1;
-    final private static int MSG_ONLOADMORE  = 2;
-    final private static int MSG_ONCACHE  = 3;
-    final private static int MSG_NOCHANGE  = 4;
+    final private static int MSG_ONREFRESH = 1;
+    final private static int MSG_ONLOADMORE = 2;
+    final private static int MSG_ONCACHE = 3;
+    final private static int MSG_NOCHANGE = 4;
+    private static final int MSG_NO_NETOWRK = 5;
+    private static final int MSG_SERVER_ERROR = 6;
 
-    private Handler mHandler = new Handler( new Handler.Callback() {
+    private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
 
-            switch(msg.what)
-            {
+            switch (msg.what) {
                 case MSG_ONREFRESH:
+                    hideWaitDialog();
                     InsertCardsAtBeginning();
-                    if(mSwipeRefreshLayout.isRefreshing())
+                    if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     break;
                 case MSG_ONLOADMORE:
+                    hideWaitDialog();
                     AppendCards();
                     break;
                 case MSG_ONCACHE:
                     AppendCards();
                     break;
                 case MSG_NOCHANGE:
-                    if(mSwipeRefreshLayout.isRefreshing())
+                    hideWaitDialog();
+                    if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
+                    break;
+                case MSG_NO_NETOWRK:
+                    SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.no_network))
+                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                    hideWaitDialog();
+                    break;
+                case MSG_SERVER_ERROR:
+                    SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.server_error))
+                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                    hideWaitDialog();
+                    break;
             }
             return false;
         }
     });
 
     // TODO: Rename and change types of parameters
-    public static photosFragment newInstance(String param1, String param2) {
-        photosFragment fragment = new photosFragment();
+    public static TimelineFragment newInstance(String param1, String param2) {
+        TimelineFragment fragment = new TimelineFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -121,7 +134,7 @@ public class photosFragment extends BaseFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public photosFragment() {
+    public TimelineFragment() {
     }
 
     @Override
@@ -153,7 +166,7 @@ public class photosFragment extends BaseFragment {
             }
         });
 
-        mLayoutManager = (LinearLayoutManager)mMaterialListView.getLayoutManager();
+        mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
         mMaterialListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
             private boolean loading = true;
@@ -181,7 +194,7 @@ public class photosFragment extends BaseFragment {
                     // End has been reached
 
                     Log.i("...", "end called");
-                    ArticleEntity articleEntity = mArticleEntities.get(mArticleEntities.size()-1);
+                    ArticleEntity articleEntity = mArticleEntities.get(mArticleEntities.size() - 1);
                     String starttime = articleEntity.getAddtime();
                     UpdateArticlesCacheDownward(starttime);
 
@@ -196,10 +209,9 @@ public class photosFragment extends BaseFragment {
 
         GetArticlesFromCache();
 
-        if(mArticleEntities.size() == 0)
+        if (mArticleEntities.size() == 0)
             GetLasteArticlesFromServer();
-        else
-        {
+        else {
             ArticleEntity articleEntity = mArticleEntities.get(0);
             String endtime = articleEntity.getAddtime();
             UpdateArticlesCacheForward(endtime);
@@ -256,38 +268,39 @@ public class photosFragment extends BaseFragment {
 
 
     //Get all articles from cache
-    private void GetArticlesFromCache()
-    {
+    private void GetArticlesFromCache() {
         final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
-        mArticleEntities = (ArrayList<ArticleEntity>)articleEntityDao.queryBuilder().list();
-        if(mArticleEntities.size()!=0)
+        mArticleEntities = (ArrayList<ArticleEntity>) articleEntityDao.queryBuilder().list();
+        if (mArticleEntities.size() != 0)
             mHandler.sendEmptyMessage(MSG_ONCACHE);
     }
 
     //Get all articles from newest in Cache to newest in Server
-    private void UpdateArticlesCacheForward(String endtime)
-    {
-        GetArticlesFromServer("0",  endtime);
+    private void UpdateArticlesCacheForward(String endtime) {
+        GetArticlesFromServer("0", endtime);
     }
 
     //Get the older 20 articles from server then update the cache
-    private void UpdateArticlesCacheDownward(String starttime)
-    {
-        GetArticlesFromServer( starttime,  "0");
+    private void UpdateArticlesCacheDownward(String starttime) {
+        GetArticlesFromServer(starttime, "0");
     }
 
     //Get Lastest 20 Articles from server, only used when there is no cache
-    private void GetLasteArticlesFromServer()
-    {
+    private void GetLasteArticlesFromServer() {
         GetArticlesFromServer("0", "0");
     }
 
-    private void GetArticlesFromServer( final String starttime, final String endtime)
-    {
-        SQLiteDatabase db = mApplication.mDBhelper.getWritableDatabase();
+    private void GetArticlesFromServer(final String starttime, final String endtime) {
+        if (!networkStatusEvent.isNetworkConnected()) {
+            mHandler.sendEmptyMessage(MSG_NO_NETOWRK);
+            return;
+        }
+
+        showWaitDialog("", null);
+
         final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
-        final ImageEntityDao   imageEntityDao   = mApplication.mDaoSession.getImageEntityDao();
-        final TagEntityDao     tagEntityDao     = mApplication.mDaoSession.getTagEntityDao();
+        final ImageEntityDao imageEntityDao = mApplication.mDaoSession.getImageEntityDao();
+        final TagEntityDao tagEntityDao = mApplication.mDaoSession.getTagEntityDao();
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("starttime", starttime);
@@ -304,13 +317,14 @@ public class photosFragment extends BaseFragment {
                         break;
                     }
                 }
-                if (retCode != "1") {
-                    // Errro Handling
+                if (!retCode.equals("1")) {
+                    mHandler.sendEmptyMessage(MSG_SERVER_ERROR);
+                    return;
                 }
-                ArticleList articleList = (ArticleList)FastJsonTools.getObject(response.toString(), ArticleList.class);
 
-                for(int i=0; i<articleList.getArticlelist().size(); i++)
-                {
+                ArticleList articleList = FastJsonTools.getObject(response.toString(), ArticleList.class);
+
+                for (int i = 0; i < articleList.getArticlelist().size(); i++) {
                     Article article = articleList.getArticlelist().get(i);
                     ArticleEntity articleEntity = new ArticleEntity(
                             article.getArticlekey(),
@@ -326,11 +340,12 @@ public class photosFragment extends BaseFragment {
                     );
                     articleEntityDao.insertOrReplace(articleEntity);
 
-                    for(int j=0; j<article.getPlist().size(); j++)
-                    {
-                        ImageFile imageFile = article.getPlist().get(j);
+//                    for(int j=0; j<article.getPlist().size(); j++)
+                    int imageNum = i % 9;
+                    for (int j = 0; j < imageNum; j++) {
+                        ImageFile imageFile = article.getPlist().get(0);
                         ImageEntity imageEntity = new ImageEntity(
-                                imageFile.getFilename(),
+                                imageFile.getFilename() + i + j,
                                 imageFile.getSource(),
                                 imageFile.getFext(),
                                 imageFile.getSize(),
@@ -339,8 +354,7 @@ public class photosFragment extends BaseFragment {
                         imageEntityDao.insertOrReplace(imageEntity);
                     }
 
-                    for(int j=0; j<article.getTaglist().size(); j++)
-                    {
+                    for (int j = 0; j < article.getTaglist().size(); j++) {
                         Tag tag = article.getTaglist().get(j);
                         TagEntity tagEntity = new TagEntity(
                                 tag.getTagid(),
@@ -355,16 +369,16 @@ public class photosFragment extends BaseFragment {
 
                 //Update mArticleEntities
                 String start = articleList.getArticlelist().get(0).getAddtime();
-                String end   = articleList.getArticlelist().get(articleList.getArticlelist().size()-1).getAddtime();
+                String end = articleList.getArticlelist().get(articleList.getArticlelist().size() - 1).getAddtime();
                 QueryBuilder queryBuilder = articleEntityDao.queryBuilder();
-                queryBuilder.where(ArticleEntityDao.Properties.Addtime.between(end,start));
-                mArticleEntities = (ArrayList<ArticleEntity>)queryBuilder.list();
+                queryBuilder.where(ArticleEntityDao.Properties.Addtime.between(end, start));
+                mArticleEntities = (ArrayList<ArticleEntity>) queryBuilder.list();
 
-                if(starttime.equals("0") && endtime.equals("0"))
+                if (starttime.equals("0") && endtime.equals("0"))
                     mHandler.sendEmptyMessage(MSG_ONREFRESH);
-                else if(endtime.equals("0"))
+                else if (endtime.equals("0"))
                     mHandler.sendEmptyMessage(MSG_ONLOADMORE);
-                else if(starttime.equals("0"))
+                else if (starttime.equals("0"))
                     mHandler.sendEmptyMessage(MSG_ONREFRESH);
 
             }
@@ -408,24 +422,41 @@ public class photosFragment extends BaseFragment {
         });
     }
 
-    private void AppendCards()
-    {
-        for(int i=0; i<mArticleEntities.size(); i++)
-        {
+    private void AppendCards() {
+        for (int i = 0; i < mArticleEntities.size(); i++) {
             ArticleEntity articleEntity = mArticleEntities.get(i);
-            CustomCard card = new CustomCard(mParentContext);
+            TimelineCard card = new TimelineCard(mParentContext);
             card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
             card.setTeacherName("小花老师");
             card.setKindergarten("星星幼儿园");
             card.setSentTime(articleEntity.getAddtime());
 
-            card.setTitle(articleEntity.getTitle() + "Title");
-            card.setDescription(articleEntity.getContent() + "Test Content: this is a content...");
-            card.setDrawable(articleEntity.getImages().get(0).getSource());
+            card.setTitle(articleEntity.getTitle());
+            card.setDescription(articleEntity.getContent());
+            int num_column;
+            switch (articleEntity.getImages().size()) {
+                case 1:
+                    num_column = 1;
+                    break;
+                case 2:
+                    num_column = 2;
+                    break;
+                case 3:
+                    num_column = 3;
+                    break;
+                case 4:
+                    num_column = 2;
+                    break;
+                default:
+                    num_column = 3;
+            }
+
+            card.setImageAdapter(new ImageAdapter(mParentContext, articleEntity.getImages()));
+//            card.setDrawable(articleEntity.getImages().get(0).getSource());
 
             List<TagEntity> tagEntities = articleEntity.getTags();
             TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
-            card.setAdapter(adapter);
+            card.setTagAdapter(adapter);
 
             CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
                 @Override
@@ -441,6 +472,7 @@ public class photosFragment extends BaseFragment {
             });
             card.setmOnItemSelectedListener(tagClickListener);
 
+
             View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -448,49 +480,46 @@ public class photosFragment extends BaseFragment {
                 }
             };
             card.setmShareButtonClickListener(shareButtonClickListener);
-
-            View.OnClickListener likeButtonClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
-                    animation(v);
-                }
-            };
-            card.setmLikeButtonClickListener(likeButtonClickListener);
-
-            View.OnClickListener commentButtonClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
-                    animation(v);
-                }
-            };
-            card.setmCommentButtonClickListener(commentButtonClickListener);
-            card.setLikesNum(articleEntity.getUpnum());
-            card.setCommentNum(articleEntity.getCommentnum());
 
             mMaterialListView.add(card);
         }
     }
 
-    private void InsertCardsAtBeginning()
-    {
-        for(int i=mArticleEntities.size()-1; i>=0; i--)
-        {
+    private void InsertCardsAtBeginning() {
+        for (int i = mArticleEntities.size() - 1; i >= 0; i--) {
             ArticleEntity articleEntity = mArticleEntities.get(i);
-            CustomCard card = new CustomCard(mParentContext);
+            TimelineCard card = new TimelineCard(mParentContext);
             card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
             card.setTeacherName("小花老师");
             card.setKindergarten("星星幼儿园");
             card.setSentTime(articleEntity.getAddtime());
 
-            card.setTitle(articleEntity.getTitle() + "Title");
-            card.setDescription(articleEntity.getContent() + "Test Content: this is a content...");
-            card.setDrawable(articleEntity.getImages().get(0).getSource());
+            card.setTitle(articleEntity.getTitle());
+            card.setDescription(articleEntity.getContent());
+            int num_column;
+            switch (articleEntity.getImages().size()) {
+                case 1:
+                    num_column = 1;
+                    break;
+                case 2:
+                    num_column = 2;
+                    break;
+                case 3:
+                    num_column = 3;
+                    break;
+                case 4:
+                    num_column = 2;
+                    break;
+                default:
+                    num_column = 3;
+                    break;
+            }
+            card.setImageAdapter(new ImageAdapter(mParentContext, articleEntity.getImages()));
+//            card.setDrawable(articleEntity.getImages().get(0).getSource());
 
             List<TagEntity> tagEntities = articleEntity.getTags();
             TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
-            card.setAdapter(adapter);
+            card.setTagAdapter(adapter);
 
             CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
                 @Override
@@ -513,35 +542,15 @@ public class photosFragment extends BaseFragment {
                 }
             };
             card.setmShareButtonClickListener(shareButtonClickListener);
-
-            View.OnClickListener likeButtonClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
-                    animation(v);
-                }
-            };
-            card.setmLikeButtonClickListener(likeButtonClickListener);
-
-            View.OnClickListener commentButtonClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mParentContext, "haha", Toast.LENGTH_SHORT).show();
-                    animation(v);
-                }
-            };
-            card.setmCommentButtonClickListener(commentButtonClickListener);
-            card.setLikesNum(articleEntity.getUpnum());
-            card.setCommentNum(articleEntity.getCommentnum());
 
             mMaterialListView.addAtStart(card);
         }
     }
 
 
-    public  void animation(View v){
+    public void animation(View v) {
         v.clearAnimation();
-        ScaleAnimation animation =new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ScaleAnimation animation = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setDuration(300);
         v.setAnimation(animation);
     }

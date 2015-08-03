@@ -52,12 +52,12 @@
         <item name="android:layout_height">match_parent</item>
 
         <item name="android:textColor">#fff</item>
-        <item name="android:textSize">@dimen/bigger_title_size</item>
+        <item name="android:textSize">@dimen/title_size</item>
         <!--<item name="android:fontFamily">sans-serif-light</item>-->
 
         <item name="android:gravity">bottom|left</item>
-        <item name="android:paddingLeft">@dimen/big_padding</item>
-        <item name="android:paddingBottom">@dimen/small_padding</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
     </style>
 
     <style name="CardDescription">

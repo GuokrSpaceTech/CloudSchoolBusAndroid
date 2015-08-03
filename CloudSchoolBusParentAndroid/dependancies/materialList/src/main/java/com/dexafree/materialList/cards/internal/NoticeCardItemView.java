@@ -1,17 +1,12 @@
 package com.dexafree.materialList.cards.internal;
 
 import android.content.Context;
-import android.support.v7.widget.BadgeView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dexafree.materialList.R;
-import com.dexafree.materialList.cards.CustomCard;
 import com.dexafree.materialList.cards.NoticeCard;
 import com.dexafree.materialList.model.CardItemView;
 import com.squareup.picasso.Picasso;
