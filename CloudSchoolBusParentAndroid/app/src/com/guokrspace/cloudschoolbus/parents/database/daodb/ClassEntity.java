@@ -11,14 +11,11 @@ import de.greenrobot.dao.DaoException;
  */
 public class ClassEntity {
 
-    private String uid;
-    private String phone;
-    private String schoolname;
-    private String address;
-    private String classname;
-    private String province;
-    private String city;
+    /** Not-null value. */
     private String classid;
+    private String name;
+    /** Not-null value. */
+    private String schoolid;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -26,6 +23,7 @@ public class ClassEntity {
     /** Used for active entity operations. */
     private transient ClassEntityDao myDao;
 
+    private List<StudentEntity> studentEntityList;
     private List<TeacherEntity> teacherEntityList;
 
     public ClassEntity() {
@@ -35,15 +33,10 @@ public class ClassEntity {
         this.classid = classid;
     }
 
-    public ClassEntity(String uid, String phone, String schoolname, String address, String classname, String province, String city, String classid) {
-        this.uid = uid;
-        this.phone = phone;
-        this.schoolname = schoolname;
-        this.address = address;
-        this.classname = classname;
-        this.province = province;
-        this.city = city;
+    public ClassEntity(String classid, String name, String schoolid) {
         this.classid = classid;
+        this.name = name;
+        this.schoolid = schoolid;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -52,68 +45,54 @@ public class ClassEntity {
         myDao = daoSession != null ? daoSession.getClassEntityDao() : null;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getSchoolname() {
-        return schoolname;
-    }
-
-    public void setSchoolname(String schoolname) {
-        this.schoolname = schoolname;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getClassname() {
-        return classname;
-    }
-
-    public void setClassname(String classname) {
-        this.classname = classname;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
+    /** Not-null value. */
     public String getClassid() {
         return classid;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setClassid(String classid) {
         this.classid = classid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /** Not-null value. */
+    public String getSchoolid() {
+        return schoolid;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setSchoolid(String schoolid) {
+        this.schoolid = schoolid;
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<StudentEntity> getStudentEntityList() {
+        if (studentEntityList == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            StudentEntityDao targetDao = daoSession.getStudentEntityDao();
+            List<StudentEntity> studentEntityListNew = targetDao._queryClassEntity_StudentEntityList(classid);
+            synchronized (this) {
+                if(studentEntityList == null) {
+                    studentEntityList = studentEntityListNew;
+                }
+            }
+        }
+        return studentEntityList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetStudentEntityList() {
+        studentEntityList = null;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

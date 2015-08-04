@@ -6,64 +6,31 @@ package com.guokrspace.cloudschoolbus.parents.database.daodb;
  */
 public class StudentEntity {
 
-    /** Not-null value. */
-    private String uid_student;
-    private String uid_class;
-    private String inactive;
-    private String birthday;
     private String cnname;
-    private String nikename;
+    private String birthday;
     private String sex;
-    private String classname;
-    private String schoolid;
+    private String avatar;
+    private String nikename;
+    /** Not-null value. */
+    private String studentid;
+    /** Not-null value. */
+    private String classid;
 
     public StudentEntity() {
     }
 
-    public StudentEntity(String uid_student, String uid_class, String inactive, String birthday, String cnname, String nikename, String sex, String classname, String schoolid) {
-        this.uid_student = uid_student;
-        this.uid_class = uid_class;
-        this.inactive = inactive;
-        this.birthday = birthday;
+    public StudentEntity(String studentid) {
+        this.studentid = studentid;
+    }
+
+    public StudentEntity(String cnname, String birthday, String sex, String avatar, String nikename, String studentid, String classid) {
         this.cnname = cnname;
-        this.nikename = nikename;
-        this.sex = sex;
-        this.classname = classname;
-        this.schoolid = schoolid;
-    }
-
-    /** Not-null value. */
-    public String getUid_student() {
-        return uid_student;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setUid_student(String uid_student) {
-        this.uid_student = uid_student;
-    }
-
-    public String getUid_class() {
-        return uid_class;
-    }
-
-    public void setUid_class(String uid_class) {
-        this.uid_class = uid_class;
-    }
-
-    public String getInactive() {
-        return inactive;
-    }
-
-    public void setInactive(String inactive) {
-        this.inactive = inactive;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
         this.birthday = birthday;
+        this.sex = sex;
+        this.avatar = avatar;
+        this.nikename = nikename;
+        this.studentid = studentid;
+        this.classid = classid;
     }
 
     public String getCnname() {
@@ -74,12 +41,12 @@ public class StudentEntity {
         this.cnname = cnname;
     }
 
-    public String getNikename() {
-        return nikename;
+    public String getBirthday() {
+        return birthday;
     }
 
-    public void setNikename(String nikename) {
-        this.nikename = nikename;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public String getSex() {
@@ -90,20 +57,40 @@ public class StudentEntity {
         this.sex = sex;
     }
 
-    public String getClassname() {
-        return classname;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setClassname(String classname) {
-        this.classname = classname;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
-    public String getSchoolid() {
-        return schoolid;
+    public String getNikename() {
+        return nikename;
     }
 
-    public void setSchoolid(String schoolid) {
-        this.schoolid = schoolid;
+    public void setNikename(String nikename) {
+        this.nikename = nikename;
+    }
+
+    /** Not-null value. */
+    public String getStudentid() {
+        return studentid;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setStudentid(String studentid) {
+        this.studentid = studentid;
+    }
+
+    /** Not-null value. */
+    public String getClassid() {
+        return classid;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setClassid(String classid) {
+        this.classid = classid;
     }
 
 }

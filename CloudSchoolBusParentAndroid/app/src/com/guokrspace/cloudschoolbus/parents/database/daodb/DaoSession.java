@@ -22,6 +22,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig studentEntityDaoConfig;
     private final DaoConfig teacherEntityDaoConfig;
     private final DaoConfig classEntityDaoConfig;
+    private final DaoConfig schoolEntityDaoConfig;
     private final DaoConfig articleEntityDaoConfig;
     private final DaoConfig imageEntityDaoConfig;
     private final DaoConfig tagEntityDaoConfig;
@@ -38,6 +39,7 @@ public class DaoSession extends AbstractDaoSession {
     private final StudentEntityDao studentEntityDao;
     private final TeacherEntityDao teacherEntityDao;
     private final ClassEntityDao classEntityDao;
+    private final SchoolEntityDao schoolEntityDao;
     private final ArticleEntityDao articleEntityDao;
     private final ImageEntityDao imageEntityDao;
     private final TagEntityDao tagEntityDao;
@@ -65,6 +67,9 @@ public class DaoSession extends AbstractDaoSession {
 
         classEntityDaoConfig = daoConfigMap.get(ClassEntityDao.class).clone();
         classEntityDaoConfig.initIdentityScope(type);
+
+        schoolEntityDaoConfig = daoConfigMap.get(SchoolEntityDao.class).clone();
+        schoolEntityDaoConfig.initIdentityScope(type);
 
         articleEntityDaoConfig = daoConfigMap.get(ArticleEntityDao.class).clone();
         articleEntityDaoConfig.initIdentityScope(type);
@@ -103,6 +108,7 @@ public class DaoSession extends AbstractDaoSession {
         studentEntityDao = new StudentEntityDao(studentEntityDaoConfig, this);
         teacherEntityDao = new TeacherEntityDao(teacherEntityDaoConfig, this);
         classEntityDao = new ClassEntityDao(classEntityDaoConfig, this);
+        schoolEntityDao = new SchoolEntityDao(schoolEntityDaoConfig, this);
         articleEntityDao = new ArticleEntityDao(articleEntityDaoConfig, this);
         imageEntityDao = new ImageEntityDao(imageEntityDaoConfig, this);
         tagEntityDao = new TagEntityDao(tagEntityDaoConfig, this);
@@ -119,6 +125,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(StudentEntity.class, studentEntityDao);
         registerDao(TeacherEntity.class, teacherEntityDao);
         registerDao(ClassEntity.class, classEntityDao);
+        registerDao(SchoolEntity.class, schoolEntityDao);
         registerDao(ArticleEntity.class, articleEntityDao);
         registerDao(ImageEntity.class, imageEntityDao);
         registerDao(TagEntity.class, tagEntityDao);
@@ -137,6 +144,7 @@ public class DaoSession extends AbstractDaoSession {
         studentEntityDaoConfig.getIdentityScope().clear();
         teacherEntityDaoConfig.getIdentityScope().clear();
         classEntityDaoConfig.getIdentityScope().clear();
+        schoolEntityDaoConfig.getIdentityScope().clear();
         articleEntityDaoConfig.getIdentityScope().clear();
         imageEntityDaoConfig.getIdentityScope().clear();
         tagEntityDaoConfig.getIdentityScope().clear();
@@ -164,6 +172,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public ClassEntityDao getClassEntityDao() {
         return classEntityDao;
+    }
+
+    public SchoolEntityDao getSchoolEntityDao() {
+        return schoolEntityDao;
     }
 
     public ArticleEntityDao getArticleEntityDao() {

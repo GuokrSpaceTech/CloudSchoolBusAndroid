@@ -6,38 +6,51 @@ package com.guokrspace.cloudschoolbus.parents.database.daodb;
  */
 public class TeacherEntity {
 
-    private String teacherid;
-    private String teachername;
+    /** Not-null value. */
+    private String id;
+    private String duty;
+    private String name;
     /** Not-null value. */
     private String classid;
 
     public TeacherEntity() {
     }
 
-    public TeacherEntity(String teacherid) {
-        this.teacherid = teacherid;
+    public TeacherEntity(String id) {
+        this.id = id;
     }
 
-    public TeacherEntity(String teacherid, String teachername, String classid) {
-        this.teacherid = teacherid;
-        this.teachername = teachername;
+    public TeacherEntity(String id, String duty, String name, String classid) {
+        this.id = id;
+        this.duty = duty;
+        this.name = name;
         this.classid = classid;
     }
 
-    public String getTeacherid() {
-        return teacherid;
+    /** Not-null value. */
+    public String getId() {
+        return id;
     }
 
-    public void setTeacherid(String teacherid) {
-        this.teacherid = teacherid;
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getTeachername() {
-        return teachername;
+    public String getDuty() {
+        return duty;
     }
 
-    public void setTeachername(String teachername) {
-        this.teachername = teachername;
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /** Not-null value. */

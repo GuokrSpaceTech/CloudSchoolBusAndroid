@@ -15,15 +15,24 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.internal.widget.ActionBarContainer;
 
 
+import com.alibaba.fastjson.JSONException;
 import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.android.support.dialog.*;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
+import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
+
+import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,19 +81,10 @@ abstract public class BaseActivity extends ActionBarActivity {
 
 	}
 
-	protected void setListener() {
-
-	}
-
-	protected void setTitleNavBar() {
-
-	}
-
 	/**
 	 * 显示等待对话框
 	 *
 	 * @param messageString
-	 * @param onDismissListener
 	 */
 	protected void showWaitDialog(String messageString,
 			final CustomWaitDialog.OnKeyCancel onKeyCancel) {
@@ -142,6 +142,53 @@ abstract public class BaseActivity extends ActionBarActivity {
 		}
 	}
 
+
+	@Subscribe
+	public void renew_sid() throws JSONException {
+
+		if(!networkStatusEvent.isNetworkConnected()) {
+			return;
+		}
+
+		RequestParams params = new RequestParams();
+		params.put("token", mApplication.mConfig.getToken());
+
+		CloudSchoolBusRestClient.post("login", params, new JsonHttpResponseHandler() {
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
+				String retCode = "";
+
+				for (int i = 0; i < headers.length; i++) {
+					Header header = headers[i];
+					if ("code".equalsIgnoreCase(header.getName())) {
+						retCode = header.getValue();
+						break;
+					}
+				}
+
+				if (!retCode.equals("1")) {
+					return;
+				} else {
+					try {
+						String sid = response.getString("sid");
+						ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
+						ConfigEntity configEntity = new ConfigEntity(null,mApplication.mConfig.getToken(),sid,mApplication.mConfig.getMobile());
+						configEntityDao.update(configEntity);
+					} catch (org.json.JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONObject errorResponse) {
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+			}
+		});
+	}
+
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -153,4 +200,5 @@ abstract public class BaseActivity extends ActionBarActivity {
         super.onPause();
 		BusProvider.getInstance().unregister(this);
     }
+
 }

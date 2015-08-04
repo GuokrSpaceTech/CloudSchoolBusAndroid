@@ -17,6 +17,8 @@ import android.view.animation.ScaleAnimation;
 import android.widget.Toast;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
+import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.guokrspace.cloudschoolbus.parents.widget.TimelineCard;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.dexafree.materialList.view.MaterialListView;
@@ -89,7 +91,7 @@ public class TimelineFragment extends BaseFragment {
             switch (msg.what) {
                 case MSG_ONREFRESH:
                     hideWaitDialog();
-                    InsertCardsAtBeginning();
+                    //InsertCardsAtBeginning();
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     break;
@@ -206,16 +208,17 @@ public class TimelineFragment extends BaseFragment {
             }
         });
 
+        GetLasteArticlesFromServer();
 
-        GetArticlesFromCache();
+//        GetArticlesFromCache();
 
-        if (mArticleEntities.size() == 0)
-            GetLasteArticlesFromServer();
-        else {
-            ArticleEntity articleEntity = mArticleEntities.get(0);
-            String endtime = articleEntity.getAddtime();
-            UpdateArticlesCacheForward(endtime);
-        }
+//        if (mArticleEntities.size() == 0)
+//            GetLasteArticlesFromServer();
+//        else {
+//            ArticleEntity articleEntity = mArticleEntities.get(0);
+//            String endtime = articleEntity.getAddtime();
+//            UpdateArticlesCacheForward(endtime);
+//        }
         return root;
     }
 
@@ -298,29 +301,17 @@ public class TimelineFragment extends BaseFragment {
 
         showWaitDialog("", null);
 
-        final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
-        final ImageEntityDao imageEntityDao = mApplication.mDaoSession.getImageEntityDao();
-        final TagEntityDao tagEntityDao = mApplication.mDaoSession.getTagEntityDao();
+//        final ArticleEntityDao articleEntityDao = mApplication.mDaoSession.getArticleEntityDao();
+//        final ImageEntityDao imageEntityDao = mApplication.mDaoSession.getImageEntityDao();
+//        final TagEntityDao tagEntityDao = mApplication.mDaoSession.getTagEntityDao();
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("starttime", starttime);
         params.put("endtime", endtime);
 
-        CloudSchoolBusRestClient.get("article", params, new JsonHttpResponseHandler() {
+        CloudSchoolBusRestClient.get(ProtocolDef.METHOD_timeline, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                String retCode = "";
-                for (int i = 0; i < headers.length; i++) {
-                    Header header = headers[i];
-                    if ("code".equalsIgnoreCase(header.getName())) {
-                        retCode = header.getValue();
-                        break;
-                    }
-                }
-                if (!retCode.equals("1")) {
-                    mHandler.sendEmptyMessage(MSG_SERVER_ERROR);
-                    return;
-                }
 
                 ArticleList articleList = FastJsonTools.getObject(response.toString(), ArticleList.class);
 
@@ -338,7 +329,7 @@ public class TimelineFragment extends BaseFragment {
                             article.getCommentnum(),
                             article.getHavezan()
                     );
-                    articleEntityDao.insertOrReplace(articleEntity);
+//                    articleEntityDao.insertOrReplace(articleEntity);
 
 //                    for(int j=0; j<article.getPlist().size(); j++)
                     int imageNum = i % 9;
@@ -351,7 +342,7 @@ public class TimelineFragment extends BaseFragment {
                                 imageFile.getSize(),
                                 imageFile.getIsCloud(),
                                 article.getArticlekey());
-                        imageEntityDao.insertOrReplace(imageEntity);
+//                        imageEntityDao.insertOrReplace(imageEntity);
                     }
 
                     for (int j = 0; j < article.getTaglist().size(); j++) {
@@ -363,16 +354,16 @@ public class TimelineFragment extends BaseFragment {
                                 tag.getTagname_en(),
                                 tag.getTagnamedesc_en(),
                                 article.getArticlekey());
-                        tagEntityDao.insertOrReplace(tagEntity);
+//                        tagEntityDao.insertOrReplace(tagEntity);
                     }
                 }
 
                 //Update mArticleEntities
                 String start = articleList.getArticlelist().get(0).getAddtime();
                 String end = articleList.getArticlelist().get(articleList.getArticlelist().size() - 1).getAddtime();
-                QueryBuilder queryBuilder = articleEntityDao.queryBuilder();
-                queryBuilder.where(ArticleEntityDao.Properties.Addtime.between(end, start));
-                mArticleEntities = (ArrayList<ArticleEntity>) queryBuilder.list();
+//                QueryBuilder queryBuilder = articleEntityDao.queryBuilder();
+//                queryBuilder.where(ArticleEntityDao.Properties.Addtime.between(end, start));
+//                mArticleEntities = (ArrayList<ArticleEntity>) queryBuilder.list();
 
                 if (starttime.equals("0") && endtime.equals("0"))
                     mHandler.sendEmptyMessage(MSG_ONREFRESH);
@@ -385,7 +376,21 @@ public class TimelineFragment extends BaseFragment {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
+                String retCode = "";
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+                if (!retCode.equals("1")) {
+                    mHandler.sendEmptyMessage(MSG_SERVER_ERROR);
+                    return;
+                }
+
+                List<Timeline> timelines = FastJsonTools.getListObject(response.toString(), Timeline.class);
+                mHandler.sendEmptyMessage(MSG_ONREFRESH);
             }
 
             @Override

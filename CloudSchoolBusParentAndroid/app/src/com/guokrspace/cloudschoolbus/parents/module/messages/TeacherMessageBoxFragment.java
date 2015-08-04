@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.android.support.utils.ImageUtil;
 import com.dexafree.materialList.cards.ChatMessageCard;
@@ -24,6 +25,7 @@ import com.guokrspace.cloudschoolbus.parents.entity.LetterDto;
 import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -70,10 +72,10 @@ public class TeacherMessageBoxFragment extends BaseFragment {
                     break;
                 case MSG_NEW_DATA:
                     mSwipeRefreshLayout.setRefreshing(false);
-                    insertCards();
+//                    insertCards();
                     break;
                 case MSG_OLD_DATA:
-                    appendCards();
+//                    appendCards();
                     break;
                 case MSG_NO_DATA:
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -108,11 +110,11 @@ public class TeacherMessageBoxFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mTeacher =  (Teacher)getArguments().get(ARG_TEACHER);
-        GetLettersFromCache(mTeacher.getTeacherid());
-        if (mLetterEntities.size() == 0)
-            GetLettersLatest(mTeacher.getTeacherid());
-        else
-            GetLettersNew(mLetterEntities.get(0).getAddtime(), mTeacher.getTeacherid());
+//        GetLettersFromCache(mTeacher.getTeacherid());
+//        if (mLetterEntities.size() == 0)
+//            GetLettersLatest(mTeacher.getTeacherid());
+//        else
+//            GetLettersNew(mLetterEntities.get(0).getAddtime(), mTeacher.getTeacherid());
         super.onCreate(savedInstanceState);
     }
 
@@ -131,10 +133,18 @@ public class TeacherMessageBoxFragment extends BaseFragment {
                 mSwipeRefreshLayout.setRefreshing(true);
                 LetterEntity letterEntity = mLetterEntities.get(0);
                 String endtime = letterEntity.getAddtime();
-                GetLettersNew(endtime, mTeacher.getTeacherid());
+//                GetLettersNew(endtime, mTeacher.getTeacherid());
             }
         });
 
+
+        Button sendButton = (Button)root.findViewById(R.id.sendButton);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendLetter("", "This is a test message.", 0);
+            }
+        });
         mLayoutManager = (LinearLayoutManager) mListView.getLayoutManager();
         mListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -163,7 +173,7 @@ public class TeacherMessageBoxFragment extends BaseFragment {
                     // End has been reached
                     LetterEntity letterEntity = mLetterEntities.get(mLetterEntities.size() - 1);
                     String starttime = letterEntity.getAddtime();
-                    GetLettersOld(starttime, mTeacher.getTeacherid());
+//                    GetLettersOld(starttime, mTeacher.getTeacherid());
 
                     loading = true;
                 }
@@ -173,10 +183,10 @@ public class TeacherMessageBoxFragment extends BaseFragment {
         return root;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//    }
 
 
     private void copyContentDialog(final String contentString, final View anchor) {
@@ -313,16 +323,14 @@ public class TeacherMessageBoxFragment extends BaseFragment {
         } else if (!TextUtils.isEmpty(contentString)) {
             lettertype = "txt";
         }
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("id", mTeacher.getTeacherid());
-        params.put("lettertype", lettertype);
-        params.put("fbody", fbody);
-        params.put("ftime", (System.currentTimeMillis() / 1000) + "");
-        params.put("fsize", fsize);
-        params.put("fext", fext);
-        params.put("content", contentString);
-
-        CloudSchoolBusRestClient.post("messageletter", params, new JsonHttpResponseHandler() {
+//        HashMap<String, String> params = new HashMap<String, String>();
+        RequestParams params = new RequestParams();
+//        params.put("id", mTeacher.getTeacherid());
+        params.put("receiverid", "111");
+        params.put("receiverrole", "1");
+        params.put("message", contentString);
+//        params.put("picture",fbody);
+        CloudSchoolBusRestClient.post("sendto", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);

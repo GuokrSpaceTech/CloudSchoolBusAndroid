@@ -24,9 +24,8 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Sid = new Property(1, String.class, "sid", false, "SID");
-        public final static Property CurrentStudent = new Property(2, Short.class, "currentStudent", false, "CURRENT_STUDENT");
-        public final static Property Username = new Property(3, String.class, "username", false, "USERNAME");
-        public final static Property Password = new Property(4, String.class, "password", false, "PASSWORD");
+        public final static Property Token = new Property(2, String.class, "token", false, "TOKEN");
+        public final static Property Mobile = new Property(3, String.class, "mobile", false, "MOBILE");
     };
 
 
@@ -44,9 +43,8 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'CONFIG_ENTITY' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'SID' TEXT," + // 1: sid
-                "'CURRENT_STUDENT' INTEGER," + // 2: currentStudent
-                "'USERNAME' TEXT," + // 3: username
-                "'PASSWORD' TEXT);"); // 4: password
+                "'TOKEN' TEXT," + // 2: token
+                "'MOBILE' TEXT);"); // 3: mobile
     }
 
     /** Drops the underlying database table. */
@@ -70,19 +68,14 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
             stmt.bindString(2, sid);
         }
  
-        Short currentStudent = entity.getCurrentStudent();
-        if (currentStudent != null) {
-            stmt.bindLong(3, currentStudent);
+        String token = entity.getToken();
+        if (token != null) {
+            stmt.bindString(3, token);
         }
  
-        String username = entity.getUsername();
-        if (username != null) {
-            stmt.bindString(4, username);
-        }
- 
-        String password = entity.getPassword();
-        if (password != null) {
-            stmt.bindString(5, password);
+        String mobile = entity.getMobile();
+        if (mobile != null) {
+            stmt.bindString(4, mobile);
         }
     }
 
@@ -98,9 +91,8 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
         ConfigEntity entity = new ConfigEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // sid
-            cursor.isNull(offset + 2) ? null : cursor.getShort(offset + 2), // currentStudent
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // username
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // password
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // token
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // mobile
         );
         return entity;
     }
@@ -110,9 +102,8 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
     public void readEntity(Cursor cursor, ConfigEntity entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setSid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setCurrentStudent(cursor.isNull(offset + 2) ? null : cursor.getShort(offset + 2));
-        entity.setUsername(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setPassword(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setToken(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setMobile(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     /** @inheritdoc */

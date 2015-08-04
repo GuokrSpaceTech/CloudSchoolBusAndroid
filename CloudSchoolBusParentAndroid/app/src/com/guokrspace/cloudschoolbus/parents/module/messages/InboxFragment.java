@@ -134,8 +134,8 @@ public class InboxFragment extends BaseFragment {
             for(int i=0; i<mTeacherList.size(); i++)
             {
                 SmallCircleImageCard card = new SmallCircleImageCard(mParentContext);
-                card.setTitle(mTeacherList.get(i).getTeachername());
-                card.setDescription(mTeacherList.get(i).getTeachername());
+//                card.setTitle(mTeacherList.get(i).getTeachername());
+//                card.setDescription(mTeacherList.get(i).getTeachername());
                 card.setDrawable("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
                 mMaterialListView.add(card);
                 mMaterialListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
@@ -168,6 +168,6 @@ public class InboxFragment extends BaseFragment {
 
     private void getTeacherList()
     {
-            mTeacherList = mApplication.mBaseInfo.getTeacherlist();
+//            mTeacherList = mApplication.mBaseInfo.getTeacherlist();
     }
 }

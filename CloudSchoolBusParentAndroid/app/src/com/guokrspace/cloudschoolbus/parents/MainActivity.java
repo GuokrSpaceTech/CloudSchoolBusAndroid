@@ -41,8 +41,15 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONException;
 import com.astuetz.PagerSlidingTabStrip;
+import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
+import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
+import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
@@ -51,6 +58,14 @@ import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.Repo
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.TimelineFragment;
 import com.guokrspace.cloudschoolbus.parents.module.messages.InboxFragment;
+import com.guokrspace.cloudschoolbus.parents.module.messages.TeacherMessageBoxFragment;
+import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.squareup.otto.Subscribe;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
@@ -81,12 +96,16 @@ public class MainActivity extends BaseActivity implements
 	private ViewPager pager;
 	private MyPagerAdapter adapter;
 	private BaseFragment[] mFragments = {null,null,null,null};
+	private String mSid = "";
 
 	private Drawable oldBackground = null;
 	private int currentColor = R.color.accent;
 
     private static final int MSG_LOGIN_SUCCESS = 0;
     private static final int MSG_LOGIN_FAIL = -1;
+	private static final int MSG_NO_NETWORK = 2;
+	private static final int MSG_SID_RENEWED = 3;
+	private static final int MSG_SID_RENEW_FAIL = 4;
 	private static final int REQUEST_CODE = 1;
 	private static final int RESULT_FAIL = -1;
 	private static final int RESULT_OK = 0;
@@ -108,6 +127,25 @@ public class MainActivity extends BaseActivity implements
                     setupViewAdapter();
                     changeColor(currentColor);
                     break;
+				case MSG_NO_NETWORK:
+					SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+							.setMessage(getResources().getString(R.string.no_network))
+							.setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+					break;
+				case MSG_SID_RENEWED:
+					ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
+					ConfigEntity configEntity = new ConfigEntity(null, mSid,
+							mApplication.mConfig.getToken(),mApplication.mConfig.getMobile());
+					configEntityDao.update(configEntity);
+					CloudSchoolBusRestClient.updateSessionid(mSid);
+					break;
+
+				case MSG_SID_RENEW_FAIL:
+					SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+							.setMessage(getResources().getString(R.string.failure_renewsid))
+							.setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+					break;
+
             }
 			return false;
 		}
@@ -125,7 +163,7 @@ public class MainActivity extends BaseActivity implements
 		TextView textView = (TextView)view.findViewById(R.id.abs_layout_titleTextView);
 		textView.setText(getResources().getString(string.module_explore));
 
-        login();
+        CheckLoginCredential();
 
 //		PushManager.startWork(getApplicationContext(),
 //				PushConstants.LOGIN_TYPE_API_KEY,
@@ -136,7 +174,7 @@ public class MainActivity extends BaseActivity implements
 	private void initFragments()
 	{
 		mFragments[0] = TimelineFragment.newInstance(null, null);
-		mFragments[1] = InboxFragment.newInstance(null, null);
+		mFragments[1] = TeacherMessageBoxFragment.newInstance(null);
 		mFragments[2] = NoticeFragment.newInstance(null,null);
 		mFragments[3] = NoticeFragment.newInstance(null,null);
 	}
@@ -256,7 +294,7 @@ public class MainActivity extends BaseActivity implements
 		}
 	};
 
-	public void login() throws JSONException {
+	public void CheckLoginCredential() throws JSONException {
 
         if(mApplication.mConfig==null || mApplication.mBaseInfo==null)
         {
@@ -377,7 +415,82 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+	@Subscribe public void onSidExpired(SidExpireEvent event)
+	{
+		renew_sid();
+	}
 
+	/**
+	 * Represents an asynchronous login/registration task used to authenticate
+	 * the user.
+	 */
+	public void renew_sid() {
+
+		if(!networkStatusEvent.isNetworkConnected()) {
+			handler.sendEmptyMessage(MSG_NO_NETWORK);
+			return;
+		}
+
+		showWaitDialog("", null);
+
+		RequestParams params = new RequestParams();
+		params.put("token", mApplication.mConfig.getToken());
+		CloudSchoolBusRestClient.post("login", params, new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, org.json.JSONArray response) {
+				super.onSuccess(statusCode, headers, response);
+			}
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+				String retCode = "";
+
+				for (int i = 0; i < headers.length; i++) {
+					Header header = headers[i];
+					if ("code".equalsIgnoreCase(header.getName())) {
+						retCode = header.getValue();
+						break;
+					}
+				}
+
+				if (retCode.equals("1")) {
+					try {
+						mSid = response.getString("sid");
+					} catch (org.json.JSONException e) {
+						e.printStackTrace();
+					}
+
+					handler.sendEmptyMessage(MSG_SID_RENEWED);
+				} else {
+					handler.sendEmptyMessage(MSG_SID_RENEW_FAIL);
+				}
+
+				return;
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+				handler.sendEmptyMessage(MSG_SID_RENEW_FAIL);
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+				handler.sendEmptyMessage(MSG_SID_RENEW_FAIL);
+				super.onFailure(statusCode, headers, responseString, throwable);
+			}
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, String responseString) {
+				super.onSuccess(statusCode, headers, responseString);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONArray errorResponse) {
+				handler.sendEmptyMessage(MSG_SID_RENEW_FAIL);
+			}
+		});
+	}
 
 
 }

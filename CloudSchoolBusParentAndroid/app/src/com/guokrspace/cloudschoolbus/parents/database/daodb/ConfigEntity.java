@@ -8,9 +8,8 @@ public class ConfigEntity {
 
     private Long id;
     private String sid;
-    private Short currentStudent;
-    private String username;
-    private String password;
+    private String token;
+    private String mobile;
 
     public ConfigEntity() {
     }
@@ -19,12 +18,11 @@ public class ConfigEntity {
         this.id = id;
     }
 
-    public ConfigEntity(Long id, String sid, Short currentStudent, String username, String password) {
+    public ConfigEntity(Long id, String sid, String token, String mobile) {
         this.id = id;
         this.sid = sid;
-        this.currentStudent = currentStudent;
-        this.username = username;
-        this.password = password;
+        this.token = token;
+        this.mobile = mobile;
     }
 
     public Long getId() {
@@ -43,28 +41,20 @@ public class ConfigEntity {
         this.sid = sid;
     }
 
-    public Short getCurrentStudent() {
-        return currentStudent;
+    public String getToken() {
+        return token;
     }
 
-    public void setCurrentStudent(Short currentStudent) {
-        this.currentStudent = currentStudent;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public String getUsername() {
-        return username;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
 }

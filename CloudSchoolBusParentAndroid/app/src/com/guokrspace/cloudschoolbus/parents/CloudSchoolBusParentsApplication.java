@@ -1,19 +1,15 @@
 package com.guokrspace.cloudschoolbus.parents;
 
 import android.app.Application;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
 
 
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoMaster;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
@@ -163,39 +159,35 @@ public class CloudSchoolBusParentsApplication extends Application {
     public boolean initConfig() {
         boolean retCode = false;
         ConfigEntityDao configEntityDao = mDaoSession.getConfigEntityDao();
-        ClassEntityDao classEntityDao = mDaoSession.getClassEntityDao();
-        TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
-
         List configs = configEntityDao.queryBuilder().list();
         if (configs.size() != 0) {
             mConfig = (ConfigEntity) configs.get(0);
             CloudSchoolBusRestClient.updateSessionid(mConfig.getSid());
             retCode = true;
         }
-        //Prompt Login Activity to ask for a login
 
         return retCode;
     }
 
     public boolean initClassInfo() {
-        final ClassEntityDao classEntityDao = mDaoSession.getClassEntityDao();
+//        final ClassEntityDao classEntityDao = mDaoSession.getClassEntityDao();
         Classinfo classinfo = new Classinfo();
         boolean ret = false;
 
-        if (classEntityDao.queryBuilder().list().size() != 0) {
-            ClassEntity classEntity = classEntityDao.queryBuilder().list().get(0);
-            classinfo.setUid(classEntity.getUid());
-            classinfo.setPhone(classEntity.getPhone());
-            classinfo.setSchoolname(classEntity.getSchoolname());
-            classinfo.setAddress(classEntity.getAddress());
-            classinfo.setClassname(classEntity.getClassname());
-            classinfo.setProvince(classEntity.getProvince());
-            classinfo.setCity(classEntity.getCity());
-            classinfo.setClassid(classEntity.getClassid());
-            mBaseInfo = new Baseinfo();
-            mBaseInfo.setClassinfo(classinfo);
-            ret = true;
-        }
+//        if (classEntityDao.queryBuilder().list().size() != 0) {
+//            ClassEntity classEntity = classEntityDao.queryBuilder().list().get(0);
+//            classinfo.setUid(classEntity.getUid());
+//            classinfo.setPhone(classEntity.getPhone());
+//            classinfo.setSchoolname(classEntity.getSchoolname());
+//            classinfo.setAddress(classEntity.getAddress());
+//            classinfo.setClassname(classEntity.getClassname());
+//            classinfo.setProvince(classEntity.getProvince());
+//            classinfo.setCity(classEntity.getCity());
+//            classinfo.setClassid(classEntity.getClassid());
+//            mBaseInfo = new Baseinfo();
+//            mBaseInfo.setClassinfo(classinfo);
+//            ret = true;
+//        }
 
         return ret;
     }
@@ -205,13 +197,13 @@ public class CloudSchoolBusParentsApplication extends Application {
 
         List<Teacher> teachers = new ArrayList<>();
         for (int i = 0; i < teacherEntityDao.queryBuilder().list().size(); i++) {
-            TeacherEntity teacherEntity = teacherEntityDao.queryBuilder().list().get(i);
-            Teacher teacher = new Teacher();
-            teacher.setTeacherid(teacherEntity.getTeacherid());
-            teacher.setTeachername(teacherEntity.getTeachername());
-            teachers.add(teacher);
+//            TeacherEntity teacherEntity = teacherEntityDao.queryBuilder().list().get(i);
+//            Teacher teacher = new Teacher();
+//            teacher.setTeacherid(teacherEntity.getTeacherid());
+//            teacher.setTeachername(teacherEntity.getTeachername());
+//            teachers.add(teacher);
         }
-        if(mBaseInfo!=null)
-           mBaseInfo.setTeacherlist(teachers);
+//        if(mBaseInfo!=null)
+//           mBaseInfo.setTeacherlist(teachers);
     }
 }

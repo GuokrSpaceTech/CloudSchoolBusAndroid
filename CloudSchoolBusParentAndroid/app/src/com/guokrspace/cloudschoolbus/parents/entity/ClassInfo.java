@@ -1,51 +1,32 @@
 package com.guokrspace.cloudschoolbus.parents.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by kai on 12/25/14.
  */
-public class Classinfo implements Serializable{
 
-    private String uid;
-    private String phone;
-    private String schoolname;
-    private String address;
+public class Classinfo implements Serializable{
+    List<Teacher> teacher;
+    List<String>  student;
     private String classname;
-    private String province;
-    private String city;
     private String classid;
 
-    public String getUid() {
-        return uid;
+    public List<Teacher> getTeacher() {
+        return teacher;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setTeacher(List<Teacher> teacher) {
+        this.teacher = teacher;
     }
 
-    public String getPhone() {
-        return phone;
+    public List<String> getStudent() {
+        return student;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getSchoolname() {
-        return schoolname;
-    }
-
-    public void setSchoolname(String schoolname) {
-        this.schoolname = schoolname;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStudent(List<String> student) {
+        this.student = student;
     }
 
     public String getClassname() {
@@ -54,22 +35,6 @@ public class Classinfo implements Serializable{
 
     public void setClassname(String classname) {
         this.classname = classname;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public String getClassid() {

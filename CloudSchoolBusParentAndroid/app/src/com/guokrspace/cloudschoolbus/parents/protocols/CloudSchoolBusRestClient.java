@@ -22,10 +22,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by wangjianfeng on 15/7/4.
+ * Created by Yang Kai on 15/7/4.
  */
 public class CloudSchoolBusRestClient {
-    private static final String BASE_URL = "http://api35.yunxiaoche.com:81/";
+//    private static final String BASE_URL = "http://api35.yunxiaoche.com:81/";
+    private static final String BASE_URL = "http://192.168.1.140:81/api/parent/";
     private static AsyncHttpClient client = new AsyncHttpClient();
 
     private String mMethod = "";
@@ -33,9 +34,9 @@ public class CloudSchoolBusRestClient {
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.addHeader("apikey", "mactoprestphone");
-        client.addHeader("Accept","application/json");
+        client.addHeader("Accept", "application/json");
         client.addHeader("Version", Version.versionName.substring(1));
-        client.get(getAbsoluteUrl(url), responseHandler);
+        client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 
     public static void get(String url, HashMap<String, String> params, AsyncHttpResponseHandler responseHandler) {

@@ -23,6 +23,7 @@ public class DaoMaster extends AbstractDaoMaster {
         StudentEntityDao.createTable(db, ifNotExists);
         TeacherEntityDao.createTable(db, ifNotExists);
         ClassEntityDao.createTable(db, ifNotExists);
+        SchoolEntityDao.createTable(db, ifNotExists);
         ArticleEntityDao.createTable(db, ifNotExists);
         ImageEntityDao.createTable(db, ifNotExists);
         TagEntityDao.createTable(db, ifNotExists);
@@ -42,6 +43,7 @@ public class DaoMaster extends AbstractDaoMaster {
         StudentEntityDao.dropTable(db, ifExists);
         TeacherEntityDao.dropTable(db, ifExists);
         ClassEntityDao.dropTable(db, ifExists);
+        SchoolEntityDao.dropTable(db, ifExists);
         ArticleEntityDao.dropTable(db, ifExists);
         ImageEntityDao.dropTable(db, ifExists);
         TagEntityDao.dropTable(db, ifExists);
@@ -88,6 +90,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(StudentEntityDao.class);
         registerDaoClass(TeacherEntityDao.class);
         registerDaoClass(ClassEntityDao.class);
+        registerDaoClass(SchoolEntityDao.class);
         registerDaoClass(ArticleEntityDao.class);
         registerDaoClass(ImageEntityDao.class);
         registerDaoClass(TagEntityDao.class);
