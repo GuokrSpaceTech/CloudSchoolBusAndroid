@@ -83,8 +83,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:numColumns="3"
-                        android:verticalSpacing="5dp"
-                        android:horizontalSpacing="5dp"
+                        android:verticalSpacing="@dimen/timeline_thumb_pic_spacing"
+                        android:horizontalSpacing="@dimen/timeline_thumb_pic_spacing"
                         android:layout_marginRight="20dp" />
 
                     <TextView

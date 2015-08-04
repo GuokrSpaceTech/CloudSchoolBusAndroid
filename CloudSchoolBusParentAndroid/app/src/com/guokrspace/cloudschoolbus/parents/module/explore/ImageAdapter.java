@@ -53,7 +53,7 @@ public class ImageAdapter extends BaseAdapter {
                         (int)mContext.getResources().getDimension(R.dimen.timeline_thumb_pic_height)));
 
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(2, 2, 2, 2);
+            imageView.setPadding(1, 1, 1, 1);
         } else {
             imageView = (ImageView) convertView;
             imageView.forceLayout();

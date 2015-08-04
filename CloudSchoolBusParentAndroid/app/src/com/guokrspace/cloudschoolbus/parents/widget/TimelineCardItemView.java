@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -104,6 +105,13 @@ public class TimelineCardItemView extends CardItemView<TimelineCard> {
 
         //ImageGrid
         GridView gridView = (GridView) findViewById(R.id.dynamic_grid);
+        if(card.getTagAdapter().getItemCount()== 4){
+            gridView.setNumColumns(2);
+            ViewGroup.LayoutParams layoutParams = gridView.getLayoutParams();
+            layoutParams.width = getResources().getDimensionPixelSize(R.dimen.timeline_thumb_pic_width) *2 + getResources().getDimensionPixelSize(R.dimen.timeline_thumb_pic_spacing);
+            gridView.setLayoutParams(layoutParams);
+        }
+
         gridView.setAdapter(card.getImageAdapter());
 
         /*
