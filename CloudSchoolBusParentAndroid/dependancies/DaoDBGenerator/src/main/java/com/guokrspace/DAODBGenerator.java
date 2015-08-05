@@ -58,12 +58,13 @@ public class DAODBGenerator {
         Property classIdTeacher = teacher.addStringProperty("classid").notNull().getProperty();
 
         Entity classEntity = schema.addEntity("ClassEntity");
-        classEntity.addStringProperty("classid").notNull().primaryKey();
+        Property classid = classEntity.addStringProperty("classid").notNull().primaryKey().getProperty();
         classEntity.addStringProperty("name");
         Property schoolId = classEntity.addStringProperty("schoolid").notNull().getProperty();
 
         ToMany classToStudents = classEntity.addToMany(student, classIdStudent);
         ToMany classToTeachers = classEntity.addToMany(teacher, classIdTeacher);
+        ToMany studentToClasses = student.addToMany(classEntity, classid);
 
         Entity school = schema.addEntity("SchoolEntity");
         school.addStringProperty("id").notNull().primaryKey().getProperty();

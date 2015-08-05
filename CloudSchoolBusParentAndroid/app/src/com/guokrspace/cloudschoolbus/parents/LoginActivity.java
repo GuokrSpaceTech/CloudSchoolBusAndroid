@@ -18,11 +18,21 @@ import android.widget.EditText;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
 
+import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
+import com.guokrspace.cloudschoolbus.parents.entity.Student;
+import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
@@ -33,6 +43,9 @@ import com.squareup.otto.Subscribe;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A login screen that offers login via email/password.
@@ -51,12 +64,8 @@ public class LoginActivity extends BaseActivity {
     private String sid;
     private String loginToken;
 
-    private static final int CURRENT_STUDENT = 0;
-    private static final int GET_SESIONID = 1;
-    private static final int GET_BASEINFO = 2;
     private static final int LOGIN_FAILED = 3;
     private static final int MSG_NO_NETOWRK   = 4;
-    private static final int SERVER_ERROR   = 5;
 
     private static final int MSG_REG_OK   = 6;
     private static final int MSG_REG_FAIL   = 7;
@@ -66,9 +75,6 @@ public class LoginActivity extends BaseActivity {
 
     private static final int MSG_BASEINFO_OK = 10;
     private static final int MSG_BASEINFO_FAIL = 11;
-
-    private static final int MSG_STUDENTINFO_OK = 12;
-    private static final int MSG_STUDENTINFO_FAIL = 13;
 
     private static final int MSG_RENEWSID_OK = 14;
     private static final int MSG_RENEWSID_FAIL = 15;
@@ -307,15 +313,18 @@ public class LoginActivity extends BaseActivity {
             handler.sendEmptyMessage(MSG_NO_NETOWRK);
             return;
         }
-        showProgress(true);
 
-//        final ClassEntityDao classEntityDao = mApplication.mDaoSession.getClassEntityDao();
-        final TeacherEntityDao teacherEntityDao = mApplication.mDaoSession.getTeacherEntityDao();
+        showProgress(true);
 
         RequestParams params = new RequestParams();
 
         CloudSchoolBusRestClient.get(ProtocolDef.METHOD_baseinfo, params, new JsonHttpResponseHandler() {
-                    @Override
+
+                    SchoolEntityDao schoolEntityDao = mApplication.mDaoSession.getSchoolEntityDao();
+                    ClassEntityDao classEntityDao = mApplication.mDaoSession.getClassEntityDao();
+                    TeacherEntityDao teacherEntityDao = mApplication.mDaoSession.getTeacherEntityDao();
+                    StudentEntityDao studentEntityDao = mApplication.mDaoSession.getStudentEntityDao();
+
                     public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
                         String retCode = "";
 
@@ -332,24 +341,48 @@ public class LoginActivity extends BaseActivity {
                             return;
                         }
 
-                        mApplication.mBaseInfo = (Baseinfo) FastJsonTools.getObject(response.toString(), Baseinfo.class);
-//                        ClassEntity classEntity = new ClassEntity(
-//                                mApplication.mBaseInfo.getClassinfo().getUid(),
-//                                mApplication.mBaseInfo.getClassinfo().getPhone(),
-//                                mApplication.mBaseInfo.getClassinfo().getSchoolname(),
-//                                mApplication.mBaseInfo.getClassinfo().getAddress(),
-//                                mApplication.mBaseInfo.getClassinfo().getClassname(),
-//                                mApplication.mBaseInfo.getClassinfo().getProvince(),
-//                                mApplication.mBaseInfo.getClassinfo().getCity(),
-//                                mApplication.mBaseInfo.getClassinfo().getClassid()
-//                        );
-//                        classEntityDao.insertOrReplace(classEntity);
-//
-//                        for (int i = 0; i < mApplication.mBaseInfo.getTeacherlist().size(); i++) {
-//                            Teacher teacher = mApplication.mBaseInfo.getTeacherlist().get(i);
-//                            TeacherEntity teacherEntity = new TeacherEntity(teacher.getTeacherid(), teacher.getTeachername(), classEntity.getClassid());
-//                            teacherEntityDao.insertOrReplace(teacherEntity);
-//                        }
+                        Baseinfo baseinfo = FastJsonTools.getObject(response.toString(), Baseinfo.class);
+                        //Save School Information
+                        for(int i=0; i<baseinfo.getSchools().size(); i++) {
+                            SchoolEntity schoolEntity = new SchoolEntity(baseinfo.getSchools().get(i).getSchoolid(),baseinfo.getSchools().get(i).getSchoolname(), baseinfo.getSchools().get(i).getAddress());
+                            schoolEntityDao.insertOrReplace(schoolEntity);
+                            //Save Class Information
+                            List<Classinfo> classes = baseinfo.getSchools().get(i).getClasses();
+                            for(int j=0; j<classes.size(); j++)
+                            {
+                                Classinfo classinfo = classes.get(j);
+                                ClassEntity classEntity = new ClassEntity(classes.get(j).getClassid(),classes.get(j).getClassname(), schoolEntity.getId());
+                                classEntityDao.insertOrReplace(classEntity);
+
+                                //Save teacher information
+                                List<Teacher> teachers = classes.get(j).getTeacher();
+                                for(int k=0; k<teachers.size(); k++)
+                                {
+                                    TeacherEntity teacherEntity = new TeacherEntity(teachers.get(k).getId(),teachers.get(k).getDuty(),teachers.get(k).getName(), classEntity.getClassid());
+                                    teacherEntityDao.insertOrReplace(teacherEntity);
+                                }
+
+                                //Students(Student and class are many2many relationship)
+                                List<Student> students = baseinfo.getStudents(); //Student list from server
+                                List<String>  studentInClass = classinfo.getStudent(); //Studentid in class
+                                // if found a student in class, instantiate the student entity for the DB
+                                for(int m=0; m<studentInClass.size(); m++)
+                                {
+                                    String studentid = studentInClass.get(m);
+                                    for(int n=0; n<students.size();n++)
+                                    {
+                                        if(studentid.equals(students.get(n).getStudentid()))
+                                        {
+                                            StudentEntity studentEntity = new StudentEntity(students.get(n).getCnname(),students.get(n).getBirthday(), students.get(n).getSex(),students.get(n).getAvatar(), students.get(n).getNickname(), studentid, classEntity.getClassid());
+                                            studentEntityDao.insertOrReplace(studentEntity);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        mApplication.initBaseinfo();
+
                         handler.sendEmptyMessage(MSG_BASEINFO_OK);
                     }
 
@@ -383,93 +416,6 @@ public class LoginActivity extends BaseActivity {
                 }
         );
     }
-
-
-    private void getStudentInfoFromServer() {
-
-        if(!networkStatusEvent.isNetworkConnected()) {
-            handler.sendEmptyMessage(MSG_NO_NETOWRK);
-            return;
-        }
-
-        showProgress(true);
-
-//        final ClassEntityDao classEntityDao = mApplication.mDaoSession.getClassEntityDao();
-        final TeacherEntityDao teacherEntityDao = mApplication.mDaoSession.getTeacherEntityDao();
-
-        RequestParams params = new RequestParams();
-
-        CloudSchoolBusRestClient.get(ProtocolDef.METHOD_student, params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
-                        String retCode = "";
-
-                        for (int i = 0; i < headers.length; i++) {
-                            Header header = headers[i];
-                            if ("code".equalsIgnoreCase(header.getName())) {
-                                retCode = header.getValue();
-                                break;
-                            }
-                        }
-
-                        if (!retCode.equals("1")) {
-                            handler.sendEmptyMessage(MSG_STUDENTINFO_FAIL);
-                            return;
-                        }
-
-                        mApplication.mBaseInfo = (Baseinfo) FastJsonTools.getObject(response.toString(), Baseinfo.class);
-//                        ClassEntity classEntity = new ClassEntity(
-//                                mApplication.mBaseInfo.getClassinfo().getUid(),
-//                                mApplication.mBaseInfo.getClassinfo().getPhone(),
-//                                mApplication.mBaseInfo.getClassinfo().getSchoolname(),
-//                                mApplication.mBaseInfo.getClassinfo().getAddress(),
-//                                mApplication.mBaseInfo.getClassinfo().getClassname(),
-//                                mApplication.mBaseInfo.getClassinfo().getProvince(),
-//                                mApplication.mBaseInfo.getClassinfo().getCity(),
-//                                mApplication.mBaseInfo.getClassinfo().getClassid()
-//                        );
-//                        classEntityDao.insertOrReplace(classEntity);
-//
-//                        for (int i = 0; i < mApplication.mBaseInfo.getTeacherlist().size(); i++) {
-//                            Teacher teacher = mApplication.mBaseInfo.getTeacherlist().get(i);
-//                            TeacherEntity teacherEntity = new TeacherEntity(teacher.getTeacherid(), teacher.getTeachername(), classEntity.getClassid());
-//                            teacherEntityDao.insertOrReplace(teacherEntity);
-//                        }
-//                        handler.sendEmptyMessage(MSG_STUDENTINFO_OK);
-                    }
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        super.onSuccess(statusCode, headers, response);
-                    }
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        super.onSuccess(statusCode, headers, responseString);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        handler.sendEmptyMessage(MSG_STUDENTINFO_FAIL);
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        handler.sendEmptyMessage(MSG_STUDENTINFO_FAIL);
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        handler.sendEmptyMessage(MSG_STUDENTINFO_FAIL);
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                    }
-                }
-        );
-    }
-
-
 
     /**
      * Represents an asynchronous login/registration task used to authenticate

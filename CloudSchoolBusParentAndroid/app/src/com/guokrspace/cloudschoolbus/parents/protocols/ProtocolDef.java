@@ -8,8 +8,8 @@ public class ProtocolDef {
     public static final String METHOD_register               =    "register";
     public static final String METHOD_verify                 =    "verify";
     public static final String METHOD_baseinfo               =    "baseinfo";
-    public static final String METHOD_student                =     "student";
-    public static final String METHOD_timeline               =     "getmessage";
+    public static final String METHOD_timeline               =    "getmessage";
+    public static final String METHOD_pushchannel            =    "setchannelid";
 
     /**获取sid,在登录的时候使用,GET*/
     public static final String METHOD_signin                 =    "signin";

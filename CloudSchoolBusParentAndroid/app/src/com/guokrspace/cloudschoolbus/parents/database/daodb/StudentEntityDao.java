@@ -35,6 +35,8 @@ public class StudentEntityDao extends AbstractDao<StudentEntity, String> {
         public final static Property Classid = new Property(6, String.class, "classid", false, "CLASSID");
     };
 
+    private DaoSession daoSession;
+
     private Query<StudentEntity> classEntity_StudentEntityListQuery;
 
     public StudentEntityDao(DaoConfig config) {
@@ -43,6 +45,7 @@ public class StudentEntityDao extends AbstractDao<StudentEntity, String> {
     
     public StudentEntityDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -95,6 +98,12 @@ public class StudentEntityDao extends AbstractDao<StudentEntity, String> {
         }
         stmt.bindString(6, entity.getStudentid());
         stmt.bindString(7, entity.getClassid());
+    }
+
+    @Override
+    protected void attachEntity(StudentEntity entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */

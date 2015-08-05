@@ -6,10 +6,17 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoMaster;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
@@ -29,24 +36,6 @@ import java.util.List;
 public class CloudSchoolBusParentsApplication extends Application {
 
     private static String TAG = "CloudSchoolBusParentsApplication";
-
-    /** 教师信息 */
-    //public Teacher mTeacher;
-    /**
-     * 教师账号中的学生列表
-     */
-    public List<Student> mStudentList = new ArrayList<Student>();
-    public Student mCurrentStudent = new Student();
-    //public Reminder mReminders;
-    //public List<ReportTemplates> mReportTemplates = new ArrayList<ReportTemplates>();
-    /**
-     * 班级信息
-     *//**
-     * 登陆设置
-     */
-    public String mSid;
-    //public LoginSetting mLoginSetting;
-
     /**
      * 带缓存的，内存缓存和磁盘缓存，设置再调用displayImage()有效,使用loadImage()无效
      */
@@ -62,19 +51,13 @@ public class CloudSchoolBusParentsApplication extends Application {
 
     public DaoMaster.DevOpenHelper mDBhelper;
     public DaoMaster mDaoMaster;
-
     public DaoSession mDaoSession;
 
     public ConfigEntity mConfig;
-
-    public Baseinfo mBaseInfo;
-
-
-    /**
-     * 判断应用主界面是否运行,false没有运行，true运行
-     */
-    public boolean mFlagHome = false;
-    public Integer isTrain = 0;
+    public List<SchoolEntity> mSchools;
+    public List<ClassEntity> mClasses;
+    public List<TeacherEntity> mTeachers;
+    public List<StudentEntity> mStudents;
 
     @Override
     public void onCreate() {
@@ -85,12 +68,9 @@ public class CloudSchoolBusParentsApplication extends Application {
 
         initConfig();
 
-        initClassInfo();
-
-        initTeacherInfo();
+        initBaseinfo();
 
         initImageLoader();
-
     }
 
     private void initDB() {
@@ -139,7 +119,6 @@ public class CloudSchoolBusParentsApplication extends Application {
                 .build();
 
         imageLoaderInit();
-
     }
 
     public void imageLoaderInit() {
@@ -169,41 +148,16 @@ public class CloudSchoolBusParentsApplication extends Application {
         return retCode;
     }
 
-    public boolean initClassInfo() {
-//        final ClassEntityDao classEntityDao = mDaoSession.getClassEntityDao();
-        Classinfo classinfo = new Classinfo();
-        boolean ret = false;
+    public void initBaseinfo()
+    {
+        SchoolEntityDao schoolEntityDao = mDaoSession.getSchoolEntityDao();
+        ClassEntityDao classEntityDao = mDaoSession.getClassEntityDao();
+        TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
+        StudentEntityDao studentEntityDao = mDaoSession.getStudentEntityDao();
 
-//        if (classEntityDao.queryBuilder().list().size() != 0) {
-//            ClassEntity classEntity = classEntityDao.queryBuilder().list().get(0);
-//            classinfo.setUid(classEntity.getUid());
-//            classinfo.setPhone(classEntity.getPhone());
-//            classinfo.setSchoolname(classEntity.getSchoolname());
-//            classinfo.setAddress(classEntity.getAddress());
-//            classinfo.setClassname(classEntity.getClassname());
-//            classinfo.setProvince(classEntity.getProvince());
-//            classinfo.setCity(classEntity.getCity());
-//            classinfo.setClassid(classEntity.getClassid());
-//            mBaseInfo = new Baseinfo();
-//            mBaseInfo.setClassinfo(classinfo);
-//            ret = true;
-//        }
-
-        return ret;
-    }
-
-    public void initTeacherInfo() {
-        final TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
-
-        List<Teacher> teachers = new ArrayList<>();
-        for (int i = 0; i < teacherEntityDao.queryBuilder().list().size(); i++) {
-//            TeacherEntity teacherEntity = teacherEntityDao.queryBuilder().list().get(i);
-//            Teacher teacher = new Teacher();
-//            teacher.setTeacherid(teacherEntity.getTeacherid());
-//            teacher.setTeachername(teacherEntity.getTeachername());
-//            teachers.add(teacher);
-        }
-//        if(mBaseInfo!=null)
-//           mBaseInfo.setTeacherlist(teachers);
+        mSchools = schoolEntityDao.queryBuilder().list();
+        mClasses = classEntityDao.queryBuilder().list();
+        mTeachers = teacherEntityDao.queryBuilder().list();
+        mStudents = studentEntityDao.queryBuilder().list();
     }
 }

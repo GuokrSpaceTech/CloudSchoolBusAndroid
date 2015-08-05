@@ -110,7 +110,7 @@
         <!-- 在百度开发者中心查询应用的API Key -->
         <meta-data
             android:name="api_key"
-            android:value="aIcTMec1tpc7K535FGgUA9GL" />
+            android:value="TnbKjnQlMKKrj5g0iyopnHIB" />
     </application>
 
 </manifest>

@@ -33,6 +33,7 @@ public class ClassEntityDao extends AbstractDao<ClassEntity, String> {
 
     private DaoSession daoSession;
 
+    private Query<ClassEntity> studentEntity_ClassEntityListQuery;
     private Query<ClassEntity> schoolEntity_ClassEntityListQuery;
 
     public ClassEntityDao(DaoConfig config) {
@@ -125,6 +126,20 @@ public class ClassEntityDao extends AbstractDao<ClassEntity, String> {
         return true;
     }
     
+    /** Internal query to resolve the "classEntityList" to-many relationship of StudentEntity. */
+    public List<ClassEntity> _queryStudentEntity_ClassEntityList(String classid) {
+        synchronized (this) {
+            if (studentEntity_ClassEntityListQuery == null) {
+                QueryBuilder<ClassEntity> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.Classid.eq(null));
+                studentEntity_ClassEntityListQuery = queryBuilder.build();
+            }
+        }
+        Query<ClassEntity> query = studentEntity_ClassEntityListQuery.forCurrentThread();
+        query.setParameter(0, classid);
+        return query.list();
+    }
+
     /** Internal query to resolve the "classEntityList" to-many relationship of SchoolEntity. */
     public List<ClassEntity> _querySchoolEntity_ClassEntityList(String schoolid) {
         synchronized (this) {

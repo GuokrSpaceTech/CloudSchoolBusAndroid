@@ -47,8 +47,16 @@ import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
@@ -66,6 +74,8 @@ import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
@@ -118,14 +128,16 @@ public class MainActivity extends BaseActivity implements
             switch (msg.what)
             {
                 case MSG_LOGIN_SUCCESS:
+                    //Start Baidu Push
+                    PushManager.startWork(getApplicationContext(),
+                            PushConstants.LOGIN_TYPE_API_KEY,
+                            BaiduPushUtils.getMetaValue(MainActivity.this, "api_key"));
 					initFragments();
 					setupViewAdapter();
 					changeColor(currentColor);
 					break;
                 case MSG_LOGIN_FAIL:
-                    initFragments();
-                    setupViewAdapter();
-                    changeColor(currentColor);
+                    //It will stay in the Login Page
                     break;
 				case MSG_NO_NETWORK:
 					SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
@@ -164,11 +176,6 @@ public class MainActivity extends BaseActivity implements
 		textView.setText(getResources().getString(string.module_explore));
 
         CheckLoginCredential();
-
-//		PushManager.startWork(getApplicationContext(),
-//				PushConstants.LOGIN_TYPE_API_KEY,
-//				BaiduPushUtils.getMetaValue(MainActivity.this, "api_key"));
-
 	}
 
 	private void initFragments()
@@ -296,7 +303,7 @@ public class MainActivity extends BaseActivity implements
 
 	public void CheckLoginCredential() throws JSONException {
 
-        if(mApplication.mConfig==null || mApplication.mBaseInfo==null)
+        if(mApplication.mConfig==null || mApplication.mSchools==null || mApplication.mClasses==null)
         {
             //Ask for login
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -315,8 +322,7 @@ public class MainActivity extends BaseActivity implements
             case RESULT_OK:
                 handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
                 break;
-            case RESULT_FAIL:
-                handler.sendEmptyMessage(MSG_LOGIN_FAIL);
+            case RESULT_FAIL: //Never goes here, it will stay in the login page
                 break;
             default:
                 break;
