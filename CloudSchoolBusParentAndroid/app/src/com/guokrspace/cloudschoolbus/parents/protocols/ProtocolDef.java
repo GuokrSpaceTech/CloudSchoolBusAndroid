@@ -10,6 +10,7 @@ public class ProtocolDef {
     public static final String METHOD_baseinfo               =    "baseinfo";
     public static final String METHOD_timeline               =    "getmessage";
     public static final String METHOD_pushchannel            =    "setchannelid";
+    public static final String METHOD_latestchat             =    "getLastLetter";
 
     /**获取sid,在登录的时候使用,GET*/
     public static final String METHOD_signin                 =    "signin";

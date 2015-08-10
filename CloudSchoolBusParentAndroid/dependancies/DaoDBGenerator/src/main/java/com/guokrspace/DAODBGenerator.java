@@ -217,6 +217,11 @@ public class DAODBGenerator {
 
     private static void addLetter(Schema schema)
     {
+        Entity LastLetter = schema.addEntity("LastLetterEntity");
+        LastLetter.addStringProperty("teacherid").primaryKey().notNull();
+        LastLetter.addStringProperty("lastchat");
+        LastLetter.addStringProperty("picture");
+
         Entity letters = schema.addEntity("LetterEntity");
         letters.addStringProperty("letterid");
         letters.addStringProperty("letter_type");

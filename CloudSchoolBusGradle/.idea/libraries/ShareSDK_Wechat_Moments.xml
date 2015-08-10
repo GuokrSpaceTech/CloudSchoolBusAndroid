@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="ShareSDK-Wechat-Moments">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/3rdParty/MainLibs/libs/ShareSDK-Wechat-Moments.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

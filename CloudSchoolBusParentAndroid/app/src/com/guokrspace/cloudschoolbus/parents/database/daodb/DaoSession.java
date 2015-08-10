@@ -32,6 +32,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig attendanceEntityDaoConfig;
     private final DaoConfig festivalEntityDaoConfig;
     private final DaoConfig scheduleEntityDaoConfig;
+    private final DaoConfig lastLetterEntityDaoConfig;
     private final DaoConfig letterEntityDaoConfig;
     private final DaoConfig reportEntityDaoConfig;
     private final DaoConfig reportItemEntityDaoConfig;
@@ -50,6 +51,7 @@ public class DaoSession extends AbstractDaoSession {
     private final AttendanceEntityDao attendanceEntityDao;
     private final FestivalEntityDao festivalEntityDao;
     private final ScheduleEntityDao scheduleEntityDao;
+    private final LastLetterEntityDao lastLetterEntityDao;
     private final LetterEntityDao letterEntityDao;
     private final ReportEntityDao reportEntityDao;
     private final ReportItemEntityDao reportItemEntityDao;
@@ -100,6 +102,9 @@ public class DaoSession extends AbstractDaoSession {
         scheduleEntityDaoConfig = daoConfigMap.get(ScheduleEntityDao.class).clone();
         scheduleEntityDaoConfig.initIdentityScope(type);
 
+        lastLetterEntityDaoConfig = daoConfigMap.get(LastLetterEntityDao.class).clone();
+        lastLetterEntityDaoConfig.initIdentityScope(type);
+
         letterEntityDaoConfig = daoConfigMap.get(LetterEntityDao.class).clone();
         letterEntityDaoConfig.initIdentityScope(type);
 
@@ -123,6 +128,7 @@ public class DaoSession extends AbstractDaoSession {
         attendanceEntityDao = new AttendanceEntityDao(attendanceEntityDaoConfig, this);
         festivalEntityDao = new FestivalEntityDao(festivalEntityDaoConfig, this);
         scheduleEntityDao = new ScheduleEntityDao(scheduleEntityDaoConfig, this);
+        lastLetterEntityDao = new LastLetterEntityDao(lastLetterEntityDaoConfig, this);
         letterEntityDao = new LetterEntityDao(letterEntityDaoConfig, this);
         reportEntityDao = new ReportEntityDao(reportEntityDaoConfig, this);
         reportItemEntityDao = new ReportItemEntityDao(reportItemEntityDaoConfig, this);
@@ -141,6 +147,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(AttendanceEntity.class, attendanceEntityDao);
         registerDao(FestivalEntity.class, festivalEntityDao);
         registerDao(ScheduleEntity.class, scheduleEntityDao);
+        registerDao(LastLetterEntity.class, lastLetterEntityDao);
         registerDao(LetterEntity.class, letterEntityDao);
         registerDao(ReportEntity.class, reportEntityDao);
         registerDao(ReportItemEntity.class, reportItemEntityDao);
@@ -161,6 +168,7 @@ public class DaoSession extends AbstractDaoSession {
         attendanceEntityDaoConfig.getIdentityScope().clear();
         festivalEntityDaoConfig.getIdentityScope().clear();
         scheduleEntityDaoConfig.getIdentityScope().clear();
+        lastLetterEntityDaoConfig.getIdentityScope().clear();
         letterEntityDaoConfig.getIdentityScope().clear();
         reportEntityDaoConfig.getIdentityScope().clear();
         reportItemEntityDaoConfig.getIdentityScope().clear();
@@ -220,6 +228,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public ScheduleEntityDao getScheduleEntityDao() {
         return scheduleEntityDao;
+    }
+
+    public LastLetterEntityDao getLastLetterEntityDao() {
+        return lastLetterEntityDao;
     }
 
     public LetterEntityDao getLetterEntityDao() {

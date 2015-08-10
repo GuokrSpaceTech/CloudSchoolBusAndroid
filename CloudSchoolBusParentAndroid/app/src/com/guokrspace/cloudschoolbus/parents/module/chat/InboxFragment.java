@@ -16,17 +16,44 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.support.debug.DebugLog;
+import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.dexafree.materialList.cards.SmallCircleImageCard;
 import com.dexafree.materialList.controller.RecyclerItemClickListener;
 import com.dexafree.materialList.model.CardItemView;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.base.include.Constant;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.LastLetterEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.LastLetterEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.LetterEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.entity.LatestLetter;
+import com.guokrspace.cloudschoolbus.parents.entity.Sender;
+import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.TeacherSelectEvent;
+import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
+import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
+import com.guokrspace.cloudschoolbus.parents.widget.LastLetterCard;
+import com.guokrspace.cloudschoolbus.parents.widget.LastLetterCardItemView;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.otto.Subscribe;
 
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.sql.Ref;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,23 +61,38 @@ import java.util.List;
  */
 public class InboxFragment extends BaseFragment {
     private MaterialListView mMaterialListView;
-    private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private int previousTotal = 0;
-    private int visibleThreshold = 3;
-    int firstVisibleItem, visibleItemCount, totalItemCount;
-    private List<TeacherEntity> mTeacherList;
-    private final int NONETWORK = -2;
-    private final int GOTMESSAGE = 1;
+    private List<LastLetterEntity> mLastLetters;
 
     private Handler mHandler = new Handler(new Handler.Callback() {
 
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
-                default:
+                case Constant.MSG_ONREFRESH:
+                    hideWaitDialog();
+                    RefreshCards();
+                    if (mSwipeRefreshLayout.isRefreshing())
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    break;
+                case Constant.MSG_ONCACHE:
+                    RefreshCards();
+                    break;
+                case Constant.MSG_NOCHANGE:
+                    hideWaitDialog();
+                    if (mSwipeRefreshLayout.isRefreshing())
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    break;
+                case Constant.MSG_NO_NETOWRK:
+                    SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.no_network))
+                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                    hideWaitDialog();
+                    break;
+                case Constant.MSG_SERVER_ERROR:
+                    SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.server_error))
+                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                    hideWaitDialog();
                     break;
             }
             return false;
@@ -98,83 +140,142 @@ public class InboxFragment extends BaseFragment {
             }
         });
 
-        mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
-        mMaterialListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            private boolean loading = true;
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                //Log.d("Aing", "dx:" + dx + ", dy:" + dy);
-
-                visibleItemCount = mMaterialListView.getChildCount();
-                totalItemCount = mLayoutManager.getItemCount();
-                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
-
-                if (loading) {
-                    if (totalItemCount > previousTotal) {
-                        loading = false;
-                        previousTotal = totalItemCount;
-                    }
-                }
-                if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
-                    // End has been reached
-
-                    Log.i("...", "end called");
-
-                    // Do something
-//                    new LoadTask(MainActivity.this, start).execute();
-
-                    loading = true;
-                }
-            }
-        });
-
-        if(mTeacherList!=null)
-        {
-            for(int i=0; i<mTeacherList.size(); i++)
-            {
-                SmallCircleImageCard card = new SmallCircleImageCard(mParentContext);
-//                card.setTitle(mTeacherList.get(i).getTeachername());
-//                card.setDescription(mTeacherList.get(i).getTeachername());
-                card.setDrawable("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
-                mMaterialListView.add(card);
-                mMaterialListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(CardItemView view, int position) {
-                        DebugLog.logI(String.format("%d", position));
-                        TeacherEntity teacher = mTeacherList.get(position);
-                        TeacherMessageBoxFragment teacherMessageBoxFragment = TeacherMessageBoxFragment.newInstance(teacher);
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.inbox_container_layout, teacherMessageBoxFragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-                    }
-
-                    @Override
-                    public void onItemLongClick(CardItemView view, int position) {
-
-                    }
-                });
-            }
-        }
-
         return root;
     }
 
     void init_data()
     {
-        getTeacherList();
+        getLastestLettersFromCache();
+
+        getLastestLettersFromServer();
     }
 
-    private void getTeacherList()
+    private void getLastestLettersFromCache()
     {
-        mTeacherList = mApplication.mTeachers;
+        LastLetterEntityDao lastLetterEntityDao = mApplication.mDaoSession.getLastLetterEntityDao();
+        mLastLetters = lastLetterEntityDao.queryBuilder().list();
+
+        mHandler.sendEmptyMessage(Constant.MSG_ONCACHE);
+    }
+
+    private void getLastestLettersFromServer()
+    {
+        if (!networkStatusEvent.isNetworkConnected()) {
+            mHandler.sendEmptyMessage(Constant.MSG_NO_NETOWRK);
+            return;
+        }
+        showWaitDialog("", null);
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        CloudSchoolBusRestClient.get(ProtocolDef.METHOD_latestchat, params, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                String retCode = "";
+
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+                if (!retCode.equals("1")) {
+                    mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                    return;
+                }
+
+                List<LatestLetter> letters = FastJsonTools.getListObject(response.toString(), LatestLetter.class);
+                for (int i = 0; i < letters.size(); i++) {
+                    LatestLetter letter = letters.get(i);
+                    LastLetterEntity lastLetterEntity = new LastLetterEntity(letter.getTeacherid(),letter.getLastchat(),letter.getPicture());
+                    LastLetterEntityDao lastLetterEntityDao = mApplication.mDaoSession.getLastLetterEntityDao();
+                    lastLetterEntityDao.insertOrReplace(lastLetterEntity);
+                }
+                mHandler.sendEmptyMessage(Constant.MSG_ONREFRESH);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                String retCode = "";
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+                if (retCode != "-2") {
+                    // No New Records are found
+                    mHandler.sendEmptyMessage(Constant.MSG_NOCHANGE);
+                }
+            }
+
+        });
+    }
+
+    private void RefreshCards()
+    {
+        mMaterialListView.clear();
+        for(int i=0; i<mLastLetters.size(); i++)
+        {
+            LastLetterEntity lastLetter = mLastLetters.get(i);
+
+            LastLetterCard card = new LastLetterCard(mParentContext);
+
+            card.setTeacherAvatarUrl("https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png");
+            card.setTimestamp(System.currentTimeMillis()/1000 + "");
+            String teacherName = "";
+            for(int j=0; j<mApplication.mTeachers.size(); j++) {
+                if(mApplication.mTeachers.get(j).getId().equals(lastLetter.getTeacherid())) {
+                    teacherName = mApplication.mTeachers.get(j).getName();
+                    break;
+                }
+            }
+            card.setTeacherName(teacherName);
+            card.setChatMessage(lastLetter.getLastchat());
+            mMaterialListView.add(card);
+            mMaterialListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
+                @Override
+                public void onItemClick(CardItemView view, int position) {
+                    DebugLog.logI(String.format("%d", position));
+                    TeacherEntity teacher = mApplication.mTeachers.get(position);
+                    TeacherMessageBoxFragment teacherMessageBoxFragment = TeacherMessageBoxFragment.newInstance(teacher);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.inbox_container_layout, teacherMessageBoxFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+
+                @Override
+                public void onItemLongClick(CardItemView view, int position) {
+
+                }
+            });
+         }
     }
 
     @Override
@@ -183,7 +284,7 @@ public class InboxFragment extends BaseFragment {
         activity.invalidateOptionsMenu();
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.inboxfragment_menu, menu);
+        inflater.inflate(R.menu.inboxfragmentmenu, menu);
     }
 
     @Override
