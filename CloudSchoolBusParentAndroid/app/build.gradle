@@ -3,6 +3,7 @@ apply plugin: 'android'
 dependencies {
     compile project(':pagerSlidingTabStrip')
     compile fileTree(dir: '../dependancies', include: ['*.jar'])
+    compile fileTree(dir: './libs', include: ['*.jar'])
     compile project(':AndroidSupport')
     //    compile 'com.avast.android-styled-dialogs:2.2.0'
     compile project(':android-styled-dialogs')
@@ -42,7 +43,7 @@ android {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src']
             res.srcDirs = ['res']
-            jniLibs.srcDirs = ['libs']
+            jniLibs.srcDirs = ['jniLibs']
         }
     }
 

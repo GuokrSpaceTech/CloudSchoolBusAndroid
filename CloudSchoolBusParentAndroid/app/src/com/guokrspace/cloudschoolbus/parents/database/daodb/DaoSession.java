@@ -23,11 +23,12 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig teacherEntityDaoConfig;
     private final DaoConfig classEntityDaoConfig;
     private final DaoConfig schoolEntityDaoConfig;
+    private final DaoConfig messageBodyEntityDaoConfig;
+    private final DaoConfig senderEntityDaoConfig;
+    private final DaoConfig tagEntityDaoConfig;
+    private final DaoConfig messageEntityDaoConfig;
     private final DaoConfig articleEntityDaoConfig;
     private final DaoConfig imageEntityDaoConfig;
-    private final DaoConfig tagEntityDaoConfig;
-    private final DaoConfig noticeEntityDaoConfig;
-    private final DaoConfig noticeImageEntityDaoConfig;
     private final DaoConfig attendanceEntityDaoConfig;
     private final DaoConfig festivalEntityDaoConfig;
     private final DaoConfig scheduleEntityDaoConfig;
@@ -40,11 +41,12 @@ public class DaoSession extends AbstractDaoSession {
     private final TeacherEntityDao teacherEntityDao;
     private final ClassEntityDao classEntityDao;
     private final SchoolEntityDao schoolEntityDao;
+    private final MessageBodyEntityDao messageBodyEntityDao;
+    private final SenderEntityDao senderEntityDao;
+    private final TagEntityDao tagEntityDao;
+    private final MessageEntityDao messageEntityDao;
     private final ArticleEntityDao articleEntityDao;
     private final ImageEntityDao imageEntityDao;
-    private final TagEntityDao tagEntityDao;
-    private final NoticeEntityDao noticeEntityDao;
-    private final NoticeImageEntityDao noticeImageEntityDao;
     private final AttendanceEntityDao attendanceEntityDao;
     private final FestivalEntityDao festivalEntityDao;
     private final ScheduleEntityDao scheduleEntityDao;
@@ -71,20 +73,23 @@ public class DaoSession extends AbstractDaoSession {
         schoolEntityDaoConfig = daoConfigMap.get(SchoolEntityDao.class).clone();
         schoolEntityDaoConfig.initIdentityScope(type);
 
+        messageBodyEntityDaoConfig = daoConfigMap.get(MessageBodyEntityDao.class).clone();
+        messageBodyEntityDaoConfig.initIdentityScope(type);
+
+        senderEntityDaoConfig = daoConfigMap.get(SenderEntityDao.class).clone();
+        senderEntityDaoConfig.initIdentityScope(type);
+
+        tagEntityDaoConfig = daoConfigMap.get(TagEntityDao.class).clone();
+        tagEntityDaoConfig.initIdentityScope(type);
+
+        messageEntityDaoConfig = daoConfigMap.get(MessageEntityDao.class).clone();
+        messageEntityDaoConfig.initIdentityScope(type);
+
         articleEntityDaoConfig = daoConfigMap.get(ArticleEntityDao.class).clone();
         articleEntityDaoConfig.initIdentityScope(type);
 
         imageEntityDaoConfig = daoConfigMap.get(ImageEntityDao.class).clone();
         imageEntityDaoConfig.initIdentityScope(type);
-
-        tagEntityDaoConfig = daoConfigMap.get(TagEntityDao.class).clone();
-        tagEntityDaoConfig.initIdentityScope(type);
-
-        noticeEntityDaoConfig = daoConfigMap.get(NoticeEntityDao.class).clone();
-        noticeEntityDaoConfig.initIdentityScope(type);
-
-        noticeImageEntityDaoConfig = daoConfigMap.get(NoticeImageEntityDao.class).clone();
-        noticeImageEntityDaoConfig.initIdentityScope(type);
 
         attendanceEntityDaoConfig = daoConfigMap.get(AttendanceEntityDao.class).clone();
         attendanceEntityDaoConfig.initIdentityScope(type);
@@ -109,11 +114,12 @@ public class DaoSession extends AbstractDaoSession {
         teacherEntityDao = new TeacherEntityDao(teacherEntityDaoConfig, this);
         classEntityDao = new ClassEntityDao(classEntityDaoConfig, this);
         schoolEntityDao = new SchoolEntityDao(schoolEntityDaoConfig, this);
+        messageBodyEntityDao = new MessageBodyEntityDao(messageBodyEntityDaoConfig, this);
+        senderEntityDao = new SenderEntityDao(senderEntityDaoConfig, this);
+        tagEntityDao = new TagEntityDao(tagEntityDaoConfig, this);
+        messageEntityDao = new MessageEntityDao(messageEntityDaoConfig, this);
         articleEntityDao = new ArticleEntityDao(articleEntityDaoConfig, this);
         imageEntityDao = new ImageEntityDao(imageEntityDaoConfig, this);
-        tagEntityDao = new TagEntityDao(tagEntityDaoConfig, this);
-        noticeEntityDao = new NoticeEntityDao(noticeEntityDaoConfig, this);
-        noticeImageEntityDao = new NoticeImageEntityDao(noticeImageEntityDaoConfig, this);
         attendanceEntityDao = new AttendanceEntityDao(attendanceEntityDaoConfig, this);
         festivalEntityDao = new FestivalEntityDao(festivalEntityDaoConfig, this);
         scheduleEntityDao = new ScheduleEntityDao(scheduleEntityDaoConfig, this);
@@ -126,11 +132,12 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(TeacherEntity.class, teacherEntityDao);
         registerDao(ClassEntity.class, classEntityDao);
         registerDao(SchoolEntity.class, schoolEntityDao);
+        registerDao(MessageBodyEntity.class, messageBodyEntityDao);
+        registerDao(SenderEntity.class, senderEntityDao);
+        registerDao(TagEntity.class, tagEntityDao);
+        registerDao(MessageEntity.class, messageEntityDao);
         registerDao(ArticleEntity.class, articleEntityDao);
         registerDao(ImageEntity.class, imageEntityDao);
-        registerDao(TagEntity.class, tagEntityDao);
-        registerDao(NoticeEntity.class, noticeEntityDao);
-        registerDao(NoticeImageEntity.class, noticeImageEntityDao);
         registerDao(AttendanceEntity.class, attendanceEntityDao);
         registerDao(FestivalEntity.class, festivalEntityDao);
         registerDao(ScheduleEntity.class, scheduleEntityDao);
@@ -145,11 +152,12 @@ public class DaoSession extends AbstractDaoSession {
         teacherEntityDaoConfig.getIdentityScope().clear();
         classEntityDaoConfig.getIdentityScope().clear();
         schoolEntityDaoConfig.getIdentityScope().clear();
+        messageBodyEntityDaoConfig.getIdentityScope().clear();
+        senderEntityDaoConfig.getIdentityScope().clear();
+        tagEntityDaoConfig.getIdentityScope().clear();
+        messageEntityDaoConfig.getIdentityScope().clear();
         articleEntityDaoConfig.getIdentityScope().clear();
         imageEntityDaoConfig.getIdentityScope().clear();
-        tagEntityDaoConfig.getIdentityScope().clear();
-        noticeEntityDaoConfig.getIdentityScope().clear();
-        noticeImageEntityDaoConfig.getIdentityScope().clear();
         attendanceEntityDaoConfig.getIdentityScope().clear();
         festivalEntityDaoConfig.getIdentityScope().clear();
         scheduleEntityDaoConfig.getIdentityScope().clear();
@@ -178,24 +186,28 @@ public class DaoSession extends AbstractDaoSession {
         return schoolEntityDao;
     }
 
-    public ArticleEntityDao getArticleEntityDao() {
-        return articleEntityDao;
+    public MessageBodyEntityDao getMessageBodyEntityDao() {
+        return messageBodyEntityDao;
     }
 
-    public ImageEntityDao getImageEntityDao() {
-        return imageEntityDao;
+    public SenderEntityDao getSenderEntityDao() {
+        return senderEntityDao;
     }
 
     public TagEntityDao getTagEntityDao() {
         return tagEntityDao;
     }
 
-    public NoticeEntityDao getNoticeEntityDao() {
-        return noticeEntityDao;
+    public MessageEntityDao getMessageEntityDao() {
+        return messageEntityDao;
     }
 
-    public NoticeImageEntityDao getNoticeImageEntityDao() {
-        return noticeImageEntityDao;
+    public ArticleEntityDao getArticleEntityDao() {
+        return articleEntityDao;
+    }
+
+    public ImageEntityDao getImageEntityDao() {
+        return imageEntityDao;
     }
 
     public AttendanceEntityDao getAttendanceEntityDao() {

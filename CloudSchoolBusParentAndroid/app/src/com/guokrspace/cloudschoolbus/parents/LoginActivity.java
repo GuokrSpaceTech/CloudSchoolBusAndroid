@@ -115,7 +115,6 @@ public class LoginActivity extends BaseActivity {
                             .setMessage(getResources().getString(R.string.invalid_mobile))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     showProgress(false);
-                    attemptRegister();
                     break;
                 //Get Session ID
                 case MSG_VERIFY_OK:
@@ -358,7 +357,7 @@ public class LoginActivity extends BaseActivity {
                                 List<Teacher> teachers = classes.get(j).getTeacher();
                                 for(int k=0; k<teachers.size(); k++)
                                 {
-                                    TeacherEntity teacherEntity = new TeacherEntity(teachers.get(k).getId(),teachers.get(k).getDuty(),teachers.get(k).getName(), classEntity.getClassid());
+                                    TeacherEntity teacherEntity = new TeacherEntity(teachers.get(k).getId(),teachers.get(k).getDuty(),"https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png",teachers.get(k).getName(), classEntity.getClassid());
                                     teacherEntityDao.insertOrReplace(teacherEntity);
                                 }
 

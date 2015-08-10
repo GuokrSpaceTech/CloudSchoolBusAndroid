@@ -107,7 +107,7 @@ public class BaseListFragment extends ListFragment {
 			DebugLog.logI("Activity onRestoreInstanceState");
 	//		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onRestoreInstanceState");
 //			NetworkClient.getNetworkClient().setLoginToken(savedInstanceState.getString("loginToken"));
-			mApplication.mStudentList = (List<Student>) savedInstanceState.getSerializable("StudentList");
+//			mApplication.mStudentList = (List<Student>) savedInstanceState.getSerializable("StudentList");
 //			mApplication.mTeacher = (Teacher) savedInstanceState.getSerializable("Teacher");
 //			mApplication.mClassInfo = (Classinfo) savedInstanceState.getSerializable("ClassInfo");
 //			mApplication.mLoginSetting = (LoginSetting) savedInstanceState.getSerializable("LoginSetting");
@@ -121,7 +121,7 @@ public class BaseListFragment extends ListFragment {
 		DebugLog.logI("Fragment onSaveInstanceState");
 //		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
 //		outState.putString("loginToken", NetworkClient.getNetworkClient().getLoginToken());
-		outState.putSerializable("StudentList", (ArrayList<Student>) mApplication.mStudentList);
+//		outState.putSerializable("StudentList", (ArrayList<Student>) mApplication.mStudentList);
 //		outState.putSerializable("Teacher", mApplication.mTeacher);
 //		outState.putSerializable("ClassInfo", mApplication.mClassInfo);
 //		outState.putSerializable("LoginSetting", mApplication.mLoginSetting);

@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public class CloudSchoolBusRestClient {
 //    private static final String BASE_URL = "http://api35.yunxiaoche.com:81/";
-//    private static final String BASE_URL = "http://192.168.1.140:81/api/parent/";
+//    private static final String BASE_URL = "http://222.247.92.222/api/parent/";
     private static final String BASE_URL = "http://test.yunxiaoche.com/api/parent/";
 
     private static AsyncHttpClient client = new AsyncHttpClient();

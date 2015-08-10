@@ -9,15 +9,19 @@ import android.widget.ImageView;
 
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ImageEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntity;
+import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private List<ImageEntity> mPicUrls;
+    private List<String> mPicUrls = new ArrayList<>();
 
-    public ImageAdapter(Context c, List<ImageEntity> urls) {
+    public ImageAdapter(Context c, List<String> urls) {
         mContext = c;
         mPicUrls = urls;
     }
@@ -59,7 +63,10 @@ public class ImageAdapter extends BaseAdapter {
             imageView.forceLayout();
         }
 
-        Picasso.with(mContext).load(mPicUrls.get(position).getSource()).into(imageView);
+        String url = mPicUrls.get(position);
+
+        Picasso.with(mContext).load(url).into(imageView);
+
         return imageView;
     }
 }

@@ -17,11 +17,18 @@ import android.support.v7.internal.widget.ActionBarContainer;
 
 import com.alibaba.fastjson.JSONException;
 import com.android.support.debug.DebugLog;
+import com.android.support.utils.SDCardToolUtil;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.android.support.dialog.*;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoMaster;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
@@ -123,9 +130,12 @@ abstract public class BaseActivity extends ActionBarActivity {
 		
 		DebugLog.logI("Activity onSaveInstanceState");
 //		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
-//		outState.putString("loginToken", NetworkClient.getNetworkClient().getLoginToken());
-//		outState.putSerializable("StudentList", (ArrayList<Student>) mApplication.mStudentList);
-//		outState.putSerializable("ClassInfo", mApplication.mClassInfo);
+		outState.putSerializable("mConfig", mApplication.mConfig);
+		outState.putSerializable("mSchools", (ArrayList<SchoolEntity>)mApplication.mSchools);
+		outState.putSerializable("mClasses", (ArrayList<ClassEntity>)mApplication.mClasses);
+		outState.putSerializable("mTeachers",(ArrayList<TeacherEntity>)mApplication.mTeachers);
+		outState.putSerializable("mStudents",(ArrayList<StudentEntity>)mApplication.mStudents);
+
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -135,10 +145,11 @@ abstract public class BaseActivity extends ActionBarActivity {
 		super.onRestoreInstanceState(savedInstanceState);
 		if(null != savedInstanceState){
 			DebugLog.logI("Activity onRestoreInstanceState");
-	//		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onRestoreInstanceState");
-//			NetworkClient.getNetworkClient().setLoginToken(savedInstanceState.getString("loginToken"));
-//			mApplication.mStudentList = (List<Student>) savedInstanceState.getSerializable("StudentList");
-//			mApplication.mClassInfo = (Classinfo) savedInstanceState.getSerializable("ClassInfo");
+			mApplication.mConfig = (ConfigEntity)savedInstanceState.getSerializable("mConfig");
+			mApplication.mSchools = (List<SchoolEntity>)savedInstanceState.getSerializable("mSchools");
+			mApplication.mClasses = (List<ClassEntity>)savedInstanceState.getSerializable("mClasses");
+			mApplication.mTeachers = (List<TeacherEntity>)savedInstanceState.getSerializable("mTeachers");
+			mApplication.mStudents = (List<StudentEntity>)savedInstanceState.getSerializable("mStudents");
 		}
 	}
 

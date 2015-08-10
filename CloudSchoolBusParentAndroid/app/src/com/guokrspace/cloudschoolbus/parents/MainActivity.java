@@ -47,17 +47,10 @@ import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
+import com.guokrspace.cloudschoolbus.parents.module.chat.InboxFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
@@ -65,8 +58,7 @@ import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.Noti
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.TimelineFragment;
-import com.guokrspace.cloudschoolbus.parents.module.messages.InboxFragment;
-import com.guokrspace.cloudschoolbus.parents.module.messages.TeacherMessageBoxFragment;
+import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherMessageBoxFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -74,8 +66,6 @@ import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
@@ -181,7 +171,7 @@ public class MainActivity extends BaseActivity implements
 	private void initFragments()
 	{
 		mFragments[0] = TimelineFragment.newInstance(null, null);
-		mFragments[1] = TeacherMessageBoxFragment.newInstance(null);
+		mFragments[1] = InboxFragment.newInstance(null,null);
 		mFragments[2] = NoticeFragment.newInstance(null,null);
 		mFragments[3] = NoticeFragment.newInstance(null,null);
 	}
@@ -378,8 +368,6 @@ public class MainActivity extends BaseActivity implements
 			default:
 				break;
 		}
-
-
 	}
 
     public class MyPagerAdapter extends FragmentPagerAdapter
@@ -497,6 +485,4 @@ public class MainActivity extends BaseActivity implements
 			}
 		});
 	}
-
-
 }

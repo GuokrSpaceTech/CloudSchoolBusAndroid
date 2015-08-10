@@ -20,19 +20,28 @@ import java.util.List;
 // "description":"描述",
 // "isconfirm":"0",
 // "sendtime":"1438222559",
-// "apptype":"Notice",
+// "apptype":"NoticeBody",
 // "studentid":"36008"}
 
 public class Timeline {
     String ismass;
+    String senderid;
     List<String> body;
+    String pushedtime;
     String tag;
+    String receiverrole;
+    String userid;
+    String ispushed;
+    String userrole;
     String isreaded;
+    String receiverids;
     Sender sender;
     String id;
     String title;
     String description;
     String isconfirm;
+    String senderrole;
+    String messageid;
     String sendtime;
     String apptype;
     String studentid;
@@ -45,12 +54,28 @@ public class Timeline {
         this.ismass = ismass;
     }
 
+    public String getSenderid() {
+        return senderid;
+    }
+
+    public void setSenderid(String senderid) {
+        this.senderid = senderid;
+    }
+
     public List<String> getBody() {
         return body;
     }
 
     public void setBody(List<String> body) {
         this.body = body;
+    }
+
+    public String getPushedtime() {
+        return pushedtime;
+    }
+
+    public void setPushedtime(String pushedtime) {
+        this.pushedtime = pushedtime;
     }
 
     public String getTag() {
@@ -61,12 +86,52 @@ public class Timeline {
         this.tag = tag;
     }
 
+    public String getReceiverrole() {
+        return receiverrole;
+    }
+
+    public void setReceiverrole(String receiverrole) {
+        this.receiverrole = receiverrole;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getIspushed() {
+        return ispushed;
+    }
+
+    public void setIspushed(String ispushed) {
+        this.ispushed = ispushed;
+    }
+
+    public String getUserrole() {
+        return userrole;
+    }
+
+    public void setUserrole(String userrole) {
+        this.userrole = userrole;
+    }
+
     public String getIsreaded() {
         return isreaded;
     }
 
     public void setIsreaded(String isreaded) {
         this.isreaded = isreaded;
+    }
+
+    public String getReceiverids() {
+        return receiverids;
+    }
+
+    public void setReceiverids(String receiverids) {
+        this.receiverids = receiverids;
     }
 
     public Sender getSender() {
@@ -107,6 +172,22 @@ public class Timeline {
 
     public void setIsconfirm(String isconfirm) {
         this.isconfirm = isconfirm;
+    }
+
+    public String getSenderrole() {
+        return senderrole;
+    }
+
+    public void setSenderrole(String senderrole) {
+        this.senderrole = senderrole;
+    }
+
+    public String getMessageid() {
+        return messageid;
+    }
+
+    public void setMessageid(String messageid) {
+        this.messageid = messageid;
     }
 
     public String getSendtime() {

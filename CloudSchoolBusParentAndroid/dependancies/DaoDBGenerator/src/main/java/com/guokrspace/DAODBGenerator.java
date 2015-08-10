@@ -5,6 +5,7 @@ import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
+import de.greenrobot.daogenerator.ToOne;
 
 public class DAODBGenerator {
 
@@ -22,8 +23,8 @@ public class DAODBGenerator {
 
         addConfig(schema);
         addBaseInfo(schema);
+        addTimeline(schema);
         addAriticle(schema);
-        addNotice(schema);
         addAttendance(schema);
         addFestival(schema);
         addSchedule(schema);
@@ -54,6 +55,7 @@ public class DAODBGenerator {
         Entity teacher = schema.addEntity("TeacherEntity");
         teacher.addStringProperty("id").notNull().primaryKey();
         teacher.addStringProperty("duty");
+        teacher.addStringProperty("avatar");
         teacher.addStringProperty("name");
         Property classIdTeacher = teacher.addStringProperty("classid").notNull().getProperty();
 
@@ -71,6 +73,45 @@ public class DAODBGenerator {
         school.addStringProperty("name");
         school.addStringProperty("address");
         ToMany schoolToClass = school.addToMany(classEntity, schoolId);
+    }
+
+    private static void addTimeline(Schema schema)
+    {
+        Entity messagebody = schema.addEntity("MessageBodyEntity");
+        messagebody.addIdProperty().autoincrement().primaryKey();
+        messagebody.addStringProperty("content");
+        Property messageIdBody = messagebody.addStringProperty("messageid").getProperty();
+
+        Entity sender = schema.addEntity("SenderEntity");
+        sender.addStringProperty("id").notNull().primaryKey();
+        sender.addStringProperty("role");
+        sender.addStringProperty("avatar");
+        sender.addStringProperty("classname");
+        sender.addStringProperty("name");
+
+        Entity tag = schema.addEntity("TagEntity");
+        tag.addStringProperty("tagid").notNull().primaryKey();
+        tag.addStringProperty("tagName");
+        tag.addStringProperty("tagnamedesc");
+        tag.addStringProperty("tagname_en");
+        tag.addStringProperty("tagnamedesc_en");
+        Property messageIdTag = tag.addStringProperty("messageid").notNull().getProperty();
+
+        Entity message = schema.addEntity("MessageEntity");
+        message.addStringProperty("messageid").notNull().primaryKey().getProperty();
+        message.addStringProperty("title");
+        message.addStringProperty("description");
+        message.addStringProperty("isconfirm");
+        message.addStringProperty("sendtime");
+        message.addStringProperty("apptype");
+        message.addStringProperty("studentid");
+        message.addStringProperty("ismass");
+        message.addStringProperty("isreaded");
+        Property senderIdMessage = message.addStringProperty("senderid").notNull().getProperty();
+
+        ToMany messageToTag    = message.addToMany(tag,      messageIdTag);
+        ToMany messageToBody   = message.addToMany(messagebody, messageIdBody);
+        ToOne  messageToSender = message.addToOne(sender, senderIdMessage);
     }
 
     private static void addReport(Schema schema) {
@@ -95,9 +136,6 @@ public class DAODBGenerator {
 
         ToMany report2ReporItem = report.addToMany(reportItem,reportId);
     }
-
-
-
 
     private static void addNotice(Schema schema)
     {
@@ -164,7 +202,6 @@ public class DAODBGenerator {
         article.addStringProperty("commentnum");
         article.addStringProperty("havezan");
 
-
         Entity image = schema.addEntity("ImageEntity");
         image.addStringProperty("filename").notNull().primaryKey();
         image.addStringProperty("source");
@@ -176,19 +213,6 @@ public class DAODBGenerator {
         image.addToOne(article,ariticle_id_image);
         ToMany ariticleToImages = article.addToMany(image, ariticle_id_image);
         ariticleToImages.setName("images");
-
-        Entity tag = schema.addEntity("TagEntity");
-        tag.addStringProperty("tagid").notNull().primaryKey();
-        tag.addStringProperty("tagName");
-        tag.addStringProperty("tagnamedesc");
-        tag.addStringProperty("tagname_en");
-        tag.addStringProperty("tagnamedesc_en");
-        Property ariticle_id_tag = tag.addStringProperty("articleId").notNull().getProperty();
-
-        tag.addToOne(article,ariticle_id_tag);
-        ToMany articleToTags = article.addToMany(tag, ariticle_id_tag);
-        articleToTags.setName("tags");
-
     }
 
     private static void addLetter(Schema schema)

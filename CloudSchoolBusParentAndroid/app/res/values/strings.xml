@@ -13,6 +13,7 @@
     <string name="failure_renewsid">更新会话ID失败，请联系产品客服</string>
     <string name="failure_unknown">未知错误，请联系产品客服</string>
     <string name="auth_failed">账号或者密码错误，再试试吧</string>
+    <string name="no_message">没有任何消息</string>
     <string name="OKAY">好的</string>
     <string name="action_contact">Contact</string>
     <string name="headerCode">Code</string>

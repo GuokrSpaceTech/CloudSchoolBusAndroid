@@ -30,7 +30,6 @@ public class ArticleEntity {
     private transient ArticleEntityDao myDao;
 
     private List<ImageEntity> images;
-    private List<TagEntity> tags;
 
     public ArticleEntity() {
     }
@@ -160,28 +159,6 @@ public class ArticleEntity {
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetImages() {
         images = null;
-    }
-
-    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<TagEntity> getTags() {
-        if (tags == null) {
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            TagEntityDao targetDao = daoSession.getTagEntityDao();
-            List<TagEntity> tagsNew = targetDao._queryArticleEntity_Tags(articlekey);
-            synchronized (this) {
-                if(tags == null) {
-                    tags = tagsNew;
-                }
-            }
-        }
-        return tags;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    public synchronized void resetTags() {
-        tags = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */

@@ -4,13 +4,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.internal.DaoConfig;
-import de.greenrobot.dao.internal.SqlUtils;
 import de.greenrobot.dao.query.Query;
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -33,12 +31,10 @@ public class TagEntityDao extends AbstractDao<TagEntity, String> {
         public final static Property Tagnamedesc = new Property(2, String.class, "tagnamedesc", false, "TAGNAMEDESC");
         public final static Property Tagname_en = new Property(3, String.class, "tagname_en", false, "TAGNAME_EN");
         public final static Property Tagnamedesc_en = new Property(4, String.class, "tagnamedesc_en", false, "TAGNAMEDESC_EN");
-        public final static Property ArticleId = new Property(5, String.class, "articleId", false, "ARTICLE_ID");
+        public final static Property Messageid = new Property(5, String.class, "messageid", false, "MESSAGEID");
     };
 
-    private DaoSession daoSession;
-
-    private Query<TagEntity> articleEntity_TagsQuery;
+    private Query<TagEntity> messageEntity_TagEntityListQuery;
 
     public TagEntityDao(DaoConfig config) {
         super(config);
@@ -46,7 +42,6 @@ public class TagEntityDao extends AbstractDao<TagEntity, String> {
     
     public TagEntityDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -58,7 +53,7 @@ public class TagEntityDao extends AbstractDao<TagEntity, String> {
                 "'TAGNAMEDESC' TEXT," + // 2: tagnamedesc
                 "'TAGNAME_EN' TEXT," + // 3: tagname_en
                 "'TAGNAMEDESC_EN' TEXT," + // 4: tagnamedesc_en
-                "'ARTICLE_ID' TEXT NOT NULL );"); // 5: articleId
+                "'MESSAGEID' TEXT NOT NULL );"); // 5: messageid
     }
 
     /** Drops the underlying database table. */
@@ -92,13 +87,7 @@ public class TagEntityDao extends AbstractDao<TagEntity, String> {
         if (tagnamedesc_en != null) {
             stmt.bindString(5, tagnamedesc_en);
         }
-        stmt.bindString(6, entity.getArticleId());
-    }
-
-    @Override
-    protected void attachEntity(TagEntity entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
+        stmt.bindString(6, entity.getMessageid());
     }
 
     /** @inheritdoc */
@@ -116,7 +105,7 @@ public class TagEntityDao extends AbstractDao<TagEntity, String> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tagnamedesc
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // tagname_en
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // tagnamedesc_en
-            cursor.getString(offset + 5) // articleId
+            cursor.getString(offset + 5) // messageid
         );
         return entity;
     }
@@ -129,7 +118,7 @@ public class TagEntityDao extends AbstractDao<TagEntity, String> {
         entity.setTagnamedesc(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setTagname_en(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setTagnamedesc_en(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setArticleId(cursor.getString(offset + 5));
+        entity.setMessageid(cursor.getString(offset + 5));
      }
     
     /** @inheritdoc */
@@ -154,111 +143,18 @@ public class TagEntityDao extends AbstractDao<TagEntity, String> {
         return true;
     }
     
-    /** Internal query to resolve the "tags" to-many relationship of ArticleEntity. */
-    public List<TagEntity> _queryArticleEntity_Tags(String articleId) {
+    /** Internal query to resolve the "tagEntityList" to-many relationship of MessageEntity. */
+    public List<TagEntity> _queryMessageEntity_TagEntityList(String messageid) {
         synchronized (this) {
-            if (articleEntity_TagsQuery == null) {
+            if (messageEntity_TagEntityListQuery == null) {
                 QueryBuilder<TagEntity> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.ArticleId.eq(null));
-                articleEntity_TagsQuery = queryBuilder.build();
+                queryBuilder.where(Properties.Messageid.eq(null));
+                messageEntity_TagEntityListQuery = queryBuilder.build();
             }
         }
-        Query<TagEntity> query = articleEntity_TagsQuery.forCurrentThread();
-        query.setParameter(0, articleId);
+        Query<TagEntity> query = messageEntity_TagEntityListQuery.forCurrentThread();
+        query.setParameter(0, messageid);
         return query.list();
     }
 
-    private String selectDeep;
-
-    protected String getSelectDeep() {
-        if (selectDeep == null) {
-            StringBuilder builder = new StringBuilder("SELECT ");
-            SqlUtils.appendColumns(builder, "T", getAllColumns());
-            builder.append(',');
-            SqlUtils.appendColumns(builder, "T0", daoSession.getArticleEntityDao().getAllColumns());
-            builder.append(" FROM TAG_ENTITY T");
-            builder.append(" LEFT JOIN ARTICLE_ENTITY T0 ON T.'ARTICLE_ID'=T0.'ARTICLEKEY'");
-            builder.append(' ');
-            selectDeep = builder.toString();
-        }
-        return selectDeep;
-    }
-    
-    protected TagEntity loadCurrentDeep(Cursor cursor, boolean lock) {
-        TagEntity entity = loadCurrent(cursor, 0, lock);
-        int offset = getAllColumns().length;
-
-        ArticleEntity articleEntity = loadCurrentOther(daoSession.getArticleEntityDao(), cursor, offset);
-         if(articleEntity != null) {
-            entity.setArticleEntity(articleEntity);
-        }
-
-        return entity;    
-    }
-
-    public TagEntity loadDeep(Long key) {
-        assertSinglePk();
-        if (key == null) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder(getSelectDeep());
-        builder.append("WHERE ");
-        SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
-        String sql = builder.toString();
-        
-        String[] keyArray = new String[] { key.toString() };
-        Cursor cursor = db.rawQuery(sql, keyArray);
-        
-        try {
-            boolean available = cursor.moveToFirst();
-            if (!available) {
-                return null;
-            } else if (!cursor.isLast()) {
-                throw new IllegalStateException("Expected unique result, but count was " + cursor.getCount());
-            }
-            return loadCurrentDeep(cursor, true);
-        } finally {
-            cursor.close();
-        }
-    }
-    
-    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
-    public List<TagEntity> loadAllDeepFromCursor(Cursor cursor) {
-        int count = cursor.getCount();
-        List<TagEntity> list = new ArrayList<TagEntity>(count);
-        
-        if (cursor.moveToFirst()) {
-            if (identityScope != null) {
-                identityScope.lock();
-                identityScope.reserveRoom(count);
-            }
-            try {
-                do {
-                    list.add(loadCurrentDeep(cursor, false));
-                } while (cursor.moveToNext());
-            } finally {
-                if (identityScope != null) {
-                    identityScope.unlock();
-                }
-            }
-        }
-        return list;
-    }
-    
-    protected List<TagEntity> loadDeepAllAndCloseCursor(Cursor cursor) {
-        try {
-            return loadAllDeepFromCursor(cursor);
-        } finally {
-            cursor.close();
-        }
-    }
-    
-
-    /** A raw-style query where you can pass any WHERE clause and arguments. */
-    public List<TagEntity> queryDeep(String where, String... selectionArg) {
-        Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
-        return loadDeepAllAndCloseCursor(cursor);
-    }
- 
 }

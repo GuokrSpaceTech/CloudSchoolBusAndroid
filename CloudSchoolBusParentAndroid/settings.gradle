@@ -1,9 +1,0 @@
-include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs', ':dynamicgrid', ':DaoDBGenerator', ':materialList', ':android-week-view'
-include 'app'
-project(':pagerSlidingTabStrip').projectDir = new File('dependancies/pagerSlidingTabStrip')
-project(':AndroidSupport').projectDir = new File('dependancies/AndroidSupport')
-project(':android-styled-dialogs').projectDir = new File('dependancies/android-styled-dialogs')
-project(':dynamicgrid').projectDir = new File('dependancies/dynamicgrid')
-project(':DaoDBGenerator').projectDir = new File('dependancies/DaoDBGenerator')
-project(':materialList').projectDir = new File('dependancies/materialList')
-project(':android-week-view').projectDir = new File('dependancies/android-week-view')
