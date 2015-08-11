@@ -1,0 +1,75 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+	dependencies {
+		classpath 'com.android.tools.build:gradle:1.0.0'
+	}
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '20'
+    sourceSets {
+        main {
+            manifest {
+                srcFile 'AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src'
+            }
+            res {
+                srcDir 'res'
+            }
+            assets {
+                srcDir 'assets'
+            }
+            resources {
+                srcDir 'src'
+            }
+            aidl {
+                srcDir 'src'
+            }
+            jniLibs {
+                srcDirs 'jniLibs'
+            }
+        }
+    }
+    defaultConfig {
+        ndk {
+            moduleName 'videodecoder'
+        }
+    }
+
+    productFlavors {}
+
+    buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable true
+        }
+    }
+
+    configurations {
+        all*.exclude group: 'com.android.support', module: 'support-v4'
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+}
+
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile project(':alipay_lib')
+    compile project(':OneKeyShare')
+    compile project(':pulltorefresh')
+    compile project(':AndroidSupportJHF')
+}
