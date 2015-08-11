@@ -59,7 +59,7 @@ public class BaseFragment extends Fragment {
 	protected CloudSchoolBusParentsApplication mApplication;
 	public    NetworkStatusEvent networkStatusEvent;
 	private   CustomWaitDialog mCustomWaitDialog;
-	private List<MessageEntity> mMesageEntities = new ArrayList<>();
+	public    List<MessageEntity> mMesageEntities = new ArrayList<>();
 
 	final private static int MSG_ONREFRESH = 1;
 	final private static int MSG_ONLOADMORE = 2;
@@ -97,10 +97,6 @@ public class BaseFragment extends Fragment {
 	}
 	
 	protected void setListener(View view) {
-
-	}
-
-	protected void setTitleNavBar(View view) {
 
 	}
 	
@@ -182,6 +178,11 @@ public class BaseFragment extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
+	public void GetMessagesFromCache()
+	{
+		mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder().list();
+	}
+
 	//Get all articles from newest in Cache to newest in Server
 	public void GetNewMessagesFromServer(String endtime, android.os.Handler handler) {
 		GetMessagesFromServer("0", endtime, handler);
@@ -240,7 +241,7 @@ public class BaseFragment extends Fragment {
 					Timeline message = timelines.get(i);
 					Sender sender = message.getSender();
 					MessageEntity messageEntity = new MessageEntity(message.getId(), message.getTitle(), message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(), message.getStudentid(), message.getIsmass(), message.getIsreaded(), sender.getId());
-					messageEntityDao.insertOrReplace(messageEntity);
+                    messageEntityDao.insertOrReplace(messageEntity);
 
 					String avatar = "http://apps.bdimg.com/developer/static/12261449/assets/v3/case_meitu.png";
 //					SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
@@ -261,6 +262,10 @@ public class BaseFragment extends Fragment {
 //						tagEntityDao.insertOrReplace(tagEntity);
 //					}
 				}
+
+                //Refresh mMessageEntities
+                GetMessagesFromCache();
+
 				handler.sendEmptyMessage(MSG_ONREFRESH);
 			}
 
@@ -296,7 +301,6 @@ public class BaseFragment extends Fragment {
 					handler.sendEmptyMessage(MSG_NOCHANGE);
 				}
 			}
-
 		});
 	}
 	public void animation(View v) {

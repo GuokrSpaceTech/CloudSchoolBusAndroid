@@ -14,6 +14,11 @@
     <string name="failure_unknown">未知错误，请联系产品客服</string>
     <string name="auth_failed">账号或者密码错误，再试试吧</string>
     <string name="no_message">没有任何消息</string>
+    <string name="invalid_picture">请选择有效的图片</string>
+    <string name="picture_ops">照片操作</string>
+    <string name="picture_ops_album">选择本地相册</string>
+    <string name="no_content">没有要发送内容</string>
+    <string name="picture_ops_take_pic">拍照</string>
     <string name="OKAY">好的</string>
     <string name="action_contact">Contact</string>
     <string name="headerCode">Code</string>

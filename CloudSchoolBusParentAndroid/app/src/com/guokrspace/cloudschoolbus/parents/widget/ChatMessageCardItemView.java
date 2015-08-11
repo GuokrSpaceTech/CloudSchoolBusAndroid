@@ -30,36 +30,41 @@ public class ChatMessageCardItemView extends CardItemView<ChatMessageCard> {
     }
 
     public void build(ChatMessageCard card) {
-		super.build(card);
+        super.build(card);
 
         // Description
+        TextView textContentTeacher = (TextView) findViewById(R.id.textView_teacher_chat_message);
+        textContentTeacher.setText(card.getDescription());
+        if (card.getDescriptionColor() != -1) {
+            textContentTeacher.setTextColor(card.getDescriptionColor());
+        }
+
         TextView description = (TextView) findViewById(R.id.text_content);
         description.setText(card.getDescription());
         if (card.getDescriptionColor() != -1) {
             description.setTextColor(card.getDescriptionColor());
         }
 
-        ImageView imageView_teacher_head = (ImageView) findViewById(R.id.imageView);
+        ImageView imageView_teacher_head = (ImageView) findViewById(R.id.imageView_teacher_chat_message);
 
-        ImageView imageView_self_head = (ImageView) findViewById(R.id.imageViewRight);
+        ImageView imageView_self_head = (ImageView) findViewById(R.id.imageView_parents_chat_message);
 
-        if(card.getRoleType().equals("teacher"))
-        {
-        // ImageSelf
+        if (card.getRoleType().equals("teacher")) {
+            // ImageSelf
             imageView_teacher_head.setVisibility(VISIBLE);
-        if (imageView_teacher_head != null) {
-            if(card.getUrlImage() == null || card.getUrlImage().isEmpty()) {
-                imageView_teacher_head.setImageDrawable(card.getDrawable());
-            } else {
-                Picasso.with(getContext()).load(card.getUrlImage()).into(imageView_teacher_head);
+            if (imageView_teacher_head != null) {
+                if (card.getUrlImage() == null || card.getUrlImage().isEmpty()) {
+                    imageView_teacher_head.setImageDrawable(card.getDrawable());
+                } else {
+                    Picasso.with(getContext()).load(card.getUrlImage()).into(imageView_teacher_head);
+                }
             }
-        }
-            imageView_self_head.setVisibility(INVISIBLE);
+            imageView_self_head.setVisibility(GONE);
         } else {
-            imageView_teacher_head.setVisibility(INVISIBLE);
+            imageView_teacher_head.setVisibility(GONE);
             imageView_self_head.setVisibility(VISIBLE);
             if (imageView_self_head != null) {
-                if(card.getSenderImageUrl() == null || card.getSenderImageUrl().isEmpty()) {
+                if (card.getSenderImageUrl() == null || card.getSenderImageUrl().isEmpty()) {
                     imageView_self_head.setImageDrawable(card.getmDrawableSender());
                 } else {
                     Picasso.with(getContext()).load(card.getSenderImageUrl()).into(imageView_self_head);
@@ -74,11 +79,10 @@ public class ChatMessageCardItemView extends CardItemView<ChatMessageCard> {
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Hongkong"));
         Date date = new Date(addtime);
         String dateString = simpleDateFormat.format(date);
-        TextView timestamp_text_view = (TextView) findViewById(R.id.text_timestamp);
+        TextView timestamp_text_view = (TextView) findViewById(R.id.textView_date);
         timestamp_text_view.setText(dateString);
         if (card.getDescriptionColor() != -1) {
             description.setTextColor(card.getDescriptionColor());
         }
     }
-
 }

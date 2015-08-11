@@ -12,8 +12,9 @@ public class ChatMessageCard extends SimpleCard {
     private Drawable mDrawableSender;
     private String roleType;
     private String letterType;
-
-
+    private String contentText;
+    private String contentImage;
+    private Drawable mDrawableContentImage;
 
     public String getSenderImageUrl() {
         return senderImageUrl;
@@ -53,6 +54,30 @@ public class ChatMessageCard extends SimpleCard {
 
     public void setLetterType(String letterType) {
         this.letterType = letterType;
+    }
+
+    public String getContentText() {
+        return contentText;
+    }
+
+    public void setContentText(String contentText) {
+        this.contentText = contentText;
+    }
+
+    public String getContentImage() {
+        return contentImage;
+    }
+
+    public void setContentImage(String contentImage) {
+        this.contentImage = contentImage;
+    }
+
+    public Drawable getmDrawableContentImage() {
+        return mDrawableContentImage;
+    }
+
+    public void setmDrawableContentImage(Drawable mDrawableContentImage) {
+        this.mDrawableContentImage = mDrawableContentImage;
     }
 
     public ChatMessageCard(final Context context) {
