@@ -19,6 +19,7 @@
             <FrameLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:background="#FFFFFFFF"
                 android:id="@+id/avatar">
 
                 <LinearLayout
@@ -26,7 +27,6 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:background="#FFFFFFFF"
                     android:layout_marginLeft="120dp">
 
                     <TextView
@@ -47,19 +47,20 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="50dp"
-                    android:background="@drawable/ic_image_default" />
-
             </FrameLayout>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/ic_image_default"
+                android:layout_marginTop="-60dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="0dp"
                 android:background="#00000000"/>
 
             <LinearLayout
