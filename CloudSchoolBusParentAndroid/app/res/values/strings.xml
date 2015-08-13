@@ -21,6 +21,7 @@
     <string name="picture_ops_take_pic">拍照</string>
     <string name="OKAY">好的</string>
     <string name="action_contact">Contact</string>
+    <string name="realtime_streaming">在线直播中......</string>
     <string name="headerCode">Code</string>
     <string name="out_time">Error</string>
     <string name="streaming_error">Error</string>
@@ -36,6 +37,12 @@
     <string name="action_week_view">Week view</string>
     <string name="module_explore">发现</string>
     <string name="module_teacher">教师</string>
-    <string name="reply">回复</string>
+    <string name="avatar">头像</string>
+    <string name="name">名字</string>
+    <string name="phone">联系方式</string>
+    <string name="relation">与孩子关系</string>
+    <string name="switch_child">切换孩子</string>
+
+
 
 </resources>

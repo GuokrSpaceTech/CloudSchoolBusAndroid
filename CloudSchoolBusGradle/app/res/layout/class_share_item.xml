@@ -61,7 +61,7 @@
                 android:layout_height = "15dip"
                 android:layout_marginLeft="5dip"
                 android:layout_gravity="center"
-                android:background="@drawable/setting_vip_05"/>
+                android:background="@drawable/setting_vip_04"/>
            <RelativeLayout
                 android:id = "@+id/relative_layout_taglist"
                 android:layout_height="match_parent"
