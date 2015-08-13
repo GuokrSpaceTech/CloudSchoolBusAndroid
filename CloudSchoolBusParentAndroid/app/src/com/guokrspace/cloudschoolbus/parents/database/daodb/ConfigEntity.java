@@ -13,6 +13,7 @@ public class ConfigEntity implements Serializable{
     private String sid;
     private String token;
     private String mobile;
+    private String userid;
 
     public ConfigEntity() {
     }
@@ -21,11 +22,12 @@ public class ConfigEntity implements Serializable{
         this.id = id;
     }
 
-    public ConfigEntity(Long id, String sid, String token, String mobile) {
+    public ConfigEntity(Long id, String sid, String token, String mobile, String userid) {
         this.id = id;
         this.sid = sid;
         this.token = token;
         this.mobile = mobile;
+        this.userid = userid;
     }
 
     public Long getId() {
@@ -58,6 +60,14 @@ public class ConfigEntity implements Serializable{
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
 }

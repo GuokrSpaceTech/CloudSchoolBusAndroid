@@ -40,6 +40,7 @@ public class DAODBGenerator {
         note.addStringProperty("sid");
         note.addStringProperty("token");
         note.addStringProperty("mobile");
+        note.addStringProperty("userid");
     }
 
     private static void addBaseInfo(Schema schema) {

@@ -19,24 +19,24 @@ import java.util.Date;
 /**
  * Created by Yang Kai on 15/7/14.
  */
-public class TimelineCardItemView extends CardItemView<TimelineCard> {
+public class TimelinePicturesCardItemView extends CardItemView<TimelinePicturesCard> {
 
     private SimpleDateFormat toYearSdf = new SimpleDateFormat("MM-dd HH:mm");
 
-    public TimelineCardItemView(Context context) {
+    public TimelinePicturesCardItemView(Context context) {
         super(context);
     }
 
-    public TimelineCardItemView(Context context, AttributeSet attrs) {
+    public TimelinePicturesCardItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TimelineCardItemView(Context context, AttributeSet attrs, int defStyle) {
+    public TimelinePicturesCardItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     @Override
-    public void build(TimelineCard card) {
+    public void build(TimelinePicturesCard card) {
         super.build(card);
 
         /*

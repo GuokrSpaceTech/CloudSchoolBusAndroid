@@ -26,6 +26,7 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
         public final static Property Sid = new Property(1, String.class, "sid", false, "SID");
         public final static Property Token = new Property(2, String.class, "token", false, "TOKEN");
         public final static Property Mobile = new Property(3, String.class, "mobile", false, "MOBILE");
+        public final static Property Userid = new Property(4, String.class, "userid", false, "USERID");
     };
 
 
@@ -44,7 +45,8 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'SID' TEXT," + // 1: sid
                 "'TOKEN' TEXT," + // 2: token
-                "'MOBILE' TEXT);"); // 3: mobile
+                "'MOBILE' TEXT," + // 3: mobile
+                "'USERID' TEXT);"); // 4: userid
     }
 
     /** Drops the underlying database table. */
@@ -77,6 +79,11 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
         if (mobile != null) {
             stmt.bindString(4, mobile);
         }
+ 
+        String userid = entity.getUserid();
+        if (userid != null) {
+            stmt.bindString(5, userid);
+        }
     }
 
     /** @inheritdoc */
@@ -92,7 +99,8 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // sid
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // token
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // mobile
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // mobile
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // userid
         );
         return entity;
     }
@@ -104,6 +112,7 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
         entity.setSid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setToken(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setMobile(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setUserid(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
      }
     
     /** @inheritdoc */

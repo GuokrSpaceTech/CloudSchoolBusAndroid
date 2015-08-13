@@ -11,7 +11,7 @@ import android.widget.FrameLayout.LayoutParams;
 import com.android.support.utils.xmlStringDocParsor;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.Streaming.entity.Ipcparam;
+import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

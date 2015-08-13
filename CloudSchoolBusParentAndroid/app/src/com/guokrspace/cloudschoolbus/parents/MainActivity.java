@@ -16,6 +16,7 @@
 
 package com.guokrspace.cloudschoolbus.parents;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -107,8 +108,6 @@ public class MainActivity extends BaseActivity implements
 	private static final int MSG_SID_RENEWED = 3;
 	private static final int MSG_SID_RENEW_FAIL = 4;
 	private static final int REQUEST_CODE = 1;
-	private static final int RESULT_FAIL = -1;
-	private static final int RESULT_OK = 0;
 
 	MainActivity c = this;
 
@@ -136,8 +135,9 @@ public class MainActivity extends BaseActivity implements
 					break;
 				case MSG_SID_RENEWED:
 					ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
-					ConfigEntity configEntity = new ConfigEntity(null, mSid,
-							mApplication.mConfig.getToken(),mApplication.mConfig.getMobile());
+					ConfigEntity configEntity = new ConfigEntity(
+							null, mSid, mApplication.mConfig.getToken(),
+							mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid());
 					configEntityDao.update(configEntity);
 					CloudSchoolBusRestClient.updateSessionid(mSid);
 					break;
@@ -309,10 +309,8 @@ public class MainActivity extends BaseActivity implements
 
         switch(resultCode)
         {
-            case RESULT_OK:
+            case Activity.RESULT_OK:
                 handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
-                break;
-            case RESULT_FAIL: //Never goes here, it will stay in the login page
                 break;
             default:
                 break;

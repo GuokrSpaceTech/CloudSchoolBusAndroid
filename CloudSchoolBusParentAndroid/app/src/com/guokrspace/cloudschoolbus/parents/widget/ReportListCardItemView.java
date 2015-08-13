@@ -3,11 +3,13 @@ package com.guokrspace.cloudschoolbus.parents.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by wangjianfeng on 15/7/26.
@@ -29,29 +31,45 @@ public class ReportListCardItemView extends CardItemView<ReportListCard> {
     @Override
     public void build(ReportListCard card) {
         super.build(card);
-        ImageView teacherHeadImageView = (ImageView)findViewById(R.id.imageView);
-        teacherHeadImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_image_default));;
-        TextView  teacherNameTextView  = (TextView)findViewById(R.id.titleTextView);
-        teacherNameTextView.setText("MR. KEITH");
-        TextView  schoolNameTextView   = (TextView)findViewById(R.id.subtitleTextView);
-        schoolNameTextView.setText("SEI");
 
-        ImageView reportIconImageView  = (ImageView)findViewById(R.id.imageViewReportIcon);
-        reportIconImageView.setBackgroundColor(getResources().getColor(R.color.accent));
-        reportIconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_attach));
-
-        TextView  reportTitleTextView = (TextView)findViewById(R.id.textViewReportTitle);
-        reportTitleTextView.setText(card.getReporttype());
-
-        //Timestamp
-        TextView  reportTimestampTextView = (TextView)findViewById(R.id.textViewTimestamp);
-        String timelineTimestamp = DateUtils.timelineTimestamp(card.getTimestamp());
+        ImageView teacherHead = (ImageView) findViewById(R.id.teacher_avatar);
+        if (teacherHead != null) {
+            if(card.getTeacherAvatarUrl() == null || card.getTeacherAvatarUrl().isEmpty()) {
+                teacherHead.setImageDrawable(card.getDrawable());
+            } else {
+                Picasso.with(getContext()).load(card.getTeacherAvatarUrl()).into(teacherHead);
+            }
+        }
+        //Teacher Name
+        TextView teacherName = (TextView) findViewById(R.id.teacher_name);
+        teacherName.setText(card.getTeacherName());
         if (card.getDescriptionColor() != -1) {
-            reportTimestampTextView.setTextColor(card.getDescriptionColor());
+            teacherName.setTextColor(card.getDescriptionColor());
         }
 
-        ImageView detailIconImageView  = (ImageView)findViewById(R.id.imageViewDetailIcon);
-        detailIconImageView.setBackgroundColor(getResources().getColor(R.color.accent));
-        detailIconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_check));
+        //Classname
+        TextView kindergarten = (TextView) findViewById(R.id.kindergarten_name);
+        kindergarten.setText(card.getClassName());
+        if (card.getDescriptionColor() != -1) {
+            kindergarten.setTextColor(card.getDescriptionColor());
+        }
+        //Timestamp
+        String   publishTime = card.getSentTime();
+        TextView sentTime    = (TextView) findViewById(R.id.timestamp);
+        sentTime.setText(DateUtils.timelineTimestamp(publishTime));
+        if (card.getDescriptionColor() != -1) {
+            sentTime.setTextColor(card.getDescriptionColor());
+        }
+
+        /* Card Type */
+        TextView cardTypeTextView = (TextView)findViewById(R.id.card_type);
+        cardTypeTextView.setText(card.getCardType());
+
+        /* Report Title */
+        TextView reportTypeTextView = (TextView)findViewById(R.id.textViewReportTitle);
+        reportTypeTextView.setText(card.getReporttype());
+
+        LinearLayout layout = (LinearLayout)findViewById(R.id.report_detail_linear_layout);
+        layout.setOnClickListener(card.getClickListener());
     }
 }

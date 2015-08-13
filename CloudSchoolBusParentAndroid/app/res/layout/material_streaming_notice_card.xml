@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.guokrspace.cloudschoolbus.parents.widget.ReportListCardItemView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCardItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MainLayout">
 
@@ -9,18 +9,13 @@
         style="@style/MainCardView"
         card_view:cardCornerRadius="@dimen/card_corner_radius">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/teacher_avatar"
+                    android:id="@+id/kindergarten_icon"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center_vertical"
@@ -33,13 +28,14 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/teacher_name"
+                        android:id="@+id/title"
                         style="@style/CardTitle"
                         android:layout_above="@+id/kindergarten_name"
                         android:layout_alignParentTop="true"
                         android:layout_gravity="center_vertical"
-                        android:text="小花老师"
-                        android:textColor="@color/material_blue_grey_950" />
+                        android:text="视频直播开始了！"
+                        android:textColor="@color/material_blue_grey_950"
+                        android:layout_width="fill_parent" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -74,46 +70,16 @@
                             tools:text="类型" />
                     </LinearLayout>
 
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center_vertical"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/ic_image_default" />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/report_detail_linear_layout">
-
-                <ImageView
-                    android:id="@+id/imageViewReportIcon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="20"
-                    android:padding="@dimen/big_padding"
-                    android:layout_gravity="center"
-                    android:background="@drawable/ic_image_default" />
-
-                <TextView
-                    android:id="@+id/textViewReportTitle"
-                    android:layout_width="0dp"
-                    android:layout_weight="65"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:padding="@dimen/big_padding"
-                    style="@style/CardDescription"
-                    tools:text="Daily Report" />
-
-                <ImageView
-                    android:id="@+id/imageViewDetailIcon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="15"
-                    android:background="@drawable/ic_image_default"
-                    android:padding="@dimen/big_padding"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-        </LinearLayout>
-
     </android.support.v7.widget.CardView>
 
-</com.guokrspace.cloudschoolbus.parents.widget.ReportListCardItemView>
+</com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCardItemView>

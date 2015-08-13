@@ -17,8 +17,7 @@ import android.widget.TextView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.Streaming.entity.Dvr;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.Streaming.entity.Ipcparam;
+import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -41,7 +40,7 @@ public class IpcSelectionActivity extends BaseActivity implements AdapterView.On
     public String m_sStreamIP   = "";//221.122.97.78
     public int    m_iStreamPort = 0;
     public String m_sDVRName    = "";
-    public List<Dvr> mDvrList = new ArrayList<Dvr>();
+    public List<Ipcparam.Dvr> mDvrList = new ArrayList<Ipcparam.Dvr>();
     private Ipcparam mIpcparam =  new Ipcparam();
     private final static int GOTSERVERSETTINGS = 1;
 
@@ -167,10 +166,10 @@ public class IpcSelectionActivity extends BaseActivity implements AdapterView.On
 
 class DvrListAdapter extends BaseAdapter
 {
-    List<Dvr> mDvrList;
+    List<Ipcparam.Dvr> mDvrList;
     Context mContext;
 
-    DvrListAdapter(Context context, List<Dvr> dvrs) {
+    DvrListAdapter(Context context, List<Ipcparam.Dvr> dvrs) {
         mDvrList = dvrs;
         mContext = context;
     }

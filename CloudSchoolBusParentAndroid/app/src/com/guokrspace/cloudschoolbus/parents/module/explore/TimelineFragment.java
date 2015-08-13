@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,17 +14,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.Toast;
 
+import com.android.support.utils.DateUtils;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
+import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
-import com.guokrspace.cloudschoolbus.parents.widget.TimelineCard;
+import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecordDto;
+import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
+import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
+import com.guokrspace.cloudschoolbus.parents.widget.AttendanceRecordCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
+import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.TimelinePicturesCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -239,13 +249,13 @@ public class TimelineFragment extends BaseFragment {
 
     private void AppendCards() {
         for (int i = 0; i < mMesageEntities.size(); i++) {
-            mMaterialListView.add(buildcard(mMesageEntities.get(i)));
+            mMaterialListView.add((Card) buildcard(mMesageEntities.get(i)).get(0));
         }
     }
 
     private void InsertCardsAtBeginning() {
         for (int i = mMesageEntities.size() - 1; i >= 0; i--) {
-            mMaterialListView.addAtStart(buildcard(mMesageEntities.get(i)));
+            mMaterialListView.addAtStart((Card) buildcard(mMesageEntities.get(i)).get(0));
         }
     }
 
@@ -264,53 +274,120 @@ public class TimelineFragment extends BaseFragment {
         v.setAnimation(animation);
     }
 
-    private TimelineCard buildcard(MessageEntity messageEntity) {
-        TimelineCard card = new TimelineCard(mParentContext);
-        String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
-        card.setTeacherAvatarUrl(teacherAvatarString);
-        card.setTeacherName(messageEntity.getSenderEntity().getName());
-        card.setKindergarten(mApplication.mSchools.get(0).getName());
-        card.setSentTime(messageEntity.getSendtime());
+    private List<Object> buildcard(final MessageEntity messageEntity) {
+        List<Object> cardList = new ArrayList<>();
 
-        card.setTitle(messageEntity.getTitle());
-        card.setDescription(messageEntity.getDescription());
 
-        List<String> pictureUrls = new ArrayList<>();
-        for (int j = 0; j < messageEntity.getMessageBodyEntityList().size(); j++) {
-//            pictureUrls.add(messageEntity.getMessageBodyEntityList().get(j).getContent());
-              pictureUrls.add("http://apps.bdimg.com/developer/static/12261449/assets/v3/case_meitu.png");
 
+        switch (messageEntity.getApptype())
+        {
+            case "picture":
+                List<String> pictureUrls = new ArrayList<>();
+                for (int j = 0; j < messageEntity.getMessageBodyEntityList().size(); j++) {
+                    TimelinePicturesCard card = new TimelinePicturesCard(mParentContext);
+                    String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+                    card.setTeacherAvatarUrl(teacherAvatarString);
+                    card.setTeacherName(messageEntity.getSenderEntity().getName());
+                    card.setKindergarten(mApplication.mSchools.get(0).getName());
+                    card.setSentTime(messageEntity.getSendtime());
+                    card.setTitle(messageEntity.getTitle());
+                    card.setDescription(messageEntity.getDescription());
+//                  pictureUrls.add(messageEntity.getMessageBodyEntityList().get(j).getContent());
+                    pictureUrls.add("http://apps.bdimg.com/developer/static/12261449/assets/v3/case_meitu.png");
+                    card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls));
+                    final List<TagEntity> tagEntities = messageEntity.getTagEntityList();
+                    TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
+                    card.setTagAdapter(adapter);
+
+                    CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            animation(view);
+                            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
+                                    .setMessage(tagEntities.get(position).getTagnamedesc())
+                                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        }
+
+                        @Override
+                        public void onItemLongClick(View view, int position) {
+
+                        }
+                    });
+                    card.setmOnItemSelectedListener(tagClickListener);
+
+                    View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showShare();
+                        }
+                    };
+                    card.setmShareButtonClickListener(shareButtonClickListener);
+
+                }
+                break;
+            case "attendance":
+                for(int j=0; j<messageEntity.getMessageBodyEntityList().size(); j++) {
+                    AttendanceRecordCard attendanceRecordCard = new AttendanceRecordCard(mParentContext);
+                    String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+                    attendanceRecordCard.setTeacherAvatarUrl(teacherAvatarString);
+                    attendanceRecordCard.setTeacherName(messageEntity.getSenderEntity().getName());
+                    attendanceRecordCard.setClassName(messageEntity.getSenderEntity().getClassname());
+                    attendanceRecordCard.setCardType(messageEntity.getApptype());
+                    attendanceRecordCard.setSentTime(messageEntity.getSendtime());
+                    String messageBody = messageEntity.getMessageBodyEntityList().get(j).getContent();
+                    AttendanceRecordDto attendanceRecord = FastJsonTools.getObject(messageBody, AttendanceRecordDto.class);
+                    attendanceRecordCard.setRecordTime(attendanceRecord.getCreatetime().toString());
+                    attendanceRecordCard.setRecordPicture(attendanceRecord.getImgpath());
+                    cardList.add(attendanceRecordCard);
+                }
+                break;
+
+            case "streming":
+                for(int j=0; j<messageEntity.getMessageBodyEntityList().size(); j++) {
+                    StreamingNoticeCard streamingNoticeCard = new StreamingNoticeCard(mParentContext);
+                    streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime()));
+                    streamingNoticeCard.setCardType(messageEntity.getApptype());
+                    streamingNoticeCard.setContext(mParentContext);
+                    streamingNoticeCard.setKindergartenName(mApplication.mSchools.get(0).getName());
+                    String messageBody = messageEntity.getMessageBodyEntityList().get(j).getContent();
+                    final Ipcparam ipcpara = FastJsonTools.getObject(messageBody, Ipcparam.class);
+                    streamingNoticeCard.setClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+
+                }
+                break;
+            case "report":
+                for(int j=0; j<messageEntity.getMessageBodyEntityList().size(); j++) {
+                    ReportListCard reportListCard = new ReportListCard(mParentContext);
+                    String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+                    reportListCard.setTeacherAvatarUrl(teacherAvatarString);
+                    reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
+                    reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
+                    reportListCard.setCardType(messageEntity.getApptype());
+                    reportListCard.setSentTime(messageEntity.getSendtime());
+                    String messageBody = messageEntity.getMessageBodyEntityList().get(j).getContent();
+                    final StudentReport studentReport = FastJsonTools.getObject(messageBody, StudentReport.class);
+                    reportListCard.setReporttype(studentReport.getReportType());
+                    reportListCard.setClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ReportDetailFragment reportDetailFragment = ReportDetailFragment.newInstance(messageEntity.getSendtime(), studentReport.getReportUrl());
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                            transaction.replace(R.layout.material_timeline_card_layout,reportDetailFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
+                    });
+
+                    cardList.add(reportListCard);
+                }
+                break;
         }
-        card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls));
 
-        final List<TagEntity> tagEntities = messageEntity.getTagEntityList();
-        TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
-        card.setTagAdapter(adapter);
-
-        CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                animation(view);
-                SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
-                        .setMessage(tagEntities.get(position).getTagnamedesc())
-                        .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        });
-        card.setmOnItemSelectedListener(tagClickListener);
-
-        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showShare();
-            }
-        };
-        card.setmShareButtonClickListener(shareButtonClickListener);
-
-        return card;
+        return cardList;
     }
 }

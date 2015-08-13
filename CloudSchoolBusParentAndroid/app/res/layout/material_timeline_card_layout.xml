@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.guokrspace.cloudschoolbus.parents.widget.TimelineCardItemView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.guokrspace.cloudschoolbus.parents.widget.TimelinePicturesCardItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MainLayout">
 
@@ -27,7 +27,6 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:id="@+id/card_header"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -124,4 +123,4 @@
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
-</com.guokrspace.cloudschoolbus.parents.widget.TimelineCardItemView>
+</com.guokrspace.cloudschoolbus.parents.widget.TimelinePicturesCardItemView>

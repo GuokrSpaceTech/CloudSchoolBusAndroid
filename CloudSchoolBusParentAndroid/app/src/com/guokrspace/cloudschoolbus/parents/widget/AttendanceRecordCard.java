@@ -1,35 +1,24 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
 
 import com.dexafree.materialList.cards.SimpleCard;
 import com.guokrspace.cloudschoolbus.parents.R;
 
 /**
- * Created by Kai on 15/7/26.
+ * Created by Yang Kai on 15/7/14.
  */
-public class ReportListCard extends SimpleCard {
+public class AttendanceRecordCard extends SimpleCard {
 
     private String teacherAvatarUrl;
     private String teacherName;
     private String className;
     private String sentTime;
     private String cardType;
-    private String reporttype;
-    private View.OnClickListener clickListener;
+    private String recordTime;
+    private String recordPicture;
     private Context context;
-
-    public ReportListCard(Context context) {
-        super(context);
-        context = this.getContext();
-    }
-
-    @Override
-    public int getLayout() {
-        return R.layout.material_report_card;
-    }
 
     public String getTeacherAvatarUrl() {
         return teacherAvatarUrl;
@@ -71,12 +60,20 @@ public class ReportListCard extends SimpleCard {
         this.cardType = cardType;
     }
 
-    public String getReporttype() {
-        return reporttype;
+    public String getRecordTime() {
+        return recordTime;
     }
 
-    public void setReporttype(String reporttype) {
-        this.reporttype = reporttype;
+    public void setRecordTime(String recordTime) {
+        this.recordTime = recordTime;
+    }
+
+    public String getRecordPicture() {
+        return recordPicture;
+    }
+
+    public void setRecordPicture(String recordPicture) {
+        this.recordPicture = recordPicture;
     }
 
     public Context getContext() {
@@ -87,11 +84,13 @@ public class ReportListCard extends SimpleCard {
         this.context = context;
     }
 
-    public View.OnClickListener getClickListener() {
-        return clickListener;
+    public AttendanceRecordCard(Context context) {
+        super(context);
+        this.setContext(context);
     }
 
-    public void setClickListener(View.OnClickListener clickListener) {
-        this.clickListener = clickListener;
+    @Override
+    public int getLayout() {
+        return R.layout.material_notice_card_layout;
     }
 }

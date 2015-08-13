@@ -3,6 +3,7 @@ package com.guokrspace.cloudschoolbus.parents;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 
 import android.os.Build;
@@ -63,6 +64,7 @@ public class LoginActivity extends BaseActivity {
     private String verifyCode;
     private String sid;
     private String loginToken;
+    private String userid;
 
     private static final int LOGIN_FAILED = 3;
     private static final int MSG_NO_NETOWRK   = 4;
@@ -79,8 +81,6 @@ public class LoginActivity extends BaseActivity {
     private static final int MSG_RENEWSID_OK = 14;
     private static final int MSG_RENEWSID_FAIL = 15;
 
-    private static final int RESULT_FAIL = -1;
-    private static final int RESULT_OK = 0;
     private static final int REQUEST_CODE = 1;
 
     private static final int REQUEST_LIST_SIMPLE = 9;
@@ -118,7 +118,7 @@ public class LoginActivity extends BaseActivity {
                     break;
                 //Get Session ID
                 case MSG_VERIFY_OK:
-                    mApplication.mConfig = new ConfigEntity(null,sid,loginToken,mobile);
+                    mApplication.mConfig = new ConfigEntity(null,sid,loginToken,mobile,userid);
                     ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
                     configEntityDao.insert(mApplication.mConfig);
                     CloudSchoolBusRestClient.updateSessionid(sid);
@@ -133,7 +133,7 @@ public class LoginActivity extends BaseActivity {
                 //Get the base info
                 case MSG_BASEINFO_OK:
                     Intent resultIntent = new Intent();
-                    setResult(RESULT_OK, resultIntent);
+                    setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                     break;
                 case MSG_BASEINFO_FAIL:
@@ -431,7 +431,7 @@ public class LoginActivity extends BaseActivity {
 
         RequestParams params = new RequestParams();
         params.put("mobile", phonenum);
-        CloudSchoolBusRestClient.get("register", params, new JsonHttpResponseHandler() {
+        CloudSchoolBusRestClient.get(ProtocolDef.METHOD_register, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, org.json.JSONArray response) {
 
@@ -537,6 +537,7 @@ public class LoginActivity extends BaseActivity {
                     try {
                         sid = response.getString("sid");
                         loginToken = response.getString("token");
+                        userid     = response.getString("userid");
                     } catch (org.json.JSONException e) {
                         e.printStackTrace();
                     }

@@ -282,7 +282,6 @@ public class ReportFragment extends BaseFragment {
         {
             ReportListCard card = new ReportListCard(mParentContext);
             card.setReporttype(mReportEntities.get(i).getReportname());
-            card.setTimestamp(mReportEntities.get(i).getCreatetime());
             materialListView.add(card);
         }
     }
@@ -293,7 +292,6 @@ public class ReportFragment extends BaseFragment {
         {
             ReportListCard card = new ReportListCard(mParentContext);
             card.setReporttype(mReportEntities.get(i).getReportname());
-            card.setTimestamp(mReportEntities.get(i).getCreatetime());
             materialListView.add(card);
         }
     }

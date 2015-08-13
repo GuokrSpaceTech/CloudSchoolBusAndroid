@@ -12,7 +12,7 @@ import com.guokrspace.cloudschoolbus.parents.module.explore.ImageAdapter;
 /**
  * Created by Yang Kai on 15/7/14.
  */
-public class TimelineCard extends SimpleCard {
+public class TimelinePicturesCard extends SimpleCard {
 
     private String teacherAvatarUrl;
     private String teacherName;
@@ -96,7 +96,7 @@ public class TimelineCard extends SimpleCard {
         this.tagAdapter = tagAdapter;
     }
 
-    public TimelineCard(Context context) {
+    public TimelinePicturesCard(Context context) {
         super(context);
         this.setContext(context);
     }
