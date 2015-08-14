@@ -39,7 +39,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@android:color/black"
-                android:text="@string/reply"
                 android:textColor="@android:color/white"
                 android:clickable="true" />
 
@@ -53,7 +52,6 @@
                 android:layout_toLeftOf="@id/sendButton"
                 android:layout_toRightOf="@id/pictureImageView"
                 android:background="@android:color/background_light"
-                android:hint="@string/reply"
                 android:paddingLeft="5dip"
                 android:paddingRight="5dip" />
         </RelativeLayout>

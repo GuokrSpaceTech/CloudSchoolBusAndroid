@@ -18,7 +18,8 @@ import android.widget.EditText;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
-import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.android.support.fastjson.FastJsonTools;
+import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
@@ -45,7 +46,6 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,10 +55,11 @@ public class LoginActivity extends BaseActivity {
 
     // UI references.
     private EditText mMobileNumberView;
-    private EditText mVerifyCodeView;
-    private Button   mVerifySignButton;
+    private EditText mVerifyCodeEditText;
+    private Button mSigninButton;
     private View     mProgressView;
     private View     mLoginFormView;
+    private Button mClicktoGetVerifyCodeButton;
 
     private String mobile;
     private String verifyCode;
@@ -66,22 +67,8 @@ public class LoginActivity extends BaseActivity {
     private String loginToken;
     private String userid;
 
-    private static final int LOGIN_FAILED = 3;
-    private static final int MSG_NO_NETOWRK   = 4;
-
-    private static final int MSG_REG_OK   = 6;
-    private static final int MSG_REG_FAIL   = 7;
-
-    private static final int MSG_VERIFY_OK = 8;
-    private static final int MSG_VERIFY_FAIL = 9;
-
-    private static final int MSG_BASEINFO_OK = 10;
-    private static final int MSG_BASEINFO_FAIL = 11;
-
-    private static final int MSG_RENEWSID_OK = 14;
-    private static final int MSG_RENEWSID_FAIL = 15;
-
-    private static final int REQUEST_CODE = 1;
+    private Thread  thread;
+    private boolean threadStopFlag = false;
 
     private static final int REQUEST_LIST_SIMPLE = 9;
     private static final int REQUEST_LIST_MULTIPLE = 10;
@@ -90,75 +77,80 @@ public class LoginActivity extends BaseActivity {
     private static final int REQUEST_TIME_PICKER = 13;
     private static final int REQUEST_SIMPLE_DIALOG = 42;
 
-    private Handler handler = new Handler(new Handler.Callback() {
-
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_REG_OK:
-                    showProgress(false);
-                    mVerifyCodeView.setVisibility(View.VISIBLE);
-                    mVerifyCodeView.setHint(getResources().getString(R.string.input_verify_code));
-                    mVerifyCodeView.requestFocus();
-                    mMobileNumberView.setEnabled(false);
-                    mVerifySignButton.setText(getResources().getString(R.string.input_verify_code));
-                    mVerifySignButton.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            attempVerify();
-                        }
-                    });
-                    break;
-                case MSG_REG_FAIL:
-                    showProgress(false);
-                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                            .setMessage(getResources().getString(R.string.invalid_mobile))
-                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-                    showProgress(false);
-                    break;
-                //Get Session ID
-                case MSG_VERIFY_OK:
-                    mApplication.mConfig = new ConfigEntity(null,sid,loginToken,mobile,userid);
-                    ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
-                    configEntityDao.insert(mApplication.mConfig);
-                    CloudSchoolBusRestClient.updateSessionid(sid);
-                    getBaseInfoFromServer() ;
-                    break;
-                case MSG_VERIFY_FAIL:
-                    showProgress(false);
-                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                            .setMessage(getResources().getString(R.string.invalid_verify_code))
-                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-                    break;
-                //Get the base info
-                case MSG_BASEINFO_OK:
-                    Intent resultIntent = new Intent();
-                    setResult(Activity.RESULT_OK, resultIntent);
-                    finish();
-                    break;
-                case MSG_BASEINFO_FAIL:
-                    showProgress(false);
-                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                            .setMessage(getResources().getString(R.string.failure_baseinfo))
-                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-                    break;
-                case MSG_NO_NETOWRK:
-                    showProgress(false);
-                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                            .setMessage(getResources().getString(R.string.no_network))
-                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-                    break;
-                default:
-                    showProgress(false);
-                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                            .setMessage(getResources().getString(R.string.failure_unknown))
-                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-                    break;
+    private Handler handler;
+    {
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                switch (msg.what) {
+                    case HandlerConstant.MSG_REG_OK:
+                        showProgress(false);
+                        mVerifyCodeEditText.setVisibility(View.VISIBLE);
+                        mVerifyCodeEditText.setHint(getResources().getString(R.string.input_verify_code));
+                        mVerifyCodeEditText.requestFocus();
+                        mMobileNumberView.setEnabled(false);
+                        TimerTick(60);
+                        mSigninButton.setVisibility(View.VISIBLE);
+                        break;
+                    case HandlerConstant.MSG_REG_FAIL:
+                        showProgress(false);
+                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+                                .setMessage(getResources().getString(R.string.invalid_mobile))
+                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        showProgress(false);
+                        break;
+                    //Get Session ID
+                    case HandlerConstant.MSG_VERIFY_OK:
+                        mApplication.mConfig = new ConfigEntity(null, sid, loginToken, mobile, userid);
+                        ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
+                        configEntityDao.insert(mApplication.mConfig);
+                        CloudSchoolBusRestClient.updateSessionid(sid);
+                        getBaseInfoFromServer();
+                        break;
+                    case HandlerConstant.MSG_VERIFY_FAIL:
+                        showProgress(false);
+                        threadStopFlag = true;
+                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+                                .setMessage(getResources().getString(R.string.invalid_verify_code))
+                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        break;
+                    //Get the base info
+                    case HandlerConstant.MSG_BASEINFO_OK:
+                        Intent resultIntent = new Intent();
+                        setResult(Activity.RESULT_OK, resultIntent);
+                        finish();
+                        break;
+                    case HandlerConstant.MSG_BASEINFO_FAIL:
+                        showProgress(false);
+                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+                                .setMessage(getResources().getString(R.string.failure_baseinfo))
+                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        break;
+                    case HandlerConstant.MSG_NO_NETOWRK:
+                        showProgress(false);
+                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+                                .setMessage(getResources().getString(R.string.no_network))
+                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        break;
+                    case HandlerConstant.MSG_TIMER_TICK:
+                        mClicktoGetVerifyCodeButton.setText((String) msg.obj);
+                        mClicktoGetVerifyCodeButton.setEnabled(false);
+                        break;
+                    case HandlerConstant.MSG_TIMER_TIMEOUT:
+                        mClicktoGetVerifyCodeButton.setText(getResources().getString(R.string.click_get_verify_code));
+                        mClicktoGetVerifyCodeButton.setEnabled(true);
+                        break;
+                    default:
+                        showProgress(false);
+                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+                                .setMessage(getResources().getString(R.string.failure_unknown))
+                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        break;
+                }
+                return false;
             }
-
-            return false;
-        }
-    });
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,19 +159,28 @@ public class LoginActivity extends BaseActivity {
 
         // Set up the login form.
         mMobileNumberView = (EditText) findViewById(R.id.mobile);
-        mVerifyCodeView = (EditText) findViewById(R.id.verify_code);
-        mVerifyCodeView.setVisibility(View.INVISIBLE);
+        mVerifyCodeEditText = (EditText) findViewById(R.id.verify_code);
 
-        mVerifySignButton = (Button) findViewById(R.id.sign_in_button);
-        mVerifySignButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptRegister();
-            }
-        });
+        mSigninButton = (Button) findViewById(R.id.sign_in_button);
+        mSigninButton.setVisibility(View.GONE);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        mClicktoGetVerifyCodeButton = (Button)findViewById(R.id.sms_verifycode_button);
+        mClicktoGetVerifyCodeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {attemptRegister();
+            }
+        });
+
+        mSigninButton = (Button)findViewById(R.id.sign_in_button);
+        mSigninButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attempVerify();
+            }
+        });
     }
 
     @Override
@@ -225,7 +226,6 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -235,19 +235,19 @@ public class LoginActivity extends BaseActivity {
 
         // Reset errors.
         mMobileNumberView.setError(null);
-        mVerifyCodeView.setError(null);
+        mVerifyCodeEditText.setError(null);
 
         // Store values at the time of the login attempt.
         mobile = mMobileNumberView.getText().toString();
-        verifyCode = mVerifyCodeView.getText().toString();
+        verifyCode = mVerifyCodeEditText.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(mobile) && !isMobileNumberValid(mobile)) {
-            mVerifyCodeView.setError(getString(R.string.error_invalid_password));
-            focusView = mVerifyCodeView;
+            mVerifyCodeEditText.setError(getString(R.string.error_invalid_password));
+            focusView = mVerifyCodeEditText;
             cancel = true;
         }
 
@@ -309,7 +309,7 @@ public class LoginActivity extends BaseActivity {
     private void getBaseInfoFromServer() {
 
         if(!networkStatusEvent.isNetworkConnected()) {
-            handler.sendEmptyMessage(MSG_NO_NETOWRK);
+            handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
 
@@ -336,7 +336,7 @@ public class LoginActivity extends BaseActivity {
                         }
 
                         if (!retCode.equals("1")) {
-                            handler.sendEmptyMessage(MSG_BASEINFO_FAIL);
+                            handler.sendEmptyMessage(HandlerConstant.MSG_BASEINFO_FAIL);
                             return;
                         }
 
@@ -382,7 +382,7 @@ public class LoginActivity extends BaseActivity {
 
                         mApplication.initBaseinfo();
 
-                        handler.sendEmptyMessage(MSG_BASEINFO_OK);
+                        handler.sendEmptyMessage(HandlerConstant.MSG_BASEINFO_OK);
                     }
 
                     @Override
@@ -397,19 +397,19 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        handler.sendEmptyMessage(MSG_BASEINFO_FAIL);
+                        handler.sendEmptyMessage(HandlerConstant.MSG_BASEINFO_FAIL);
                         super.onFailure(statusCode, headers, throwable, errorResponse);
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        handler.sendEmptyMessage(MSG_BASEINFO_FAIL);
+                        handler.sendEmptyMessage(HandlerConstant.MSG_BASEINFO_FAIL);
                         super.onFailure(statusCode, headers, throwable, errorResponse);
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        handler.sendEmptyMessage(MSG_BASEINFO_FAIL);
+                        handler.sendEmptyMessage(HandlerConstant.MSG_BASEINFO_FAIL);
                         super.onFailure(statusCode, headers, responseString, throwable);
                     }
                 }
@@ -423,7 +423,7 @@ public class LoginActivity extends BaseActivity {
     public void register(String phonenum) {
 
         if(!networkStatusEvent.isNetworkConnected()) {
-            handler.sendEmptyMessage(MSG_NO_NETOWRK);
+            handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
 
@@ -446,10 +446,10 @@ public class LoginActivity extends BaseActivity {
                 }
 
                 if (!retCode.equals("1")) {
-                    handler.sendEmptyMessage(MSG_REG_FAIL);
+                    handler.sendEmptyMessage(HandlerConstant.MSG_REG_FAIL);
                     return;
                 } else
-                    handler.sendEmptyMessage(MSG_REG_OK);
+                    handler.sendEmptyMessage(HandlerConstant.MSG_REG_OK);
             }
 
             @Override
@@ -466,19 +466,19 @@ public class LoginActivity extends BaseActivity {
 
                 if(retCode.equals("-1117"))
                 {
-                    handler.sendEmptyMessage(MSG_REG_FAIL);
+                    handler.sendEmptyMessage(HandlerConstant.MSG_REG_FAIL);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                handler.sendEmptyMessage(MSG_REG_FAIL);
+                handler.sendEmptyMessage(HandlerConstant.MSG_REG_FAIL);
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                handler.sendEmptyMessage(MSG_REG_FAIL);
+                handler.sendEmptyMessage(HandlerConstant.MSG_REG_FAIL);
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
 
@@ -489,7 +489,7 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONArray errorResponse) {
-                handler.sendEmptyMessage(MSG_REG_FAIL);
+                handler.sendEmptyMessage(HandlerConstant.MSG_REG_FAIL);
                 System.out.println(errorResponse);
             }
         });
@@ -505,7 +505,7 @@ public class LoginActivity extends BaseActivity {
         ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
 
         if(!networkStatusEvent.isNetworkConnected()) {
-            handler.sendEmptyMessage(MSG_NO_NETOWRK);
+            handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
 
@@ -542,9 +542,9 @@ public class LoginActivity extends BaseActivity {
                         e.printStackTrace();
                     }
 
-                    handler.sendEmptyMessage(MSG_VERIFY_OK);
+                    handler.sendEmptyMessage(HandlerConstant.MSG_VERIFY_OK);
                 } else {
-                    handler.sendEmptyMessage(MSG_VERIFY_FAIL);
+                    handler.sendEmptyMessage(HandlerConstant.MSG_VERIFY_FAIL);
                 }
 
                 return;
@@ -552,13 +552,13 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                handler.sendEmptyMessage(MSG_VERIFY_FAIL);
+                handler.sendEmptyMessage(HandlerConstant.MSG_VERIFY_FAIL);
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                handler.sendEmptyMessage(LOGIN_FAILED);
+                handler.sendEmptyMessage(HandlerConstant.LOGIN_FAILED);
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
 
@@ -569,12 +569,33 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONArray errorResponse) {
-                handler.sendEmptyMessage(LOGIN_FAILED);
+                handler.sendEmptyMessage(HandlerConstant.LOGIN_FAILED);
                 System.out.println(errorResponse);
             }
         });
     }
 
+    private void TimerTick(final int max_seconds) {
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int seconds_left = max_seconds;
+                while (seconds_left > 0 && !threadStopFlag) {
+                    seconds_left--;
+                    handler.sendMessage(handler.obtainMessage(HandlerConstant.MSG_TIMER_TICK, seconds_left + getResources().getString(R.string.seconds)));
+                    try {
+                        thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                handler.sendEmptyMessage(HandlerConstant.MSG_TIMER_TIMEOUT);
+            }
+        });
+        if (!thread.isAlive()) {
+            thread.start();
+        }
+    }
 
     @Subscribe public void onNetworkStatusChange(NetworkStatusEvent event)
     {

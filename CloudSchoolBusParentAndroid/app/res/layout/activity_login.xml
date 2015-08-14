@@ -15,7 +15,7 @@
     <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
+        <LinearLayout android:id="@+id/mobil_login_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
 
             <EditText android:id="@+id/mobile" android:layout_width="match_parent"
@@ -25,13 +25,31 @@
                 android:hint="@string/mobile_num"
                 android:inputType="textPhonetic" />
 
-            <EditText android:id="@+id/verify_code" android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout_sms_verify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/verify_code"
+                android:layout_width="0dp" android:layout_weight="60" android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified" android:inputType="textPassword"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
                 android:maxLines="1" android:singleLine="true"
                 android:hint="@string/verify_code" />
+
+            <Button android:id="@+id/sms_verifycode_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="0dp"
+                android:layout_weight="40"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/click_get_verify_code"
+                android:textStyle="bold" />
+            </LinearLayout>
 
             <Button android:id="@+id/sign_in_button" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent" android:layout_height="wrap_content"

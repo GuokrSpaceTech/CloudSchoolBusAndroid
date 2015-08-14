@@ -17,7 +17,7 @@ import com.android.support.dialog.CustomWaitDialog;
 import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntityDao;
@@ -27,11 +27,9 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.Sender;
-import com.guokrspace.cloudschoolbus.parents.entity.Tag;
 import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
@@ -195,7 +193,7 @@ public class BaseFragment extends Fragment {
 
 	//Get Lastest 20 Articles from server, only used when there is no cache
 	public void GetLastestMessagesFromServer(android.os.Handler handler) {
-		GetMessagesFromServer("0", "0", handler);
+		GetMessagesFromServer(null, null, handler);
 	}
 
 	void GetMessagesFromServer(final String starttime, final String endtime, final android.os.Handler handler) {
@@ -206,8 +204,11 @@ public class BaseFragment extends Fragment {
 		showWaitDialog("", null);
 
 		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("starttime", starttime);
-		params.put("endtime", endtime);
+		if(starttime!=null)
+		    params.put("starttime", starttime);
+
+		if(endtime!=null)
+		    params.put("endtime", endtime);
 
 		CloudSchoolBusRestClient.get(ProtocolDef.METHOD_timeline, params, new JsonHttpResponseHandler() {
 			MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();

@@ -2,7 +2,6 @@ package com.guokrspace.cloudschoolbus.parents.module.chat;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -20,7 +19,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -31,21 +29,14 @@ import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
-import com.guokrspace.cloudschoolbus.parents.base.include.Constant;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ImageEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntityDao;
+import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.widget.ChatMessageCard;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.LetterEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.LetterEntityDao;
-import com.guokrspace.cloudschoolbus.parents.entity.LetterDto;
-import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -55,8 +46,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -108,15 +97,15 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case Constant.MSG_SERVER_ERROR:
+                case HandlerConstant.MSG_SERVER_ERROR:
                     SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.server_error))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
-                case Constant.MSG_NO_NETOWRK:
+                case HandlerConstant.MSG_NO_NETOWRK:
                     SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.no_network))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
-                case Constant.MSG_ONREFRESH:
+                case HandlerConstant.MSG_ONREFRESH:
                     mSwipeRefreshLayout.setRefreshing(false);
                     hideWaitDialog();
                     if(filterMessages())
@@ -124,7 +113,7 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
                     else
                         GetNewMessagesFromServer(mMesageEntities.get(0).getSendtime(),mHandler);
                     break;
-                case Constant.MSG_ONLOADMORE:
+                case HandlerConstant.MSG_ONLOADMORE:
                     mSwipeRefreshLayout.setRefreshing(false);
                     hideWaitDialog();
                     if(filterMessages())
@@ -132,7 +121,7 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
                     else
                         GetOldMessagesFromServer(mMesageEntities.get(mMesageEntities.size()-1).getSendtime(), mHandler);
                     break;
-                case Constant.MSG_NOCHANGE:
+                case HandlerConstant.MSG_NOCHANGE:
                     mSwipeRefreshLayout.setRefreshing(false);
                     hideWaitDialog();
                     break;
@@ -319,7 +308,7 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
                 }
 
                 if (retCode != "1") {
-                    mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                    mHandler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 }
 
                 super.onSuccess(statusCode, headers, response);
@@ -327,19 +316,19 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                mHandler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                mHandler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                mHandler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
 

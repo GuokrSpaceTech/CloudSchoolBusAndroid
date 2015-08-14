@@ -1,8 +1,9 @@
-package com.guokrspace.cloudschoolbus.parents.module.aboutme;
+package com.guokrspace.cloudschoolbus.parents.module.hobby;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,20 +14,21 @@ import android.widget.LinearLayout;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.base.include.Constant;
+import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
+import com.guokrspace.cloudschoolbus.parents.module.aboutme.ChildSettingFragment;
 
 /**
  * Created by wangjianfeng on 15/8/13.
  */
-public class SettingFragment extends BaseFragment {
+public class HobbyFragment extends BaseFragment {
     static String ARG_IPCPARAM = "ipcparam";
     private Ipcparam mIpcparam;
     private ImageView imageViewAvatar;
-    private LinearLayout layoutName;
-    private LinearLayout layoutPhone;
-    private LinearLayout layoutRelation;
-    private Button switchChildButton;
+    private LinearLayout layoutChildSetting;
+    private LinearLayout layoutSystemSetting;
+    private LinearLayout layoutHelpFeedback;
+    private Button logoutButton;
 
 
     private Handler mHandler = new Handler(new Handler.Callback() {
@@ -34,23 +36,23 @@ public class SettingFragment extends BaseFragment {
         public boolean handleMessage(Message msg) {
 
             switch (msg.what) {
-                case Constant.MSG_ONREFRESH:
+                case HandlerConstant.MSG_ONREFRESH:
                     hideWaitDialog();
                     break;
-                case Constant.MSG_ONLOADMORE:
+                case HandlerConstant.MSG_ONLOADMORE:
                     hideWaitDialog();
                     break;
-                case Constant.MSG_ONCACHE:
+                case HandlerConstant.MSG_ONCACHE:
                     break;
-                case Constant.MSG_NOCHANGE:
+                case HandlerConstant.MSG_NOCHANGE:
                     hideWaitDialog();
                     break;
-                case Constant.MSG_NO_NETOWRK:
+                case HandlerConstant.MSG_NO_NETOWRK:
                     SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.no_network))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     hideWaitDialog();
                     break;
-                case Constant.MSG_SERVER_ERROR:
+                case HandlerConstant.MSG_SERVER_ERROR:
                     SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.server_error))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     hideWaitDialog();
@@ -60,16 +62,15 @@ public class SettingFragment extends BaseFragment {
         }
     });
 
-    public static SettingFragment newInstance(Ipcparam ipcparam)
+    public static HobbyFragment newInstance()
     {
-        SettingFragment fragment = new SettingFragment();
+        HobbyFragment fragment = new HobbyFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_IPCPARAM, ipcparam);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public SettingFragment() {
+    public HobbyFragment() {
     }
 
     @Override
@@ -85,10 +86,11 @@ public class SettingFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.activity_setting, container, false);
-        layoutName = (LinearLayout)root.findViewById(R.id.linearLayoutName);
-        layoutPhone = (LinearLayout)root.findViewById(R.id.linearLayoutPhone);
-        layoutRelation = (LinearLayout)root.findViewById(R.id.linearLayoutRelation);
+        View root = inflater.inflate(R.layout.activity_aboutme, container, false);
+        layoutChildSetting = (LinearLayout)root.findViewById(R.id.linearLayoutChildSetting);
+        layoutSystemSetting = (LinearLayout)root.findViewById(R.id.linearLayoutSystemSetting);
+        layoutHelpFeedback = (LinearLayout)root.findViewById(R.id.linearLayoutHelp);
+        logoutButton = (Button)root.findViewById(R.id.logoutButton);
 
         setListeners();
 
@@ -97,6 +99,18 @@ public class SettingFragment extends BaseFragment {
 
     private void setListeners()
     {
+        layoutChildSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChildSettingFragment fragment = new ChildSettingFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.layout.activity_aboutme,fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+
 
     }
 

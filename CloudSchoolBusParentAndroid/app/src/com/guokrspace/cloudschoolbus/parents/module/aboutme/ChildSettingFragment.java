@@ -1,33 +1,33 @@
-package com.guokrspace.cloudschoolbus.parents.module.explore.classify.Streaming;
+package com.guokrspace.cloudschoolbus.parents.module.aboutme;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
-import com.dexafree.materialList.cards.SmallImageCard;
-import com.dexafree.materialList.controller.RecyclerItemClickListener;
-import com.dexafree.materialList.model.CardItemView;
-import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
 
 /**
- * Created by Kai on 15/8/13.
+ * Created by wangjianfeng on 15/8/13.
  */
-public class StreamingChannelsFragment extends BaseFragment {
-
+public class ChildSettingFragment extends BaseFragment {
     static String ARG_IPCPARAM = "ipcparam";
     private Ipcparam mIpcparam;
-    private MaterialListView materialListView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ImageView imageViewAvatar;
+    private LinearLayout layoutName;
+    private LinearLayout layoutPhone;
+    private LinearLayout layoutRelation;
+    private Button switchChildButton;
+
 
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -44,8 +44,6 @@ public class StreamingChannelsFragment extends BaseFragment {
                     break;
                 case HandlerConstant.MSG_NOCHANGE:
                     hideWaitDialog();
-                    if (mSwipeRefreshLayout.isRefreshing())
-                        mSwipeRefreshLayout.setRefreshing(false);
                     break;
                 case HandlerConstant.MSG_NO_NETOWRK:
                     SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.no_network))
@@ -62,16 +60,16 @@ public class StreamingChannelsFragment extends BaseFragment {
         }
     });
 
-    public static StreamingChannelsFragment newInstance(Ipcparam ipcparam)
+    public static ChildSettingFragment newInstance(Ipcparam ipcparam)
     {
-        StreamingChannelsFragment fragment = new StreamingChannelsFragment();
+        ChildSettingFragment fragment = new ChildSettingFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_IPCPARAM, ipcparam);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public StreamingChannelsFragment() {
+    public ChildSettingFragment() {
     }
 
     @Override
@@ -87,55 +85,19 @@ public class StreamingChannelsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.activity_streaming_channle_list, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout)root.findViewById(R.id.swipeRefreshLayout);
-        materialListView = (MaterialListView)root.findViewById(R.id.material_listview);
+        View root = inflater.inflate(R.layout.activity_setting, container, false);
+        layoutName = (LinearLayout)root.findViewById(R.id.linearLayoutName);
+        layoutPhone = (LinearLayout)root.findViewById(R.id.linearLayoutPhone);
+        layoutRelation = (LinearLayout)root.findViewById(R.id.linearLayoutRelation);
 
         setListeners();
-
-        buildCards();
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     private void setListeners()
     {
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
 
-            }
-        });
-
-        materialListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(CardItemView view, int position) {
-                Intent intent = new Intent(mParentContext,Preview.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("ipcparams", mIpcparam);
-                intent.putExtras(bundle);
-                intent.putExtra("id",position); //Which camera
-                startActivity(intent);
-            }
-
-            @Override
-            public void onItemLongClick(CardItemView view, int position) {
-            }
-        });
-    }
-
-    private void buildCards()
-    {
-        for(int i=0; i<mIpcparam.getDvr().size(); i++)
-        {
-            Ipcparam.Dvr channel = mIpcparam.getDvr().get(i);
-            SmallImageCard smallImageCard = new SmallImageCard(mParentContext);
-            smallImageCard.setDescription(getResources().getString(R.string.realtime_streaming));
-            smallImageCard.setTitle(channel.getChanneldesc());
-            smallImageCard.setDrawable(getResources().getDrawable(R.drawable.ic_image_default));
-
-            materialListView.add(smallImageCard);
-        }
     }
 
     @Override

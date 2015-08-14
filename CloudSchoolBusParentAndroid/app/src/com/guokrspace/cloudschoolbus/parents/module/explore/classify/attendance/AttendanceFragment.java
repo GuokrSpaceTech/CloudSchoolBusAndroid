@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.android.support.customview.KCalendar;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.AttendanceEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.AttendanceEntityDao;

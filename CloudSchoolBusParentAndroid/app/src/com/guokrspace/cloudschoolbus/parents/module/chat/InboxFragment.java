@@ -5,9 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,34 +14,22 @@ import android.view.ViewGroup;
 
 import com.android.support.debug.DebugLog;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
-import com.dexafree.materialList.cards.SmallCircleImageCard;
 import com.dexafree.materialList.controller.RecyclerItemClickListener;
 import com.dexafree.materialList.model.CardItemView;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.base.include.Constant;
+import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastLetterEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastLetterEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.LetterEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.LatestLetter;
-import com.guokrspace.cloudschoolbus.parents.entity.Sender;
-import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.TeacherSelectEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.guokrspace.cloudschoolbus.parents.widget.LastLetterCard;
-import com.guokrspace.cloudschoolbus.parents.widget.LastLetterCardItemView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.otto.Subscribe;
 
@@ -52,7 +37,6 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.Ref;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,26 +54,26 @@ public class InboxFragment extends BaseFragment {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case Constant.MSG_ONREFRESH:
+                case HandlerConstant.MSG_ONREFRESH:
                     hideWaitDialog();
                     RefreshCards();
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     break;
-                case Constant.MSG_ONCACHE:
+                case HandlerConstant.MSG_ONCACHE:
                     RefreshCards();
                     break;
-                case Constant.MSG_NOCHANGE:
+                case HandlerConstant.MSG_NOCHANGE:
                     hideWaitDialog();
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     break;
-                case Constant.MSG_NO_NETOWRK:
+                case HandlerConstant.MSG_NO_NETOWRK:
                     SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.no_network))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     hideWaitDialog();
                     break;
-                case Constant.MSG_SERVER_ERROR:
+                case HandlerConstant.MSG_SERVER_ERROR:
                     SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.server_error))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     hideWaitDialog();
@@ -155,13 +139,13 @@ public class InboxFragment extends BaseFragment {
         LastLetterEntityDao lastLetterEntityDao = mApplication.mDaoSession.getLastLetterEntityDao();
         mLastLetters = lastLetterEntityDao.queryBuilder().list();
 
-        mHandler.sendEmptyMessage(Constant.MSG_ONCACHE);
+        mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
     }
 
     private void getLastestLettersFromServer()
     {
         if (!networkStatusEvent.isNetworkConnected()) {
-            mHandler.sendEmptyMessage(Constant.MSG_NO_NETOWRK);
+            mHandler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
         showWaitDialog("", null);
@@ -186,18 +170,18 @@ public class InboxFragment extends BaseFragment {
                     }
                 }
                 if (!retCode.equals("1")) {
-                    mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                    mHandler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                     return;
                 }
 
-                List<LatestLetter> letters = FastJsonTools.getListObject(response.toString(), LatestLetter.class);
+                List<LatestLetter> letters = com.android.support.fastjson.FastJsonTools.getListObject(response.toString(), LatestLetter.class);
                 for (int i = 0; i < letters.size(); i++) {
                     LatestLetter letter = letters.get(i);
                     LastLetterEntity lastLetterEntity = new LastLetterEntity(letter.getTeacherid(),letter.getLastchat(),letter.getPicture());
                     LastLetterEntityDao lastLetterEntityDao = mApplication.mDaoSession.getLastLetterEntityDao();
                     lastLetterEntityDao.insertOrReplace(lastLetterEntity);
                 }
-                mHandler.sendEmptyMessage(Constant.MSG_ONREFRESH);
+                mHandler.sendEmptyMessage(HandlerConstant.MSG_ONREFRESH);
             }
 
             @Override
@@ -207,13 +191,13 @@ public class InboxFragment extends BaseFragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                mHandler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                mHandler.sendEmptyMessage(Constant.MSG_SERVER_ERROR);
+                mHandler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
 
@@ -230,7 +214,7 @@ public class InboxFragment extends BaseFragment {
                 }
                 if (retCode != "-2") {
                     // No New Records are found
-                    mHandler.sendEmptyMessage(Constant.MSG_NOCHANGE);
+                    mHandler.sendEmptyMessage(HandlerConstant.MSG_NOCHANGE);
                 }
             }
 

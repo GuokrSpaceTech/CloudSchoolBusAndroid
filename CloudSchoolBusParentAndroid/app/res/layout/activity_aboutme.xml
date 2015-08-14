@@ -57,12 +57,6 @@
                 android:background="@drawable/ic_image_default"
                 android:layout_marginTop="-60dp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="0dp"
-                android:background="#00000000"/>
-
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
@@ -75,24 +69,16 @@
                     android:orientation="horizontal"
                     android:baselineAligned="true"
                     android:background="#FFFFFFFF"
-                    android:id="@+id/linearLayoutName">
+                    android:id="@+id/linearLayoutChildSetting">
 
                     <TextView
                         style="@style/CardTitle"
                         android:textColor="@android:color/black"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="70"
+                        android:layout_weight="85"
                         android:padding="@dimen/big_padding"
-                        android:text="@string/name" />
-
-                    <TextView
-                        android:id="@+id/textViewName"
-                        android:textColor="@android:color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="15"
-                        android:padding="@dimen/small_padding" />
+                        android:text="@string/childsetting" />
 
                     <ImageView
                         android:layout_width="0dp"
@@ -112,7 +98,7 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:background="#FFFFFFFF"
-                    android:id="@+id/linearLayoutPhone">
+                    android:id="@+id/linearLayoutSystemSetting">
 
                     <TextView
                         style="@style/CardTitle"
@@ -121,10 +107,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="70"
                         android:padding="@dimen/big_padding"
-                        android:text="@string/phone" />
+                        android:text="@string/systemsetting" />
 
                     <TextView
-                        android:id="@+id/textViewPhone"
+                        android:id="@+id/textViewNotify"
                         android:textColor="@android:color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -149,24 +135,16 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:background="#FFFFFFFF"
-                    android:id="@+id/linearLayoutRelation">
+                    android:id="@+id/linearLayoutHelp">
 
                     <TextView
                         style="@style/CardTitle"
                         android:layout_width="0dp"
                         android:textColor="@android:color/black"
                         android:layout_height="wrap_content"
-                        android:layout_weight="70"
+                        android:layout_weight="85"
                         android:padding="@dimen/big_padding"
-                        android:text="@string/relation" />
-
-                    <TextView
-                        android:id="@+id/textViewRelation"
-                        android:textColor="@android:color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="15"
-                        android:padding="@dimen/small_padding" />
+                        android:text="@string/helpfeedback" />
 
                     <ImageView
                         android:layout_width="0dp"
@@ -183,10 +161,10 @@
                 android:background="#00000000"/>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/logoutButton"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/switch_child"
+                android:text="@string/logout"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />
 

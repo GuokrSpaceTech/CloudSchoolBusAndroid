@@ -21,7 +21,7 @@ import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.fastjson.FastJsonTools;
+import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
@@ -137,14 +137,34 @@ public class TimelineFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        GetMessagesFromCache(mHandler);
+
+        if (mMesageEntities.size() == 0)
+            GetLastestMessagesFromServer(mHandler);
+        else {
+            MessageEntity messageEntity = mMesageEntities.get(0);
+            GetNewMessagesFromServer(messageEntity.getSendtime(),mHandler);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.activity_article_list, container, false);
+        View root = inflater.inflate(R.layout.activity_timeline, container, false);
+
         mMaterialListView = (MaterialListView) root.findViewById(R.id.material_listview);
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+
+        mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
+
+        setListeners();
+
+        return root;
+    }
+
+    private void setListeners()
+    {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -154,7 +174,6 @@ public class TimelineFragment extends BaseFragment {
             }
         });
 
-        mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
         mMaterialListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             private boolean loading = true;
 
@@ -187,17 +206,6 @@ public class TimelineFragment extends BaseFragment {
                 }
             }
         });
-
-        GetMessagesFromCache(mHandler);
-
-        if (mMesageEntities.size() == 0)
-            GetLastestMessagesFromServer(mHandler);
-        else {
-            MessageEntity messageEntity = mMesageEntities.get(0);
-            GetNewMessagesFromServer(messageEntity.getSendtime(),mHandler);
-        }
-
-        return root;
     }
 
     @Override
@@ -243,7 +251,6 @@ public class TimelineFragment extends BaseFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
     }
 
@@ -276,8 +283,6 @@ public class TimelineFragment extends BaseFragment {
 
     private List<Object> buildcard(final MessageEntity messageEntity) {
         List<Object> cardList = new ArrayList<>();
-
-
 
         switch (messageEntity.getApptype())
         {

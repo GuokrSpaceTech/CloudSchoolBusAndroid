@@ -1,4 +1,4 @@
-package com.guokrspace.cloudschoolbus.parents.base.fastjson;
+package com.android.support.fastjson;
 
 /**
  * Created by Yang Kai on 14-11-17.

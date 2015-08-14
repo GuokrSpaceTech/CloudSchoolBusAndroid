@@ -51,6 +51,7 @@ import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
+import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.InboxFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
@@ -60,6 +61,7 @@ import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.Repo
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.TimelineFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherMessageBoxFragment;
+import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -83,7 +85,7 @@ pstsScrollOffset Scroll offset of the selected tab
 pstsTabBackground Background drawable of each tab, should be a StateListDrawable
 pstsShouldExpand If set to true, each tab is given the same weight, default false
 pstsTextAllCaps If true, all tab titles will be upper case, default true
- */
+*/
 
 public class MainActivity extends BaseActivity implements
 		TimelineFragment.OnFragmentInteractionListener,
@@ -172,8 +174,8 @@ public class MainActivity extends BaseActivity implements
 	{
 		mFragments[0] = TimelineFragment.newInstance(null, null);
 		mFragments[1] = InboxFragment.newInstance(null,null);
-		mFragments[2] = NoticeFragment.newInstance(null,null);
-		mFragments[3] = NoticeFragment.newInstance(null,null);
+		mFragments[2] = HobbyFragment.newInstance();
+		mFragments[3] = AboutmeFragment.newInstance();
 	}
 
     void setupViewAdapter()

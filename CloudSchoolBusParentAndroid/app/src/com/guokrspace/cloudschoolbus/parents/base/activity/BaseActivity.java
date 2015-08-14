@@ -183,8 +183,9 @@ abstract public class BaseActivity extends ActionBarActivity {
 				} else {
 					try {
 						String sid = response.getString("sid");
+						String userid = response.getString("userid");
 						ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
-						ConfigEntity configEntity = new ConfigEntity(null,mApplication.mConfig.getToken(),sid,mApplication.mConfig.getMobile());
+						ConfigEntity configEntity = new ConfigEntity(null,mApplication.mConfig.getToken(),sid,mApplication.mConfig.getMobile(),userid);
 						configEntityDao.update(configEntity);
 					} catch (org.json.JSONException e) {
 						e.printStackTrace();

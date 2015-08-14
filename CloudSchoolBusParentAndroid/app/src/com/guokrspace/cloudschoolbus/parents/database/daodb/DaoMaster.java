@@ -33,6 +33,7 @@ public class DaoMaster extends AbstractDaoMaster {
         AttendanceEntityDao.createTable(db, ifNotExists);
         FestivalEntityDao.createTable(db, ifNotExists);
         ScheduleEntityDao.createTable(db, ifNotExists);
+        LastLetterEntityDao.createTable(db, ifNotExists);
         LetterEntityDao.createTable(db, ifNotExists);
         ReportEntityDao.createTable(db, ifNotExists);
         ReportItemEntityDao.createTable(db, ifNotExists);
@@ -54,6 +55,7 @@ public class DaoMaster extends AbstractDaoMaster {
         AttendanceEntityDao.dropTable(db, ifExists);
         FestivalEntityDao.dropTable(db, ifExists);
         ScheduleEntityDao.dropTable(db, ifExists);
+        LastLetterEntityDao.dropTable(db, ifExists);
         LetterEntityDao.dropTable(db, ifExists);
         ReportEntityDao.dropTable(db, ifExists);
         ReportItemEntityDao.dropTable(db, ifExists);
@@ -102,6 +104,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(AttendanceEntityDao.class);
         registerDaoClass(FestivalEntityDao.class);
         registerDaoClass(ScheduleEntityDao.class);
+        registerDaoClass(LastLetterEntityDao.class);
         registerDaoClass(LetterEntityDao.class);
         registerDaoClass(ReportEntityDao.class);
         registerDaoClass(ReportItemEntityDao.class);

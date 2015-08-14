@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public class CloudSchoolBusRestClient {
 //    private static final String BASE_URL = "http://api35.yunxiaoche.com:81/";
-    private static final String BASE_URL = "http://222.247.92.222:81/api/parent/";
+    private static final String BASE_URL = "http://222.247.189.132:81/api/parent/";
 //    private static final String BASE_URL = "http://test.yunxiaoche.com/api/parent/";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
@@ -71,7 +71,7 @@ public class CloudSchoolBusRestClient {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             try {
                 sb.append(entry.getKey()).append('/')
-                        .append(URLEncoder.encode(entry.getValue(), "utf-8"))
+                        .append( URLEncoder.encode(entry.getValue(), "utf-8") )
                         .append('/');
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
