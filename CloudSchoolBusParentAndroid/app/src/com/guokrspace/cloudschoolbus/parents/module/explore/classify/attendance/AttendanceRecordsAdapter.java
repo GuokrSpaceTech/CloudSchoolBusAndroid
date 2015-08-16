@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.support.utils.DateUtils;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.AttendanceEntity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -107,10 +108,10 @@ public class AttendanceRecordsAdapter extends BaseAdapter {
 			AttendanceEntity record = attendance_records.get(position);
 					
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			Date dt = new Date(record.getTimestamp()*1000);
-			String str_date = df.format(dt);
-			String str_time = str_date.substring(str_date.lastIndexOf(" ")+1, str_date.length());
-			holder.text_view_dateTime.setText(str_time);
+//			Date dt = new Date(record.getTimestamp()*1000);
+//			String str_date = df.format(dt);
+//			String str_time = str_date.substring(str_date.lastIndexOf(" ")+1, str_date.length());
+			holder.text_view_dateTime.setText(DateUtils.timelineTimestamp(record.getTimestamp(),context));
 			
 			holder.text_view_dateTime.setTextColor(Color.rgb(0, 0, 0)); 
 			

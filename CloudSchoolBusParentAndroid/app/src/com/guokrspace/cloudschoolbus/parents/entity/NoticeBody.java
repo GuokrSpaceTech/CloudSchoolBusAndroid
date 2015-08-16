@@ -5,17 +5,17 @@ import java.util.List;
 
 /**
  * 通知
- * @author jiahongfei
+ * @author Yang Kai
  *
  */
 public class NoticeBody implements Serializable{
-	public String source;
+	public List<String> PList;
 
-	public String getSource() {
-		return source;
+	public List<String> getPList() {
+		return PList;
 	}
 
-	public void setSource(String source) {
-		this.source = source;
+	public void setPList(List<String> PList) {
+		this.PList = PList;
 	}
 }

@@ -54,7 +54,7 @@ public class TeacherListCardItemView extends CardItemView<NoticeCard> {
 
         //Classname
         TextView kindergarten = (TextView) findViewById(R.id.classname);
-        kindergarten.setText(card.getKindergarten());
+        kindergarten.setText(card.getClassName());
         if (card.getDescriptionColor() != -1) {
             kindergarten.setTextColor(card.getDescriptionColor());
         }

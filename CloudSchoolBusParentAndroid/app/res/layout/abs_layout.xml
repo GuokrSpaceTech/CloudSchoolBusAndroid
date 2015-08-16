@@ -3,15 +3,15 @@
     android:id="@+id/layout_abs_actionbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="my Title"
-        android:textColor="#ffffff"
+        android:textColor="#FFFFFFFF"
         android:id="@+id/abs_layout_titleTextView"
-        android:textSize="@dimen/bigger_title_size" />
+        style="@style/CardTitle" />
 
 </LinearLayout>

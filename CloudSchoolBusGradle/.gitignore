@@ -10,6 +10,7 @@ build/
 *~.nib
 local.properties
 .settings/
+.idea/
 .loadpath
 *.o
 *.o.d

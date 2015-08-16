@@ -91,6 +91,6 @@ public class AttendanceRecordCard extends SimpleCard {
 
     @Override
     public int getLayout() {
-        return R.layout.material_notice_card_layout;
+        return R.layout.material_attendance_card_layout;
     }
 }

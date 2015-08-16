@@ -35,7 +35,8 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
         public final static Property Studentid = new Property(6, String.class, "studentid", false, "STUDENTID");
         public final static Property Ismass = new Property(7, String.class, "ismass", false, "ISMASS");
         public final static Property Isreaded = new Property(8, String.class, "isreaded", false, "ISREADED");
-        public final static Property Senderid = new Property(9, String.class, "senderid", false, "SENDERID");
+        public final static Property Body = new Property(9, String.class, "body", false, "BODY");
+        public final static Property Senderid = new Property(10, String.class, "senderid", false, "SENDERID");
     };
 
     private DaoSession daoSession;
@@ -63,7 +64,8 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
                 "'STUDENTID' TEXT," + // 6: studentid
                 "'ISMASS' TEXT," + // 7: ismass
                 "'ISREADED' TEXT," + // 8: isreaded
-                "'SENDERID' TEXT NOT NULL );"); // 9: senderid
+                "'BODY' TEXT," + // 9: body
+                "'SENDERID' TEXT NOT NULL );"); // 10: senderid
     }
 
     /** Drops the underlying database table. */
@@ -117,7 +119,12 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
         if (isreaded != null) {
             stmt.bindString(9, isreaded);
         }
-        stmt.bindString(10, entity.getSenderid());
+ 
+        String body = entity.getBody();
+        if (body != null) {
+            stmt.bindString(10, body);
+        }
+        stmt.bindString(11, entity.getSenderid());
     }
 
     @Override
@@ -145,7 +152,8 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // studentid
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // ismass
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // isreaded
-            cursor.getString(offset + 9) // senderid
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // body
+            cursor.getString(offset + 10) // senderid
         );
         return entity;
     }
@@ -162,7 +170,8 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
         entity.setStudentid(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setIsmass(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setIsreaded(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setSenderid(cursor.getString(offset + 9));
+        entity.setBody(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setSenderid(cursor.getString(offset + 10));
      }
     
     /** @inheritdoc */

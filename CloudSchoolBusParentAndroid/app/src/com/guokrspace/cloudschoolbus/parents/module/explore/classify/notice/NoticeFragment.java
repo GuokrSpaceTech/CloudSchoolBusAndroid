@@ -265,16 +265,14 @@ public class NoticeFragment extends BaseFragment {
         String teacherAvatarString = noticeEntity.getSenderEntity().getAvatar();
         card.setTeacherAvatarUrl(teacherAvatarString);
         card.setTeacherName(noticeEntity.getSenderEntity().getName());
-        card.setKindergarten(mApplication.mSchools.get(0).getName());
+        card.setClassName(mApplication.mSchools.get(0).getName());
         card.setSentTime(noticeEntity.getSendtime());
 
         card.setTitle(noticeEntity.getTitle());
         card.setDescription(noticeEntity.getDescription());
 
         List<String> pictureUrls = new ArrayList<>();
-        for (int j = 0; j < noticeEntity.getMessageBodyEntityList().size(); j++) {
-            pictureUrls.add(noticeEntity.getMessageBodyEntityList().get(j).getContent());
-        }
+            pictureUrls.add(noticeEntity.getBody());
 
         if (noticeEntity.getIsconfirm().equals("1")) {
             card.setmConfirmButtonClickListener(new View.OnClickListener() {

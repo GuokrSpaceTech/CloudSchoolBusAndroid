@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background_window">#FFE5E5E5</color>
-    <color name="primary">#3C4655</color>
+    <color name="primary">#F1A141</color>
     <color name="primary_dark">#0E0E0E</color>
     <color name="accent">#F4982E</color>
     <color name="event_color_01">#59dbe0</color>
@@ -10,4 +10,5 @@
     <color name="event_color_04">#f8b552</color>
     <color name="toolbar">#efefef</color>
     <color name="toolbar_text">#8f000000</color>
+    <color name="button_disable">#C8C8C8</color>
 </resources>

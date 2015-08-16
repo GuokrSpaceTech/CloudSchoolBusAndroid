@@ -5,12 +5,14 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.Button;
 
 import com.android.support.debug.DebugLog;
 import com.android.support.dialog.CustomWaitDialog;
@@ -18,9 +20,8 @@ import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
+import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
@@ -29,7 +30,6 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
-import com.guokrspace.cloudschoolbus.parents.entity.Sender;
 import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
@@ -58,13 +58,6 @@ public class BaseFragment extends Fragment {
 	public    NetworkStatusEvent networkStatusEvent;
 	private   CustomWaitDialog mCustomWaitDialog;
 	public    List<MessageEntity> mMesageEntities = new ArrayList<>();
-
-	final private static int MSG_ONREFRESH = 1;
-	final private static int MSG_ONLOADMORE = 2;
-	final private static int MSG_ONCACHE = 3;
-	final private static int MSG_NOCHANGE = 4;
-	private static final int MSG_NO_NETOWRK = 5;
-	private static final int MSG_SERVER_ERROR = 6;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -198,7 +191,7 @@ public class BaseFragment extends Fragment {
 
 	void GetMessagesFromServer(final String starttime, final String endtime, final android.os.Handler handler) {
 		if (!networkStatusEvent.isNetworkConnected()) {
-			handler.sendEmptyMessage(MSG_NO_NETOWRK);
+			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
 		}
 		showWaitDialog("", null);
@@ -213,7 +206,6 @@ public class BaseFragment extends Fragment {
 		CloudSchoolBusRestClient.get(ProtocolDef.METHOD_timeline, params, new JsonHttpResponseHandler() {
 			MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
 			SenderEntityDao senderEntityDao = mApplication.mDaoSession.getSenderEntityDao();
-			MessageBodyEntityDao messageBodyEntityDao = mApplication.mDaoSession.getMessageBodyEntityDao();
 			TagEntityDao tagEntityDao = mApplication.mDaoSession.getTagEntityDao();
 
 			@Override
@@ -233,28 +225,18 @@ public class BaseFragment extends Fragment {
 					}
 				}
 				if (!retCode.equals("1")) {
-					handler.sendEmptyMessage(MSG_SERVER_ERROR);
+					handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
 					return;
 				}
 
 				List<Timeline> timelines = FastJsonTools.getListObject(response.toString(), Timeline.class);
 				for (int i = 0; i < timelines.size(); i++) {
 					Timeline message = timelines.get(i);
-					Sender sender = message.getSender();
-					MessageEntity messageEntity = new MessageEntity(message.getId(), message.getTitle(), message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(), message.getStudentid(), message.getIsmass(), message.getIsreaded(), sender.getId());
-                    messageEntityDao.insertOrReplace(messageEntity);
-
-					String avatar = "http://apps.bdimg.com/developer/static/12261449/assets/v3/case_meitu.png";
-//					SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
-					SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), avatar, sender.getClassname(), sender.getName());
-
+					Timeline.Sender sender = message.getSender();
+					MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(), message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(), message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
+					messageEntityDao.insertOrReplace(messageEntity);
+					SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
 					senderEntityDao.insertOrReplace(senderEntity);
-
-					List<String> messageBodies = message.getBody();
-					for (int j = 0; j < messageBodies.size(); j++) {
-						MessageBodyEntity messageBodyEntity = new MessageBodyEntity(null, messageBodies.get(j), message.getMessageid());
-						messageBodyEntityDao.insertOrReplace(messageBodyEntity);
-					}
 
 //					List<Tag> tags = message.getTag();
 //					for (int j = 0; j < tags.size(); tags.size()) {
@@ -264,10 +246,10 @@ public class BaseFragment extends Fragment {
 //					}
 				}
 
-                //Refresh mMessageEntities
-                GetMessagesFromCache();
+				//Refresh mMessageEntities
+				GetMessagesFromCache();
 
-				handler.sendEmptyMessage(MSG_ONREFRESH);
+				handler.sendEmptyMessage(HandlerConstant.MSG_ONREFRESH);
 			}
 
 			@Override
@@ -277,7 +259,7 @@ public class BaseFragment extends Fragment {
 
 			@Override
 			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				handler.sendEmptyMessage(MSG_SERVER_ERROR);
+				handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
 				super.onFailure(statusCode, headers, throwable, errorResponse);
 			}
 
@@ -299,8 +281,67 @@ public class BaseFragment extends Fragment {
 				}
 				if (retCode != "-2") {
 					// No New Records are found
-					handler.sendEmptyMessage(MSG_NOCHANGE);
+					handler.sendEmptyMessage(HandlerConstant.MSG_NOCHANGE);
 				}
+			}
+		});
+	}
+
+	public void NoticeConfirm(String messageid, final Button button, final android.os.Handler handler) {
+		if (!networkStatusEvent.isNetworkConnected()) {
+			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
+			return;
+		}
+
+		showWaitDialog("", null);
+
+		HashMap<String, String> params = new HashMap<String, String>();
+		if(messageid!=null) params.put("messageid", messageid);
+
+		CloudSchoolBusRestClient.get(ProtocolDef.METHOD_noticeconfirm, params, new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+				Message msg = handler.obtainMessage();
+				msg.what = HandlerConstant.MSG_CONFIRM_OK;
+				msg.obj = button;
+				handler.sendMessage(msg);
+				super.onSuccess(statusCode, headers, response);
+			}
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+				Message msg = handler.obtainMessage();
+				msg.what = HandlerConstant.MSG_CONFIRM_OK;
+				msg.obj = button;
+				handler.sendMessage(msg);
+				super.onSuccess(statusCode, headers, response);
+			}
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, String responseString) {
+				Message msg = handler.obtainMessage();
+				msg.what = HandlerConstant.MSG_CONFIRM_OK;
+				msg.obj = button;
+				handler.sendMessage(msg);
+				super.onSuccess(statusCode, headers, responseString);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+				handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+				handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+				handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+				super.onFailure(statusCode, headers, responseString, throwable);
 			}
 		});
 	}

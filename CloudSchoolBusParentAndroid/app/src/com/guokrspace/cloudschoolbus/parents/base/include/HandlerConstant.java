@@ -24,4 +24,6 @@ public class HandlerConstant {
 
     public static final int MSG_TIMER_TICK = 14;
     public static final int MSG_TIMER_TIMEOUT = 15;
+
+    public static final int MSG_CONFIRM_OK = 16;
 }

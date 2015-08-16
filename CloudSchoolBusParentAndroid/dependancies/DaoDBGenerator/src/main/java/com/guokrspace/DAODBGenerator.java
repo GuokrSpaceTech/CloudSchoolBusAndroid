@@ -78,11 +78,6 @@ public class DAODBGenerator {
 
     private static void addTimeline(Schema schema)
     {
-        Entity messagebody = schema.addEntity("MessageBodyEntity");
-        messagebody.addIdProperty().autoincrement().primaryKey();
-        messagebody.addStringProperty("content");
-        Property messageIdBody = messagebody.addStringProperty("messageid").getProperty();
-
         Entity sender = schema.addEntity("SenderEntity");
         sender.addStringProperty("id").notNull().primaryKey();
         sender.addStringProperty("role");
@@ -108,10 +103,10 @@ public class DAODBGenerator {
         message.addStringProperty("studentid");
         message.addStringProperty("ismass");
         message.addStringProperty("isreaded");
+        message.addStringProperty("body");
         Property senderIdMessage = message.addStringProperty("senderid").notNull().getProperty();
 
         ToMany messageToTag    = message.addToMany(tag,      messageIdTag);
-        ToMany messageToBody   = message.addToMany(messagebody, messageIdBody);
         ToOne  messageToSender = message.addToOne(sender, senderIdMessage);
     }
 
@@ -165,7 +160,7 @@ public class DAODBGenerator {
         Entity attendance = schema.addEntity("AttendanceEntity");
         attendance.addStringProperty("month");
         attendance.addStringProperty("day");
-        attendance.addLongProperty("timestamp").notNull().primaryKey();
+        attendance.addStringProperty("timestamp").notNull().primaryKey();
         attendance.addStringProperty("imageUrl");
     }
 

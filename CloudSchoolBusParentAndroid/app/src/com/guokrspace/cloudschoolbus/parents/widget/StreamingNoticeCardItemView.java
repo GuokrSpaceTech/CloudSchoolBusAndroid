@@ -42,7 +42,7 @@ public class StreamingNoticeCardItemView extends CardItemView<StreamingNoticeCar
         //Timestamp
         String   sendTimeString = card.getSentTime();
         TextView sentTimeTextView    = (TextView) findViewById(R.id.timestamp);
-        sentTimeTextView.setText(DateUtils.timelineTimestamp(sendTimeString));
+        sentTimeTextView.setText(DateUtils.timelineTimestamp(sendTimeString, card.getContext()));
         if (card.getDescriptionColor() != -1) {
             sentTimeTextView.setTextColor(card.getDescriptionColor());
         }

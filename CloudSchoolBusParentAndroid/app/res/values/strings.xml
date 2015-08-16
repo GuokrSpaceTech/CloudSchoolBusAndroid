@@ -46,5 +46,9 @@
     <string name="systemsetting">系统设置</string>
     <string name="helpfeedback">帮助与反馈</string>
     <string name="logout">退出登录</string>
+    <string name="confirm_notice">确认回执</string>
+    <string name="confirmed_notice">已回执</string>
+    <string name="noticetype">班级通知</string>
+    <string name="attendancetype">今日考勤</string>
 
 </resources>

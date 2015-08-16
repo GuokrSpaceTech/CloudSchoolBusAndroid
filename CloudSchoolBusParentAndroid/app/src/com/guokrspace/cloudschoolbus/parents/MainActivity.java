@@ -102,7 +102,7 @@ public class MainActivity extends BaseActivity implements
 	private String mSid = "";
 
 	private Drawable oldBackground = null;
-	private int currentColor = R.color.accent;
+	private int currentColor = 0xF1A141;
 
     private static final int MSG_LOGIN_SUCCESS = 0;
     private static final int MSG_LOGIN_FAIL = -1;
@@ -121,11 +121,11 @@ public class MainActivity extends BaseActivity implements
                 case MSG_LOGIN_SUCCESS:
                     //Start Baidu Push
                     PushManager.startWork(getApplicationContext(),
-                            PushConstants.LOGIN_TYPE_API_KEY,
-                            BaiduPushUtils.getMetaValue(MainActivity.this, "api_key"));
+							PushConstants.LOGIN_TYPE_API_KEY,
+							BaiduPushUtils.getMetaValue(MainActivity.this, "api_key"));
 					initFragments();
 					setupViewAdapter();
-					changeColor(currentColor);
+//					changeColor(currentColor);
 					break;
                 case MSG_LOGIN_FAIL:
                     //It will stay in the Login Page
@@ -225,11 +225,10 @@ public class MainActivity extends BaseActivity implements
 			LayerDrawable ld = new LayerDrawable(new Drawable[] { colorDrawable, bottomDrawable });
 
 			if (oldBackground == null) {
-
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
 					ld.setCallback(drawableCallback);
 				} else {
-					getSupportActionBar().setBackgroundDrawable(ld);
+					getSupportActionBar().setBackgroundDrawable(colorDrawable);
 				}
 			} else {
 
@@ -273,7 +272,7 @@ public class MainActivity extends BaseActivity implements
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		currentColor = savedInstanceState.getInt("currentColor");
-		changeColor(currentColor);
+//		changeColor(currentColor);
 	}
 
 	private Drawable.Callback drawableCallback = new Drawable.Callback() {

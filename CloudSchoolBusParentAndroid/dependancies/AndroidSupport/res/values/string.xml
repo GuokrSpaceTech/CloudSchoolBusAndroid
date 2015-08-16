@@ -21,5 +21,7 @@
     <string name="october">十月</string>
     <string name="november">十一月</string>
     <string name="december">十二月</string>
+    <string name="minutes_ago">分钟前</string>
+    <string name="hours_ago">小时前</string>
 
 </resources>

@@ -8,14 +8,10 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ImageEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageBodyEntity;
-import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;

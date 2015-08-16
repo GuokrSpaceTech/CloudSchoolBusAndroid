@@ -2,10 +2,12 @@ package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.squareup.picasso.Picasso;
@@ -17,11 +19,6 @@ import java.util.Date;
  * Created by Yang Kai on 15/7/14.
  */
 public class NoticeCardItemView extends CardItemView<NoticeCard> {
-
-    private SimpleDateFormat spl = new SimpleDateFormat("yyyy-MM-dd");
-    private SimpleDateFormat toYearSdf = new SimpleDateFormat("MM-dd HH:mm");
-    private long toYear;
-    private Context mCntx;
 
     public NoticeCardItemView(Context context) {
         super(context);
@@ -39,9 +36,6 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
     public void build(NoticeCard card) {
         super.build(card);
 
-        /*
-         * Header
-         */
         //Teacher Head
         ImageView teacherHead = (ImageView) findViewById(R.id.teacher_avatar);
         if (teacherHead != null) {
@@ -51,6 +45,7 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
                 Picasso.with(getContext()).load(card.getTeacherAvatarUrl()).into(teacherHead);
             }
         }
+
         //Teacher Name
         TextView teacherName = (TextView) findViewById(R.id.teacher_name);
         teacherName.setText(card.getTeacherName());
@@ -58,40 +53,25 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
             teacherName.setTextColor(card.getDescriptionColor());
         }
 
-        //Kindergarten
-        TextView kindergarten = (TextView) findViewById(R.id.kindergarten_name);
-        kindergarten.setText(card.getKindergarten());
+        //Class Name
+        TextView kindergarten = (TextView) findViewById(R.id.classname);
+        kindergarten.setText(card.getClassName());
         if (card.getDescriptionColor() != -1) {
             kindergarten.setTextColor(card.getDescriptionColor());
         }
-        //Timestamp
-        String   publishTime = card.getSentTime();
-        TextView sentTime    = (TextView) findViewById(R.id.timestamp);
-        if (publishTime != null) {
-            long foo = Long.parseLong(publishTime) * 1000;
-            long tmp = System.currentTimeMillis() - foo;
-            if (foo > toYear) {
-                if (tmp < 12 * 60 * 60 * 1000) {
-                    if (tmp < 60 * 60 * 1000) {
-                        if (tmp <= 60 * 1000) {
-                            sentTime.setText("1" + mCntx.getResources().getString(R.string.minute_befor));
-                        } else {
-                            sentTime.setText(tmp / (60 * 1000) + card.getContext().getResources().getString(R.string.minute_befor));
-                        }
-                    } else {
-                        sentTime.setText(tmp / (60 * 60 * 1000) + card.getContext().getResources().getString(R.string.hour_befor));
-                    }
-                } else {
-                    sentTime.setText(toYearSdf.format(new Date(foo)));
-                }
-            } else {
-                sentTime.setText(spl.format(new Date(foo)));
-            }
 
-            if (card.getDescriptionColor() != -1) {
-                sentTime.setTextColor(card.getDescriptionColor());
-            }
+        //Timestamp
+        String   sendTimeStr = card.getSentTime();
+        TextView sentTimeTextView    = (TextView) findViewById(R.id.timestamp);
+        sentTimeTextView.setText(DateUtils.timelineTimestamp(sendTimeStr,card.getContext()));
+        if (card.getDescriptionColor() != -1) {
+            sentTimeTextView.setTextColor(card.getDescriptionColor());
         }
+
+        //Card Type
+        String cardType = card.getCardType();
+        TextView cardTextView = (TextView) findViewById(R.id.card_type);
+        cardTextView.setText(cardType);
 
         // Title
         TextView title = (TextView) findViewById(R.id.titleTextView);
@@ -120,7 +100,11 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
         /*
          * Card Bottom
          */
-        Button confirmButton = (Button)findViewById(R.id.confirm);
-        confirmButton.setOnClickListener(card.getmConfirmButtonClickListener());
+        Button confirmButton = (Button) findViewById(R.id.confirm);
+        if(card.getIsNeedConfirm().equals("1")) {
+            confirmButton.setOnClickListener(card.getmConfirmButtonClickListener());
+        } else {
+            confirmButton.setVisibility(View.GONE);
+        }
     }
 }

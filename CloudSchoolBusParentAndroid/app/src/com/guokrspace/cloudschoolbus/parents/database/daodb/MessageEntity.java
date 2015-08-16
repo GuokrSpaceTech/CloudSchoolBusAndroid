@@ -21,6 +21,7 @@ public class MessageEntity {
     private String studentid;
     private String ismass;
     private String isreaded;
+    private String body;
     /** Not-null value. */
     private String senderid;
 
@@ -34,7 +35,6 @@ public class MessageEntity {
     private String senderEntity__resolvedKey;
 
     private List<TagEntity> tagEntityList;
-    private List<MessageBodyEntity> messageBodyEntityList;
 
     public MessageEntity() {
     }
@@ -43,7 +43,7 @@ public class MessageEntity {
         this.messageid = messageid;
     }
 
-    public MessageEntity(String messageid, String title, String description, String isconfirm, String sendtime, String apptype, String studentid, String ismass, String isreaded, String senderid) {
+    public MessageEntity(String messageid, String title, String description, String isconfirm, String sendtime, String apptype, String studentid, String ismass, String isreaded, String body, String senderid) {
         this.messageid = messageid;
         this.title = title;
         this.description = description;
@@ -53,6 +53,7 @@ public class MessageEntity {
         this.studentid = studentid;
         this.ismass = ismass;
         this.isreaded = isreaded;
+        this.body = body;
         this.senderid = senderid;
     }
 
@@ -136,6 +137,14 @@ public class MessageEntity {
         this.isreaded = isreaded;
     }
 
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
     /** Not-null value. */
     public String getSenderid() {
         return senderid;
@@ -194,28 +203,6 @@ public class MessageEntity {
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetTagEntityList() {
         tagEntityList = null;
-    }
-
-    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<MessageBodyEntity> getMessageBodyEntityList() {
-        if (messageBodyEntityList == null) {
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            MessageBodyEntityDao targetDao = daoSession.getMessageBodyEntityDao();
-            List<MessageBodyEntity> messageBodyEntityListNew = targetDao._queryMessageEntity_MessageBodyEntityList(messageid);
-            synchronized (this) {
-                if(messageBodyEntityList == null) {
-                    messageBodyEntityList = messageBodyEntityListNew;
-                }
-            }
-        }
-        return messageBodyEntityList;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    public synchronized void resetMessageBodyEntityList() {
-        messageBodyEntityList = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */

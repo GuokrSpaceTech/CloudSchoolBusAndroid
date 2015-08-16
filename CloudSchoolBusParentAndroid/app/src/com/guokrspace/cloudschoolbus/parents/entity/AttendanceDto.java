@@ -5,7 +5,7 @@ import java.util.List;
 public class AttendanceDto {
 	private String attendaceday1;
 	private String attendaceday;
-	private List<AttendanceRecordDto> record;
+	private List<AttendanceRecord> record;
 
 	public String getAttendaceday() {
 		return attendaceday;
@@ -23,11 +23,11 @@ public class AttendanceDto {
 		this.attendaceday1 = attendaceday1;
 	}
 	
-	public List<AttendanceRecordDto> getRecord() {
+	public List<AttendanceRecord> getRecord() {
 		return record;
 	}
 
-	public void setRecord(List<AttendanceRecordDto> records) {
+	public void setRecord(List<AttendanceRecord> records) {
 		this.record = records;
 	}
 

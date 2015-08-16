@@ -374,7 +374,7 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
         ChatMessageCard chatMessageCard = new ChatMessageCard(mParentContext);
 
         chatMessageCard.setRoleType(chatMessage.getSenderEntity().getRole());
-        String content = chatMessage.getMessageBodyEntityList().get(0).getContent();
+        String content = chatMessage.getBody();
         String letterType;
         if(content.contains("http://")) {
             letterType = "picture";

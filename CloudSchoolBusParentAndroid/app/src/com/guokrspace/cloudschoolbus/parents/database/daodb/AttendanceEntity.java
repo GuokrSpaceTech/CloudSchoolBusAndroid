@@ -8,17 +8,18 @@ public class AttendanceEntity {
 
     private String month;
     private String day;
-    private long timestamp;
+    /** Not-null value. */
+    private String timestamp;
     private String imageUrl;
 
     public AttendanceEntity() {
     }
 
-    public AttendanceEntity(long timestamp) {
+    public AttendanceEntity(String timestamp) {
         this.timestamp = timestamp;
     }
 
-    public AttendanceEntity(String month, String day, long timestamp, String imageUrl) {
+    public AttendanceEntity(String month, String day, String timestamp, String imageUrl) {
         this.month = month;
         this.day = day;
         this.timestamp = timestamp;
@@ -41,11 +42,13 @@ public class AttendanceEntity {
         this.day = day;
     }
 
-    public long getTimestamp() {
+    /** Not-null value. */
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

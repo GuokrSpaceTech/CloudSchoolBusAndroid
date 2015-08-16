@@ -56,7 +56,7 @@ public class ReportListCardItemView extends CardItemView<ReportListCard> {
         //Timestamp
         String   publishTime = card.getSentTime();
         TextView sentTime    = (TextView) findViewById(R.id.timestamp);
-        sentTime.setText(DateUtils.timelineTimestamp(publishTime));
+        sentTime.setText(DateUtils.timelineTimestamp(publishTime, card.getContext()));
         if (card.getDescriptionColor() != -1) {
             sentTime.setTextColor(card.getDescriptionColor());
         }

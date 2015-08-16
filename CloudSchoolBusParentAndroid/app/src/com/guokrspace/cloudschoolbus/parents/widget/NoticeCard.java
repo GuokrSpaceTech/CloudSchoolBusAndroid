@@ -13,10 +13,17 @@ public class NoticeCard extends SimpleCard {
 
     private String teacherAvatarUrl;
     private String teacherName;
-    private String kindergarten;
+    private String className;
     private String sentTime;
+    private String cardType;
+    private String isNeedConfirm;
     private View.OnClickListener mConfirmButtonClickListener;
     private Context context;
+
+    public NoticeCard(Context context) {
+        super(context);
+        this.context = context;
+    }
 
     public String getTeacherAvatarUrl() {
         return teacherAvatarUrl;
@@ -34,12 +41,12 @@ public class NoticeCard extends SimpleCard {
         this.teacherName = teacherName;
     }
 
-    public String getKindergarten() {
-        return kindergarten;
+    public String getClassName() {
+        return className;
     }
 
-    public void setKindergarten(String kindergarten) {
-        this.kindergarten = kindergarten;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public String getSentTime() {
@@ -58,17 +65,28 @@ public class NoticeCard extends SimpleCard {
         this.mConfirmButtonClickListener = mConfirmButtonClickListener;
     }
 
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    public String getIsNeedConfirm() {
+        return isNeedConfirm;
+    }
+
+    public void setIsNeedConfirm(String isNeedConfirm) {
+        this.isNeedConfirm = isNeedConfirm;
+    }
+
     public Context getContext() {
         return context;
     }
 
     public void setContext(Context context) {
         this.context = context;
-    }
-
-    public NoticeCard(Context context) {
-        super(context);
-        this.setContext(context);
     }
 
     @Override

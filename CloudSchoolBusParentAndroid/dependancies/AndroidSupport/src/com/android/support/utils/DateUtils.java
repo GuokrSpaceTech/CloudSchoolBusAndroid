@@ -1,5 +1,7 @@
 package com.android.support.utils;
 
+import android.content.Context;
+
 import com.android.support.R;
 
 import java.text.ParseException;
@@ -58,6 +60,22 @@ public class DateUtils {
     }
 
     /**
+     * 格式化输入的millis
+     *
+     * @param millis
+     * @param pattern yyyy-MM-dd HH:mm:ss E
+     * @return
+     */
+    public static String dateFormat(String millis, String pattern) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Hongkong"));
+        Long millisecs = Long.parseLong(millis);
+        Date date = new Date(millis);
+        String dateString = simpleDateFormat.format(date);
+        return dateString;
+    }
+
+    /**
      * 将dateString原来old格式转换成new格式
      *
      * @param dateString
@@ -74,7 +92,7 @@ public class DateUtils {
         return date;
     }
 
-    public static String timelineTimestamp(String timestamp) {
+    public static String timelineTimestamp(String timestamp, Context context) {
         String retString = "";
         SimpleDateFormat toYearSdf = new SimpleDateFormat("MM-dd HH:mm");
 
@@ -84,12 +102,12 @@ public class DateUtils {
             if (tmp < 12 * 60 * 60 * 1000) {
                 if (tmp < 60 * 60 * 1000) {
                     if (tmp <= 60 * 1000) {
-                        retString = "1" + "Minutes ago";
+                        retString = "1 " + context.getResources().getString(R.string.minutes_ago);
                     } else {
-                        retString = (tmp / (60 * 1000) + "Minutes ago");
+                        retString = (tmp / (60 * 1000) + context.getResources().getString(R.string.minutes_ago));
                     }
                 } else {
-                    retString = (tmp / (60 * 60 * 1000) + "Hours ago");
+                    retString = (tmp / (60 * 60 * 1000) + context.getResources().getString(R.string.hours_ago));
                 }
             } else {
                 retString = toYearSdf.format(new Date(foo));

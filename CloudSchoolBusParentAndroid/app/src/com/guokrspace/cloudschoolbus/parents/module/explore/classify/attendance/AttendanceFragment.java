@@ -25,7 +25,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.FestivalEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.FestivalEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.AttendanceDto;
 import com.guokrspace.cloudschoolbus.parents.entity.AttendanceManagerDto;
-import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecordDto;
+import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecord;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -196,7 +196,6 @@ public class AttendanceFragment extends BaseFragment {
         public void onFragmentInteraction(String id);
     }
 
-
     //Get all articles from cache
     private void GetAttendanceFromCache(String month) {
         final AttendanceEntityDao attendanceEntityDao = mApplication.mDaoSession.getAttendanceEntityDao();
@@ -259,9 +258,9 @@ public class AttendanceFragment extends BaseFragment {
 
                     for( int j=0; j<att.getRecord().size(); j++)
                     {
-                        AttendanceRecordDto record = att.getRecord().get(j);
+                        AttendanceRecord record = att.getRecord().get(j);
                         AttendanceEntity attendanceEntity = new AttendanceEntity(
-                                str_month, att.getAttendaceday1(), record.getCreatetime(), record.getImgpath()
+                                str_month, att.getAttendaceday1(), record.getPunchtime(), record.getPicture()
                         );
                         attendanceEntityDao.insertOrReplace(attendanceEntity);
                     }
@@ -433,7 +432,7 @@ public class AttendanceFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3) {
 //                Intent intent = new Intent(MoringCheckActivity.this, CheckPictureActivity.class);
-//                List<AttendanceRecordDto> records = getCurrentDateAttendanceRecords();
+//                List<AttendanceRecord> records = getCurrentDateAttendanceRecords();
 //                String url = records.get(arg2).getImgpath();
 //                if(url != "null")
 //                {
