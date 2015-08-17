@@ -176,8 +176,10 @@ public class TimelineFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                MessageEntity messageEntity = mMesageEntities.get(0);
-                GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
+                if(mMesageEntities.size()>0) {
+                    MessageEntity messageEntity = mMesageEntities.get(0);
+                    GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
+                }
                 hideWaitDialog();
             }
         });
@@ -373,12 +375,15 @@ public class TimelineFragment extends BaseFragment {
             attendanceRecordCard.setDrawable(attendanceRecord.getPicture());
             attendanceRecordCard.setDescription(attendanceRecord.getPunchtime());
             return attendanceRecordCard;
-        } else if (messageEntity.getApptype().equals("streaming")) {
+        } else if (messageEntity.getApptype().equals("OpenClass")) {
             StreamingNoticeCard streamingNoticeCard = new StreamingNoticeCard(mParentContext);
-            streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(),streamingNoticeCard.getContext()));
-            streamingNoticeCard.setCardType(messageEntity.getApptype());
+            streamingNoticeCard.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+            streamingNoticeCard.setKindergartenName(messageEntity.getSenderEntity().getName());
+            streamingNoticeCard.setClassName(messageEntity.getSenderEntity().getClassname());
+            streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(),mParentContext));
+            streamingNoticeCard.setCardType(cardType(messageEntity.getApptype()));
             streamingNoticeCard.setContext(mParentContext);
-            streamingNoticeCard.setKindergartenName(mApplication.mSchools.get(0).getName());
+            streamingNoticeCard.setDescription(messageEntity.getDescription());
             String messageBody = messageEntity.getBody();
             final Ipcparam ipcpara = FastJsonTools.getObject(messageBody, Ipcparam.class);
             streamingNoticeCard.setClickListener(new View.OnClickListener() {
@@ -387,13 +392,14 @@ public class TimelineFragment extends BaseFragment {
 
                 }
             });
-        } else if (messageEntity.getApptype().equals("report")) {
+            return streamingNoticeCard;
+        } else if (messageEntity.getApptype().equals("Report")) {
             ReportListCard reportListCard = new ReportListCard(mParentContext);
             String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
             reportListCard.setTeacherAvatarUrl(teacherAvatarString);
             reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
             reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
-            reportListCard.setCardType(messageEntity.getApptype());
+            reportListCard.setCardType(cardType(messageEntity.getApptype()));
             reportListCard.setSentTime(messageEntity.getSendtime());
             String messageBody = messageEntity.getBody();
             final StudentReport studentReport = FastJsonTools.getObject(messageBody, StudentReport.class);
@@ -403,12 +409,12 @@ public class TimelineFragment extends BaseFragment {
                 public void onClick(View view) {
                     ReportDetailFragment reportDetailFragment = ReportDetailFragment.newInstance(messageEntity.getSendtime(), studentReport.getReportUrl());
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.layout.material_timeline_card_layout, reportDetailFragment);
+                    transaction.replace(R.id.article_module_layout, reportDetailFragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
             });
-
+            return reportListCard;
         }
         return null;
     }
@@ -421,7 +427,10 @@ public class TimelineFragment extends BaseFragment {
             cardtype = getResources().getString(R.string.noticetype);
         else if(type.equals("Punch"))
             cardtype = getResources().getString(R.string.attendancetype);
-
+        else if(type.equals("OpenClass"))
+            cardtype = getResources().getString(R.string.openclass);
+        else if(type.equals("Report"))
+            cardtype = getResources().getString(R.string.report);
         return cardtype;
     }
 }

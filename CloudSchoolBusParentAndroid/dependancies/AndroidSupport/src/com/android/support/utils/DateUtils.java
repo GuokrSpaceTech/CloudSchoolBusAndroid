@@ -70,7 +70,7 @@ public class DateUtils {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Hongkong"));
         Long millisecs = Long.parseLong(millis);
-        Date date = new Date(millis);
+        Date date = new Date(millisecs);
         String dateString = simpleDateFormat.format(date);
         return dateString;
     }

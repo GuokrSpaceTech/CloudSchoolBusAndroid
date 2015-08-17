@@ -54,10 +54,10 @@ public class AttendanceReordCardItemView extends CardItemView<AttendanceRecordCa
         }
 
         //Classname
-        TextView kindergarten = (TextView) findViewById(R.id.kindergarten_name);
-        kindergarten.setText(card.getClassName());
+        TextView classnameTextView = (TextView) findViewById(R.id.classname);
+        classnameTextView.setText(card.getClassName());
         if (card.getDescriptionColor() != -1) {
-            kindergarten.setTextColor(card.getDescriptionColor());
+            classnameTextView.setTextColor(card.getDescriptionColor());
         }
         //Timestamp
         String   sentTime = card.getSentTime();
@@ -81,7 +81,9 @@ public class AttendanceReordCardItemView extends CardItemView<AttendanceRecordCa
         // Description
         TextView description = (TextView) findViewById(R.id.text_content);
         if(card.getDescription()!=null) {
-            String recordText = DateUtils.dateFormat(card.getDescription(),"YYYY-MM-dd HH:mm");
+            String recordText = card.getContext().getResources().getString(R.string.attendancetime);
+            recordText = recordText + DateUtils.dateFormat(card.getDescription(), "MM-dd HH:mm");
+
             description.setText(recordText);
         }
         if (card.getDescriptionColor() != -1) {

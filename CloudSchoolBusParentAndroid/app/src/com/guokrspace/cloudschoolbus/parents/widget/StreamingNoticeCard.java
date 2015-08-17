@@ -11,7 +11,9 @@ import com.guokrspace.cloudschoolbus.parents.R;
  */
 public class StreamingNoticeCard extends SimpleCard {
 
+    private String kindergartenAvatar;
     private String kindergartenName;
+    private String className;
     private String sentTime;
     private String cardType;
     private View.OnClickListener clickListener;
@@ -19,12 +21,23 @@ public class StreamingNoticeCard extends SimpleCard {
 
     public StreamingNoticeCard(Context context) {
         super(context);
-        context = this.getContext();
+        this.context = context;
     }
 
-    @Override
-    public int getLayout() {
-        return R.layout.material_streaming_notice_card;
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getKindergartenAvatar() {
+        return kindergartenAvatar;
+    }
+
+    public void setKindergartenAvatar(String kindergartenAvatar) {
+        this.kindergartenAvatar = kindergartenAvatar;
     }
 
     public String getKindergartenName() {
@@ -66,4 +79,10 @@ public class StreamingNoticeCard extends SimpleCard {
     public void setContext(Context context) {
         this.context = context;
     }
+
+    @Override
+    public int getLayout() {
+        return R.layout.material_streaming_notice_card;
+    }
+
 }

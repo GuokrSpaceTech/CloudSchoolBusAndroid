@@ -148,7 +148,7 @@ public class InboxFragment extends BaseFragment {
             mHandler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
-        showWaitDialog("", null);
+//        showWaitDialog("", null);
 
         HashMap<String, String> params = new HashMap<String, String>();
         CloudSchoolBusRestClient.get(ProtocolDef.METHOD_latestchat, params, new JsonHttpResponseHandler() {

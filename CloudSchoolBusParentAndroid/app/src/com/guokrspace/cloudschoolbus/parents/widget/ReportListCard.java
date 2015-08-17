@@ -23,7 +23,7 @@ public class ReportListCard extends SimpleCard {
 
     public ReportListCard(Context context) {
         super(context);
-        context = this.getContext();
+        this.context = context;
     }
 
     @Override

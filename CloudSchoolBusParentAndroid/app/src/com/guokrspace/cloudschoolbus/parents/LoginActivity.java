@@ -340,10 +340,8 @@ public class LoginActivity extends BaseActivity {
                             return;
                         }
 
-
-                        String tempStr = "{\"schools\":[{\"classes\":[{\"teacher\":[{\"avatar\":\"http:\\/\\/cloud.yunxiaoche.com\\/images\\/teacher.jpg\",\"id\":\"1401\",\"duty\":\"班主任\",\"name\":\"臧老师\"}],\"student\":[\"55789\"],\"classname\":\"海豚班\",\"classid\":\"49536\"}],\"address\":\"拓奇测试学校\",\"schoolid\":\"108\",\"schoolname\":\"拓奇测试学校\"}],\"students\":[{\"cnname\":\"小小1\",\"birthday\":\"2001-03-02\",\"sex\":\"1\",\"avatar\":\"http:\\/\\/.\",\"nickname\":null,\"studentid\":\"55789\"}]}";
-
-                        Baseinfo baseinfo = FastJsonTools.getObject(tempStr, Baseinfo.class);
+//                      String tempStr = "{\"schools\":[{\"classes\":[{\"teacher\":[{\"avatar\":\"http:\\/\\/cloud.yunxiaoche.com\\/images\\/teacher.jpg\",\"id\":\"1401\",\"duty\":\"班主任\",\"name\":\"臧老师\"}],\"student\":[\"55789\"],\"classname\":\"海豚班\",\"classid\":\"49536\"}],\"address\":\"拓奇测试学校\",\"schoolid\":\"108\",\"schoolname\":\"拓奇测试学校\"}],\"students\":[{\"cnname\":\"小小1\",\"birthday\":\"2001-03-02\",\"sex\":\"1\",\"avatar\":\"http:\\/\\/.\",\"nickname\":null,\"studentid\":\"55789\"}]}";
+                        Baseinfo baseinfo = FastJsonTools.getObject(response.toString(), Baseinfo.class);
                         //Save School Information
                         for(int i=0; i<baseinfo.getSchools().size(); i++) {
                             SchoolEntity schoolEntity = new SchoolEntity(baseinfo.getSchools().get(i).getSchoolid(),baseinfo.getSchools().get(i).getSchoolname(), baseinfo.getSchools().get(i).getAddress());

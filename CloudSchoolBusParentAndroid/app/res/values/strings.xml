@@ -50,5 +50,8 @@
     <string name="confirmed_notice">已回执</string>
     <string name="noticetype">班级通知</string>
     <string name="attendancetype">今日考勤</string>
+    <string name="openclass">视频公开课</string>
+    <string name="report">班级报告</string>
+    <string name="attendancetime">考勤时间: </string>
 
 </resources>

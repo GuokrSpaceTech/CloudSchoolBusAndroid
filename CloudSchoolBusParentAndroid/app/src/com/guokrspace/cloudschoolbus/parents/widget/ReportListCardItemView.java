@@ -48,10 +48,10 @@ public class ReportListCardItemView extends CardItemView<ReportListCard> {
         }
 
         //Classname
-        TextView kindergarten = (TextView) findViewById(R.id.kindergarten_name);
-        kindergarten.setText(card.getClassName());
+        TextView classnameTextView = (TextView) findViewById(R.id.classname);
+        classnameTextView.setText(card.getClassName());
         if (card.getDescriptionColor() != -1) {
-            kindergarten.setTextColor(card.getDescriptionColor());
+            classnameTextView.setTextColor(card.getDescriptionColor());
         }
         //Timestamp
         String   publishTime = card.getSentTime();

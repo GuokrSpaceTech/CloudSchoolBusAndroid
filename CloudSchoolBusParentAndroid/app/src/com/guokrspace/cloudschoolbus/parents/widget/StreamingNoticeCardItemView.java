@@ -33,16 +33,33 @@ public class StreamingNoticeCardItemView extends CardItemView<StreamingNoticeCar
     public void build(StreamingNoticeCard card) {
         super.build(card);
 
-        //Classname
-        TextView kindergarten = (TextView) findViewById(R.id.kindergarten_name);
-        kindergarten.setText(card.getKindergartenName());
+        //Kindergarten Avatar
+        ImageView kindergartenAvatar = (ImageView) findViewById(R.id.kindergarten_avatar);
+        if (kindergartenAvatar != null) {
+            if(card.getKindergartenAvatar() == null || card.getKindergartenAvatar().isEmpty()) {
+                kindergartenAvatar.setImageDrawable(card.getDrawable());
+            } else {
+                Picasso.with(getContext()).load(card.getKindergartenAvatar()).into(kindergartenAvatar);
+            }
+        }
+
+        //Kindergarten Name
+        TextView kindergartenTextView = (TextView) findViewById(R.id.kindergarten_name);
+        kindergartenTextView.setText(card.getKindergartenName());
         if (card.getDescriptionColor() != -1) {
-            kindergarten.setTextColor(card.getDescriptionColor());
+            kindergartenTextView.setTextColor(card.getDescriptionColor());
+        }
+
+        //Classname
+        TextView classnameTextView = (TextView) findViewById(R.id.classname);
+        classnameTextView.setText(card.getKindergartenName());
+        if (card.getDescriptionColor() != -1) {
+            classnameTextView.setTextColor(card.getDescriptionColor());
         }
         //Timestamp
         String   sendTimeString = card.getSentTime();
         TextView sentTimeTextView    = (TextView) findViewById(R.id.timestamp);
-        sentTimeTextView.setText(DateUtils.timelineTimestamp(sendTimeString, card.getContext()));
+        sentTimeTextView.setText(sendTimeString);
         if (card.getDescriptionColor() != -1) {
             sentTimeTextView.setTextColor(card.getDescriptionColor());
         }
@@ -51,8 +68,13 @@ public class StreamingNoticeCardItemView extends CardItemView<StreamingNoticeCar
         TextView cardTypeTextView = (TextView)findViewById(R.id.card_type);
         cardTypeTextView.setText(card.getCardType());
 
+
+        /* Card Description */
+        TextView cardDescriptonTextView = (TextView)findViewById(R.id.description);
+        cardDescriptonTextView.setText(card.getDescription());
+
         /*  */
-        FrameLayout layout = (FrameLayout)findViewById(R.id.cardView);
+        LinearLayout layout = (LinearLayout)findViewById(R.id.taptovideoLayout);
         layout.setOnClickListener(card.getClickListener());
     }
 }

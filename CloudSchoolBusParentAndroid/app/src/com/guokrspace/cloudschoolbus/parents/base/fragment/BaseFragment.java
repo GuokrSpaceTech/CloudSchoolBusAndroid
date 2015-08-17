@@ -176,7 +176,8 @@ public class BaseFragment extends Fragment {
 
 	//Get all articles from newest in Cache to newest in Server
 	public void GetNewMessagesFromServer(String endtime, android.os.Handler handler) {
-		GetMessagesFromServer("0", endtime, handler);
+//		GetMessagesFromServer("0", endtime, handler);
+		GetMessagesFromServer(null, null, handler);
 	}
 
 	//Get the older 20 articles from server then update the cache
