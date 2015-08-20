@@ -1,41 +1,29 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule;
 
 import android.app.Activity;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.TypedValue;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.alamkanak.weekview.DateTimeInterpreter;
-import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
-import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
+import com.android.support.utils.DateUtils;
+import com.dexafree.materialList.view.MaterialListView;
+import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ScheduleEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ScheduleEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Schedule;
-import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -46,8 +34,7 @@ import de.greenrobot.dao.query.QueryBuilder;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class ScheduleFragment extends BaseFragment implements WeekView.MonthChangeListener,
-        WeekView.EventClickListener, WeekView.EventLongPressListener {
+public class ScheduleFragment extends BaseFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,14 +47,14 @@ public class ScheduleFragment extends BaseFragment implements WeekView.MonthChan
 
     private OnFragmentInteractionListener mListener;
 
-    private ArrayList<ScheduleEntity> mScheduleEntity = new ArrayList<ScheduleEntity>();
+    private ArrayList<MessageEntity> scheduleEntities = new ArrayList<MessageEntity>();
+    private MaterialListView mMaterialListView;
+    private LinearLayoutManager mLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private static final int TYPE_DAY_VIEW = 1;
-    private static final int TYPE_THREE_DAY_VIEW = 2;
-    private static final int TYPE_WEEK_VIEW = 3;
-    private int mWeekViewType = TYPE_THREE_DAY_VIEW;
-    private WeekView mWeekView;
-    private int weekNum;
+    private int previousTotal = 0;
+    private int visibleThreshold = 3;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
 
     final private static int MSG_ONREFRESH = 1;
     final private static int MSG_ONLOADMORE = 2;
@@ -80,13 +67,17 @@ public class ScheduleFragment extends BaseFragment implements WeekView.MonthChan
 
             switch (msg.what) {
                 case MSG_ONREFRESH:
-                    mWeekView.notifyDatasetChanged();
+                    addCards();
+                    if (mSwipeRefreshLayout.isRefreshing())
+                        mSwipeRefreshLayout.setRefreshing(false);
                     break;
                 case MSG_ONLOADMORE:
-                    break;
                 case MSG_ONCACHE:
+                    addCards();
                     break;
                 case MSG_NOCHANGE:
+                    if (mSwipeRefreshLayout.isRefreshing())
+                        mSwipeRefreshLayout.setRefreshing(false);
             }
             return false;
         }
@@ -121,31 +112,61 @@ public class ScheduleFragment extends BaseFragment implements WeekView.MonthChan
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.activity_schedule, container, false);
-        // Get a reference for the week view in the layout.
-        mWeekView = (WeekView) root.findViewById(R.id.weekView);
+        View root = inflater.inflate(R.layout.activity_notice_list, container, false);
+        mMaterialListView = (MaterialListView) root.findViewById(R.id.material_listview);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                MessageEntity noticeEntity = scheduleEntities.get(0);
+                String endtime = noticeEntity.getSendtime();
+                GetNewMessagesFromServer(endtime, mHandler);
+            }
+        });
 
-        // Show a toast message about the touched event.
-        mWeekView.setOnEventClickListener(this);
+        mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
+        mMaterialListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
-        // The week view has infinite scrolling horizontally. We have to provide the events of a
-        // month every time the month changes on the week view.
-        mWeekView.setMonthChangeListener(this);
+            private boolean loading = true;
 
-        // Set long press listener for events.
-        mWeekView.setEventLongPressListener(this);
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
-        setHasOptionsMenu(true);
+            }
 
-        // Set up a date time interpreter to interpret how the date and time will be formatted in
-        // the week view. This is optional.
-        setupDateTimeInterpreter(false);
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                //Log.d("Aing", "dx:" + dx + ", dy:" + dy);
 
-        Calendar today = Calendar.getInstance();
-        GetScheduleFromCache(today.get(Calendar.WEEK_OF_YEAR), today.get(Calendar.YEAR));
+                visibleItemCount = mMaterialListView.getChildCount();
+                totalItemCount = mLayoutManager.getItemCount();
+                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
 
-        if(mScheduleEntity.size()==0)
-            GetScheduleFromServer(today);
+                if (loading) {
+                    if (totalItemCount > previousTotal) {
+                        loading = false;
+                        previousTotal = totalItemCount;
+                    }
+                }
+                if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+                    // End has been reached
+
+                    Log.i("...", "end called");
+                    MessageEntity attendanceEntity = scheduleEntities.get(scheduleEntities.size() - 1);
+                    String starttime = attendanceEntity.getSendtime();
+                    GetOldMessagesFromServer(starttime, mHandler);
+
+                    loading = true;
+                }
+            }
+        });
+
+        GetEntitiesFromCache();
 
         return root;
     }
@@ -199,241 +220,44 @@ public class ScheduleFragment extends BaseFragment implements WeekView.MonthChan
 
 
     //Get all articles from cache
-    private void GetScheduleFromCache(int week, int year) {
-        final ScheduleEntityDao scheduleEntityDao = mApplication.mDaoSession.getScheduleEntityDao();
-        QueryBuilder queryBuilder = scheduleEntityDao.queryBuilder();
-        queryBuilder.and(ScheduleEntityDao.Properties.Week.eq(week), ScheduleEntityDao.Properties.Year.eq(year));
-        mScheduleEntity = (ArrayList<ScheduleEntity>) queryBuilder.list();
-        if (mScheduleEntity.size() != 0)
+    private void GetEntitiesFromCache() {
+        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+        scheduleEntities = (ArrayList<MessageEntity>) queryBuilder.where(MessageEntityDao.Properties.Apptype.eq("Schedule")).list();
+
+        if (scheduleEntities.size() != 0)
             mHandler.sendEmptyMessage(MSG_ONCACHE);
     }
 
-    private void GetScheduleFromServer(final Calendar date) {
-        final ScheduleEntityDao scheduleEntityDao = mApplication.mDaoSession.getScheduleEntityDao();
+    private void addCards() {
+        for (int i = 0; i < scheduleEntities.size(); i++) {
+            MessageEntity entity = scheduleEntities.get(i);
+            ScheduleNoticeCard card = BuildCard(entity);
+            mMaterialListView.add(card);
+        }
+    }
 
-        HashMap<String, String> params = new HashMap<String, String>();
-        String dateStr = String.format("%04d%02d%02d", date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
-        weekNum = date.get(Calendar.WEEK_OF_YEAR);
-
-        params.put("day", dateStr);
-
-        CloudSchoolBusRestClient.get("schedule", params, new JsonHttpResponseHandler() {
+    private ScheduleNoticeCard BuildCard(final MessageEntity messageEntity) {
+        ScheduleNoticeCard card = new ScheduleNoticeCard(mParentContext);
+        card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+        card.setKindergartenName(messageEntity.getSenderEntity().getName());
+        card.setClassName(messageEntity.getSenderEntity().getClassname());
+        card.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+        card.setCardType(cardType(messageEntity.getApptype()));
+        card.setContext(mParentContext);
+        card.setDescription(messageEntity.getDescription());
+        Schedule schedule = FastJsonTools.getObject(messageEntity.getBody(), Schedule.class);
+        final String scheduleUrl = schedule.getUrl();
+        card.setClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                String retCode = "";
-                for (int i = 0; i < headers.length; i++) {
-                    Header header = headers[i];
-                    if ("code".equalsIgnoreCase(header.getName())) {
-                        retCode = header.getValue();
-                        break;
-                    }
-                }
-                if (retCode != "1") {
-                    // Errro Handling
-                }
-                List<Schedule> scheduleList = FastJsonTools.getListObject(response.toString(), Schedule.class);
-                for (int i = 0; i < scheduleList.size(); i++) {
-                    Schedule schedule = scheduleList.get(i);
-//                    String starttime  = schedule.getScheduletime().split("-")[0];
-//                    String endtime    = schedule.getScheduletime().split("-")[1];
-//                    Integer    start_hour = Integer.parseInt(starttime.split(":")[0]);
-//                    Integer    start_min  = Integer.parseInt(starttime.split(":")[1]);
-//                    Integer    end_hour   = Integer.parseInt(endtime.split(":")[0]);
-//                    Integer    end_min    = Integer.parseInt(endtime.split(":")[1]);
-
-//                    ScheduleEntity scheduleEntity = new ScheduleEntity(
-//                            start_hour,
-//                            start_min,
-//                            end_hour,
-//                            end_min,
-//                            schedule.getCnname(),
-//                            schedule.getEnname(),
-//                            Integer.parseInt(schedule.getWeek()),
-//                            Integer.valueOf(date.get(Calendar.YEAR)));
-//                    scheduleEntityDao.insertOrReplace(scheduleEntity);
-                }
-
-                //Update DataSet
-                QueryBuilder queryBuilder = scheduleEntityDao.queryBuilder();
-
-                int year = date.get(Calendar.YEAR);
-                queryBuilder.and(ScheduleEntityDao.Properties.Week.eq(date.get(Calendar.WEEK_OF_YEAR)), ScheduleEntityDao.Properties.Year.eq(year));
-                mScheduleEntity = (ArrayList<ScheduleEntity>) queryBuilder.list();
-
-                mHandler.sendEmptyMessage(MSG_ONREFRESH);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                String retCode = "";
-                for (int i = 0; i < headers.length; i++) {
-                    Header header = headers[i];
-                    if ("code".equalsIgnoreCase(header.getName())) {
-                        retCode = header.getValue();
-                        break;
-                    }
-                }
-                if (retCode != "-2") {
-                    // No New Records are found
-                    mHandler.sendEmptyMessage(MSG_NOCHANGE);
-                }
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                super.onSuccess(statusCode, headers, responseString);
+            public void onClick(View view) {
+                ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(scheduleUrl);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
-    }
-
-    /**
-     * Set up a date time interpreter which will show short date values when in week view and long
-     * date values otherwise.
-     * @param shortDate True if the date values should be short.
-     */
-    private void setupDateTimeInterpreter(final boolean shortDate) {
-        mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
-            @Override
-            public String interpretDate(Calendar date) {
-                SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
-                String weekday = weekdayNameFormat.format(date.getTime());
-                SimpleDateFormat format = new SimpleDateFormat(" M/d", Locale.getDefault());
-
-                // All android api level do not have a standard way of getting the first letter of
-                // the week day name. Hence we get the first char programmatically.
-                // Details: http://stackoverflow.com/questions/16959502/get-one-letter-abbreviation-of-week-day-of-a-date-in-java#answer-16959657
-                if (shortDate)
-                    weekday = String.valueOf(weekday.charAt(0));
-                return weekday.toUpperCase() + format.format(date.getTime());
-            }
-
-            @Override
-            public String interpretTime(int hour) {
-                return hour > 11 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : hour + " AM");
-            }
-        });
-    }
-
-    @Override
-    public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
-
-        // Populate the week view with some events.
-        List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
-
-        //Currently, the schedule is per week, so each events needs to set on 5 week days
-        for(int i=0; i<mScheduleEntity.size(); i++) {
-            for(int j=Calendar.MONDAY; j<Calendar.SATURDAY; j++ ) {
-                Calendar startTime = Calendar.getInstance();
-                startTime.set(Calendar.WEEK_OF_YEAR, weekNum);
-                startTime.set(Calendar.DAY_OF_WEEK, j);
-                startTime.set(Calendar.HOUR_OF_DAY, mScheduleEntity.get(i).getStarthour());
-                startTime.set(Calendar.MINUTE, mScheduleEntity.get(i).getStartmin());
-                startTime.set(Calendar.MONTH, newMonth - 1);
-                startTime.set(Calendar.YEAR, newYear);
-
-                Calendar endTime = (Calendar) startTime.clone();
-                endTime.add(Calendar.HOUR, mScheduleEntity.get(i).getEndhour() - mScheduleEntity.get(i).getStarthour());
-                endTime.set(Calendar.MONTH, newMonth - 1);
-                endTime.set(Calendar.MINUTE, mScheduleEntity.get(i).getEndmin());
-
-                WeekViewEvent event = new WeekViewEvent(1, mScheduleEntity.get(i).getCnname(), startTime, endTime);
-
-                if(i%2==0)
-                    event.setColor(getResources().getColor(R.color.event_color_01));
-                else
-                    event.setColor(getResources().getColor(R.color.event_color_02));
-
-
-                events.add(event);
-            }
-        }
-
-        return events;
-    }
-
-    private String getEventTitle(Calendar time) {
-        return String.format("Event of %02d:%02d %s/%d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), time.get(Calendar.MONTH)+1, time.get(Calendar.DAY_OF_MONTH));
-    }
-
-    @Override
-    public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(mParentContext, "Clicked " + event.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(mParentContext, "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.weekviewmenu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        setupDateTimeInterpreter(id == R.id.action_week_view);
-        switch (id){
-            case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            case R.id.action_day_view:
-                if (mWeekViewType != TYPE_DAY_VIEW) {
-                    item.setChecked(!item.isChecked());
-                    mWeekViewType = TYPE_DAY_VIEW;
-                    mWeekView.setNumberOfVisibleDays(1);
-
-                    // Lets change some dimensions to best fit the view.
-                    mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
-                    mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-                    mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-                }
-                return true;
-            case R.id.action_three_day_view:
-                if (mWeekViewType != TYPE_THREE_DAY_VIEW) {
-                    item.setChecked(!item.isChecked());
-                    mWeekViewType = TYPE_THREE_DAY_VIEW;
-                    mWeekView.setNumberOfVisibleDays(3);
-
-                    // Lets change some dimensions to best fit the view.
-                    mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
-                    mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-                    mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-                }
-                return true;
-            case R.id.action_week_view:
-                if (mWeekViewType != TYPE_WEEK_VIEW) {
-                    item.setChecked(!item.isChecked());
-                    mWeekViewType = TYPE_WEEK_VIEW;
-                    mWeekView.setNumberOfVisibleDays(7);
-
-                    // Lets change some dimensions to best fit the view.
-                    mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
-                    mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
-                    mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
-                }
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return card;
     }
 }

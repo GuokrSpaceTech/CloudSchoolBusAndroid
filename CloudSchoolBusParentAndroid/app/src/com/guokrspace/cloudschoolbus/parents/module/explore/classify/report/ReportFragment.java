@@ -1,9 +1,10 @@
-package com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance;
+package com.guokrspace.cloudschoolbus.parents.module.explore.classify.report;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,13 +14,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.support.fastjson.FastJsonTools;
+import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
-import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecord;
-import com.guokrspace.cloudschoolbus.parents.widget.AttendanceRecordCard;
+import com.guokrspace.cloudschoolbus.parents.entity.Food;
+import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
+import com.guokrspace.cloudschoolbus.parents.widget.FoodNoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
 
 import java.util.ArrayList;
 
@@ -32,7 +37,7 @@ import de.greenrobot.dao.query.QueryBuilder;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class AttendanceFragment extends BaseFragment {
+public class ReportFragment extends BaseFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,7 +50,7 @@ public class AttendanceFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private ArrayList<MessageEntity> mAttendanceEntities = new ArrayList<MessageEntity>();
+    private ArrayList<MessageEntity> ReportEntities = new ArrayList<MessageEntity>();
     private MaterialListView mMaterialListView;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -82,8 +87,8 @@ public class AttendanceFragment extends BaseFragment {
     });
 
     // TODO: Rename and change types of parameters
-    public static AttendanceFragment newInstance(String param1, String param2) {
-        AttendanceFragment fragment = new AttendanceFragment();
+    public static ReportFragment newInstance(String param1, String param2) {
+        ReportFragment fragment = new ReportFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -95,7 +100,7 @@ public class AttendanceFragment extends BaseFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public AttendanceFragment() {
+    public ReportFragment() {
     }
 
     @Override
@@ -121,7 +126,7 @@ public class AttendanceFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                MessageEntity noticeEntity = mAttendanceEntities.get(0);
+                MessageEntity noticeEntity = ReportEntities.get(0);
                 String endtime = noticeEntity.getSendtime();
                 GetNewMessagesFromServer(endtime, mHandler);
             }
@@ -155,7 +160,7 @@ public class AttendanceFragment extends BaseFragment {
                     // End has been reached
 
                     Log.i("...", "end called");
-                    MessageEntity attendanceEntity = mAttendanceEntities.get(mAttendanceEntities.size() - 1);
+                    MessageEntity attendanceEntity = ReportEntities.get(ReportEntities.size() - 1);
                     String starttime = attendanceEntity.getSendtime();
                     GetOldMessagesFromServer(starttime, mHandler);
 
@@ -221,33 +226,41 @@ public class AttendanceFragment extends BaseFragment {
     private void GetEntitiesFromCache() {
         MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
         QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
-        mAttendanceEntities = (ArrayList<MessageEntity>) queryBuilder.where(MessageEntityDao.Properties.Apptype.eq("Punch")).list();
+        ReportEntities = (ArrayList<MessageEntity>) queryBuilder.where(MessageEntityDao.Properties.Apptype.eq("Report")).list();
 
-        if (mAttendanceEntities.size() != 0)
+        if (ReportEntities.size() != 0)
             mHandler.sendEmptyMessage(MSG_ONCACHE);
     }
 
     private void addCards() {
-        for (int i = 0; i < mAttendanceEntities.size(); i++) {
-            MessageEntity attendanceEntity = mAttendanceEntities.get(i);
-            AttendanceRecordCard card = BuildCard(attendanceEntity);
+        for (int i = 0; i < ReportEntities.size(); i++) {
+            MessageEntity entity = ReportEntities.get(i);
+            ReportListCard card = BuildCard(entity);
             mMaterialListView.add(card);
         }
     }
 
-    private AttendanceRecordCard BuildCard(final MessageEntity messageEntity) {
-        AttendanceRecordCard attendanceRecordCard = new AttendanceRecordCard(mParentContext);
+    private ReportListCard BuildCard(final MessageEntity messageEntity) {
+        ReportListCard reportListCard = new ReportListCard(mParentContext);
         String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
-        attendanceRecordCard.setTeacherAvatarUrl(teacherAvatarString);
-        attendanceRecordCard.setTeacherName(messageEntity.getSenderEntity().getName());
-        attendanceRecordCard.setClassName(messageEntity.getSenderEntity().getClassname());
-        attendanceRecordCard.setCardType(cardType(messageEntity.getApptype()));
-        attendanceRecordCard.setSentTime(messageEntity.getSendtime());
+        reportListCard.setTeacherAvatarUrl(teacherAvatarString);
+        reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
+        reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        reportListCard.setCardType(cardType(messageEntity.getApptype()));
+        reportListCard.setSentTime(messageEntity.getSendtime());
         String messageBody = messageEntity.getBody();
-        AttendanceRecord attendanceRecord = FastJsonTools.getObject(messageBody, AttendanceRecord.class);
-        attendanceRecordCard.setRecordTime(attendanceRecord.getPunchtime().toString());
-        attendanceRecordCard.setDrawable(attendanceRecord.getPicture());
-        attendanceRecordCard.setDescription(attendanceRecord.getPunchtime());
-        return attendanceRecordCard;
+        final StudentReport studentReport = FastJsonTools.getObject(messageBody, StudentReport.class);
+        reportListCard.setReporttype(studentReport.getReportType());
+        reportListCard.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ReportDetailFragment reportDetailFragment = ReportDetailFragment.newInstance(messageEntity.getSendtime(), studentReport.getReportUrl());
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, reportDetailFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        return reportListCard;
     }
 }

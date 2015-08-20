@@ -57,9 +57,11 @@ import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
+import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
@@ -222,9 +224,12 @@ public class MainActivity extends BaseActivity implements
         switch (item.getItemId()) {
 
             case R.id.action_contact:
-                ClassifyDialogFragment dialog = new ClassifyDialogFragment();
-                dialog.setStyle(DialogFragment.STYLE_NO_TITLE,0); //Let the fragment dialog take control all view elements
-                dialog.show(getSupportFragmentManager(), "QuickContactFragment");
+                TimelineFragment fragment = (TimelineFragment)mFragments[0];
+                if(fragment.mMesageEntities.size() != 0) {
+                    ClassifyDialogFragment dialog = new ClassifyDialogFragment();
+                    dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0); //Let the fragment dialog take control all view elements
+                    dialog.show(getSupportFragmentManager(), "QuickContactFragment");
+                }
                 break;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
@@ -397,7 +402,7 @@ public class MainActivity extends BaseActivity implements
                 transaction.commit();
                 break;
             case "food":
-                FoodDetailFragment fragment = FoodDetailFragment.newInstance(null);
+                FoodFragment fragment = FoodFragment.newInstance(null,null);
                 transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.article_module_layout, fragment);
                 transaction.addToBackStack(null);
@@ -405,9 +410,9 @@ public class MainActivity extends BaseActivity implements
                 break;
 
             case "streaming":
-                StreamingChannelsFragment channelsFragment = StreamingChannelsFragment.newInstance(null);
+                StreamingFragment streamingFragment = StreamingFragment.newInstance(null,null);
                 transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, channelsFragment);
+                transaction.replace(R.id.article_module_layout, streamingFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;

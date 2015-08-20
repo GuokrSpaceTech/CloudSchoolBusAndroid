@@ -11,8 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.android.support.fastjson.FastJsonTools;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
 import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
@@ -65,15 +68,13 @@ public class NoticeFragment extends BaseFragment {
 
             switch (msg.what) {
                 case MSG_ONREFRESH:
-                    InsertCardsAtBeginning();
+                    addCards();
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     break;
                 case MSG_ONLOADMORE:
-                    AppendCards();
-                    break;
                 case MSG_ONCACHE:
-                    AppendCards();
+                    addCards();
                     break;
                 case MSG_NOCHANGE:
                     if (mSwipeRefreshLayout.isRefreshing())
@@ -171,13 +172,13 @@ public class NoticeFragment extends BaseFragment {
 
         GetNoticesFromCache();
 
-        if (mNoticeEntities.size() == 0)
-            GetLastestMessagesFromServer(mHandler);
-        else {
-            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
-                    .setMessage(getResources().getString(R.string.no_message))
-                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-        }
+//        if (mNoticeEntities.size() == 0)
+//            GetLastestMessagesFromServer(mHandler);
+//        else {
+//            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
+//                    .setMessage(getResources().getString(R.string.no_message))
+//                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+//        }
         return root;
     }
 
@@ -239,18 +240,7 @@ public class NoticeFragment extends BaseFragment {
             mHandler.sendEmptyMessage(MSG_ONCACHE);
     }
 
-    private void InsertCardsAtBeginning()
-    {
-        for (int i = (mNoticeEntities.size()-1); i >= 0; i--) {
-            MessageEntity noticeEntity = mNoticeEntities.get(i);
-            if(noticeEntity.getApptype().equals("Notice")) {
-                NoticeCard card = BuildCard(noticeEntity);
-                mMaterialListView.add(card);
-            }
-        }
-    }
-
-    private void AppendCards() {
+    private void addCards() {
         for (int i = 0; i < mNoticeEntities.size(); i++) {
             MessageEntity noticeEntity = mNoticeEntities.get(i);
             if(noticeEntity.getApptype().equals("Notice")) {
@@ -260,28 +250,26 @@ public class NoticeFragment extends BaseFragment {
         }
     }
 
-    private NoticeCard BuildCard(MessageEntity noticeEntity) {
-        NoticeCard card = new NoticeCard(mParentContext);
+    private NoticeCard BuildCard(final MessageEntity noticeEntity) {
+        NoticeCard noticeCard = new NoticeCard(mParentContext);
         String teacherAvatarString = noticeEntity.getSenderEntity().getAvatar();
-        card.setTeacherAvatarUrl(teacherAvatarString);
-        card.setTeacherName(noticeEntity.getSenderEntity().getName());
-        card.setClassName(mApplication.mSchools.get(0).getName());
-        card.setSentTime(noticeEntity.getSendtime());
-
-        card.setTitle(noticeEntity.getTitle());
-        card.setDescription(noticeEntity.getDescription());
-
-        List<String> pictureUrls = new ArrayList<>();
-            pictureUrls.add(noticeEntity.getBody());
-
-        if (noticeEntity.getIsconfirm().equals("1")) {
-            card.setmConfirmButtonClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
-        }
-
-        return card;
+        noticeCard.setTeacherAvatarUrl(teacherAvatarString);
+        noticeCard.setTeacherName(noticeEntity.getSenderEntity().getName());
+        noticeCard.setClassName(noticeEntity.getSenderEntity().getClassname());
+        noticeCard.setCardType(cardType(noticeEntity.getApptype()));
+        noticeCard.setSentTime(noticeEntity.getSendtime());
+        noticeCard.setIsNeedConfirm(noticeEntity.getIsconfirm());
+        noticeCard.setIsNeedConfirm("1");
+        noticeCard.setTitle(noticeEntity.getTitle());
+        noticeCard.setDescription(noticeEntity.getDescription());
+        NoticeBody noticeBody = FastJsonTools.getObject(noticeEntity.getBody(), NoticeBody.class);
+        if (noticeBody != null) noticeCard.setDrawable(noticeBody.getPList().get(0));
+        noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NoticeConfirm(noticeEntity.getMessageid(), (Button) view, mHandler);
+            }
+        });
+        return noticeCard;
     }
 }

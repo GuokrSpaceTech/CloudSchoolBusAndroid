@@ -492,23 +492,4 @@ public class TimelineFragment extends BaseFragment {
 
         return null;
     }
-
-    private String cardType(String type)
-    {
-        String cardtype = "";
-
-        if(type.equals("Notice"))
-            cardtype = getResources().getString(R.string.noticetype);
-        else if(type.equals("Punch"))
-            cardtype = getResources().getString(R.string.attendancetype);
-        else if(type.equals("OpenClass"))
-            cardtype = getResources().getString(R.string.openclass);
-        else if(type.equals("Report"))
-            cardtype = getResources().getString(R.string.report);
-        else if(type.equals("Food"))
-            cardtype = getResources().getString(R.string.food);
-        else if(type.equals("Schedule"))
-            cardtype = getResources().getString(R.string.schedule);
-        return cardtype;
-    }
 }
