@@ -21,6 +21,7 @@ import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
+import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
@@ -29,15 +30,25 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecord;
+import com.guokrspace.cloudschoolbus.parents.entity.Food;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
 import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
+import com.guokrspace.cloudschoolbus.parents.entity.Schedule;
 import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
+import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.widget.AttendanceRecordCard;
+import com.guokrspace.cloudschoolbus.parents.widget.FoodNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.TimelinePicturesCard;
+
+import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +73,6 @@ public class TimelineFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private List<MessageEntity> mMesageEntities = new ArrayList<>();
     private MaterialListView mMaterialListView;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -146,14 +156,18 @@ public class TimelineFragment extends BaseFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        GetMessagesFromCache(mHandler);
+        ClearCache();
 
-        if (mMesageEntities.size() == 0)
-            GetLastestMessagesFromServer(mHandler);
-        else {
-            MessageEntity messageEntity = mMesageEntities.get(0);
-            GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
-        }
+        GetLastestMessagesFromServer(mHandler);
+
+//        GetMessagesFromCache(mHandler);
+//
+//        if (mMesageEntities.size() == 0)
+//            GetLastestMessagesFromServer(mHandler);
+//        else {
+//            MessageEntity messageEntity = mMesageEntities.get(0);
+//            GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
+//        }
     }
 
     @Override
@@ -165,6 +179,9 @@ public class TimelineFragment extends BaseFragment {
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
         mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
+
+        MainActivity mainActivity = (MainActivity)mParentContext;
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         setListeners();
 
@@ -179,8 +196,10 @@ public class TimelineFragment extends BaseFragment {
                 if(mMesageEntities.size()>0) {
                     MessageEntity messageEntity = mMesageEntities.get(0);
                     GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
+                } else
+                {
+                    GetLastestMessagesFromServer(mHandler);
                 }
-                hideWaitDialog();
             }
         });
 
@@ -290,6 +309,12 @@ public class TimelineFragment extends BaseFragment {
             handler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
     }
 
+    private void ClearCache()
+    {
+        final MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+        messageEntityDao.deleteAll();
+    }
+
     public void animation(View v) {
         v.clearAnimation();
         ScaleAnimation animation = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -389,7 +414,11 @@ public class TimelineFragment extends BaseFragment {
             streamingNoticeCard.setClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    StreamingChannelsFragment fragment = StreamingChannelsFragment.newInstance(ipcpara);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
                 }
             });
             return streamingNoticeCard;
@@ -415,7 +444,52 @@ public class TimelineFragment extends BaseFragment {
                 }
             });
             return reportListCard;
+        }else if (messageEntity.getApptype().equals("Food")) {
+            FoodNoticeCard card = new FoodNoticeCard(mParentContext);
+            card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+            card.setKindergartenName(messageEntity.getSenderEntity().getName());
+            card.setClassName(messageEntity.getSenderEntity().getClassname());
+            card.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+            card.setCardType(cardType(messageEntity.getApptype()));
+            card.setContext(mParentContext);
+            card.setDescription(messageEntity.getDescription());
+            Food food = FastJsonTools.getObject(messageEntity.getBody(), Food.class);
+            final String foodUrl = food.getUrl();
+            card.setClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FoodDetailFragment fragment = FoodDetailFragment.newInstance(foodUrl);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            });
+            return card;
+        }else if (messageEntity.getApptype().equals("Schedule")) {
+            ScheduleNoticeCard card = new ScheduleNoticeCard(mParentContext);
+            card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+            card.setKindergartenName(messageEntity.getSenderEntity().getName());
+            card.setClassName(messageEntity.getSenderEntity().getClassname());
+            card.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+            card.setCardType(cardType(messageEntity.getApptype()));
+            card.setContext(mParentContext);
+            card.setDescription(messageEntity.getDescription());
+            Schedule schedule = FastJsonTools.getObject(messageEntity.getBody(), Schedule.class);
+            final String scheduleUrl = schedule.getUrl();
+            card.setClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(scheduleUrl);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            });
+            return card;
         }
+
         return null;
     }
 
@@ -431,6 +505,10 @@ public class TimelineFragment extends BaseFragment {
             cardtype = getResources().getString(R.string.openclass);
         else if(type.equals("Report"))
             cardtype = getResources().getString(R.string.report);
+        else if(type.equals("Food"))
+            cardtype = getResources().getString(R.string.food);
+        else if(type.equals("Schedule"))
+            cardtype = getResources().getString(R.string.schedule);
         return cardtype;
     }
 }

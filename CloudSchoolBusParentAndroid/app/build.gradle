@@ -18,6 +18,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile project(':android-week-view')
     compile project(':Android-AdvancedWebView-master')
+    compile project(':IMKit')
 }
 
 android {

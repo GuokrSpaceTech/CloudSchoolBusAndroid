@@ -7,16 +7,16 @@ import java.util.List;
  * Created by wangjianfeng on 14-12-28.
  */
 public class Ipcparam implements Serializable{
-    private String ddns;
+    private String serverip;
     private String port;
-    private List<Dvr> dvr;
+    private List<Channel> channels;
 
-    public String getDdns() {
-        return ddns;
+    public String getServerip() {
+        return serverip;
     }
 
-    public void setDdns(String ddns) {
-        this.ddns = ddns;
+    public void setServerip(String serverip) {
+        this.serverip = serverip;
     }
 
     public String getPort() {
@@ -27,30 +27,21 @@ public class Ipcparam implements Serializable{
         this.port = port;
     }
 
-    public List<Dvr> getDvr() {
-        return dvr;
+    public List<Channel> getChannels() {
+        return channels;
     }
 
-    public void setDvr(List<Dvr> dvr) {
-        this.dvr = dvr;
+    public void setChannels(List<Channel> channels) {
+        this.channels = channels;
     }
 
     /**
      * Created by wangjianfeng on 14-12-28.
      */
-    public static class Dvr implements Serializable{
-        private String dvrid;
+    public static class Channel implements Serializable{
         private String channelid;
-        private String dvr_name;
         private String channeldesc;
-
-        public String getDvrid() {
-            return dvrid;
-        }
-
-        public void setDvrid(String dvrid) {
-            this.dvrid = dvrid;
-        }
+        private String device;
 
         public String getChannelid() {
             return channelid;
@@ -60,20 +51,20 @@ public class Ipcparam implements Serializable{
             this.channelid = channelid;
         }
 
-        public String getDvr_name() {
-            return dvr_name;
-        }
-
-        public void setDvr_name(String dvr_name) {
-            this.dvr_name = dvr_name;
-        }
-
         public String getChanneldesc() {
             return channeldesc;
         }
 
         public void setChanneldesc(String channeldesc) {
             this.channeldesc = channeldesc;
+        }
+
+        public String getDevice() {
+            return device;
+        }
+
+        public void setDevice(String device) {
+            this.device = device;
         }
     }
 }

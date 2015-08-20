@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.Streaming.IpcSelectionActivity;
+import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity;
 
 import org.askerov.dynamicgrid.DynamicGridView;
 
@@ -64,9 +64,12 @@ public class ClassifyDialogFragment extends DialogFragment {
 
         View root = inflater.inflate(R.layout.activity_class_grid, container, false);
 
+        getDialog().setTitle(getResources().getString(R.string.classify));
+        getDialog().setCancelable(true);
+
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
         gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(),
-                new ArrayList<ClassifyModule>(Arrays.asList(ClassifyComponent.classifyModules)),
+                new ArrayList<>(Arrays.asList(ClassifyComponent.classifyModules)),
                 getResources().getInteger(R.integer.column_count)));
 
         //add callback to stop edit mode if needed

@@ -1,12 +1,8 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore.classify.report;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +10,6 @@ import android.webkit.WebView;
 
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 
 import im.delight.android.webview.AdvancedWebView;
 
@@ -54,7 +41,7 @@ public class ReportDetailFragment extends BaseFragment implements AdvancedWebVie
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.activity_report_detail, container, false);
+        View root = inflater.inflate(R.layout.activity_webview, container, false);
         mWebView = (AdvancedWebView) root.findViewById(R.id.webView);
         mWebView.loadUrl(reportUrl);
 //        webView.loadUrl("http://192.168.1.140:81/api/page/index");

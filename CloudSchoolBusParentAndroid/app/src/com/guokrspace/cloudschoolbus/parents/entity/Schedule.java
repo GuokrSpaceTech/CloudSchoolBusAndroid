@@ -1,43 +1,18 @@
 package com.guokrspace.cloudschoolbus.parents.entity;
 
+import java.io.Serializable;
+
 /**
- * Created by wangjianfeng on 15/7/21.
+ * Created by macbook on 15-8-18.
  */
-public class Schedule {
-    private String scheduletime;
-    private String cnname;
-    private String enname;
-    private String week;
+public class Schedule implements Serializable {
+    String url;
 
-    public String getScheduletime() {
-        return scheduletime;
+    public String getUrl() {
+        return url;
     }
 
-    public void setScheduletime(String scheduletime) {
-        this.scheduletime = scheduletime;
-    }
-
-    public String getCnname() {
-        return cnname;
-    }
-
-    public void setCnname(String cnname) {
-        this.cnname = cnname;
-    }
-
-    public String getEnname() {
-        return enname;
-    }
-
-    public void setEnname(String enname) {
-        this.enname = enname;
-    }
-
-    public String getWeek() {
-        return week;
-    }
-
-    public void setWeek(String week) {
-        this.week = week;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

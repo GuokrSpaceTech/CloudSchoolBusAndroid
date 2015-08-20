@@ -14,7 +14,9 @@ public class TeacherListCard extends SimpleCard {
     private String teacherAvatarUrl;
     private String teacherName;
     private String classname;
+    private String timestamp;
     private Context context;
+    private View.OnClickListener onClickListener;
 
     public TeacherListCard(Context context) {
         super(context);
@@ -51,6 +53,22 @@ public class TeacherListCard extends SimpleCard {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public View.OnClickListener getOnClickListener() {
+        return onClickListener;
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @Override

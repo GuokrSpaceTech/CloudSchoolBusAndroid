@@ -17,7 +17,7 @@ public class Version {
 	// 更新内容
 	public final static String updateContent = "正式版本";
 	// 产品名称
-	public final static String productName = "TeacherHelper_Android";
+	public final static String productName = "CloudSchoolBusParent_Android";
 	// 产品别名
 	public final static String minProductName = "TeacherHelper";
 	// 下载地址
@@ -27,5 +27,5 @@ public class Version {
 	// 运行平台
 	public final static String platform = "android";
 	// App名称
-	public final static String APP_NAME = "TeacherHelper.apk";
+	public final static String APP_NAME = "CloudSchoolBusParent.apk";
 }

@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -156,12 +157,12 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mTeacher =  (TeacherEntity)getArguments().get(ARG_TEACHER);
-        GetMessagesFromCache();
-
-        if (mChatMessages.size() == 0)
-            GetLastestMessagesFromServer(mHandler);
-        else
-            GetNewMessagesFromServer(mChatMessages.get(0).getSendtime(), mHandler);
+//        GetMessagesFromCache();
+//
+//        if (mChatMessages.size() == 0)
+//            GetLastestMessagesFromServer(mHandler);
+//        else
+//            GetNewMessagesFromServer(mChatMessages.get(0).getSendtime(), mHandler);
         super.onCreate(savedInstanceState);
     }
 
@@ -181,18 +182,34 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
         imageViewPictureUpload = (ImageView)root.findViewById(R.id.pictureImageView);
         sendContentEditText    = (EditText)root.findViewById(R.id.contentEditText);
         mLayoutManager = (LinearLayoutManager) mListView.getLayoutManager();
+
     }
 
     private void setListeners()
     {
 
+        imageViewPictureUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ListDialogFragment
+                        .createBuilder(mParentContext, getFragmentManager())
+                        .setTitle(getResources().getString(R.string.picture_ops))
+                        .setItems(new String[]{getResources().getString(R.string.picture_ops_album),
+                                getResources().getString(R.string.picture_ops_take_pic)})
+                        .setRequestCode(REQUEST_LIST_SINGLE)
+                        .setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
+                        .setTargetFragment(mFragment, REQUEST_LIST_SIMPLE)
+                        .show();
+            }
+        });
+
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                MessageEntity letterEntity = mChatMessages.get(0);
-                String endtime = letterEntity.getSendtime();
-                GetNewMessagesFromServer(endtime, mHandler);
+//                MessageEntity letterEntity = mChatMessages.get(0);
+//                String endtime = letterEntity.getSendtime();
+//                GetNewMessagesFromServer(endtime, mHandler);
             }
         });
         mListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -220,9 +237,9 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
                 }
                 if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
                     // End has been reached
-                    MessageEntity messageEntity = mChatMessages.get(mChatMessages.size() - 1);
-                    String starttime = messageEntity.getSendtime();
-                    GetOldMessagesFromServer(starttime, mHandler);
+//                    MessageEntity messageEntity = mChatMessages.get(mChatMessages.size() - 1);
+//                    String starttime = messageEntity.getSendtime();
+//                    GetOldMessagesFromServer(starttime, mHandler);
 
                     loading = true;
                 }
@@ -416,7 +433,7 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+//        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK)
             return;
         switch (requestCode) {

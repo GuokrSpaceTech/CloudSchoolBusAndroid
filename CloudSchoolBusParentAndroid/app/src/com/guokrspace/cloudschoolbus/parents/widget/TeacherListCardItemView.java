@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 /**
  * Created by Yang Kai on 15/7/14.
  */
-public class TeacherListCardItemView extends CardItemView<NoticeCard> {
+public class TeacherListCardItemView extends CardItemView<TeacherListCard> {
 
     public TeacherListCardItemView(Context context) {
         super(context);
@@ -30,7 +30,7 @@ public class TeacherListCardItemView extends CardItemView<NoticeCard> {
     }
 
     @Override
-    public void build(NoticeCard card) {
+    public void build(TeacherListCard card) {
         super.build(card);
 
         /*
@@ -53,10 +53,17 @@ public class TeacherListCardItemView extends CardItemView<NoticeCard> {
         }
 
         //Classname
-        TextView kindergarten = (TextView) findViewById(R.id.classname);
-        kindergarten.setText(card.getClassName());
+        TextView classNameTextView = (TextView) findViewById(R.id.class_name);
+        classNameTextView.setText(card.getClassname());
         if (card.getDescriptionColor() != -1) {
-            kindergarten.setTextColor(card.getDescriptionColor());
+            classNameTextView.setTextColor(card.getDescriptionColor());
+        }
+
+        //Timestamp
+        TextView timstampTextView = (TextView) findViewById(R.id.timestamp);
+        timstampTextView.setText(card.getTimestamp());
+        if (card.getDescriptionColor() != -1) {
+            timstampTextView.setTextColor(card.getDescriptionColor());
         }
     }
 }

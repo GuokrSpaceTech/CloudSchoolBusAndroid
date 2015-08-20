@@ -239,23 +239,23 @@ public class ScheduleFragment extends BaseFragment implements WeekView.MonthChan
                 List<Schedule> scheduleList = FastJsonTools.getListObject(response.toString(), Schedule.class);
                 for (int i = 0; i < scheduleList.size(); i++) {
                     Schedule schedule = scheduleList.get(i);
-                    String starttime  = schedule.getScheduletime().split("-")[0];
-                    String endtime    = schedule.getScheduletime().split("-")[1];
-                    Integer    start_hour = Integer.parseInt(starttime.split(":")[0]);
-                    Integer    start_min  = Integer.parseInt(starttime.split(":")[1]);
-                    Integer    end_hour   = Integer.parseInt(endtime.split(":")[0]);
-                    Integer    end_min    = Integer.parseInt(endtime.split(":")[1]);
+//                    String starttime  = schedule.getScheduletime().split("-")[0];
+//                    String endtime    = schedule.getScheduletime().split("-")[1];
+//                    Integer    start_hour = Integer.parseInt(starttime.split(":")[0]);
+//                    Integer    start_min  = Integer.parseInt(starttime.split(":")[1]);
+//                    Integer    end_hour   = Integer.parseInt(endtime.split(":")[0]);
+//                    Integer    end_min    = Integer.parseInt(endtime.split(":")[1]);
 
-                    ScheduleEntity scheduleEntity = new ScheduleEntity(
-                            start_hour,
-                            start_min,
-                            end_hour,
-                            end_min,
-                            schedule.getCnname(),
-                            schedule.getEnname(),
-                            Integer.parseInt(schedule.getWeek()),
-                            Integer.valueOf(date.get(Calendar.YEAR)));
-                    scheduleEntityDao.insertOrReplace(scheduleEntity);
+//                    ScheduleEntity scheduleEntity = new ScheduleEntity(
+//                            start_hour,
+//                            start_min,
+//                            end_hour,
+//                            end_min,
+//                            schedule.getCnname(),
+//                            schedule.getEnname(),
+//                            Integer.parseInt(schedule.getWeek()),
+//                            Integer.valueOf(date.get(Calendar.YEAR)));
+//                    scheduleEntityDao.insertOrReplace(scheduleEntity);
                 }
 
                 //Update DataSet

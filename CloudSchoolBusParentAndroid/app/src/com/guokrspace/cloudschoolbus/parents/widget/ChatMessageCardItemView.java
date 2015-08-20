@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dexafree.materialList.model.CardItemView;
@@ -32,24 +33,16 @@ public class ChatMessageCardItemView extends CardItemView<ChatMessageCard> {
     public void build(ChatMessageCard card) {
         super.build(card);
 
-        // Description
-        TextView textContentTeacher = (TextView) findViewById(R.id.textView_teacher_chat_message);
-        textContentTeacher.setText(card.getDescription());
-        if (card.getDescriptionColor() != -1) {
-            textContentTeacher.setTextColor(card.getDescriptionColor());
-        }
 
-        TextView description = (TextView) findViewById(R.id.text_content);
-        description.setText(card.getDescription());
-        if (card.getDescriptionColor() != -1) {
-            description.setTextColor(card.getDescriptionColor());
-        }
+        LinearLayout linearLayoutTeacher = (LinearLayout)findViewById(R.id.linearLayout_teacher_chat_message);
+        LinearLayout linearLayoutParents = (LinearLayout)findViewById(R.id.linearLayout_parents_chat_message);
 
         ImageView imageView_teacher_head = (ImageView) findViewById(R.id.imageView_teacher_chat_message);
-
         ImageView imageView_self_head = (ImageView) findViewById(R.id.imageView_parents_chat_message);
 
         if (card.getRoleType().equals("teacher")) {
+
+
             // ImageSelf
             imageView_teacher_head.setVisibility(VISIBLE);
             if (imageView_teacher_head != null) {
@@ -59,6 +52,14 @@ public class ChatMessageCardItemView extends CardItemView<ChatMessageCard> {
                     Picasso.with(getContext()).load(card.getUrlImage()).into(imageView_teacher_head);
                 }
             }
+
+            if(card.getLetterType().equals("text"))
+            {
+
+            }
+
+             imageView_self_head = (ImageView) findViewById(R.id.imageView_parents_chat_message);
+
             imageView_self_head.setVisibility(GONE);
         } else {
             imageView_teacher_head.setVisibility(GONE);
@@ -81,8 +82,5 @@ public class ChatMessageCardItemView extends CardItemView<ChatMessageCard> {
         String dateString = simpleDateFormat.format(date);
         TextView timestamp_text_view = (TextView) findViewById(R.id.textView_date);
         timestamp_text_view.setText(dateString);
-        if (card.getDescriptionColor() != -1) {
-            description.setTextColor(card.getDescriptionColor());
-        }
     }
 }

@@ -33,6 +33,9 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+
 public class CloudSchoolBusParentsApplication extends Application {
 
     private static String TAG = "CloudSchoolBusParentsApplication";
@@ -71,6 +74,8 @@ public class CloudSchoolBusParentsApplication extends Application {
         initBaseinfo();
 
         initImageLoader();
+
+        RongIM.init(this);
     }
 
     private void initDB() {

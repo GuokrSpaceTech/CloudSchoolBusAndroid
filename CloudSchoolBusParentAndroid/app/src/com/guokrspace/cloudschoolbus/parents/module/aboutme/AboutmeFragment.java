@@ -10,12 +10,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
+import com.squareup.picasso.Picasso;
+
+import java.net.URL;
 
 /**
  * Created by wangjianfeng on 15/8/13.
@@ -24,6 +29,8 @@ public class AboutmeFragment extends BaseFragment {
     static String ARG_IPCPARAM = "ipcparam";
     private Ipcparam mIpcparam;
     private ImageView imageViewAvatar;
+    private TextView  textViewChildName;
+    private Button  buttonKindergarten;
     private LinearLayout layoutChildSetting;
     private LinearLayout layoutSystemSetting;
     private LinearLayout layoutHelpFeedback;
@@ -90,10 +97,34 @@ public class AboutmeFragment extends BaseFragment {
         layoutSystemSetting = (LinearLayout)root.findViewById(R.id.linearLayoutSystemSetting);
         layoutHelpFeedback = (LinearLayout)root.findViewById(R.id.linearLayoutHelp);
         logoutButton = (Button)root.findViewById(R.id.logoutButton);
+        imageViewAvatar = (ImageView)root.findViewById(R.id.child_avatar);
+        textViewChildName = (TextView)root.findViewById(R.id.child_name);
+        buttonKindergarten = (Button)root.findViewById(R.id.kindergarten_name);
+
+        /* Get the current child's avatar */
+        StudentEntity studentEntity = null;
+        String avatar = "";
+        for (int i = 0; i < mApplication.mStudents.size(); i++) {
+            studentEntity = mApplication.mStudents.get(i);
+            if(!studentEntity.getStudentid().equals(mApplication.mConfig.getUserid()))
+            {
+                avatar = studentEntity.getAvatar();
+                avatar = "http://cloud.yunxiaoche.com/images/teacher.jpg";
+                Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
+                break;
+            }
+        }
+
+        if(studentEntity.getNikename()==null)
+            textViewChildName.setText(studentEntity.getCnname());
+        else
+            textViewChildName.setText(studentEntity.getNikename());
+
+        buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
 
         setListeners();
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return root;
     }
 
     private void setListeners()
@@ -103,14 +134,11 @@ public class AboutmeFragment extends BaseFragment {
             public void onClick(View view) {
                 ChildSettingFragment fragment = new ChildSettingFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.layout.activity_aboutme,fragment);
+                transaction.replace(R.id.fragment_container,fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
-
-
-
     }
 
     @Override

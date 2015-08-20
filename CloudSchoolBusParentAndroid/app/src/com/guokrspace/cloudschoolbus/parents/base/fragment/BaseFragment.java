@@ -87,7 +87,7 @@ public class BaseFragment extends Fragment {
 		
 	}
 	
-	protected void setListener(View view) {
+	protected void setListener() {
 
 	}
 	
@@ -176,8 +176,7 @@ public class BaseFragment extends Fragment {
 
 	//Get all articles from newest in Cache to newest in Server
 	public void GetNewMessagesFromServer(String endtime, android.os.Handler handler) {
-//		GetMessagesFromServer("0", endtime, handler);
-		GetMessagesFromServer(null, null, handler);
+		GetMessagesFromServer("0", endtime, handler);
 	}
 
 	//Get the older 20 articles from server then update the cache
@@ -195,7 +194,7 @@ public class BaseFragment extends Fragment {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
 		}
-		showWaitDialog("", null);
+//		showWaitDialog("", null);
 
 		HashMap<String, String> params = new HashMap<String, String>();
 		if(starttime!=null)
@@ -280,9 +279,11 @@ public class BaseFragment extends Fragment {
 						break;
 					}
 				}
-				if (retCode != "-2") {
+				if (retCode.equals("1")) {
 					// No New Records are found
 					handler.sendEmptyMessage(HandlerConstant.MSG_NOCHANGE);
+				} else {
+					handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
 				}
 			}
 		});

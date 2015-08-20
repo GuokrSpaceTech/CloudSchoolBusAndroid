@@ -14,7 +14,9 @@ import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by wangjianfeng on 15/8/13.
@@ -89,10 +91,24 @@ public class ChildSettingFragment extends BaseFragment {
         layoutName = (LinearLayout)root.findViewById(R.id.linearLayoutName);
         layoutPhone = (LinearLayout)root.findViewById(R.id.linearLayoutPhone);
         layoutRelation = (LinearLayout)root.findViewById(R.id.linearLayoutRelation);
+        imageViewAvatar = (ImageView)root.findViewById(R.id.imageViewAvatar);
+
+        StudentEntity studentEntity = null;
+        String avatar = "";
+        for (int i = 0; i < mApplication.mStudents.size(); i++) {
+            studentEntity = mApplication.mStudents.get(i);
+            if(!studentEntity.getStudentid().equals(mApplication.mConfig.getUserid()))
+            {
+                avatar = studentEntity.getAvatar();
+                avatar = "http://cloud.yunxiaoche.com/images/teacher.jpg";
+                Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
+                break;
+            }
+        }
 
         setListeners();
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return root;
     }
 
     private void setListeners()

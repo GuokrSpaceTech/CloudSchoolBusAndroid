@@ -41,6 +41,7 @@ public class DAODBGenerator {
         note.addStringProperty("token");
         note.addStringProperty("mobile");
         note.addStringProperty("userid");
+        note.addStringProperty("imToken");
     }
 
     private static void addBaseInfo(Schema schema) {

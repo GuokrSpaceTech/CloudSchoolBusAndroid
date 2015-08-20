@@ -48,6 +48,9 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -65,6 +68,7 @@ public class LoginActivity extends BaseActivity {
     private String verifyCode;
     private String sid;
     private String loginToken;
+    private String imToken = "IWb9/EypgQlMEo/W/o3qSLI6ZiT8q7s0UEaMPWY0lMyB3UonaGf0gmlCJbN+zU7OvAaDYa9d8U6xzmBRkFjv+Q==";
     private String userid;
 
     private Thread  thread;
@@ -101,10 +105,11 @@ public class LoginActivity extends BaseActivity {
                         break;
                     //Get Session ID
                     case HandlerConstant.MSG_VERIFY_OK:
-                        mApplication.mConfig = new ConfigEntity(null, sid, loginToken, mobile, userid);
+                        mApplication.mConfig = new ConfigEntity(null, sid, loginToken, mobile, userid, imToken);
                         ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
                         configEntityDao.insert(mApplication.mConfig);
                         CloudSchoolBusRestClient.updateSessionid(sid);
+                        httpGetTokenSuccess(imToken);
                         getBaseInfoFromServer();
                         break;
                     case HandlerConstant.MSG_VERIFY_FAIL:
@@ -340,8 +345,8 @@ public class LoginActivity extends BaseActivity {
                             return;
                         }
 
-//                      String tempStr = "{\"schools\":[{\"classes\":[{\"teacher\":[{\"avatar\":\"http:\\/\\/cloud.yunxiaoche.com\\/images\\/teacher.jpg\",\"id\":\"1401\",\"duty\":\"班主任\",\"name\":\"臧老师\"}],\"student\":[\"55789\"],\"classname\":\"海豚班\",\"classid\":\"49536\"}],\"address\":\"拓奇测试学校\",\"schoolid\":\"108\",\"schoolname\":\"拓奇测试学校\"}],\"students\":[{\"cnname\":\"小小1\",\"birthday\":\"2001-03-02\",\"sex\":\"1\",\"avatar\":\"http:\\/\\/.\",\"nickname\":null,\"studentid\":\"55789\"}]}";
                         Baseinfo baseinfo = FastJsonTools.getObject(response.toString(), Baseinfo.class);
+
                         //Save School Information
                         for(int i=0; i<baseinfo.getSchools().size(); i++) {
                             SchoolEntity schoolEntity = new SchoolEntity(baseinfo.getSchools().get(i).getSchoolid(),baseinfo.getSchools().get(i).getSchoolname(), baseinfo.getSchools().get(i).getAddress());
@@ -533,12 +538,13 @@ public class LoginActivity extends BaseActivity {
                     }
                 }
 
-                if (retCode.equals("1"))
-                {
+                if (retCode.equals("1")) {
                     try {
                         sid = response.getString("sid");
                         loginToken = response.getString("token");
-                        userid     = response.getString("userid");
+                        userid = response.getString("userid");
+                        if(response.getString("rongtoken")!=null || !response.getString("rongtoken").isEmpty())
+                            imToken = response.getString("rongtoken");
                     } catch (org.json.JSONException e) {
                         e.printStackTrace();
                     }
@@ -596,6 +602,29 @@ public class LoginActivity extends BaseActivity {
         if (!thread.isAlive()) {
             thread.start();
         }
+    }
+
+    private void httpGetTokenSuccess(String token) {
+
+    /* IMKit SDK调用第二步 建立与服务器的连接 */
+
+    /* 集成和测试阶段，您可以直接使用从您开发者后台获取到的 token，比如 String token = “d6bCQsXiupB......”; */
+        RongIM.connect(token, new RongIMClient.ConnectCallback() {
+            @Override
+            public void onSuccess(String userId) {
+            /* 连接成功 */
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode e) {
+            /* 连接失败，注意并不需要您做重连 */
+            }
+
+            @Override
+            public void onTokenIncorrect() {
+            /* Token 错误，在线上环境下主要是因为 Token 已经过期，您需要向 App Server 重新请求一个新的 Token */
+            }
+        });
     }
 
     @Subscribe public void onNetworkStatusChange(NetworkStatusEvent event)

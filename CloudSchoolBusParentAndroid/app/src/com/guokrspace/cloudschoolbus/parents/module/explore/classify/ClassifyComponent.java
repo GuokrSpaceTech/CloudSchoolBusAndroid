@@ -22,9 +22,9 @@ import com.guokrspace.cloudschoolbus.parents.R;
 public class ClassifyComponent {
 
     public static ClassifyModule[] classifyModules = {
-            new ClassifyModule("晨检考勤",R.drawable.ic_tab_class), new ClassifyModule("班级报告",R.drawable.ic_tab_class), new ClassifyModule("通知消息",R.drawable.ic_tab_class),
-            new ClassifyModule("视频公开课",R.drawable.ic_tab_class), new ClassifyModule("课程表",R.drawable.ic_tab_class), new ClassifyModule("食谱",R.drawable.ic_tab_class),
-            new ClassifyModule("医生咨询",R.drawable.ic_tab_class)
+            new ClassifyModule("晨检考勤",R.drawable.ic_attendance), new ClassifyModule("班级报告",R.drawable.ic_report), new ClassifyModule("通知消息",R.drawable.ic_notice),
+            new ClassifyModule("视频公开课",R.drawable.ic_streaming), new ClassifyModule("课程表",R.drawable.ic_schedule), new ClassifyModule("食谱",R.drawable.ic_food),
+            new ClassifyModule("相册", R.drawable.ic_picture)
     };
 }
 
