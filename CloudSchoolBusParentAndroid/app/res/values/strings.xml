@@ -8,9 +8,10 @@
     <string name="server_error">出现错误了，一会再试试</string>
     <string name="invalid_mobile">手机未在学校登记，请联系学校老师</string>
     <string name="invalid_verify_code">验证码错误</string>
-    <string name="failure_baseinfo">获取基础信息错误，请联系产品客服</string>
-    <string name="failure_studentinfo">获取学生信息错误，请联系产品客服</string>
-    <string name="failure_renewsid">更新会话ID失败，请联系产品客服</string>
+    <string name="failure_baseinfo">获取基础信息错误，请联系产品客服: 400-606-0996</string>
+    <string name="failure_studentinfo">获取学生信息错误，请联系产品客服: 400-606-0996</string>
+    <string name="failure_renewsid">更新会话ID失败，请联系产品客服: 400-606-0996</string>
+    <string name="failure_loginwithtoken">无法登录系统，请联系产品客服: 400-606-0996</string>
     <string name="failure_unknown">未知错误，请联系产品客服: 400-606-0996</string>
     <string name="auth_failed">账号或者密码错误，再试试吧</string>
     <string name="no_message">没有任何消息</string>

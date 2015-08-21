@@ -78,7 +78,7 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 		Log.d(TAG, responseString);
 
 		if (errorCode == 0) {
-			// 绑定成功, send channelId to server
+			// 绑定成功, send channelId to server, register eventbus
             RequestParams params = new RequestParams();
             params.put("channelid",channelId);
             CloudSchoolBusRestClient.post(ProtocolDef.METHOD_pushchannel, params, new JsonHttpResponseHandler(){
@@ -133,6 +133,8 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 		Log.d(TAG, messageString);
 
 		// 自定义内容获取方式，mykey和myvalue对应透传消息推送时自定义内容中设置的键和值
+		// Currently all pushes is from main message timeline
+		// just set the badge
 		if (!TextUtils.isEmpty(customContentString)) {
 			JSONObject customJson = null;
 			try {
@@ -185,7 +187,7 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 			}
 		}
 
-		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
+		// 更新界面展示代码，应用请在这里加入自己的处理逻辑
 		updateContent(context, notifyString);
 	}
 
@@ -205,29 +207,32 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 	@Override
 	public void onNotificationArrived(Context context, String title,
 									  String description, String customContentString) {
+		//DO NOTHING AT THE MOMENT
 
-		String notifyString = "onNotificationArrived  title=\"" + title
-				+ "\" description=\"" + description + "\" customContent="
-				+ customContentString;
-		Log.d(TAG, notifyString);
+//		String notifyString = "onNotificationArrived  title=\"" + title
+//				+ "\" description=\"" + description + "\" customContent="
+//				+ customContentString;
+//		Log.d(TAG, notifyString);
 
 		// 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
-		if (!TextUtils.isEmpty(customContentString)) {
-			JSONObject customJson = null;
-			try {
-				customJson = new JSONObject(customContentString);
-				String myvalue = null;
-				if (!customJson.isNull("mykey")) {
-					myvalue = customJson.getString("mykey");
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		// Currently all pushes is from main message timeline
+		// just show the first module
+//		if (!TextUtils.isEmpty(customContentString)) {
+//			JSONObject customJson = null;
+//			try {
+//				customJson = new JSONObject(customContentString);
+//				String myvalue = null;
+//				if (!customJson.isNull("mykey")) {
+//					myvalue = customJson.getString("mykey");
+//				}
+//			} catch (JSONException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
 		// 你可以參考 onNotificationClicked中的提示从自定义内容获取具体值
-		updateContent(context, notifyString);
+//		updateContent(context, notifyString);
 	}
 
 	/**

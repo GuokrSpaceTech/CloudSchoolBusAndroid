@@ -66,6 +66,12 @@ public class DAODBGenerator {
         classEntity.addStringProperty("name");
         Property schoolId = classEntity.addStringProperty("schoolid").notNull().getProperty();
 
+        Entity lastIMMessageEntity = schema.addEntity("LastIMMessageEntity");
+        Property teacherid = lastIMMessageEntity.addStringProperty("teacherid").notNull().primaryKey().getProperty();
+        lastIMMessageEntity.addStringProperty("timestamp");
+        lastIMMessageEntity.addStringProperty("hasUnread");
+
+        ToMany teacherToMessages = teacher.addToMany(lastIMMessageEntity,teacherid);
         ToMany classToStudents = classEntity.addToMany(student, classIdStudent);
         ToMany classToTeachers = classEntity.addToMany(teacher, classIdTeacher);
         ToMany studentToClasses = student.addToMany(classEntity, classid);
@@ -75,6 +81,8 @@ public class DAODBGenerator {
         school.addStringProperty("name");
         school.addStringProperty("address");
         ToMany schoolToClass = school.addToMany(classEntity, schoolId);
+
+
     }
 
     private static void addTimeline(Schema schema)

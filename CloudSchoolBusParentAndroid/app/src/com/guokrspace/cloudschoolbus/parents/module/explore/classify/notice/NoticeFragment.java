@@ -15,6 +15,7 @@ import android.widget.Button;
 
 import com.android.support.fastjson.FastJsonTools;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
 import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
 import com.dexafree.materialList.view.MaterialListView;
@@ -109,7 +110,12 @@ public class NoticeFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        ((MainActivity)mParentContext).getmOptionMenuItem().setVisible(false);
+        ((MainActivity)mParentContext).setTitle(getResources().getString(R.string.noticetype));
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -169,6 +175,8 @@ public class NoticeFragment extends BaseFragment {
                 }
             }
         });
+
+
 
         GetNoticesFromCache();
 

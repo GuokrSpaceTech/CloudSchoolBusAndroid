@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.controller.RecyclerItemClickListener;
 import com.dexafree.materialList.model.CardItemView;
 import com.dexafree.materialList.view.MaterialListView;
@@ -22,6 +23,7 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.widget.TeacherListCard;
 import com.squareup.otto.Produce;
 
@@ -29,7 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
+import io.rong.imkit.RongIM;
 import io.rong.imkit.fragment.ConversationFragment;
+import io.rong.imlib.model.Conversation;
 
 /**
  * Created by macbook on 15-8-9.
@@ -112,8 +116,7 @@ public class TeacherListFragment extends BaseFragment {
                     textView.setText(getResources().getString(R.string.module_teacher));
                 }
                 // Next Level of Fragment(Conversation), has Homeasup Arrow, without bottom Tabs
-                if (backCount > 0)
-                {
+                if (backCount > 0) {
                     mainActivity.getTabs().setVisibility(View.GONE);
                     mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     View view = mainActivity.getSupportActionBar().getCustomView();
@@ -122,22 +125,40 @@ public class TeacherListFragment extends BaseFragment {
                 }
             }
         });
+
+        if (RongIM.getInstance() != null) {
+            /**
+             * 接收未读消息的监听器。
+             *
+             * @param listener          接收所有未读消息消息的监听器。
+             */
+            RongIM.getInstance().setOnReceiveUnreadCountChangedListener(new MyReceiveUnreadCountChangedListener());
+
+            /**
+             * 设置接收未读消息的监听器。
+             *
+             * @param listener          接收未读消息消息的监听器。
+             * @param conversationTypes 接收指定会话类型的未读消息数。
+             */
+            RongIM.getInstance().setOnReceiveUnreadCountChangedListener(new MyReceiveUnreadCountChangedListener(), Conversation.ConversationType.PRIVATE);
+        }
     }
 
     private void initData()
     {
         for(int i=0; i<mApplication.mTeachers.size(); i++)
         {
+            //Get the teacher Inbox entity
             final TeacherInbox teacherInbox = new TeacherInbox();
             teacherInbox.setTeacherEntity(mApplication.mTeachers.get(i));
-            for(int j=0;j<mMesageEntities.size();j++)
-            {
-            }
 
+            /*
+             * Init the card
+             */
             TeacherListCard card = new TeacherListCard(mParentContext);
-            card.setTeacherAvatarUrl(teacherInbox.getTeacherEntity().getAvatar());
-            card.setTeacherName(teacherInbox.getTeacherEntity().getName());
-
+            card.setTeacherAvatarUrl(teacherInbox.getTeacherEntity().getAvatar()); //Avatar
+            card.setTeacherName(teacherInbox.getTeacherEntity().getName()); //Name
+            //Classname
             QueryBuilder queryBuilder = mApplication.mDaoSession.getClassEntityDao().queryBuilder();
             List<ClassEntity> results = queryBuilder.where(ClassEntityDao.Properties.Classid.eq(teacherInbox.getTeacherEntity().getClassid())).list();
             ClassEntity classEntity = null;
@@ -146,8 +167,17 @@ public class TeacherListFragment extends BaseFragment {
                 card.setClassname(classEntity.getName());
             }
 
+            //Lastmessage timestamp
+            List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao().queryBuilder().list();
+            for(int j=0;j<lastIMs.size();j++)
+            {
+                if(lastIMs.get(j).getTeacherid().equals(teacherInbox.getTeacherEntity().getId()))
+                {
+                    card.setTimestamp(DateUtils.timelineTimestamp(lastIMs.get(j).getTimestamp(), mParentContext));
+                }
+            }
 
-
+            //Add the card
             listview.add(card);
         }
     }
@@ -162,8 +192,20 @@ public class TeacherListFragment extends BaseFragment {
         super.onAttach(activity);
     }
 
-//    @Produce
-//    public TeacherSelectEvent ProduceTeacherSelectChatEvent(TeacherSelectEvent teacherSelectEvent){
-//        return teacherSelectEvent;
-//    }
+
+    /**
+     * 接收未读消息的监听器。
+     */
+    private class MyReceiveUnreadCountChangedListener implements RongIM.OnReceiveUnreadCountChangedListener {
+
+        /**
+         * @param count           未读消息数。
+         */
+        @Override
+        public void onMessageIncreased(int count) {
+            Log.i("","" + count);
+//            MainActivity theActivty =  (MainActivity)mParentContext;
+//            theActivty.getBadgeViews().get(1).setText(Integer.toString(count));
+        }
+    }
 }

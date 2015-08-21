@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 public class BaiduPushUtils {
-    public static final String TAG = "PushDemoActivity";
+    public static final String TAG = "CloudSchoolBusParentPushActivity";
     public static final String RESPONSE_METHOD = "method";
     public static final String RESPONSE_CONTENT = "content";
     public static final String RESPONSE_ERRCODE = "errcode";

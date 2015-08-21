@@ -22,6 +22,7 @@ import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
+import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -39,6 +40,9 @@ import io.rong.imlib.RongIMClient;
 public class CloudSchoolBusParentsApplication extends Application {
 
     private static String TAG = "CloudSchoolBusParentsApplication";
+
+    public NetworkStatusEvent networkStatusEvent;
+
     /**
      * 带缓存的，内存缓存和磁盘缓存，设置再调用displayImage()有效,使用loadImage()无效
      */

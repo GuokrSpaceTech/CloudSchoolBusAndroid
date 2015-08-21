@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MyActivity" >
     <item
-        android:id="@+id/action_contact"
+        android:id="@+id/action_filter"
         android:icon="@drawable/ic_menu"
         app:showAsAction="always"
         android:title=""/>

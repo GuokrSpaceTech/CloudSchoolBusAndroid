@@ -33,6 +33,8 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
         public final static Property Classid = new Property(4, String.class, "classid", false, "CLASSID");
     };
 
+    private DaoSession daoSession;
+
     private Query<TeacherEntity> classEntity_TeacherEntityListQuery;
 
     public TeacherEntityDao(DaoConfig config) {
@@ -41,6 +43,7 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
     
     public TeacherEntityDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -81,6 +84,12 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
             stmt.bindString(4, name);
         }
         stmt.bindString(5, entity.getClassid());
+    }
+
+    @Override
+    protected void attachEntity(TeacherEntity entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */

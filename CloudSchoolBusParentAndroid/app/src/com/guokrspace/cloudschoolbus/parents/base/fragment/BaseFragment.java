@@ -33,6 +33,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
+import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -55,7 +56,6 @@ public class BaseFragment extends Fragment {
 	protected Fragment mFragment;
 	
 	protected CloudSchoolBusParentsApplication mApplication;
-	public    NetworkStatusEvent networkStatusEvent;
 	private   CustomWaitDialog mCustomWaitDialog;
 	public    List<MessageEntity> mMesageEntities = new ArrayList<>();
 
@@ -66,19 +66,6 @@ public class BaseFragment extends Fragment {
 		mFragment = this;
 		mApplication = (CloudSchoolBusParentsApplication) mParentContext
 				.getApplicationContext();
-		networkStatusEvent = new NetworkStatusEvent(false,false,false);
-		ConnectivityManager manager = (ConnectivityManager) mParentContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-		NetworkInfo        mobileInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-		NetworkInfo        activeInfo = manager.getActiveNetworkInfo();
-		if(activeInfo!=null)
-		{
-			networkStatusEvent.setIsNetworkConnected(true);
-			if(wifiInfo.isConnected())
-				networkStatusEvent.setIsWifiConnected(true);
-			if(mobileInfo.isConnected())
-				networkStatusEvent.setIsMobileNetworkConnected(true);
-		}
 		DebugLog.setTag(mFragment.getClass().getName());
 	}
 	
@@ -190,7 +177,7 @@ public class BaseFragment extends Fragment {
 	}
 
 	void GetMessagesFromServer(final String starttime, final String endtime, final android.os.Handler handler) {
-		if (!networkStatusEvent.isNetworkConnected()) {
+		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
 		}
@@ -227,6 +214,11 @@ public class BaseFragment extends Fragment {
 				if (!retCode.equals("1")) {
 					handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
 					return;
+				}
+
+				if(retCode.equals("-1113")) //Session Expire
+				{
+					BusProvider.getInstance().post(new SidExpireEvent(mApplication.mConfig.getSid()));
 				}
 
 				List<Timeline> timelines = FastJsonTools.getListObject(response.toString(), Timeline.class);
@@ -290,7 +282,7 @@ public class BaseFragment extends Fragment {
 	}
 
 	public void NoticeConfirm(String messageid, final Button button, final android.os.Handler handler) {
-		if (!networkStatusEvent.isNetworkConnected()) {
+		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
 		}
@@ -352,12 +344,6 @@ public class BaseFragment extends Fragment {
 		ScaleAnimation animation = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		animation.setDuration(300);
 		v.setAnimation(animation);
-	}
-
-	@Subscribe
-	public void onNetworkStatusChange(NetworkStatusEvent event)
-	{
-		networkStatusEvent = event;
 	}
 
 	public void showShare() {

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.android.support.fastjson.FastJsonTools;
 import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.view.MaterialListView;
+import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
@@ -111,6 +112,10 @@ public class ReportFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        ((MainActivity)mParentContext).getmOptionMenuItem().setVisible(false);
+
+        ((MainActivity)mParentContext).setTitle(getResources().getString(R.string.report));
     }
 
     @Override

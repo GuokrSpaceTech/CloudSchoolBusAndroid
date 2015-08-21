@@ -9,7 +9,9 @@ import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.internal.widget.ActionBarContainer;
@@ -54,7 +56,6 @@ abstract public class BaseActivity extends ActionBarActivity {
 
 	protected Context mContext;
 	public CloudSchoolBusParentsApplication mApplication;
-	public NetworkStatusEvent networkStatusEvent;
 
 	private CustomWaitDialog mCustomWaitDialog;
 
@@ -67,18 +68,18 @@ abstract public class BaseActivity extends ActionBarActivity {
 		mApplication = (CloudSchoolBusParentsApplication) mContext
 				.getApplicationContext();
 
-		networkStatusEvent = new NetworkStatusEvent(false,false,false);
+		mApplication.networkStatusEvent = new NetworkStatusEvent(false,false,false);
 		ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		NetworkInfo        mobileInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 		NetworkInfo        activeInfo = manager.getActiveNetworkInfo();
 		if(activeInfo!=null)
 		{
-			networkStatusEvent.setIsNetworkConnected(true);
+			mApplication.networkStatusEvent.setIsNetworkConnected(true);
 			if(wifiInfo.isConnected())
-				networkStatusEvent.setIsWifiConnected(true);
+				mApplication.networkStatusEvent.setIsWifiConnected(true);
 			if(mobileInfo.isConnected())
-				networkStatusEvent.setIsMobileNetworkConnected(true);
+				mApplication.networkStatusEvent.setIsMobileNetworkConnected(true);
 		}
 
 		DebugLog.setTag(mContext.getClass().getName());
@@ -157,7 +158,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 	@Subscribe
 	public void renew_sid() throws JSONException {
 
-		if(!networkStatusEvent.isNetworkConnected()) {
+		if(!mApplication.networkStatusEvent.isNetworkConnected()) {
 			return;
 		}
 
@@ -186,7 +187,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 						String userid = response.getString("userid");
 						String imToken = response.getString("imToken");
 						ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
-						ConfigEntity configEntity = new ConfigEntity(null,mApplication.mConfig.getToken(),sid,mApplication.mConfig.getMobile(),userid, imToken);
+						ConfigEntity configEntity = new ConfigEntity(null, mApplication.mConfig.getToken(), sid, mApplication.mConfig.getMobile(), userid, imToken);
 						configEntityDao.update(configEntity);
 					} catch (org.json.JSONException e) {
 						e.printStackTrace();
@@ -213,5 +214,13 @@ abstract public class BaseActivity extends ActionBarActivity {
         super.onPause();
 		BusProvider.getInstance().unregister(this);
     }
+
+	public Fragment getCurrentFragment(){
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
+		Fragment currentFragment = getSupportFragmentManager()
+				.findFragmentByTag(fragmentTag);
+		return currentFragment;
+	}
 
 }

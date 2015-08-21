@@ -53,6 +53,11 @@ import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
+import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
@@ -64,16 +69,21 @@ import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDe
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.TimelineFragment;
 import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
+import com.guokrspace.cloudschoolbus.parents.widget.BadgeView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
@@ -100,14 +110,20 @@ public class MainActivity extends BaseActivity implements
         NoticeFragment.OnFragmentInteractionListener,
         AttendanceFragment.OnFragmentInteractionListener,
         ScheduleFragment.OnFragmentInteractionListener,
+        ReportFragment.OnFragmentInteractionListener,
         ClassifyDialogFragment.OnCompleteListener
 
 {
 
     private PagerSlidingTabStrip tabs;
+    private List<BadgeView> badgeViews = new ArrayList();
     private ViewPager pager;
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
+    private List<String> mFragementTags = new ArrayList();
+    private MenuItem mOptionMenuItem= null;
+    private TextView actionBarTitle;
+
     private String mSid = "";
 
     private Drawable oldBackground = null;
@@ -115,14 +131,13 @@ public class MainActivity extends BaseActivity implements
 
     private static final int MSG_LOGIN_SUCCESS = 0;
     private static final int MSG_LOGIN_FAIL = -1;
+    private static final int MSG_ENTER_NONET = 1;
     private static final int MSG_NO_NETWORK = 2;
     private static final int MSG_SID_RENEWED = 3;
     private static final int MSG_SID_RENEW_FAIL = 4;
     private static final int REQUEST_CODE = 1;
 
     MainActivity c = this;
-
-    TextView actionBarTitle;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -134,13 +149,14 @@ public class MainActivity extends BaseActivity implements
                             PushConstants.LOGIN_TYPE_API_KEY,
                             BaiduPushUtils.getMetaValue(MainActivity.this, "api_key"));
                     initFragments();
-                    setupViewAdapter();
-//					changeColor(currentColor);
-                    httpGetTokenSuccess("IWb9/EypgQlMEo/W/o3qSLI6ZiT8q7s0UEaMPWY0lMyB3UonaGf0gmlCJbN+zU7OvAaDYa9d8U6xzmBRkFjv+Q==");
-
-                    break;
+                    setupViews();
+                    setListeners();
+                    httpGetTokenSuccess(mApplication.mConfig.getImToken());
                 case MSG_LOGIN_FAIL:
                     //It will stay in the Login Page
+//                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                            .setMessage(getResources().getString(R.string.failure_loginwithtoken))
+//                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
                 case MSG_NO_NETWORK:
                     SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
@@ -148,11 +164,13 @@ public class MainActivity extends BaseActivity implements
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
                 case MSG_SID_RENEWED:
+                    RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
+                    httpGetTokenSuccess(mApplication.mConfig.getImToken());
                     ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
                     ConfigEntity configEntity = new ConfigEntity(
                             null, mSid, mApplication.mConfig.getToken(),
                             mApplication.mConfig.getMobile(), mApplication.mConfig.getUserid(), mApplication.mConfig.getImToken());
-                    configEntityDao.update(configEntity);
+                    configEntityDao.insertOrReplace(configEntity);
                     CloudSchoolBusRestClient.updateSessionid(mSid);
                     break;
 
@@ -191,7 +209,7 @@ public class MainActivity extends BaseActivity implements
         mFragments[3] = AboutmeFragment.newInstance();
     }
 
-    void setupViewAdapter() {
+    void setupViews() {
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.pager);
         adapter = new MyPagerAdapter(getSupportFragmentManager(), mFragments, mContext);
@@ -204,10 +222,44 @@ public class MainActivity extends BaseActivity implements
 
         tabs.setViewPager(pager);
 
-        tabs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("MainActivity", "");
+        //Attach the BadgeView
+        for (int i = 0; i < mFragments.length; i++) {
+            BadgeView badgeView = new BadgeView(c);
+            badgeView.setTargetView(tabs.getTabsContainer().getChildAt(i));
+            badgeViews.add(badgeView);
+        }
+    }
+
+    private void setListeners()
+    {
+        RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
+
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            public void onPageSelected(int position) {
+                //Clear the badge icon
+                badgeViews.get(position).setVisibility(View.INVISIBLE);
+
+                // Check if this is the page you want.
+                if (mFragments[position] instanceof TimelineFragment) {
+                    actionBarTitle.setText(getResources().getString(string.module_explore));
+                    TimelineFragment fragment = (TimelineFragment) mFragments[0];
+                    mOptionMenuItem.setVisible(true);
+                } else if (mFragments[position] instanceof TeacherListFragment) {
+                    actionBarTitle.setText(getResources().getString(string.module_teacher));
+                    mOptionMenuItem.setVisible(false);
+                } else if (mFragments[position] instanceof HobbyFragment) {
+                    actionBarTitle.setText(getResources().getString(string.module_hobby));
+                    mOptionMenuItem.setVisible(false);
+                } else if (mFragments[position] instanceof AboutmeFragment) {
+                    actionBarTitle.setText(getResources().getString(string.module_aboutme));
+                    mOptionMenuItem.setVisible(false);
+                }
             }
         });
     }
@@ -215,6 +267,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        mOptionMenuItem = menu.findItem(R.id.action_filter);
         return true;
     }
 
@@ -223,16 +276,35 @@ public class MainActivity extends BaseActivity implements
 
         switch (item.getItemId()) {
 
-            case R.id.action_contact:
+            case R.id.action_filter:
                 TimelineFragment fragment = (TimelineFragment)mFragments[0];
                 if(fragment.mMesageEntities.size() != 0) {
                     ClassifyDialogFragment dialog = new ClassifyDialogFragment();
                     dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0); //Let the fragment dialog take control all view elements
-                    dialog.show(getSupportFragmentManager(), "QuickContactFragment");
+                    dialog.show(getSupportFragmentManager(), "");
                 }
                 break;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
+                //fragment = (TimelineFragment)getSupportFragmentManager().findFragmentByTag(mFragementTags.get(0));
+                Fragment theFragment = getCurrentFragment();
+                if(theFragment instanceof TimelineFragment)
+                    mOptionMenuItem.setVisible(true);
+
+                /*
+                 * Check if this return from the Filter dialog, if yes,
+                 * showing the optionMenu, otherwise, hide it.
+                */
+                if(theFragment instanceof ReportFragment
+                        || theFragment instanceof AttendanceFragment
+                        || theFragment instanceof NoticeFragment
+                        || theFragment instanceof StreamingFragment
+                        || theFragment instanceof ScheduleFragment
+                        || theFragment instanceof FoodFragment )
+                {
+                    mOptionMenuItem.setVisible(true);
+                }
+
                 break;
         }
 
@@ -332,16 +404,6 @@ public class MainActivity extends BaseActivity implements
         }
     };
 
-    public void CheckLoginCredential() throws JSONException {
-
-        if (mApplication.mConfig == null || mApplication.mSchools == null || mApplication.mClasses == null) {
-            //Ask for login
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivityForResult(intent, REQUEST_CODE);
-        } else
-            handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
-    }
-
     public PagerSlidingTabStrip getTabs() {
         return tabs;
     }
@@ -350,24 +412,51 @@ public class MainActivity extends BaseActivity implements
         this.tabs = tabs;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (resultCode) {
-            case Activity.RESULT_OK:
-                handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
-                break;
-            default:
-                break;
-        }
+    public TextView getActionBarTitle() {
+        return actionBarTitle;
     }
+
+    public void setActionBarTitle(TextView actionBarTitle) {
+        this.actionBarTitle = actionBarTitle;
+    }
+
+    public MenuItem getmOptionMenuItem() {
+        return mOptionMenuItem;
+    }
+
+    public void setmOptionMenuItem(MenuItem mOptionMenuItem) {
+        this.mOptionMenuItem = mOptionMenuItem;
+    }
+
+    public List<BadgeView> getBadgeViews() {
+        return badgeViews;
+    }
+
+    public void setBadgeViews(List<BadgeView> badgeViews) {
+        this.badgeViews = badgeViews;
+    }
+
+    //    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        switch (resultCode) {
+//            case Activity.RESULT_OK:
+//                handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     @Override
     public void onFragmentInteraction(String id) {
         return;
     }
 
+    /*
+     *  Handles all the retures from the fragment dialog
+     */
     public void onComplete(String module) {
         // After the dialog fragment completes, it calls this callback.
         // use the string here
@@ -376,43 +465,43 @@ public class MainActivity extends BaseActivity implements
             case "notice":
                 NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
                 transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, noticeFragment);
-                transaction.addToBackStack(null);
+                transaction.replace(R.id.article_module_layout, noticeFragment, "notice");
+                transaction.addToBackStack("notice");
                 transaction.commit();
                 break;
             case "attendance":
                 AttendanceFragment attendanceFragment = AttendanceFragment.newInstance(null, null);
                 transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, attendanceFragment);
-                transaction.addToBackStack(null);
+                transaction.replace(R.id.article_module_layout, attendanceFragment, "attendance");
+                transaction.addToBackStack("attendance");
                 transaction.commit();
                 break;
             case "schedule":
                 ScheduleFragment scheduleFragment = ScheduleFragment.newInstance(null, null);
                 transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, scheduleFragment);
-                transaction.addToBackStack(null);
+                transaction.replace(R.id.article_module_layout, scheduleFragment, "schedule");
+                transaction.addToBackStack("schedule");
                 transaction.commit();
                 break;
             case "report":
-                ReportDetailFragment reportFragment = ReportDetailFragment.newInstance(null, null);
+                ReportFragment reportFragment = ReportFragment.newInstance(null, null);
                 transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, reportFragment);
-                transaction.addToBackStack(null);
+                transaction.replace(R.id.article_module_layout, reportFragment, "report");
+                transaction.addToBackStack("report");
                 transaction.commit();
                 break;
             case "food":
                 FoodFragment fragment = FoodFragment.newInstance(null,null);
                 transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, fragment);
-                transaction.addToBackStack(null);
+                transaction.replace(R.id.article_module_layout, fragment, "food");
+                transaction.addToBackStack("food");
                 transaction.commit();
                 break;
 
             case "streaming":
                 StreamingFragment streamingFragment = StreamingFragment.newInstance(null,null);
                 transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, streamingFragment);
+                transaction.replace(R.id.article_module_layout, streamingFragment, "streaming");
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
@@ -420,6 +509,7 @@ public class MainActivity extends BaseActivity implements
                 break;
         }
     }
+
 
     public class MyPagerAdapter extends FragmentPagerAdapter
             implements PagerSlidingTabStrip.IconTabProvider {
@@ -449,26 +539,14 @@ public class MainActivity extends BaseActivity implements
         @Override
         public Fragment getItem(int position) {
 
-            switch(position) {
-                case 0:
-                    actionBarTitle.setText(getResources().getString(string.module_explore));
-                    break;
-                case 1:
-                    actionBarTitle.setText(getResources().getString(R.string.module_teacher));
-                    break;
-                case 2:
-                    actionBarTitle.setText(getResources().getString(string.module_hobby));
-                    break;
-                case 3:
-                    actionBarTitle.setText(getResources().getString(string.module_aboutme));
-                    break;
-            }
             return mFragments[position];
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            return super.instantiateItem(container, position);
+            Fragment fragment = (Fragment)super.instantiateItem(container, position);
+            mFragementTags.add(position,fragment.getTag());
+            return fragment;
         }
 
         @Override
@@ -482,21 +560,67 @@ public class MainActivity extends BaseActivity implements
         renew_sid();
     }
 
+    @Subscribe public void OnLoginResultEvent(LoginResultEvent event)
+    {
+        if(event.getIsLoginSuccess())
+            handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
+        else
+            handler.sendEmptyMessage(MSG_LOGIN_FAIL);
+    }
+
+    @Subscribe public void OnNetworkStateChange(NetworkStatusEvent event)
+    {
+        mApplication.networkStatusEvent = event;
+    }
+
+
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     *
+     * Check if use has logined before and saved all the credentials
+     * @throws JSONException
+     *
+     */
+    public void CheckLoginCredential() throws JSONException {
+
+        if (mApplication.mConfig == null || mApplication.mSchools == null || mApplication.mClasses == null) {
+            //Ask for login
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivityForResult(intent, REQUEST_CODE);
+        } else
+            handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
+    }
+
+    /**
+     *
+     * @param response the Jsonrespone from the server
+     */
+    private void upateLoginCredential(JSONObject response) throws org.json.JSONException {
+        String sid = response.getString("sid");
+        String token = response.getString("token");
+        String imToken = response.getString("rongtoken");
+        ConfigEntity configEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken);
+        mApplication.mDaoSession.getConfigEntityDao().insertOrReplace(configEntity);
+        mApplication.mConfig.setSid(response.getString("sid"));
+        mApplication.mConfig.setToken(token);
+        mApplication.mConfig.setImToken(imToken);
+    }
+
+
+    /**
+     *  Renew the SessionID,
      */
     public void renew_sid() {
 
-        if (!networkStatusEvent.isNetworkConnected()) {
+        if (!mApplication.networkStatusEvent.isNetworkConnected()) {
             handler.sendEmptyMessage(MSG_NO_NETWORK);
             return;
         }
 
-        showWaitDialog("", null);
-
+//        showWaitDialog("", null);
         RequestParams params = new RequestParams();
         params.put("token", mApplication.mConfig.getToken());
+        params.put("mobile", mApplication.mConfig.getMobile());
+
         CloudSchoolBusRestClient.post("login", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, org.json.JSONArray response) {
@@ -517,9 +641,10 @@ public class MainActivity extends BaseActivity implements
 
                 if (retCode.equals("1")) {
                     try {
-                        mSid = response.getString("sid");
+                        upateLoginCredential(response);
                     } catch (org.json.JSONException e) {
                         e.printStackTrace();
+                        handler.sendEmptyMessage(MSG_SID_RENEW_FAIL);
                     }
 
                     handler.sendEmptyMessage(MSG_SID_RENEWED);
@@ -575,10 +700,47 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onTokenIncorrect() {
                 Log.i("IM Connect", "Expired");
-            /* Token 错误，在线上环境下主要是因为 Token 已经过期，您需要向 App Server 重新请求一个新的 Token */
+                /* Token 错误，在线上环境下主要是因为 Token 已经过期，您需要向 App Server 重新请求一个新的 Token */
+                BusProvider.getInstance().post(new SidExpireEvent(""));
             }
         });
     }
 
 
+
+
+    private class MyReceiveMessageListener implements RongIMClient.OnReceiveMessageListener
+    {
+        /**
+         * 收到消息的处理。
+         *
+         * @param message 收到的消息实体。
+         * @param left    剩余未拉取消息数目。
+         * @return 收到消息是否处理完成，true 表示走自已的处理方式，false 走融云默认处理方式。
+         */
+
+        @Override
+        public boolean onReceived(io.rong.imlib.model.Message message, int left) {
+            for( int j=0; j < mApplication.mTeachers.size(); j++)
+            {
+                TeacherEntity teacherEntity = mApplication.mTeachers.get(j);
+                if(teacherEntity.getId().equals(message.getSenderUserId()))
+                {
+                    String hasUnread = "0";
+                    if(left>0)  hasUnread= "1";
+                    Long timestamp = message.getSentTime();
+                    LastIMMessageEntity lastIMMessageEntity = new LastIMMessageEntity(teacherEntity.getId(), Long.toString(timestamp/1000), hasUnread);
+                    mApplication.mDaoSession.getLastIMMessageEntityDao().insertOrReplace(lastIMMessageEntity);
+                }
+            }
+
+             //This is the chat tab
+            badgeViews.get(1).setVisibility(View.VISIBLE);
+            badgeViews.get(1).setText(Integer.toString(left));
+
+            return false;
+        }
+    }
+
 }
+

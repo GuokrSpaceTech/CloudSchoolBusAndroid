@@ -123,4 +123,6 @@ public class HobbyFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
     }
+
+
 }

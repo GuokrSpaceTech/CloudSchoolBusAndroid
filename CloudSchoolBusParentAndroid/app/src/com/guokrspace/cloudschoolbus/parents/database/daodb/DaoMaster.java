@@ -23,6 +23,7 @@ public class DaoMaster extends AbstractDaoMaster {
         StudentEntityDao.createTable(db, ifNotExists);
         TeacherEntityDao.createTable(db, ifNotExists);
         ClassEntityDao.createTable(db, ifNotExists);
+        LastIMMessageEntityDao.createTable(db, ifNotExists);
         SchoolEntityDao.createTable(db, ifNotExists);
         SenderEntityDao.createTable(db, ifNotExists);
         TagEntityDao.createTable(db, ifNotExists);
@@ -44,6 +45,7 @@ public class DaoMaster extends AbstractDaoMaster {
         StudentEntityDao.dropTable(db, ifExists);
         TeacherEntityDao.dropTable(db, ifExists);
         ClassEntityDao.dropTable(db, ifExists);
+        LastIMMessageEntityDao.dropTable(db, ifExists);
         SchoolEntityDao.dropTable(db, ifExists);
         SenderEntityDao.dropTable(db, ifExists);
         TagEntityDao.dropTable(db, ifExists);
@@ -92,6 +94,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(StudentEntityDao.class);
         registerDaoClass(TeacherEntityDao.class);
         registerDaoClass(ClassEntityDao.class);
+        registerDaoClass(LastIMMessageEntityDao.class);
         registerDaoClass(SchoolEntityDao.class);
         registerDaoClass(SenderEntityDao.class);
         registerDaoClass(TagEntityDao.class);

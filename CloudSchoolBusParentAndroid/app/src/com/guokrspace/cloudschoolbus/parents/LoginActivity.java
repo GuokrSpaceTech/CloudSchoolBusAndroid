@@ -35,11 +35,14 @@ import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
+import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
@@ -70,6 +73,8 @@ public class LoginActivity extends BaseActivity {
     private String loginToken;
     private String imToken = "IWb9/EypgQlMEo/W/o3qSLI6ZiT8q7s0UEaMPWY0lMyB3UonaGf0gmlCJbN+zU7OvAaDYa9d8U6xzmBRkFjv+Q==";
     private String userid;
+
+    private LoginResultEvent loginResultEvent = new LoginResultEvent();
 
     private Thread  thread;
     private boolean threadStopFlag = false;
@@ -121,8 +126,10 @@ public class LoginActivity extends BaseActivity {
                         break;
                     //Get the base info
                     case HandlerConstant.MSG_BASEINFO_OK:
-                        Intent resultIntent = new Intent();
-                        setResult(Activity.RESULT_OK, resultIntent);
+//                        Intent resultIntent = new Intent();
+//                        setResult(Activity.RESULT_OK, resultIntent);
+                        loginResultEvent.setIsLoginSuccess(true);
+                        BusProvider.getInstance().post(ProduceLoginResultEvent());
                         finish();
                         break;
                     case HandlerConstant.MSG_BASEINFO_FAIL:
@@ -313,7 +320,7 @@ public class LoginActivity extends BaseActivity {
 
     private void getBaseInfoFromServer() {
 
-        if(!networkStatusEvent.isNetworkConnected()) {
+        if(!mApplication.networkStatusEvent.isNetworkConnected()) {
             handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
@@ -428,7 +435,7 @@ public class LoginActivity extends BaseActivity {
      */
     public void register(String phonenum) {
 
-        if(!networkStatusEvent.isNetworkConnected()) {
+        if(!mApplication.networkStatusEvent.isNetworkConnected()) {
             handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
@@ -510,7 +517,7 @@ public class LoginActivity extends BaseActivity {
 
         ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
 
-        if(!networkStatusEvent.isNetworkConnected()) {
+        if(!mApplication.networkStatusEvent.isNetworkConnected()) {
             handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
@@ -627,9 +634,9 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    @Subscribe public void onNetworkStatusChange(NetworkStatusEvent event)
+    @Produce public LoginResultEvent ProduceLoginResultEvent()
     {
-        networkStatusEvent = event;
+        return loginResultEvent;
     }
 }
 

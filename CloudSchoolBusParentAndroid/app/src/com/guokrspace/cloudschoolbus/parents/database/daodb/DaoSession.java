@@ -22,6 +22,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig studentEntityDaoConfig;
     private final DaoConfig teacherEntityDaoConfig;
     private final DaoConfig classEntityDaoConfig;
+    private final DaoConfig lastIMMessageEntityDaoConfig;
     private final DaoConfig schoolEntityDaoConfig;
     private final DaoConfig senderEntityDaoConfig;
     private final DaoConfig tagEntityDaoConfig;
@@ -40,6 +41,7 @@ public class DaoSession extends AbstractDaoSession {
     private final StudentEntityDao studentEntityDao;
     private final TeacherEntityDao teacherEntityDao;
     private final ClassEntityDao classEntityDao;
+    private final LastIMMessageEntityDao lastIMMessageEntityDao;
     private final SchoolEntityDao schoolEntityDao;
     private final SenderEntityDao senderEntityDao;
     private final TagEntityDao tagEntityDao;
@@ -69,6 +71,9 @@ public class DaoSession extends AbstractDaoSession {
 
         classEntityDaoConfig = daoConfigMap.get(ClassEntityDao.class).clone();
         classEntityDaoConfig.initIdentityScope(type);
+
+        lastIMMessageEntityDaoConfig = daoConfigMap.get(LastIMMessageEntityDao.class).clone();
+        lastIMMessageEntityDaoConfig.initIdentityScope(type);
 
         schoolEntityDaoConfig = daoConfigMap.get(SchoolEntityDao.class).clone();
         schoolEntityDaoConfig.initIdentityScope(type);
@@ -113,6 +118,7 @@ public class DaoSession extends AbstractDaoSession {
         studentEntityDao = new StudentEntityDao(studentEntityDaoConfig, this);
         teacherEntityDao = new TeacherEntityDao(teacherEntityDaoConfig, this);
         classEntityDao = new ClassEntityDao(classEntityDaoConfig, this);
+        lastIMMessageEntityDao = new LastIMMessageEntityDao(lastIMMessageEntityDaoConfig, this);
         schoolEntityDao = new SchoolEntityDao(schoolEntityDaoConfig, this);
         senderEntityDao = new SenderEntityDao(senderEntityDaoConfig, this);
         tagEntityDao = new TagEntityDao(tagEntityDaoConfig, this);
@@ -131,6 +137,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(StudentEntity.class, studentEntityDao);
         registerDao(TeacherEntity.class, teacherEntityDao);
         registerDao(ClassEntity.class, classEntityDao);
+        registerDao(LastIMMessageEntity.class, lastIMMessageEntityDao);
         registerDao(SchoolEntity.class, schoolEntityDao);
         registerDao(SenderEntity.class, senderEntityDao);
         registerDao(TagEntity.class, tagEntityDao);
@@ -151,6 +158,7 @@ public class DaoSession extends AbstractDaoSession {
         studentEntityDaoConfig.getIdentityScope().clear();
         teacherEntityDaoConfig.getIdentityScope().clear();
         classEntityDaoConfig.getIdentityScope().clear();
+        lastIMMessageEntityDaoConfig.getIdentityScope().clear();
         schoolEntityDaoConfig.getIdentityScope().clear();
         senderEntityDaoConfig.getIdentityScope().clear();
         tagEntityDaoConfig.getIdentityScope().clear();
@@ -180,6 +188,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public ClassEntityDao getClassEntityDao() {
         return classEntityDao;
+    }
+
+    public LastIMMessageEntityDao getLastIMMessageEntityDao() {
+        return lastIMMessageEntityDao;
     }
 
     public SchoolEntityDao getSchoolEntityDao() {
