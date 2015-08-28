@@ -60,5 +60,6 @@
     <string name="schedule">课程表</string>
     <string name="attendancetime">考勤时间: </string>
     <string name="classify">分类</string>
+    <string name="alltype">全部</string>
 
 </resources>

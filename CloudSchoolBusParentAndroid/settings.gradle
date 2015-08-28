@@ -1,4 +1,4 @@
-include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs', ':dynamicgrid', ':DaoDBGenerator', ':materialList', ':android-week-view', ':Android-AdvancedWebView-master', ':IMKit'
+include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs', ':dynamicgrid', ':DaoDBGenerator', ':materialList', ':android-week-view', ':Android-AdvancedWebView-master', ':IMKit', ':android-async-http-master'
 include 'app'
 project(':pagerSlidingTabStrip').projectDir = new File('dependancies/pagerSlidingTabStrip')
 project(':AndroidSupport').projectDir = new File('dependancies/AndroidSupport')
@@ -9,3 +9,4 @@ project(':materialList').projectDir = new File('dependancies/materialList')
 project(':android-week-view').projectDir = new File('dependancies/android-week-view')
 project(':Android-AdvancedWebView-master').projectDir = new File('dependancies/Android-AdvancedWebView-master')
 project(':IMKit').projectDir = new File('dependancies/IMKit')
+project(':android-async-http-master').projectDir = new File('dependancies/android-async-http-master/library')

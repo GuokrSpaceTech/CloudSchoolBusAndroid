@@ -26,6 +26,7 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
@@ -156,18 +157,19 @@ public class TimelineFragment extends BaseFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        ClearCache();
+        if(Version.DEBUG) {
+            ClearCache();
+            GetLastestMessagesFromServer(mHandler);
+        } else {
+            GetMessagesFromCache(mHandler);
 
-        GetLastestMessagesFromServer(mHandler);
-
-//        GetMessagesFromCache(mHandler);
-//
-//        if (mMesageEntities.size() == 0)
-//            GetLastestMessagesFromServer(mHandler);
-//        else {
-//            MessageEntity messageEntity = mMesageEntities.get(0);
-//            GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
-//        }
+            if (mMesageEntities.size() == 0)
+                GetLastestMessagesFromServer(mHandler);
+            else {
+                MessageEntity messageEntity = mMesageEntities.get(0);
+                GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
+            }
+        }
     }
 
     @Override
@@ -193,12 +195,18 @@ public class TimelineFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                if(mMesageEntities.size()>0) {
-                    MessageEntity messageEntity = mMesageEntities.get(0);
-                    GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
-                } else
+                if(Version.DEBUG)
                 {
+                    ClearCache();
                     GetLastestMessagesFromServer(mHandler);
+                } else {
+
+                    if (mMesageEntities.size() > 0) {
+                        MessageEntity messageEntity = mMesageEntities.get(0);
+                        GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
+                    } else {
+                        GetLastestMessagesFromServer(mHandler);
+                    }
                 }
             }
         });

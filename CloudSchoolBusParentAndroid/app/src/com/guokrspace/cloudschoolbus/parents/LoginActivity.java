@@ -152,6 +152,12 @@ public class LoginActivity extends BaseActivity {
                         mClicktoGetVerifyCodeButton.setText(getResources().getString(R.string.click_get_verify_code));
                         mClicktoGetVerifyCodeButton.setEnabled(true);
                         break;
+                    case HandlerConstant.LOGIN_FAILED:
+                        showProgress(false);
+                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+                                .setMessage(getResources().getString(R.string.failure_unknown))
+                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        break;
                     default:
                         showProgress(false);
                         SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())

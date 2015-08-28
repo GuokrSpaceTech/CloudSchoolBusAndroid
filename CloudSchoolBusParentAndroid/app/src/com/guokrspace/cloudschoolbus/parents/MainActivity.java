@@ -16,7 +16,6 @@
 
 package com.guokrspace.cloudschoolbus.parents;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -52,7 +51,6 @@ import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
@@ -61,14 +59,11 @@ import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
-import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.TimelineFragment;
@@ -121,19 +116,14 @@ public class MainActivity extends BaseActivity implements
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
     private List<String> mFragementTags = new ArrayList();
-    private MenuItem mOptionMenuItem= null;
+//    private MenuItem mOptionMenuItem= null;
     private TextView actionBarTitle;
-
-    private String mSid = "";
 
     private Drawable oldBackground = null;
     private int currentColor = 0xF1A141;
 
-    private static final int MSG_LOGIN_SUCCESS = 0;
     private static final int MSG_LOGIN_FAIL = -1;
-    private static final int MSG_ENTER_NONET = 1;
     private static final int MSG_NO_NETWORK = 2;
-    private static final int MSG_SID_RENEWED = 3;
     private static final int MSG_SID_RENEW_FAIL = 4;
     private static final int REQUEST_CODE = 1;
 
@@ -143,37 +133,13 @@ public class MainActivity extends BaseActivity implements
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_LOGIN_SUCCESS:
-                    //Start Baidu Push
-                    PushManager.startWork(getApplicationContext(),
-                            PushConstants.LOGIN_TYPE_API_KEY,
-                            BaiduPushUtils.getMetaValue(MainActivity.this, "api_key"));
-                    initFragments();
-                    setupViews();
-                    setListeners();
-                    httpGetTokenSuccess(mApplication.mConfig.getImToken());
                 case MSG_LOGIN_FAIL:
-                    //It will stay in the Login Page
-//                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-//                            .setMessage(getResources().getString(R.string.failure_loginwithtoken))
-//                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
                 case MSG_NO_NETWORK:
                     SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
                             .setMessage(getResources().getString(R.string.no_network))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
-                case MSG_SID_RENEWED:
-                    RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
-                    httpGetTokenSuccess(mApplication.mConfig.getImToken());
-                    ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
-                    ConfigEntity configEntity = new ConfigEntity(
-                            null, mSid, mApplication.mConfig.getToken(),
-                            mApplication.mConfig.getMobile(), mApplication.mConfig.getUserid(), mApplication.mConfig.getImToken());
-                    configEntityDao.insertOrReplace(configEntity);
-                    CloudSchoolBusRestClient.updateSessionid(mSid);
-                    break;
-
                 case MSG_SID_RENEW_FAIL:
                     SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
                             .setMessage(getResources().getString(R.string.failure_renewsid))
@@ -191,13 +157,13 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.activity_main);
 
         //Customise the Action Bar
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.abs_layout);
-        View view = getSupportActionBar().getCustomView();
-        actionBarTitle = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-        actionBarTitle.setText(getResources().getString(string.module_explore));
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(R.layout.abs_layout);
+//        View view = getSupportActionBar().getCustomView();
+//        actionBarTitle = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+//        actionBarTitle.setText(getResources().getString(string.module_explore));
+//
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         CheckLoginCredential();
     }
@@ -210,16 +176,14 @@ public class MainActivity extends BaseActivity implements
     }
 
     void setupViews() {
-        tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.pager);
-        adapter = new MyPagerAdapter(getSupportFragmentManager(), mFragments, mContext);
-
-        pager.setAdapter(adapter);
-
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
         pager.setPageMargin(pageMargin);
+        adapter = new MyPagerAdapter(getSupportFragmentManager(), mFragments, mContext);
+        pager.setAdapter(adapter);
 
+        tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabs.setViewPager(pager);
 
         //Attach the BadgeView
@@ -233,42 +197,14 @@ public class MainActivity extends BaseActivity implements
     private void setListeners()
     {
         RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
-
-        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
-
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            public void onPageSelected(int position) {
-                //Clear the badge icon
-                badgeViews.get(position).setVisibility(View.INVISIBLE);
-
-                // Check if this is the page you want.
-                if (mFragments[position] instanceof TimelineFragment) {
-                    actionBarTitle.setText(getResources().getString(string.module_explore));
-                    TimelineFragment fragment = (TimelineFragment) mFragments[0];
-                    mOptionMenuItem.setVisible(true);
-                } else if (mFragments[position] instanceof TeacherListFragment) {
-                    actionBarTitle.setText(getResources().getString(string.module_teacher));
-                    mOptionMenuItem.setVisible(false);
-                } else if (mFragments[position] instanceof HobbyFragment) {
-                    actionBarTitle.setText(getResources().getString(string.module_hobby));
-                    mOptionMenuItem.setVisible(false);
-                } else if (mFragments[position] instanceof AboutmeFragment) {
-                    actionBarTitle.setText(getResources().getString(string.module_aboutme));
-                    mOptionMenuItem.setVisible(false);
-                }
-            }
-        });
+        tabs.delegatePageListener = new MyPageChangeListener();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        mOptionMenuItem = menu.findItem(R.id.action_filter);
-        return true;
+//        mOptionMenuItem = menu.findItem(R.id.action_all);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -276,7 +212,7 @@ public class MainActivity extends BaseActivity implements
 
         switch (item.getItemId()) {
 
-            case R.id.action_filter:
+            case R.id.action_all:
                 TimelineFragment fragment = (TimelineFragment)mFragments[0];
                 if(fragment.mMesageEntities.size() != 0) {
                     ClassifyDialogFragment dialog = new ClassifyDialogFragment();
@@ -288,9 +224,8 @@ public class MainActivity extends BaseActivity implements
                 getSupportFragmentManager().popBackStack();
                 //fragment = (TimelineFragment)getSupportFragmentManager().findFragmentByTag(mFragementTags.get(0));
                 Fragment theFragment = getCurrentFragment();
-                if(theFragment instanceof TimelineFragment)
-                    mOptionMenuItem.setVisible(true);
-
+//                if(theFragment instanceof TimelineFragment)
+//                    mOptionMenuItem.setVisible(true);
                 /*
                  * Check if this return from the Filter dialog, if yes,
                  * showing the optionMenu, otherwise, hide it.
@@ -302,9 +237,8 @@ public class MainActivity extends BaseActivity implements
                         || theFragment instanceof ScheduleFragment
                         || theFragment instanceof FoodFragment )
                 {
-                    mOptionMenuItem.setVisible(true);
+//                    mOptionMenuItem.setVisible(true);
                 }
-
                 break;
         }
 
@@ -404,6 +338,12 @@ public class MainActivity extends BaseActivity implements
         }
     };
 
+
+    /**
+     *  Getters and Setters
+     * @return
+     */
+
     public PagerSlidingTabStrip getTabs() {
         return tabs;
     }
@@ -420,13 +360,13 @@ public class MainActivity extends BaseActivity implements
         this.actionBarTitle = actionBarTitle;
     }
 
-    public MenuItem getmOptionMenuItem() {
-        return mOptionMenuItem;
-    }
-
-    public void setmOptionMenuItem(MenuItem mOptionMenuItem) {
-        this.mOptionMenuItem = mOptionMenuItem;
-    }
+//    public MenuItem getmOptionMenuItem() {
+//        return mOptionMenuItem;
+//    }
+//
+//    public void setmOptionMenuItem(MenuItem mOptionMenuItem) {
+//        this.mOptionMenuItem = mOptionMenuItem;
+//    }
 
     public List<BadgeView> getBadgeViews() {
         return badgeViews;
@@ -435,19 +375,6 @@ public class MainActivity extends BaseActivity implements
     public void setBadgeViews(List<BadgeView> badgeViews) {
         this.badgeViews = badgeViews;
     }
-
-    //    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        switch (resultCode) {
-//            case Activity.RESULT_OK:
-//                handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
-//                break;
-//            default:
-//                break;
-//        }
-//    }
 
     @Override
     public void onFragmentInteraction(String id) {
@@ -515,7 +442,7 @@ public class MainActivity extends BaseActivity implements
             implements PagerSlidingTabStrip.IconTabProvider {
 
         private final String[] TITLES = {"Discover", "Class", "Hobby", "Me"};
-        private final int[] ICONS = {R.drawable.selector_ic_tab_discover, R.drawable.selector_ic_tab_class,
+        private final int[] ICONS = {R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
                 R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
         private Fragment[] mFragments = {};
         private Context mContext;
@@ -555,6 +482,10 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    /**
+     * Handling of Events from other modules
+     * @param event
+     */
     @Subscribe
     public void onSidExpired(SidExpireEvent event) {
         renew_sid();
@@ -563,7 +494,7 @@ public class MainActivity extends BaseActivity implements
     @Subscribe public void OnLoginResultEvent(LoginResultEvent event)
     {
         if(event.getIsLoginSuccess())
-            handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
+            LoginSuccessHandles();
         else
             handler.sendEmptyMessage(MSG_LOGIN_FAIL);
     }
@@ -587,24 +518,8 @@ public class MainActivity extends BaseActivity implements
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivityForResult(intent, REQUEST_CODE);
         } else
-            handler.sendEmptyMessage(MSG_LOGIN_SUCCESS);
+            LoginSuccessHandles();
     }
-
-    /**
-     *
-     * @param response the Jsonrespone from the server
-     */
-    private void upateLoginCredential(JSONObject response) throws org.json.JSONException {
-        String sid = response.getString("sid");
-        String token = response.getString("token");
-        String imToken = response.getString("rongtoken");
-        ConfigEntity configEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken);
-        mApplication.mDaoSession.getConfigEntityDao().insertOrReplace(configEntity);
-        mApplication.mConfig.setSid(response.getString("sid"));
-        mApplication.mConfig.setToken(token);
-        mApplication.mConfig.setImToken(imToken);
-    }
-
 
     /**
      *  Renew the SessionID,
@@ -641,13 +556,11 @@ public class MainActivity extends BaseActivity implements
 
                 if (retCode.equals("1")) {
                     try {
-                        upateLoginCredential(response);
+                        SidRenewSuccessHandles(response);
                     } catch (org.json.JSONException e) {
                         e.printStackTrace();
                         handler.sendEmptyMessage(MSG_SID_RENEW_FAIL);
                     }
-
-                    handler.sendEmptyMessage(MSG_SID_RENEWED);
                 } else {
                     handler.sendEmptyMessage(MSG_SID_RENEW_FAIL);
                 }
@@ -679,6 +592,35 @@ public class MainActivity extends BaseActivity implements
         });
     }
 
+    private void LoginSuccessHandles()
+    {
+        //Start Baidu Push
+        PushManager.startWork(getApplicationContext(),
+                PushConstants.LOGIN_TYPE_API_KEY,
+                BaiduPushUtils.getMetaValue(MainActivity.this, "api_key"));
+        initFragments();
+        setupViews();
+        setListeners();
+        httpGetTokenSuccess(mApplication.mConfig.getImToken());
+    }
+
+    /**
+     *
+     * @param response the Jsonrespone from the server
+     */
+    private void SidRenewSuccessHandles(JSONObject response) throws org.json.JSONException {
+        String sid = response.getString("sid");
+        String token = response.getString("token");
+        String imToken = response.getString("rongtoken");
+        ConfigEntity configEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken);
+        mApplication.mDaoSession.getConfigEntityDao().insertOrReplace(configEntity);
+        mApplication.mConfig.setSid(response.getString("sid"));
+        mApplication.mConfig.setToken(token);
+        mApplication.mConfig.setImToken(imToken);
+        RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
+        httpGetTokenSuccess(mApplication.mConfig.getImToken());
+    }
+
     private void httpGetTokenSuccess(String token) {
 
     /* IMKit SDK调用第二步 建立与服务器的连接 */
@@ -707,8 +649,9 @@ public class MainActivity extends BaseActivity implements
     }
 
 
-
-
+    /**
+     * Listeners
+     */
     private class MyReceiveMessageListener implements RongIMClient.OnReceiveMessageListener
     {
         /**
@@ -739,6 +682,40 @@ public class MainActivity extends BaseActivity implements
             badgeViews.get(1).setText(Integer.toString(left));
 
             return false;
+        }
+    }
+
+    private class MyPageChangeListener implements ViewPager.OnPageChangeListener
+    {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            //Clear the badge icon
+            badgeViews.get(position).setVisibility(View.INVISIBLE);
+
+            // Check if this is the page you want.
+            if (mFragments[position] instanceof TimelineFragment) {
+                actionBarTitle.setText(getResources().getString(string.module_explore));
+//                mOptionMenuItem.setVisible(true);
+            } else if (mFragments[position] instanceof TeacherListFragment) {
+                actionBarTitle.setText(getResources().getString(string.module_teacher));
+//                mOptionMenuItem.setVisible(false);
+            } else if (mFragments[position] instanceof HobbyFragment) {
+                actionBarTitle.setText(getResources().getString(string.module_hobby));
+//                mOptionMenuItem.setVisible(false);
+            } else if (mFragments[position] instanceof AboutmeFragment) {
+                actionBarTitle.setText(getResources().getString(string.module_aboutme));
+//                mOptionMenuItem.setVisible(false);
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
         }
     }
 

@@ -2,10 +2,42 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MyActivity" >
+    tools:context=".MyActivity">
     <item
-        android:id="@+id/action_filter"
+        android:id="@+id/action_all"
         android:icon="@drawable/ic_menu"
-        app:showAsAction="always"
-        android:title=""/>
+        android:title="@string/alltype"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/action_notice"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/noticetype"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/action_attendance"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/attendancetype"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/action_streaming"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/openclass"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/action_report"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/report"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/action_schedule"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/schedule"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/action_food"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/food"
+        app:showAsAction="ifRoom|withText" />
 </menu>
+
+    <!--ifRoom、never、always、withText、collapseActionView-->

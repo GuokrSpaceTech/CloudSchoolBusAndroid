@@ -111,7 +111,7 @@ public class NoticeFragment extends BaseFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        ((MainActivity)mParentContext).getmOptionMenuItem().setVisible(false);
+//        ((MainActivity)mParentContext).getmOptionMenuItem().setVisible(false);
         ((MainActivity)mParentContext).setTitle(getResources().getString(R.string.noticetype));
     }
 

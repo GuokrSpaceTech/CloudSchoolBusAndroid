@@ -108,7 +108,7 @@ public class AttendanceFragment extends BaseFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         ((MainActivity)mParentContext).setTitle(getResources().getString(R.string.attendancetype));
-        ((MainActivity)mParentContext).getmOptionMenuItem().setVisible(false);
+//        ((MainActivity)mParentContext).getmOptionMenuItem().setVisible(false);
     }
 
     @Override
