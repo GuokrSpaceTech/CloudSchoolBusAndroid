@@ -7,37 +7,37 @@
         android:id="@+id/action_all"
         android:icon="@drawable/ic_menu"
         android:title="@string/alltype"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="collapseActionView|withText" />
     <item
         android:id="@+id/action_notice"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_notice"
         android:title="@string/noticetype"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="collapseActionView|withText" />
     <item
         android:id="@+id/action_attendance"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_attendance"
         android:title="@string/attendancetype"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="collapseActionView|withText" />
     <item
         android:id="@+id/action_streaming"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_streaming"
         android:title="@string/openclass"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="collapseActionView|withText" />
     <item
         android:id="@+id/action_report"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_report"
         android:title="@string/report"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="collapseActionView|withText" />
     <item
         android:id="@+id/action_schedule"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_schedule"
         android:title="@string/schedule"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="collapseActionView|withText" />
     <item
         android:id="@+id/action_food"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_food"
         android:title="@string/food"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="collapseActionView|withText" />
 </menu>
 
     <!--ifRoom、never、always、withText、collapseActionView-->

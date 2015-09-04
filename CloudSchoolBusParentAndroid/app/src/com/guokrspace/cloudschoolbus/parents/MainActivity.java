@@ -40,7 +40,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONException;
@@ -77,6 +79,7 @@ import com.squareup.otto.Subscribe;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,13 +114,12 @@ public class MainActivity extends BaseActivity implements
 {
 
     private PagerSlidingTabStrip tabs;
+    private TextView mActionBarTitle;
     private List<BadgeView> badgeViews = new ArrayList();
     private ViewPager pager;
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
-    private List<String> mFragementTags = new ArrayList();
-//    private MenuItem mOptionMenuItem= null;
-    private TextView actionBarTitle;
+//    private List<String> mFragementTags = new ArrayList();
 
     private Drawable oldBackground = null;
     private int currentColor = 0xF1A141;
@@ -156,15 +158,6 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Customise the Action Bar
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.abs_layout);
-//        View view = getSupportActionBar().getCustomView();
-//        actionBarTitle = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-//        actionBarTitle.setText(getResources().getString(string.module_explore));
-//
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
         CheckLoginCredential();
     }
 
@@ -192,6 +185,16 @@ public class MainActivity extends BaseActivity implements
             badgeView.setTargetView(tabs.getTabsContainer().getChildAt(i));
             badgeViews.add(badgeView);
         }
+
+        //Customise the Action Bar
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.abs_layout);
+        View view = getSupportActionBar().getCustomView();
+        mActionBarTitle = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+        mActionBarTitle.setText(getResources().getString(string.module_explore));
+
+        //Hack for force the overflow button in the actionbar
+        getOverflowMenu();
     }
 
     private void setListeners()
@@ -206,6 +209,20 @@ public class MainActivity extends BaseActivity implements
 //        mOptionMenuItem = menu.findItem(R.id.action_all);
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu)
+    {
+
+        if(featureId == Window.FEATURE_ACTION_BAR && menu != null)
+        {
+            setOverflowIconVisiable(menu);
+        }
+
+        return super.onMenuOpened(featureId, menu);
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -352,22 +369,6 @@ public class MainActivity extends BaseActivity implements
         this.tabs = tabs;
     }
 
-    public TextView getActionBarTitle() {
-        return actionBarTitle;
-    }
-
-    public void setActionBarTitle(TextView actionBarTitle) {
-        this.actionBarTitle = actionBarTitle;
-    }
-
-//    public MenuItem getmOptionMenuItem() {
-//        return mOptionMenuItem;
-//    }
-//
-//    public void setmOptionMenuItem(MenuItem mOptionMenuItem) {
-//        this.mOptionMenuItem = mOptionMenuItem;
-//    }
-
     public List<BadgeView> getBadgeViews() {
         return badgeViews;
     }
@@ -381,9 +382,16 @@ public class MainActivity extends BaseActivity implements
         return;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //  Let the fragment to handle unhandled result
+        /* http://stackoverflow.com/questions/6147884/onactivityresult-not-being-called-in-fragment?rq=1 */
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     /*
-     *  Handles all the retures from the fragment dialog
-     */
+         *  Handles all the retures from the fragment dialog
+         */
     public void onComplete(String module) {
         // After the dialog fragment completes, it calls this callback.
         // use the string here
@@ -472,7 +480,7 @@ public class MainActivity extends BaseActivity implements
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             Fragment fragment = (Fragment)super.instantiateItem(container, position);
-            mFragementTags.add(position,fragment.getTag());
+//            mFragementTags.add(position,fragment.getTag());
             return fragment;
         }
 
@@ -699,17 +707,13 @@ public class MainActivity extends BaseActivity implements
 
             // Check if this is the page you want.
             if (mFragments[position] instanceof TimelineFragment) {
-                actionBarTitle.setText(getResources().getString(string.module_explore));
-//                mOptionMenuItem.setVisible(true);
+                mActionBarTitle.setText(getResources().getString(string.module_explore));
             } else if (mFragments[position] instanceof TeacherListFragment) {
-                actionBarTitle.setText(getResources().getString(string.module_teacher));
-//                mOptionMenuItem.setVisible(false);
+                mActionBarTitle.setText(getResources().getString(string.module_teacher));
             } else if (mFragments[position] instanceof HobbyFragment) {
-                actionBarTitle.setText(getResources().getString(string.module_hobby));
-//                mOptionMenuItem.setVisible(false);
+                mActionBarTitle.setText(getResources().getString(string.module_hobby));
             } else if (mFragments[position] instanceof AboutmeFragment) {
-                actionBarTitle.setText(getResources().getString(string.module_aboutme));
-//                mOptionMenuItem.setVisible(false);
+                mActionBarTitle.setText(getResources().getString(string.module_aboutme));
             }
         }
 
@@ -718,6 +722,44 @@ public class MainActivity extends BaseActivity implements
 
         }
     }
+
+    //This is hack for overflow menu not showing
+    private void getOverflowMenu() {
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if(menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setOverflowIconVisiable(Menu menu)
+    {
+        try
+        {
+            Class clazz=Class.forName("android.support.v7.internal.view.menu.MenuBuilder");
+            Field field=clazz.getDeclaredField("mOptionalIconsVisible");
+            if(field!=null)
+            {
+                field.setAccessible(true);
+                field.set(menu , true);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 }
 

@@ -13,10 +13,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.android.support.debug.DebugLog;
 import com.android.support.dialog.CustomWaitDialog;
 import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
+import com.android.support.utils.ImageUtil;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
@@ -216,7 +218,7 @@ public class BaseFragment extends Fragment {
 					return;
 				}
 
-				if(retCode.equals("-1113")) //Session Expire
+				if (retCode.equals("-1113")) //Session Expire
 				{
 					BusProvider.getInstance().post(new SidExpireEvent(mApplication.mConfig.getSid()));
 				}
@@ -277,6 +279,64 @@ public class BaseFragment extends Fragment {
 				} else {
 					handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
 				}
+			}
+		});
+	}
+
+	public void changeAvatarStudent(String studentid, String imageFilePath, final android.os.Handler handler) {
+		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
+			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
+			return;
+		}
+
+		showWaitDialog("", null);
+
+		HashMap<String, String> params = new HashMap<String, String>();
+
+		if(studentid!=null) params.put("studentid", studentid);
+		if(imageFilePath!=null) params.put("fbody", ImageUtil.getPicString(imageFilePath, 512));
+
+		CloudSchoolBusRestClient.post(ProtocolDef.METHOD_changeAvartarStudent, params, new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+				Message msg = handler.obtainMessage();
+				msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
+				handler.sendMessage(msg);
+				super.onSuccess(statusCode, headers, response);
+			}
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+				Message msg = handler.obtainMessage();
+				msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
+				handler.sendMessage(msg);
+				super.onSuccess(statusCode, headers, response);
+			}
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, String responseString) {
+				Message msg = handler.obtainMessage();
+				msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
+				handler.sendMessage(msg);
+				super.onSuccess(statusCode, headers, responseString);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+				handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+				handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+				handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
+				super.onFailure(statusCode, headers, responseString, throwable);
 			}
 		});
 	}

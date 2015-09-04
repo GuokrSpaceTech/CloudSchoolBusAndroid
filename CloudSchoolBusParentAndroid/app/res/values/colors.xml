@@ -3,6 +3,7 @@
     <color name="background_window">#FFE5E5E5</color>
     <color name="primary">#F1A141</color>
     <color name="primary_dark">#0E0E0E</color>
+    <color name="primary_white">#FFFFFF</color>
     <color name="accent">#F4982E</color>
     <color name="event_color_01">#59dbe0</color>
     <color name="event_color_02">#f57f68</color>

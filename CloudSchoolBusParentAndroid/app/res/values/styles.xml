@@ -1,30 +1,38 @@
 <resources>
 
-    <!--<style name="AppBaseTheme" parent="android:Theme.Light"></style>-->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
+    //https://developer.android.com/training/basics/actionbar/styling.html
+    <style name="AppTheme" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
-    </style>
-
-
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimaryDark">@color/primary_white</item>
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowBackground">@color/background_window</item>
+
+        <!-- Support library compatibility -->
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
         <item name="android:homeAsUpIndicator">@color/action_bar_icon</item>
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
     </style>
 
     <style name="OverFlow" parent="Widget.AppCompat.ActionButton.Overflow">
-    <item name="android:src">@drawable/ic_menu</item>
+        <item name="android:color">@color/primary_white</item>
+        <item name="color">@color/primary_white</item>
     </style>
 
-    <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:icon">@drawable/ic_launcher</item>
+    <style name="ActionBarStyle" parent="@style/Widget.AppCompat.ActionBar">
+
+        <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
         <item name="android:background">@color/accent</item>
+
+
+        <!-- Support library compatibility -->
+        <item name="titleTextStyle">@style/MyActionBarTitleText</item>
+        <item name="background">@color/accent</item>
     </style>
 
+    <!-- ActionBar title text -->
+    <style name="MyActionBarTitleText"
+        parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/primary_white</item>
+        <!-- The textColor property is backward compatible with the Support Library -->
+    </style>
 </resources>
