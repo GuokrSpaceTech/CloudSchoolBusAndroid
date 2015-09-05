@@ -201,6 +201,8 @@ public class BaseFragment extends Fragment {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
+                //It is not supposed to get here
+                handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
 			}
 
 			@Override

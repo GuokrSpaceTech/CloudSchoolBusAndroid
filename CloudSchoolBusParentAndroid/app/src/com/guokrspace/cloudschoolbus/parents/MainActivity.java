@@ -104,12 +104,7 @@ pstsTextAllCaps If true, all tab titles will be upper case, default true
 */
 
 public class MainActivity extends BaseActivity implements
-        TimelineFragment.OnFragmentInteractionListener,
-        NoticeFragment.OnFragmentInteractionListener,
-        AttendanceFragment.OnFragmentInteractionListener,
-        ScheduleFragment.OnFragmentInteractionListener,
-        ReportFragment.OnFragmentInteractionListener,
-        ClassifyDialogFragment.OnCompleteListener
+        TimelineFragment.OnFragmentInteractionListener
 
 {
 
@@ -206,7 +201,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-//        mOptionMenuItem = menu.findItem(R.id.action_all);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -226,36 +220,61 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        FragmentTransaction transaction;
         switch (item.getItemId()) {
 
-            case R.id.action_all:
-                TimelineFragment fragment = (TimelineFragment)mFragments[0];
-                if(fragment.mMesageEntities.size() != 0) {
-                    ClassifyDialogFragment dialog = new ClassifyDialogFragment();
-                    dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0); //Let the fragment dialog take control all view elements
-                    dialog.show(getSupportFragmentManager(), "");
-                }
+//            case R.id.action_all:
+//                TimelineFragment fragment = (TimelineFragment)mFragments[0];
+//                if(fragment.mMesageEntities.size() != 0) {
+//                    ClassifyDialogFragment dialog = new ClassifyDialogFragment();
+//                    dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0); //Let the fragment dialog take control all view elements
+//                    dialog.show(getSupportFragmentManager(), "");
+//                }
+//                break;
+            case R.id.action_notice:
+                NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, noticeFragment, "notice");
+                transaction.addToBackStack("notice");
+                transaction.commit();
+                break;
+            case R.id.action_attendance:
+                AttendanceFragment attendanceFragment = AttendanceFragment.newInstance(null, null);
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, attendanceFragment, "attendance");
+                transaction.addToBackStack("attendance");
+                transaction.commit();
+                break;
+            case R.id.action_schedule:
+                ScheduleFragment scheduleFragment = ScheduleFragment.newInstance(null, null);
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, scheduleFragment, "schedule");
+                transaction.addToBackStack("schedule");
+                transaction.commit();
+                break;
+            case R.id.action_report:
+                ReportFragment reportFragment = ReportFragment.newInstance(null, null);
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, reportFragment, "report");
+                transaction.addToBackStack("report");
+                transaction.commit();
+                break;
+            case R.id.action_food:
+                FoodFragment foodFragment = FoodFragment.newInstance(null,null);
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, foodFragment, "food");
+                transaction.addToBackStack("food");
+                transaction.commit();
+                break;
+            case R.id.action_streaming:
+                StreamingFragment streamingFragment = StreamingFragment.newInstance(null,null);
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, streamingFragment, "streaming");
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
-                //fragment = (TimelineFragment)getSupportFragmentManager().findFragmentByTag(mFragementTags.get(0));
-                Fragment theFragment = getCurrentFragment();
-//                if(theFragment instanceof TimelineFragment)
-//                    mOptionMenuItem.setVisible(true);
-                /*
-                 * Check if this return from the Filter dialog, if yes,
-                 * showing the optionMenu, otherwise, hide it.
-                */
-                if(theFragment instanceof ReportFragment
-                        || theFragment instanceof AttendanceFragment
-                        || theFragment instanceof NoticeFragment
-                        || theFragment instanceof StreamingFragment
-                        || theFragment instanceof ScheduleFragment
-                        || theFragment instanceof FoodFragment )
-                {
-//                    mOptionMenuItem.setVisible(true);
-                }
                 break;
         }
 
@@ -388,63 +407,6 @@ public class MainActivity extends BaseActivity implements
         /* http://stackoverflow.com/questions/6147884/onactivityresult-not-being-called-in-fragment?rq=1 */
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-    /*
-         *  Handles all the retures from the fragment dialog
-         */
-    public void onComplete(String module) {
-        // After the dialog fragment completes, it calls this callback.
-        // use the string here
-        FragmentTransaction transaction;
-        switch (module) {
-            case "notice":
-                NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, noticeFragment, "notice");
-                transaction.addToBackStack("notice");
-                transaction.commit();
-                break;
-            case "attendance":
-                AttendanceFragment attendanceFragment = AttendanceFragment.newInstance(null, null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, attendanceFragment, "attendance");
-                transaction.addToBackStack("attendance");
-                transaction.commit();
-                break;
-            case "schedule":
-                ScheduleFragment scheduleFragment = ScheduleFragment.newInstance(null, null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, scheduleFragment, "schedule");
-                transaction.addToBackStack("schedule");
-                transaction.commit();
-                break;
-            case "report":
-                ReportFragment reportFragment = ReportFragment.newInstance(null, null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, reportFragment, "report");
-                transaction.addToBackStack("report");
-                transaction.commit();
-                break;
-            case "food":
-                FoodFragment fragment = FoodFragment.newInstance(null,null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, fragment, "food");
-                transaction.addToBackStack("food");
-                transaction.commit();
-                break;
-
-            case "streaming":
-                StreamingFragment streamingFragment = StreamingFragment.newInstance(null,null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, streamingFragment, "streaming");
-                transaction.addToBackStack(null);
-                transaction.commit();
-                break;
-            default:
-                break;
-        }
-    }
-
 
     public class MyPagerAdapter extends FragmentPagerAdapter
             implements PagerSlidingTabStrip.IconTabProvider {
@@ -758,8 +720,4 @@ public class MainActivity extends BaseActivity implements
             e.printStackTrace();
         }
     }
-
-
-
 }
-

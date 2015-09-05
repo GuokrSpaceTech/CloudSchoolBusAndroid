@@ -14,6 +14,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -158,7 +159,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
         buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
 
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
 
         setListeners();
 
@@ -301,5 +302,11 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         {
             changeAvatarStudent(mApplication.mStudents.get(0).getStudentid(),bitmapFilePath, mHandler);
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }

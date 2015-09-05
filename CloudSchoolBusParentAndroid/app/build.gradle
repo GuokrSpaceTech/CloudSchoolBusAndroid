@@ -19,6 +19,7 @@ dependencies {
     compile project(':android-week-view')
     compile project(':Android-AdvancedWebView-master')
     compile project(':IMKit')
+    compile project(':AndroidTouchGallery')
 }
 
 android {

@@ -4,11 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MyActivity">
     <item
-        android:id="@+id/action_all"
-        android:icon="@drawable/ic_menu"
-        android:title="@string/alltype"
-        app:showAsAction="collapseActionView|withText" />
-    <item
         android:id="@+id/action_notice"
         android:icon="@drawable/ic_notice"
         android:title="@string/noticetype"
@@ -37,6 +32,11 @@
         android:id="@+id/action_food"
         android:icon="@drawable/ic_food"
         android:title="@string/food"
+        app:showAsAction="collapseActionView|withText" />
+    <item
+        android:id="@+id/action_all"
+        android:icon="@drawable/ic_picture"
+        android:title="@string/picture"
         app:showAsAction="collapseActionView|withText" />
 </menu>
 

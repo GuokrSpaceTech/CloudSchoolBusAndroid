@@ -46,6 +46,10 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".module.classes.Streaming.Preview" />
+        <activity
+            android:name=".base.activity.GalleryActivityUrl"
+            android:configChanges="orientation" >
+        </activity>
 
         <!-- push应用定义消息receiver声明 -->
         <receiver android:name=".base.baidupush.BaiduPushMessageReceiver" >

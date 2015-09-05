@@ -1,6 +1,8 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,7 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Gallery;
+import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.android.support.utils.DateUtils;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
@@ -24,6 +30,7 @@ import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
+import com.guokrspace.cloudschoolbus.parents.base.activity.GalleryActivityUrl;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
@@ -47,6 +54,7 @@ import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
 import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.PictureCard;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -125,7 +133,6 @@ public class TimelineFragment extends BaseFragment {
                     button.setText(getResources().getString(R.string.confirmed_notice));
                     button.setBackgroundColor(getResources().getColor(R.color.button_disable));
                     button.setEnabled(false);
-//                    button.setEnabled(false);
                     break;
             }
             return false;
@@ -199,7 +206,6 @@ public class TimelineFragment extends BaseFragment {
                     ClearCache();
                     GetLastestMessagesFromServer(mHandler);
                 } else {
-
                     if (mMesageEntities.size() > 0) {
                         MessageEntity messageEntity = mMesageEntities.get(0);
                         GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
@@ -520,5 +526,121 @@ public class TimelineFragment extends BaseFragment {
         card.setmShareButtonClickListener(shareButtonClickListener);
 
         return card;
+    }
+
+    public class ImageAdapter extends BaseAdapter {
+        private Context mContext;
+        private List<String> mPicUrls = new ArrayList<>();
+
+        public ImageAdapter(Context c, List<String> urls) {
+            mContext = c;
+            mPicUrls = urls;
+        }
+
+        @Override
+        public int getCount() {
+            return mPicUrls.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return mPicUrls.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        // create a new ImageView for each item referenced by the Adapter
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ImageView imageView;
+            if (convertView == null) {
+                // if it's not recycled, initialize some attributes
+                imageView = new ImageView(mContext);
+                if(mPicUrls.size()==1)
+                    imageView.setLayoutParams(new GridView.LayoutParams(
+                            (int)mContext.getResources().getDimension(R.dimen.timeline_one_thumb_pic_width),
+                            (int)mContext.getResources().getDimension(R.dimen.timeline_one_thumb_pic_height)));
+                else
+                    imageView.setLayoutParams(new GridView.LayoutParams(
+                            (int)mContext.getResources().getDimension(R.dimen.timeline_thumb_pic_width),
+                            (int)mContext.getResources().getDimension(R.dimen.timeline_thumb_pic_height)));
+
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setPadding(1, 1, 1, 1);
+            } else {
+                imageView = (ImageView) convertView;
+                imageView.forceLayout();
+            }
+
+            String url = mPicUrls.get(position);
+
+            Picasso.with(mContext).load(url).into(imageView);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, GalleryActivityUrl.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("fileUrls", (ArrayList<String>) mPicUrls);
+                    bundle.putInt("currentFile", position);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
+            return imageView;
+        }
+    }
+
+    /**
+     * Created by kai on 7/16/15.
+     */
+    public static class TagRecycleViewAdapter extends RecyclerView.Adapter<TagRecycleViewAdapter.ViewHolder> {
+        private List<TagEntity> mDataset;
+
+        // Provide a reference to the views for each data item
+        // Complex data items may need more than one view per item, and
+        // you provide access to all the views for a data item in a view holder
+        public static class ViewHolder extends RecyclerView.ViewHolder {
+            // each data item is just a string in this case
+            public Button mTagButton;
+            public ViewHolder(Button v) {
+                super(v);
+                mTagButton = v;
+            }
+        }
+
+        // Provide a suitable constructor (depends on the kind of dataset)
+        public TagRecycleViewAdapter(List<TagEntity> myDataset) {
+            mDataset = myDataset;
+        }
+
+        // Create new views (invoked by the layout manager)
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            // create a new view
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.tag_button, parent, false);
+            // set the view's size, margins, paddings and layout parameters
+
+            ViewHolder vh = new ViewHolder((Button)v);
+            return vh;
+        }
+
+        // Replace the contents of a view (invoked by the layout manager)
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            // - get element from your dataset at this position
+            // - replace the contents of the view with that element
+            holder.mTagButton.setText(mDataset.get(position).getTagName());
+        }
+
+        // Return the size of your dataset (invoked by the layout manager)
+        @Override
+        public int getItemCount() {
+            return mDataset.size();
+        }
     }
 }

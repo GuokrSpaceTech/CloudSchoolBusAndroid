@@ -15,7 +15,7 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.android.support.touchimageview;
+package ru.truba.touchgallery.TouchView;
 
 import java.lang.ref.WeakReference;
 import java.util.Timer;
@@ -40,7 +40,9 @@ import android.widget.ImageView;
 @SuppressLint("NewApi")
 public class TouchImageView extends ImageView {
 
-//    private static final String TAG = "Touch";
+    private int positionForTouchImageView = -1;
+
+    // private static final String TAG = "Touch";
     // These matrices will be used to move and zoom image
     Matrix matrix = new Matrix();
     Matrix savedMatrix = new Matrix();
@@ -338,7 +340,7 @@ public class TouchImageView extends ImageView {
     private void checkSiding()
     {
         fillMatrixXY();
-        //Log.d(TAG, "x: " + matrixX + " y: " + matrixY + " left: " + right / 2 + " ic_back_to_top:" + bottom / 2);
+        //Log.d(TAG, "x: " + matrixX + " y: " + matrixY + " left: " + right / 2 + " top:" + bottom / 2);
         float scaleWidth = Math.round(origWidth * saveScale);
         float scaleHeight = Math.round(origHeight * saveScale);
         onLeftSide = onRightSide = onTopSide = onBottomSide = false;
@@ -516,4 +518,4 @@ public class TouchImageView extends ImageView {
             if (mService.get().mOnClickListener != null) mService.get().mOnClickListener.onClick(mService.get());
 	    }
 	}
-}
+};

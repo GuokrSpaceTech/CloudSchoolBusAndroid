@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -69,7 +70,7 @@ public class TeacherListFragment extends BaseFragment {
 
         setListener();
 
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
 
         return root;
     }
@@ -209,5 +210,11 @@ public class TeacherListFragment extends BaseFragment {
 //            MainActivity theActivty =  (MainActivity)mParentContext;
 //            theActivty.getBadgeViews().get(1).setText(Integer.toString(count));
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }
