@@ -39,6 +39,7 @@ import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
@@ -291,7 +292,7 @@ public class BaseFragment extends Fragment {
 
 		showWaitDialog("", null);
 
-		HashMap<String, String> params = new HashMap<String, String>();
+		RequestParams params = new RequestParams();
 
 		if(studentid!=null) params.put("studentid", studentid);
 		if(imageFilePath!=null) params.put("fbody", ImageUtil.getPicString(imageFilePath, 512));
@@ -435,11 +436,12 @@ public class BaseFragment extends Fragment {
 		oks.show(mParentContext);
 	}
 
-
 	public String cardType(String type)
 	{
 		String cardtype = "";
 
+		if(type.equals("Article"))
+			cardtype = getResources().getString(R.string.picturetype);
 		if(type.equals("Notice"))
 			cardtype = getResources().getString(R.string.noticetype);
 		else if(type.equals("Punch"))

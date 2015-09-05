@@ -6,6 +6,7 @@
     <string name="verify_code">验证码</string>
     <string name="no_network">无法链接网络，请检查网络设置</string>
     <string name="server_error">出现错误了，一会再试试</string>
+    <string name="unknow_message">消息类型不支持</string>
     <string name="invalid_mobile">手机未在学校登记，请联系学校老师</string>
     <string name="invalid_verify_code">验证码错误</string>
     <string name="failure_baseinfo">获取基础信息错误，请联系产品客服: 400-606-0996</string>
@@ -50,6 +51,7 @@
     <string name="systemsetting">系统设置</string>
     <string name="helpfeedback">帮助与反馈</string>
     <string name="logout">退出登录</string>
+    <string name="picturetype">照片</string>
     <string name="confirm_notice">确认回执</string>
     <string name="confirmed_notice">已回执</string>
     <string name="noticetype">班级通知</string>

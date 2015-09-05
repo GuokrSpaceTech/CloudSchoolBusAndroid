@@ -46,10 +46,10 @@ import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
 import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
-import com.guokrspace.cloudschoolbus.parents.widget.TimelinePicturesCard;
+import com.guokrspace.cloudschoolbus.parents.widget.PictureCard;
 
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +157,7 @@ public class TimelineFragment extends BaseFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        if(Version.DEBUG) {
+        if (Version.DEBUG) {
             ClearCache();
             GetLastestMessagesFromServer(mHandler);
         } else {
@@ -182,7 +182,7 @@ public class TimelineFragment extends BaseFragment {
 
         mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
 
-        MainActivity mainActivity = (MainActivity)mParentContext;
+        MainActivity mainActivity = (MainActivity) mParentContext;
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         setListeners();
@@ -195,8 +195,7 @@ public class TimelineFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                if(Version.DEBUG)
-                {
+                if (Version.DEBUG) {
                     ClearCache();
                     GetLastestMessagesFromServer(mHandler);
                 } else {
@@ -304,7 +303,9 @@ public class TimelineFragment extends BaseFragment {
 
     private void AddCards() {
         for (int i = 0; i < mMesageEntities.size(); i++) {
-            mMaterialListView.add((Card) buildcard(mMesageEntities.get(i),i));
+            Card theCard = (Card) buildcard(mMesageEntities.get(i), i);
+            if (theCard != null)
+                mMaterialListView.add(theCard);
         }
     }
 
@@ -322,8 +323,7 @@ public class TimelineFragment extends BaseFragment {
             handler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
     }
 
-    private void ClearCache()
-    {
+    private void ClearCache() {
         final MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
         messageEntityDao.deleteAll();
     }
@@ -336,48 +336,8 @@ public class TimelineFragment extends BaseFragment {
     }
 
     private Object buildcard(final MessageEntity messageEntity, final int position_in_list) {
-        if (messageEntity.getApptype().equals("picture")) {
-            List<String> pictureUrls = new ArrayList<>();
-            {
-                TimelinePicturesCard card = new TimelinePicturesCard(mParentContext);
-                String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
-                card.setTeacherAvatarUrl(teacherAvatarString);
-                card.setTeacherName(messageEntity.getSenderEntity().getName());
-                card.setKindergarten(mApplication.mSchools.get(0).getName());
-                card.setSentTime(messageEntity.getSendtime());
-                card.setTitle(messageEntity.getTitle());
-                card.setDescription(messageEntity.getDescription());
-//                pictureUrls.add(messageEntity.getMessageBodyEntity().getContent());
-                card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls));
-                final List<TagEntity> tagEntities = messageEntity.getTagEntityList();
-                TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
-                card.setTagAdapter(adapter);
-
-                CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        animation(view);
-                        SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
-                                .setMessage(tagEntities.get(position).getTagnamedesc())
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-                    }
-
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-
-                    }
-                });
-                card.setmOnItemSelectedListener(tagClickListener);
-
-                View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showShare();
-                    }
-                };
-                card.setmShareButtonClickListener(shareButtonClickListener);
-
-            }
+        if (messageType(messageEntity).equals("Article")) {
+            return buildArticleCard(messageEntity);
         } else if (messageEntity.getApptype().equals("Notice")) {
             NoticeCard noticeCard = new NoticeCard(mParentContext);
             String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
@@ -395,7 +355,7 @@ public class TimelineFragment extends BaseFragment {
             noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    NoticeConfirm(messageEntity.getMessageid(),(Button)view,mHandler);
+                    NoticeConfirm(messageEntity.getMessageid(), (Button) view, mHandler);
                 }
             });
             return noticeCard;
@@ -418,7 +378,7 @@ public class TimelineFragment extends BaseFragment {
             streamingNoticeCard.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
             streamingNoticeCard.setKindergartenName(messageEntity.getSenderEntity().getName());
             streamingNoticeCard.setClassName(messageEntity.getSenderEntity().getClassname());
-            streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(),mParentContext));
+            streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
             streamingNoticeCard.setCardType(cardType(messageEntity.getApptype()));
             streamingNoticeCard.setContext(mParentContext);
             streamingNoticeCard.setDescription(messageEntity.getDescription());
@@ -457,7 +417,7 @@ public class TimelineFragment extends BaseFragment {
                 }
             });
             return reportListCard;
-        }else if (messageEntity.getApptype().equals("Food")) {
+        } else if (messageEntity.getApptype().equals("Food")) {
             FoodNoticeCard card = new FoodNoticeCard(mParentContext);
             card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
             card.setKindergartenName(messageEntity.getSenderEntity().getName());
@@ -479,7 +439,7 @@ public class TimelineFragment extends BaseFragment {
                 }
             });
             return card;
-        }else if (messageEntity.getApptype().equals("Schedule")) {
+        } else if (messageEntity.getApptype().equals("Schedule")) {
             ScheduleNoticeCard card = new ScheduleNoticeCard(mParentContext);
             card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
             card.setKindergartenName(messageEntity.getSenderEntity().getName());
@@ -501,8 +461,64 @@ public class TimelineFragment extends BaseFragment {
                 }
             });
             return card;
+        } else {
+            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.unknow_message))
+                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
         }
 
         return null;
+    }
+
+    private String messageType(MessageEntity msg) {
+        return msg.getApptype();
+    }
+
+    private Card buildArticleCard(MessageEntity message) {
+        PictureCard card = new PictureCard(mParentContext);
+        String teacherAvatarString = message.getSenderEntity().getAvatar();
+        card.setTeacherAvatarUrl(teacherAvatarString);
+        card.setTeacherName(message.getSenderEntity().getName());
+        card.setKindergarten(mApplication.mSchools.get(0).getName());
+        card.setCardType(cardType(message.getApptype()));
+        card.setSentTime(message.getSendtime());
+        card.setTitle(message.getTitle());
+        card.setDescription(message.getDescription());
+        List<String> pictureUrls = new ArrayList<>();
+        try {
+            JSONObject jsonObject = new JSONObject(message.getBody());
+            pictureUrls = FastJsonTools.getListObject(jsonObject.get("PList").toString(), String.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls));
+        final List<TagEntity> tagEntities = message.getTagEntityList();
+        TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
+        card.setTagAdapter(adapter);
+
+        CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                animation(view);
+                SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
+                        .setMessage(tagEntities.get(position).getTagnamedesc())
+                        .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
+        card.setmOnItemSelectedListener(tagClickListener);
+
+        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showShare();
+            }
+        };
+        card.setmShareButtonClickListener(shareButtonClickListener);
+
+        return card;
     }
 }

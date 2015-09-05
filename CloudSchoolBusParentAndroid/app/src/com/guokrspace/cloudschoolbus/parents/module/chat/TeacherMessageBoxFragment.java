@@ -163,6 +163,9 @@ public class TeacherMessageBoxFragment extends BaseFragment implements
 //            GetLastestMessagesFromServer(mHandler);
 //        else
 //            GetNewMessagesFromServer(mChatMessages.get(0).getSendtime(), mHandler);
+
+        setHasOptionsMenu(false);
+
         super.onCreate(savedInstanceState);
     }
 

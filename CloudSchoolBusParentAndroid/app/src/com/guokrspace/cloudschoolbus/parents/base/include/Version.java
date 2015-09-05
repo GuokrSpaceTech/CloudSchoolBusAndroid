@@ -3,7 +3,7 @@ package com.guokrspace.cloudschoolbus.parents.base.include;
 //	软件版本信息,每次发布新版本时,都要修改此文件.
 public class Version {
 	/** true表示debug版本，有打印信息和调试功能，false去掉打印信息和调试功能，调试功能长按关于键 */
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	/** 产品最后更新时间*/
 	public final static String productLastUpdateDate = "20150316";
 	/** 产品版本号(用来更新的产品版本号)*/

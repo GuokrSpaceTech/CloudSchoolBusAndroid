@@ -158,6 +158,8 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
         buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
 
+        setHasOptionsMenu(false);
+
         setListeners();
 
         return root;

@@ -69,6 +69,8 @@ public class TeacherListFragment extends BaseFragment {
 
         setListener();
 
+        setHasOptionsMenu(false);
+
         return root;
     }
 
