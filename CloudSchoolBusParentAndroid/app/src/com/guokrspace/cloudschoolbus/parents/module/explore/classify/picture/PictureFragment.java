@@ -1,10 +1,8 @@
-package com.guokrspace.cloudschoolbus.parents.module.explore.classify.report;
+package com.guokrspace.cloudschoolbus.parents.module.explore.classify.picture;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.support.fastjson.FastJsonTools;
 import com.dexafree.materialList.view.MaterialListView;
@@ -21,8 +21,9 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
-import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
-import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
+import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
+import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.PictureCard;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ import de.greenrobot.dao.query.QueryBuilder;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class ReportFragment extends BaseFragment {
+public class PictureFragment extends BaseFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,7 +49,7 @@ public class ReportFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private ArrayList<MessageEntity> mReportEntities = new ArrayList<MessageEntity>();
+    private ArrayList<MessageEntity> mPictureEntities = new ArrayList<MessageEntity>();
     private MaterialListView mMaterialListView;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -85,8 +86,8 @@ public class ReportFragment extends BaseFragment {
     });
 
     // TODO: Rename and change types of parameters
-    public static ReportFragment newInstance(String param1, String param2) {
-        ReportFragment fragment = new ReportFragment();
+    public static PictureFragment newInstance(String param1, String param2) {
+        PictureFragment fragment = new PictureFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -98,7 +99,7 @@ public class ReportFragment extends BaseFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ReportFragment() {
+    public PictureFragment() {
     }
 
     @Override
@@ -109,11 +110,11 @@ public class ReportFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
 //        ((MainActivity)mParentContext).getmOptionMenuItem().setVisible(false);
-
-        ((MainActivity)mParentContext).setTitle(getResources().getString(R.string.report));
+        ((MainActivity)mParentContext).setTitle(getResources().getString(R.string.noticetype));
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -128,7 +129,7 @@ public class ReportFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                MessageEntity noticeEntity = mReportEntities.get(0);
+                MessageEntity noticeEntity = mPictureEntities.get(0);
                 String endtime = noticeEntity.getSendtime();
                 GetNewMessagesFromServer(endtime, mHandler);
             }
@@ -162,9 +163,12 @@ public class ReportFragment extends BaseFragment {
                     // End has been reached
 
                     Log.i("...", "end called");
-                    MessageEntity attendanceEntity = mReportEntities.get(mReportEntities.size() - 1);
-                    String starttime = attendanceEntity.getSendtime();
+                    MessageEntity noticeEntity = mPictureEntities.get(mPictureEntities.size() - 1);
+                    String starttime = noticeEntity.getSendtime();
                     GetOldMessagesFromServer(starttime, mHandler);
+
+                    // Do something
+//                    new LoadTask(MainActivity.this, start).execute();
 
                     loading = true;
                 }
@@ -173,16 +177,11 @@ public class ReportFragment extends BaseFragment {
 
         setHasOptionsMenu(true);
 
-        mReportEntities = GetMessageFromCache("Report");
-        if (mReportEntities.size() != 0)
+        mPictureEntities = GetMessageFromCache("Article");
+        if (mPictureEntities.size() != 0)
             mHandler.sendEmptyMessage(MSG_ONCACHE);
 
         return root;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
     }
 
     @Override
@@ -222,13 +221,14 @@ public class ReportFragment extends BaseFragment {
     }
 
     private void addCards() {
-        for (int i = 0; i < mReportEntities.size(); i++) {
-            MessageEntity entity = mReportEntities.get(i);
-            ReportListCard card = BuildReportListCard(entity);
-            mMaterialListView.add(card);
+        for (int i = 0; i < mPictureEntities.size(); i++) {
+            MessageEntity messageEntity = mPictureEntities.get(i);
+            if(messageEntity.getApptype().equals("Article")) {
+                PictureCard card = buildArticleCard(messageEntity);
+                mMaterialListView.add(card);
+            }
         }
     }
-
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);

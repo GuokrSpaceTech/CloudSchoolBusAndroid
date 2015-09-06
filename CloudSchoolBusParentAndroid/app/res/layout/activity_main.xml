@@ -17,13 +17,28 @@
         android:layout_width="match_parent"
         android:layout_height="48dip"
         android:background="@drawable/background_tabs"
-        app:pstsDividerColor="#FFFFA500"
+        app:pstsDividerColor="#00FFFFFF"
         app:pstsIndicatorColor="#FFFFA500"
         app:pstsShouldExpand="true"
         app:pstsTabPaddingLeftRight="14dip"
         app:pstsIndicatorHeight="1dip"
         app:pstsUnderlineColor="#FFFFA500"
+        app:pstsUnderlineHeight = "0dip"
         android:layout_alignParentBottom="true"
         android:fillViewport="false" />
 
 </RelativeLayout>
+
+    <!--/*-->
+    <!--pstsIndicatorColor Color of the sliding indicator-->
+    <!--pstsUnderlineColor Color of the full-width line on the bottom of the view-->
+    <!--pstsDividerColor Color of the dividers between tabs-->
+    <!--pstsIndicatorHeight Height of the sliding indicator-->
+    <!--pstsUnderlineHeight Height of the full-width line on the bottom of the view-->
+    <!--pstsDividerPadding Top and bottom padding of the dividers-->
+    <!--pstsTabPaddingLeftRight Left and right padding of each tab-->
+    <!--pstsScrollOffset Scroll offset of the selected tab-->
+    <!--pstsTabBackground Background drawable of each tab, should be a StateListDrawable-->
+    <!--pstsShouldExpand If set to true, each tab is given the same weight, default false-->
+    <!--pstsTextAllCaps If true, all tab titles will be upper case, default true-->
+    <!--*/-->

@@ -55,6 +55,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
+    lintOptions {//在build apk 时Android Lint产生的错误不会导致中断生成APK
+        abortOnError false
+    }
 }
 
 File propFile = file('signing.properties');

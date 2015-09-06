@@ -1,6 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,14 +8,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.android.support.fastjson.FastJsonTools;
-import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
-import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
+import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
@@ -25,7 +22,6 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -110,12 +106,7 @@ public class NoticeFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-//        ((MainActivity)mParentContext).getmOptionMenuItem().setVisible(false);
-        ((MainActivity)mParentContext).setTitle(getResources().getString(R.string.noticetype));
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -176,29 +167,14 @@ public class NoticeFragment extends BaseFragment {
             }
         });
 
+        setHasOptionsMenu(true);
+        
+        mNoticeEntities = GetMessageFromCache("Notice");
+        if(mNoticeEntities.size()>0)
+            mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
 
 
-        GetNoticesFromCache();
-
-//        if (mNoticeEntities.size() == 0)
-//            GetLastestMessagesFromServer(mHandler);
-//        else {
-//            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
-//                    .setMessage(getResources().getString(R.string.no_message))
-//                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-//        }
         return root;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -237,47 +213,19 @@ public class NoticeFragment extends BaseFragment {
         public void onFragmentInteraction(String id);
     }
 
-
-    //Get all articles from cache
-    private void GetNoticesFromCache() {
-        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
-        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
-        mNoticeEntities = (ArrayList<MessageEntity>)queryBuilder.where(MessageEntityDao.Properties.Apptype.eq("Notice")).list();
-
-        if (mNoticeEntities.size() != 0)
-            mHandler.sendEmptyMessage(MSG_ONCACHE);
-    }
-
     private void addCards() {
         for (int i = 0; i < mNoticeEntities.size(); i++) {
             MessageEntity noticeEntity = mNoticeEntities.get(i);
             if(noticeEntity.getApptype().equals("Notice")) {
-                NoticeCard card = BuildCard(noticeEntity);
+                NoticeCard card = BuildNoticeCard(noticeEntity, mHandler);
                 mMaterialListView.add(card);
             }
         }
     }
 
-    private NoticeCard BuildCard(final MessageEntity noticeEntity) {
-        NoticeCard noticeCard = new NoticeCard(mParentContext);
-        String teacherAvatarString = noticeEntity.getSenderEntity().getAvatar();
-        noticeCard.setTeacherAvatarUrl(teacherAvatarString);
-        noticeCard.setTeacherName(noticeEntity.getSenderEntity().getName());
-        noticeCard.setClassName(noticeEntity.getSenderEntity().getClassname());
-        noticeCard.setCardType(cardType(noticeEntity.getApptype()));
-        noticeCard.setSentTime(noticeEntity.getSendtime());
-        noticeCard.setIsNeedConfirm(noticeEntity.getIsconfirm());
-        noticeCard.setIsNeedConfirm("1");
-        noticeCard.setTitle(noticeEntity.getTitle());
-        noticeCard.setDescription(noticeEntity.getDescription());
-        NoticeBody noticeBody = FastJsonTools.getObject(noticeEntity.getBody(), NoticeBody.class);
-        if (noticeBody != null) noticeCard.setDrawable(noticeBody.getPList().get(0));
-        noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NoticeConfirm(noticeEntity.getMessageid(), (Button) view, mHandler);
-            }
-        });
-        return noticeCard;
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }

@@ -2,5 +2,6 @@
 <ru.truba.touchgallery.GalleryWidget.GalleryViewPager xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/view_pager">
+    android:id="@+id/view_pager"
+    android:background="@color/primary_dark">
 </ru.truba.touchgallery.GalleryWidget.GalleryViewPager>

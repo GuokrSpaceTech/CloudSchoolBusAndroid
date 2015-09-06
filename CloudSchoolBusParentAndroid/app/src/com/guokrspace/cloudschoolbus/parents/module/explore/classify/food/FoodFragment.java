@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -172,6 +173,8 @@ public class FoodFragment extends BaseFragment {
             }
         });
 
+        setHasOptionsMenu(true);
+
         GetEntitiesFromCache();
 
         return root;
@@ -180,12 +183,6 @@ public class FoodFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -265,5 +262,11 @@ public class FoodFragment extends BaseFragment {
             }
         });
         return card;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }

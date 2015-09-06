@@ -7,7 +7,8 @@ import android.view.View;
 import com.dexafree.materialList.cards.SimpleCard;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.module.explore.TimelineFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.ImageAdapter;
 
 /**
  * Created by Yang Kai on 15/7/14.
@@ -19,7 +20,7 @@ public class PictureCard extends SimpleCard {
     private String kindergarten;
     private String sentTime;
     private String cardType;
-    private TimelineFragment.ImageAdapter imageAdapter;
+    private ImageAdapter imageAdapter;
     private RecyclerView.Adapter tagAdapter;
     private CommonRecyclerItemClickListener mOnItemSelectedListener;
     private View.OnClickListener mShareButtonClickListener;
@@ -89,11 +90,11 @@ public class PictureCard extends SimpleCard {
         this.cardType = cardType;
     }
 
-    public TimelineFragment.ImageAdapter getImageAdapter() {
+    public ImageAdapter getImageAdapter() {
         return imageAdapter;
     }
 
-    public void setImageAdapter(TimelineFragment.ImageAdapter imageAdapter) {
+    public void setImageAdapter(ImageAdapter imageAdapter) {
         this.imageAdapter = imageAdapter;
     }
 

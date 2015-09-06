@@ -5,8 +5,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,11 @@ import android.widget.ImageView;
 import com.android.support.debug.DebugLog;
 import com.android.support.dialog.CustomWaitDialog;
 import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
+import com.android.support.utils.DateUtils;
 import com.android.support.utils.ImageUtil;
+import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
+import com.dexafree.materialList.model.Card;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
@@ -30,20 +36,42 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecord;
+import com.guokrspace.cloudschoolbus.parents.entity.Food;
+import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
+import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
+import com.guokrspace.cloudschoolbus.parents.entity.Schedule;
+import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
 import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
+import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.ImageAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.explore.TagRecycleViewAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
+import com.guokrspace.cloudschoolbus.parents.widget.AttendanceRecordCard;
+import com.guokrspace.cloudschoolbus.parents.widget.FoodNoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.PictureCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -52,6 +80,7 @@ import java.util.List;
 
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
+import de.greenrobot.dao.query.QueryBuilder;
 
 public class BaseFragment extends Fragment {
 	
@@ -188,10 +217,10 @@ public class BaseFragment extends Fragment {
 
 		HashMap<String, String> params = new HashMap<String, String>();
 		if(starttime!=null)
-		    params.put("starttime", starttime);
+		    params.put("newid", starttime);
 
 		if(endtime!=null)
-		    params.put("endtime", endtime);
+		    params.put("oldid", endtime);
 
 		CloudSchoolBusRestClient.get(ProtocolDef.METHOD_timeline, params, new JsonHttpResponseHandler() {
 			MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
@@ -201,8 +230,21 @@ public class BaseFragment extends Fragment {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
-                //It is not supposed to get here
-                handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+
+				String retCode = "";
+				for (int i = 0; i < headers.length; i++) {
+					Header header = headers[i];
+					if ("code".equalsIgnoreCase(header.getName())) {
+						retCode = header.getValue();
+						break;
+					}
+				}
+				if (retCode.equals("-1")) //Session Expire
+				{
+					BusProvider.getInstance().post(new SidExpireEvent(mApplication.mConfig.getSid()));
+				}
+
+
 			}
 
 			@Override
@@ -217,13 +259,11 @@ public class BaseFragment extends Fragment {
 					}
 				}
 				if (!retCode.equals("1")) {
-					handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+					Message msg = handler.obtainMessage();
+					msg.what = HandlerConstant.MSG_SERVER_ERROR;
+					msg.obj = response;
+					handler.sendMessage(msg);
 					return;
-				}
-
-				if (retCode.equals("-1113")) //Session Expire
-				{
-					BusProvider.getInstance().post(new SidExpireEvent(mApplication.mConfig.getSid()));
 				}
 
 				List<Timeline> timelines = FastJsonTools.getListObject(response.toString(), Timeline.class);
@@ -256,7 +296,10 @@ public class BaseFragment extends Fragment {
 
 			@Override
 			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+				Message msg = handler.obtainMessage();
+				msg.what = HandlerConstant.MSG_SERVER_ERROR;
+				msg.obj = throwable;
+				handler.sendMessage(msg);
 				super.onFailure(statusCode, headers, throwable, errorResponse);
 			}
 
@@ -280,7 +323,10 @@ public class BaseFragment extends Fragment {
 					// No New Records are found
 					handler.sendEmptyMessage(HandlerConstant.MSG_NOCHANGE);
 				} else {
-					handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+					Message msg = handler.obtainMessage();
+					msg.what = HandlerConstant.MSG_SERVER_ERROR;
+					msg.obj = throwable;
+					handler.sendMessage(msg);
 				}
 			}
 		});
@@ -385,7 +431,10 @@ public class BaseFragment extends Fragment {
 
 			@Override
 			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+				Message msg = handler.obtainMessage();
+				msg.what = HandlerConstant.MSG_SERVER_ERROR;
+				msg.obj = throwable;
+				handler.sendMessage(msg);
 				super.onFailure(statusCode, headers, throwable, errorResponse);
 			}
 
@@ -459,4 +508,207 @@ public class BaseFragment extends Fragment {
 		return cardtype;
 	}
 
+	public PictureCard buildArticleCard(MessageEntity message) {
+		PictureCard card = new PictureCard(mParentContext);
+		String teacherAvatarString = message.getSenderEntity().getAvatar();
+		card.setTeacherAvatarUrl(teacherAvatarString);
+		card.setTeacherName(message.getSenderEntity().getName());
+		card.setKindergarten(mApplication.mSchools.get(0).getName());
+		card.setCardType(cardType(message.getApptype()));
+		card.setSentTime(message.getSendtime());
+		card.setTitle(message.getTitle());
+		card.setDescription(message.getDescription());
+		List<String> pictureUrls = new ArrayList<>();
+		try {
+			JSONObject jsonObject = new JSONObject(message.getBody());
+			pictureUrls = FastJsonTools.getListObject(jsonObject.get("PList").toString(), String.class);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls));
+		final List<TagEntity> tagEntities = message.getTagEntityList();
+		TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
+		card.setTagAdapter(adapter);
+
+		CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+			@Override
+			public void onItemClick(View view, int position) {
+				animation(view);
+				SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
+						.setMessage(tagEntities.get(position).getTagnamedesc())
+						.setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+			}
+
+			@Override
+			public void onItemLongClick(View view, int position) {
+
+			}
+		});
+		card.setmOnItemSelectedListener(tagClickListener);
+
+		View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showShare();
+			}
+		};
+		card.setmShareButtonClickListener(shareButtonClickListener);
+
+		return card;
+	}
+
+	public NoticeCard BuildNoticeCard(final MessageEntity messageEntity, final Handler handler)
+	{
+		NoticeCard noticeCard = new NoticeCard(mParentContext);
+		String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+		noticeCard.setTeacherAvatarUrl(teacherAvatarString);
+		noticeCard.setTeacherName(messageEntity.getSenderEntity().getName());
+		noticeCard.setClassName(messageEntity.getSenderEntity().getClassname());
+		noticeCard.setCardType(cardType(messageEntity.getApptype()));
+		noticeCard.setSentTime(messageEntity.getSendtime());
+		noticeCard.setIsNeedConfirm(messageEntity.getIsconfirm());
+		noticeCard.setTitle(messageEntity.getTitle());
+		noticeCard.setDescription(messageEntity.getDescription());
+		NoticeBody noticeBody = FastJsonTools.getObject(messageEntity.getBody(), NoticeBody.class);
+		if (noticeBody != null) noticeCard.setDrawable(noticeBody.getPList().get(0));
+		noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				NoticeConfirm(messageEntity.getMessageid(), (Button) view, handler);
+			}
+		});
+		return noticeCard;
+	}
+
+	public AttendanceRecordCard BuildAttendanceCard(MessageEntity messageEntity)
+	{
+		AttendanceRecordCard attendanceRecordCard = new AttendanceRecordCard(mParentContext);
+		String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+		attendanceRecordCard.setTeacherAvatarUrl(teacherAvatarString);
+		attendanceRecordCard.setTeacherName(messageEntity.getSenderEntity().getName());
+		attendanceRecordCard.setClassName(messageEntity.getSenderEntity().getClassname());
+		attendanceRecordCard.setCardType(cardType(messageEntity.getApptype()));
+		attendanceRecordCard.setSentTime(messageEntity.getSendtime());
+		String messageBody = messageEntity.getBody();
+		AttendanceRecord attendanceRecord = FastJsonTools.getObject(messageBody, AttendanceRecord.class);
+		attendanceRecordCard.setRecordTime(attendanceRecord.getPunchtime().toString());
+		attendanceRecordCard.setDrawable(attendanceRecord.getPicture());
+		attendanceRecordCard.setDescription(attendanceRecord.getPunchtime());
+		return attendanceRecordCard;
+	}
+
+	public StreamingNoticeCard BuildStreamingNoticeCard(MessageEntity messageEntity)
+	{
+		StreamingNoticeCard streamingNoticeCard = new StreamingNoticeCard(mParentContext);
+		streamingNoticeCard.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+		streamingNoticeCard.setKindergartenName(messageEntity.getSenderEntity().getName());
+		streamingNoticeCard.setClassName(messageEntity.getSenderEntity().getClassname());
+		streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+		streamingNoticeCard.setCardType(cardType(messageEntity.getApptype()));
+		streamingNoticeCard.setContext(mParentContext);
+		streamingNoticeCard.setDescription(messageEntity.getDescription());
+		String messageBody = messageEntity.getBody();
+		final Ipcparam ipcpara = FastJsonTools.getObject(messageBody, Ipcparam.class);
+		streamingNoticeCard.setClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				StreamingChannelsFragment fragment = StreamingChannelsFragment.newInstance(ipcpara);
+				FragmentTransaction transaction = getFragmentManager().beginTransaction();
+				transaction.replace(R.id.article_module_layout, fragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+			}
+		});
+
+		return streamingNoticeCard;
+	}
+
+	public ReportListCard BuildReportListCard(final MessageEntity messageEntity)
+	{
+		ReportListCard reportListCard = new ReportListCard(mParentContext);
+		String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+		reportListCard.setTeacherAvatarUrl(teacherAvatarString);
+		reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
+		reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
+		reportListCard.setCardType(cardType(messageEntity.getApptype()));
+		reportListCard.setSentTime(messageEntity.getSendtime());
+		String messageBody = messageEntity.getBody();
+		final StudentReport studentReport = FastJsonTools.getObject(messageBody, StudentReport.class);
+		reportListCard.setReporttype(studentReport.getReportType());
+		reportListCard.setClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				ReportDetailFragment reportDetailFragment = ReportDetailFragment.newInstance(messageEntity.getSendtime(), studentReport.getReportUrl());
+				FragmentTransaction transaction = getFragmentManager().beginTransaction();
+				transaction.replace(R.id.article_module_layout, reportDetailFragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+			}
+		});
+		return reportListCard;
+	}
+
+	public FoodNoticeCard BuildFoodNoticeCard(final MessageEntity messageEntity)
+	{
+		FoodNoticeCard card = new FoodNoticeCard(mParentContext);
+		card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+		card.setKindergartenName(messageEntity.getSenderEntity().getName());
+		card.setClassName(messageEntity.getSenderEntity().getClassname());
+		card.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+		card.setCardType(cardType(messageEntity.getApptype()));
+		card.setContext(mParentContext);
+		card.setDescription(messageEntity.getDescription());
+		Food food = FastJsonTools.getObject(messageEntity.getBody(), Food.class);
+		final String foodUrl = food.getUrl();
+		card.setClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				FoodDetailFragment fragment = FoodDetailFragment.newInstance(foodUrl);
+				FragmentTransaction transaction = getFragmentManager().beginTransaction();
+				transaction.replace(R.id.article_module_layout, fragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+			}
+		});
+		return card;
+	}
+
+	public ScheduleNoticeCard BuildScheduleNoticeCard(final MessageEntity messageEntity)
+	{
+		ScheduleNoticeCard card = new ScheduleNoticeCard(mParentContext);
+		card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+		card.setKindergartenName(messageEntity.getSenderEntity().getName());
+		card.setClassName(messageEntity.getSenderEntity().getClassname());
+		card.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+		card.setCardType(cardType(messageEntity.getApptype()));
+		card.setContext(mParentContext);
+		card.setDescription(messageEntity.getDescription());
+		Schedule schedule = FastJsonTools.getObject(messageEntity.getBody(), Schedule.class);
+		final String scheduleUrl = schedule.getUrl();
+		card.setClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(scheduleUrl);
+				FragmentTransaction transaction = getFragmentManager().beginTransaction();
+				transaction.replace(R.id.article_module_layout, fragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+			}
+		});
+		return card;
+	}
+
+	//Get filtered messages from cache
+	public ArrayList<MessageEntity> GetMessageFromCache(String messageType) {
+		MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+		return (ArrayList<MessageEntity>)queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(messageType)).list();
+	}
+
+	//Get all messages from cache
+	private ArrayList<MessageEntity> GetMessageFromCache() {
+		MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+		return (ArrayList<MessageEntity>)queryBuilder.list();
+	}
 }

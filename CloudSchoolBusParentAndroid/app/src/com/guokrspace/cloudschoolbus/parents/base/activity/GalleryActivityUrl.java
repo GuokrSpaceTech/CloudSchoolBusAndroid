@@ -1,6 +1,8 @@
 package com.guokrspace.cloudschoolbus.parents.base.activity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.guokrspace.cloudschoolbus.parents.R;
@@ -27,15 +29,10 @@ public class GalleryActivityUrl extends BaseActivity{
         position = bundle.getInt("currentFile");
 
         setContentView(R.layout.activity_image_viewer);
-//        String[] urls = {
-//                "http://cs407831.userapi.com/v407831207/18f6/jBaVZFDhXRA.jpg",
-//                "http://cs407831.userapi.com/v4078f31207/18fe/4Tz8av5Hlvo.jpg",
-//                "http://cs407831.userapi.com/v407831207/1906/oxoP6URjFtA.jpg",
-//                "http://cs407831.userapi.com/v407831207/190e/2Sz9A774hUc.jpg",
-//                "http://cs407831.userapi.com/v407831207/1916/Ua52RjnKqjk.jpg",
-//                "http://cs407831.userapi.com/v407831207/191e/QEQE83Ok0lQ.jpg"
-//        };
-//        Collections.addAll(items, urls);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setTitle("");
 
         UrlPagerAdapter pagerAdapter = new ru.truba.touchgallery.GalleryWidget.UrlPagerAdapter(this, items);
         pagerAdapter.setOnItemChangeListener(new OnItemChangeListener()
@@ -53,5 +50,16 @@ public class GalleryActivityUrl extends BaseActivity{
 
         mViewPager.setCurrentItem(position);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

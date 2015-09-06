@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -167,6 +168,8 @@ public class AttendanceFragment extends BaseFragment {
             }
         });
 
+        setHasOptionsMenu(true);
+
         GetEntitiesFromCache();
 
         return root;
@@ -175,12 +178,6 @@ public class AttendanceFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -252,5 +249,11 @@ public class AttendanceFragment extends BaseFragment {
         attendanceRecordCard.setDrawable(attendanceRecord.getPicture());
         attendanceRecordCard.setDescription(attendanceRecord.getPunchtime());
         return attendanceRecordCard;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }

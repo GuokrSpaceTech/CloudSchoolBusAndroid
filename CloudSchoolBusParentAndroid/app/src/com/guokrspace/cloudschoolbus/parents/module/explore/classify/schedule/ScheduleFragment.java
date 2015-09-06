@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -48,7 +49,7 @@ public class ScheduleFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private ArrayList<MessageEntity> scheduleEntities = new ArrayList<MessageEntity>();
+    private ArrayList<MessageEntity> mScheduleEntities = new ArrayList<MessageEntity>();
     private MaterialListView mMaterialListView;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -128,7 +129,7 @@ public class ScheduleFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                MessageEntity noticeEntity = scheduleEntities.get(0);
+                MessageEntity noticeEntity = mScheduleEntities.get(0);
                 String endtime = noticeEntity.getSendtime();
                 GetNewMessagesFromServer(endtime, mHandler);
             }
@@ -162,7 +163,7 @@ public class ScheduleFragment extends BaseFragment {
                     // End has been reached
 
                     Log.i("...", "end called");
-                    MessageEntity attendanceEntity = scheduleEntities.get(scheduleEntities.size() - 1);
+                    MessageEntity attendanceEntity = mScheduleEntities.get(mScheduleEntities.size() - 1);
                     String starttime = attendanceEntity.getSendtime();
                     GetOldMessagesFromServer(starttime, mHandler);
 
@@ -171,7 +172,11 @@ public class ScheduleFragment extends BaseFragment {
             }
         });
 
-        GetEntitiesFromCache();
+        setHasOptionsMenu(true);
+
+        mScheduleEntities = GetMessageFromCache("Schedule");
+        if (mScheduleEntities.size() != 0)
+            mHandler.sendEmptyMessage(MSG_ONCACHE);
 
         return root;
     }
@@ -179,12 +184,6 @@ public class ScheduleFragment extends BaseFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -228,41 +227,23 @@ public class ScheduleFragment extends BaseFragment {
     private void GetEntitiesFromCache() {
         MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
         QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
-        scheduleEntities = (ArrayList<MessageEntity>) queryBuilder.where(MessageEntityDao.Properties.Apptype.eq("Schedule")).list();
+        mScheduleEntities = (ArrayList<MessageEntity>) queryBuilder.where(MessageEntityDao.Properties.Apptype.eq("Schedule")).list();
 
-        if (scheduleEntities.size() != 0)
+        if (mScheduleEntities.size() != 0)
             mHandler.sendEmptyMessage(MSG_ONCACHE);
     }
 
     private void addCards() {
-        for (int i = 0; i < scheduleEntities.size(); i++) {
-            MessageEntity entity = scheduleEntities.get(i);
-            ScheduleNoticeCard card = BuildCard(entity);
+        for (int i = 0; i < mScheduleEntities.size(); i++) {
+            MessageEntity entity = mScheduleEntities.get(i);
+            ScheduleNoticeCard card = BuildScheduleNoticeCard(entity);
             mMaterialListView.add(card);
         }
     }
 
-    private ScheduleNoticeCard BuildCard(final MessageEntity messageEntity) {
-        ScheduleNoticeCard card = new ScheduleNoticeCard(mParentContext);
-        card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
-        card.setKindergartenName(messageEntity.getSenderEntity().getName());
-        card.setClassName(messageEntity.getSenderEntity().getClassname());
-        card.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
-        card.setCardType(cardType(messageEntity.getApptype()));
-        card.setContext(mParentContext);
-        card.setDescription(messageEntity.getDescription());
-        Schedule schedule = FastJsonTools.getObject(messageEntity.getBody(), Schedule.class);
-        final String scheduleUrl = schedule.getUrl();
-        card.setClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(scheduleUrl);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });
-        return card;
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }

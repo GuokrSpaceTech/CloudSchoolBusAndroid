@@ -28,6 +28,8 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoMaster;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
@@ -45,6 +47,8 @@ import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * activity基类
@@ -221,6 +225,20 @@ abstract public class BaseActivity extends ActionBarActivity {
 		Fragment currentFragment = getSupportFragmentManager()
 				.findFragmentByTag(fragmentTag);
 		return currentFragment;
+	}
+
+	//Get filtered messages from cache
+	public ArrayList<MessageEntity> GetMessageFromCache(String messageType) {
+		MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+		return (ArrayList<MessageEntity>)queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(messageType)).list();
+	}
+
+	//Get all messages from cache
+	private ArrayList<MessageEntity> GetMessageFromCache() {
+		MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+		return (ArrayList<MessageEntity>)queryBuilder.list();
 	}
 
 }

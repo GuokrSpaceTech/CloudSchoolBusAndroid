@@ -27,7 +27,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -62,13 +61,13 @@ import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.ClassifyDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.picture.PictureFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.TimelineFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
 import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.widget.BadgeView;
@@ -89,22 +88,9 @@ import io.rong.imlib.RongIMClient;
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
 //http://stackoverflow.com/questions/24838668/icon-selector-not-working-with-pagerslidingtabstrips
-/*
-pstsIndicatorColor Color of the sliding indicator
-pstsUnderlineColor Color of the full-width line on the bottom of the view
-pstsDividerColor Color of the dividers between tabs
-pstsIndicatorHeightHeight of the sliding indicator
-pstsUnderlineHeight Height of the full-width line on the bottom of the view
-pstsDividerPadding Top and bottom padding of the dividers
-pstsTabPaddingLeftRight Left and right padding of each tab
-pstsScrollOffset Scroll offset of the selected tab
-pstsTabBackground Background drawable of each tab, should be a StateListDrawable
-pstsShouldExpand If set to true, each tab is given the same weight, default false
-pstsTextAllCaps If true, all tab titles will be upper case, default true
-*/
 
 public class MainActivity extends BaseActivity implements
-        TimelineFragment.OnFragmentInteractionListener
+        ExploreFragment.OnFragmentInteractionListener
 
 {
 
@@ -115,6 +101,9 @@ public class MainActivity extends BaseActivity implements
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
 //    private List<String> mFragementTags = new ArrayList();
+
+    private String mUpperLeverTitle;
+    private String mCurrentTitle;
 
     private Drawable oldBackground = null;
     private int currentColor = 0xF1A141;
@@ -157,7 +146,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initFragments() {
-        mFragments[0] = TimelineFragment.newInstance(null, null);
+        mFragments[0] = ExploreFragment.newInstance(null, null);
         mFragments[1] = TeacherListFragment.newInstance();
         mFragments[2] = HobbyFragment.newInstance();
         mFragments[3] = AboutmeFragment.newInstance();
@@ -184,9 +173,7 @@ public class MainActivity extends BaseActivity implements
         //Customise the Action Bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.abs_layout);
-        View view = getSupportActionBar().getCustomView();
-        mActionBarTitle = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-        mActionBarTitle.setText(getResources().getString(string.module_explore));
+        setActionBarTitle(getResources().getString(string.module_explore),"");
 
         //Hack for force the overflow button in the actionbar
         getOverflowMenu();
@@ -196,6 +183,24 @@ public class MainActivity extends BaseActivity implements
     {
         RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
         tabs.delegatePageListener = new MyPageChangeListener();
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            public void onBackStackChanged() {
+                Log.i("", "back stack changed ");
+                int backCount = getSupportFragmentManager().getBackStackEntryCount();
+                // First Level of Fragment, no Homeasup Arrow, with bottoms Tabs
+                if (backCount == 0) {
+                    // block where back has been pressed. since backstack is zero.
+                    getTabs().setVisibility(View.VISIBLE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
+                // Next Level of Fragment(Conversation), has Homeasup Arrow, without bottom Tabs
+                if (backCount > 0) {
+                    getTabs().setVisibility(View.GONE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
+            }
+        });
     }
 
     @Override
@@ -216,65 +221,83 @@ public class MainActivity extends BaseActivity implements
         return super.onMenuOpened(featureId, menu);
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentTransaction transaction;
         switch (item.getItemId()) {
-
-//            case R.id.action_all:
-//                TimelineFragment fragment = (TimelineFragment)mFragments[0];
-//                if(fragment.mMesageEntities.size() != 0) {
-//                    ClassifyDialogFragment dialog = new ClassifyDialogFragment();
-//                    dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0); //Let the fragment dialog take control all view elements
-//                    dialog.show(getSupportFragmentManager(), "");
-//                }
-//                break;
             case R.id.action_notice:
-                NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, noticeFragment, "notice");
-                transaction.addToBackStack("notice");
-                transaction.commit();
+                if(GetMessageFromCache("Notice").size()>0) {
+                    setActionBarTitle(getResources().getString(string.noticetype),getResources().getString(string.module_explore));
+                    NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, noticeFragment, "notice");
+                    transaction.addToBackStack("notice");
+                    transaction.commit();
+                }
                 break;
             case R.id.action_attendance:
-                AttendanceFragment attendanceFragment = AttendanceFragment.newInstance(null, null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, attendanceFragment, "attendance");
-                transaction.addToBackStack("attendance");
-                transaction.commit();
+                if(GetMessageFromCache("Punch").size()>0) {
+                    setActionBarTitle(getResources().getString(string.attendancetype),getResources().getString(string.module_explore));
+                    AttendanceFragment attendanceFragment = AttendanceFragment.newInstance(null, null);
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, attendanceFragment, "attendance");
+                    transaction.addToBackStack("attendance");
+                    transaction.commit();
+                }
                 break;
             case R.id.action_schedule:
-                ScheduleFragment scheduleFragment = ScheduleFragment.newInstance(null, null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, scheduleFragment, "schedule");
-                transaction.addToBackStack("schedule");
-                transaction.commit();
+                if(GetMessageFromCache("Schedule").size()>0) {
+                    setActionBarTitle(getResources().getString(string.attendancetype),getResources().getString(string.module_explore));
+                    ScheduleFragment scheduleFragment = ScheduleFragment.newInstance(null, null);
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, scheduleFragment, "schedule");
+                    transaction.addToBackStack("schedule");
+                    transaction.commit();
+                }
                 break;
             case R.id.action_report:
-                ReportFragment reportFragment = ReportFragment.newInstance(null, null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, reportFragment, "report");
-                transaction.addToBackStack("report");
-                transaction.commit();
+                if(GetMessageFromCache("Report").size()>0) {
+                    setActionBarTitle(getResources().getString(string.report),getResources().getString(string.module_explore));
+                    ReportFragment reportFragment = ReportFragment.newInstance(null, null);
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, reportFragment, "report");
+                    transaction.addToBackStack("report");
+                    transaction.commit();
+                }
                 break;
             case R.id.action_food:
-                FoodFragment foodFragment = FoodFragment.newInstance(null,null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, foodFragment, "food");
-                transaction.addToBackStack("food");
-                transaction.commit();
+                if(GetMessageFromCache("Food").size()>0) {
+                    setActionBarTitle(getResources().getString(string.food),getResources().getString(string.module_explore));
+                    FoodFragment foodFragment = FoodFragment.newInstance(null, null);
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, foodFragment, "food");
+                    transaction.addToBackStack("food");
+                    transaction.commit();
+                }
                 break;
             case R.id.action_streaming:
-                StreamingFragment streamingFragment = StreamingFragment.newInstance(null,null);
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, streamingFragment, "streaming");
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if(GetMessageFromCache("OpenClass").size()>0) {
+                    setActionBarTitle(getResources().getString(string.openclass),getResources().getString(string.module_explore));
+                    StreamingFragment streamingFragment = StreamingFragment.newInstance(null, null);
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, streamingFragment, "streaming");
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+                break;
+            case R.id.action_picture:
+                if(GetMessageFromCache("Article").size()>0) {
+                    setActionBarTitle(getResources().getString(string.picture),getResources().getString(string.module_explore));
+                    PictureFragment pictureFragment = PictureFragment.newInstance(null, null);
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.article_module_layout, pictureFragment, "article");
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
                 break;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
+                setActionBarTitle(mUpperLeverTitle,"");
                 break;
         }
 
@@ -668,14 +691,14 @@ public class MainActivity extends BaseActivity implements
             badgeViews.get(position).setVisibility(View.INVISIBLE);
 
             // Check if this is the page you want.
-            if (mFragments[position] instanceof TimelineFragment) {
-                mActionBarTitle.setText(getResources().getString(string.module_explore));
+            if (mFragments[position] instanceof ExploreFragment) {
+                setActionBarTitle(getResources().getString(string.module_explore), "");
             } else if (mFragments[position] instanceof TeacherListFragment) {
-                mActionBarTitle.setText(getResources().getString(string.module_teacher));
+                setActionBarTitle(getResources().getString(string.module_teacher), "");
             } else if (mFragments[position] instanceof HobbyFragment) {
-                mActionBarTitle.setText(getResources().getString(string.module_hobby));
+                setActionBarTitle(getResources().getString(string.module_hobby),"");
             } else if (mFragments[position] instanceof AboutmeFragment) {
-                mActionBarTitle.setText(getResources().getString(string.module_aboutme));
+                setActionBarTitle(getResources().getString(string.module_aboutme),"");
             }
         }
 
@@ -708,7 +731,7 @@ public class MainActivity extends BaseActivity implements
             if(field!=null)
             {
                 field.setAccessible(true);
-                field.set(menu , true);
+                field.set(menu, true);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -719,5 +742,14 @@ public class MainActivity extends BaseActivity implements
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setActionBarTitle(String title, String preTitle)
+    {
+        View view = getSupportActionBar().getCustomView();
+        TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+        textView.setText(title);
+        mCurrentTitle = title;
+        mUpperLeverTitle = preTitle;
     }
 }

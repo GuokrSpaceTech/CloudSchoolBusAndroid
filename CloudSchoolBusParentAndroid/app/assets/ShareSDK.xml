@@ -59,18 +59,18 @@
     <SinaWeibo
         Id="1"
         SortId="1"
-        AppKey="568898243"
-        AppSecret="38a4f8204cc784f81f9f0daaf31e02e3"
-        RedirectUrl="http://www.sharesdk.cn"
+        AppKey="2291457601"
+        AppSecret="e3b49e927694ac544c0b3f2a4b86b76a"
+        RedirectUrl="http://yunxiaoche.com"
         ShareByAppClient="false"
         Enable="true" />
 
     <TencentWeibo
         Id="2" 
         SortId="2"
-        AppKey="801307650"
-        AppSecret="ae36f4ee3946e1cbb98d6965b0b2ff5c"
-        RedirectUri="http://sharesdk.cn"
+        AppKey="801320773"
+        AppSecret="202305b084ad5149f97ce2f3da0e3478"
+        RedirectUri="http://yunxiaoche.com"
         Enable="true" />
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
@@ -97,7 +97,7 @@
     <Wechat
         Id="4"
         SortId="4"
-        AppId="wx4868b35061f87885"
+        AppId="wx2376a8ec446b2086"
         AppSecret="64020361b8ec4c99936c0e3999a9f249"
         BypassApproval="false"
         Enable="true" />
@@ -105,7 +105,7 @@
     <WechatMoments
         Id="5"
         SortId="5"
-        AppId="wx4868b35061f87885"
+        AppId="wx2376a8ec446b2086"
         AppSecret="64020361b8ec4c99936c0e3999a9f249"
         BypassApproval="false"
         Enable="true" />

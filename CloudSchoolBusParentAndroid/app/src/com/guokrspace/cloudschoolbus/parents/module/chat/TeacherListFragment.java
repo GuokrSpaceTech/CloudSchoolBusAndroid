@@ -84,9 +84,10 @@ public class TeacherListFragment extends BaseFragment {
             public void onItemClick(CardItemView view, int position) {
 
                 teacherName = mApplication.mTeachers.get(position).getName();
+                MainActivity activity = (MainActivity) mParentContext;
+                activity.setActionBarTitle(teacherName,getResources().getString(R.string.module_conversation));
 
-                String mTargetID = "47582";
-                mTargetID = mApplication.mTeachers.get(position).getId();
+                String mTargetID = mApplication.mTeachers.get(position).getId();
                 ConversationFragment fragment = new ConversationFragment();
                 Uri uri = Uri.parse("rong://" + getActivity().getApplicationInfo().packageName).buildUpon()
                         .appendPath("conversation").appendPath(io.rong.imlib.model.Conversation.ConversationType.PRIVATE.getName().toLowerCase())
@@ -102,30 +103,6 @@ public class TeacherListFragment extends BaseFragment {
             @Override
             public void onItemLongClick(CardItemView view, int position) {
 
-            }
-        });
-
-        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            public void onBackStackChanged() {
-                Log.i("TeacherListFragment", "back stack changed ");
-                int backCount = getFragmentManager().getBackStackEntryCount();
-                // First Level of Fragment, no Homeasup Arrow, with bottoms Tabs
-                if (backCount == 0) {
-                    // block where back has been pressed. since backstack is zero.
-                    mainActivity.getTabs().setVisibility(View.VISIBLE);
-                    mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    View view = mainActivity.getSupportActionBar().getCustomView();
-                    TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-                    textView.setText(getResources().getString(R.string.module_teacher));
-                }
-                // Next Level of Fragment(Conversation), has Homeasup Arrow, without bottom Tabs
-                if (backCount > 0) {
-                    mainActivity.getTabs().setVisibility(View.GONE);
-                    mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    View view = mainActivity.getSupportActionBar().getCustomView();
-                    TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-                    textView.setText(teacherName);
-                }
             }
         });
 
