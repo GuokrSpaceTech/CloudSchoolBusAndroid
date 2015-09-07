@@ -103,8 +103,8 @@ public class MainActivity extends BaseActivity implements
     private Fragment[] mFragments = {null, null, null, null};
 //    private List<String> mFragementTags = new ArrayList();
 
-    public String mUpperLeverTitle;
-    public String mCurrentTitle;
+    public String mUpperLeverTitle="";
+    public String mCurrentTitle="";
 
     private Drawable oldBackground = null;
     private int currentColor = 0xF1A141;
@@ -190,7 +190,7 @@ public class MainActivity extends BaseActivity implements
         //Customise the Action Bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.abs_layout);
-        setActionBarTitle(getResources().getString(string.module_explore),"");
+        setActionBarTitle(getResources().getString(string.module_explore));
 
         //Hack for force the overflow button in the actionbar
         getOverflowMenu();
@@ -325,7 +325,7 @@ public class MainActivity extends BaseActivity implements
 //                break;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
-                setActionBarTitle(mUpperLeverTitle,"");
+                setActionBarTitle(mUpperLeverTitle);
                 break;
         }
 
@@ -721,13 +721,13 @@ public class MainActivity extends BaseActivity implements
 
             // Check if this is the page you want.
             if (mFragments[position] instanceof ExploreFragment) {
-                setActionBarTitle(getResources().getString(string.module_explore), "");
+                setActionBarTitle(getResources().getString(string.module_explore));
             } else if (mFragments[position] instanceof TeacherListFragment) {
-                setActionBarTitle(getResources().getString(string.module_teacher), "");
+                setActionBarTitle(getResources().getString(string.module_teacher));
             } else if (mFragments[position] instanceof HobbyFragment) {
-                setActionBarTitle(getResources().getString(string.module_hobby),"");
+                setActionBarTitle(getResources().getString(string.module_hobby));
             } else if (mFragments[position] instanceof AboutmeFragment) {
-                setActionBarTitle(getResources().getString(string.module_aboutme),"");
+                setActionBarTitle(getResources().getString(string.module_aboutme));
             }
         }
 
@@ -773,12 +773,12 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    public void setActionBarTitle(String title, String preTitle)
+    public void setActionBarTitle(String title)
     {
         View view = getSupportActionBar().getCustomView();
         TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
         textView.setText(title);
+        mUpperLeverTitle = mCurrentTitle;
         mCurrentTitle = title;
-        mUpperLeverTitle = preTitle;
     }
 }

@@ -26,6 +26,7 @@ import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.dexafree.materialList.model.Card;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
+import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
@@ -648,6 +649,8 @@ public class BaseFragment extends Fragment {
 		reportListCard.setClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				MainActivity mainActivity = (MainActivity)mParentContext;
+				mainActivity.setActionBarTitle(getResources().getString(R.string.report));
 				ReportDetailFragment reportDetailFragment = ReportDetailFragment.newInstance(messageEntity.getSendtime(), studentReport.getReportUrl());
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
 				transaction.replace(R.id.article_module_layout, reportDetailFragment);

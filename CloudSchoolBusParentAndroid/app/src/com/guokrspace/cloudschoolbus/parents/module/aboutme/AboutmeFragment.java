@@ -174,7 +174,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             @Override
             public void onClick(View view) {
                 MainActivity activity = (MainActivity) mParentContext;
-                activity.setActionBarTitle(getResources().getString(R.string.childsetting),getResources().getString(R.string.module_aboutme));
+                activity.setActionBarTitle(getResources().getString(R.string.childsetting));
                 ChildSettingFragment fragment = new ChildSettingFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container,fragment);

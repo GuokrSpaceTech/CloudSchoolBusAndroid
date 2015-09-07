@@ -85,7 +85,7 @@ public class TeacherListFragment extends BaseFragment {
 
                 teacherName = mApplication.mTeachers.get(position).getName();
                 MainActivity activity = (MainActivity) mParentContext;
-                activity.setActionBarTitle(teacherName,getResources().getString(R.string.module_conversation));
+                activity.setActionBarTitle(teacherName);
 
                 String mTargetID = mApplication.mTeachers.get(position).getId();
                 ConversationFragment fragment = new ConversationFragment();

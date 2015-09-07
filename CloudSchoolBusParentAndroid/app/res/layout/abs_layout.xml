@@ -3,15 +3,22 @@
     android:id="@+id/layout_abs_actionbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="horizontal">
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="fill_parent"
+        android:background="@color/primary_white" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="left"
         android:text="my Title"
         android:textColor="#FFFFFFFF"
         android:id="@+id/abs_layout_titleTextView"
-        style="@style/CardTitle" />
+        style="@style/CardTitle"
+        android:layout_marginLeft="2dp"
+        android:layout_weight="99" />
 
 </LinearLayout>

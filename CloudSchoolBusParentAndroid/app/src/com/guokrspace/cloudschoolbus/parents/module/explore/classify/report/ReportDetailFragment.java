@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -44,7 +45,7 @@ public class ReportDetailFragment extends BaseFragment implements AdvancedWebVie
         View root = inflater.inflate(R.layout.activity_webview, container, false);
         mWebView = (AdvancedWebView) root.findViewById(R.id.webView);
         mWebView.loadUrl(reportUrl);
-//        webView.loadUrl("http://192.168.1.140:81/api/page/index");
+        setHasOptionsMenu(true);
         return root;
     }
 
@@ -95,5 +96,11 @@ public class ReportDetailFragment extends BaseFragment implements AdvancedWebVie
 
     @Override
     public void onExternalPageRequest(String url) { }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
+    }
 
 }
