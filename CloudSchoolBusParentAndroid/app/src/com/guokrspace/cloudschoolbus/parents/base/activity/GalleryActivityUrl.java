@@ -32,15 +32,13 @@ public class GalleryActivityUrl extends BaseActivity{
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("");
-
         UrlPagerAdapter pagerAdapter = new ru.truba.touchgallery.GalleryWidget.UrlPagerAdapter(this, items);
         pagerAdapter.setOnItemChangeListener(new OnItemChangeListener()
         {
             @Override
             public void onItemChange(int currentPosition)
             {
-                Toast.makeText(GalleryActivityUrl.this, "Current item is " + currentPosition, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(GalleryActivityUrl.this, "Current item is " + currentPosition, Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -33,6 +33,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -102,8 +103,8 @@ public class MainActivity extends BaseActivity implements
     private Fragment[] mFragments = {null, null, null, null};
 //    private List<String> mFragementTags = new ArrayList();
 
-    private String mUpperLeverTitle;
-    private String mCurrentTitle;
+    public String mUpperLeverTitle;
+    public String mCurrentTitle;
 
     private Drawable oldBackground = null;
     private int currentColor = 0xF1A141;
@@ -141,8 +142,24 @@ public class MainActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        BusProvider.getInstance().register(this);
         CheckLoginCredential();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        BusProvider.getInstance().unregister(this);
+        super.onDestroy();
     }
 
     private void initFragments() {
@@ -183,6 +200,17 @@ public class MainActivity extends BaseActivity implements
     {
         RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
         tabs.delegatePageListener = new MyPageChangeListener();
+        tabs.delegateOnTabClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int postion = (int)view.getTag();
+                if(postion==0)
+                {
+                    ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
+                    theFragment.filterCards("All");
+                }
+            }
+        };
 
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             public void onBackStackChanged() {
@@ -215,7 +243,7 @@ public class MainActivity extends BaseActivity implements
 
         if(featureId == Window.FEATURE_ACTION_BAR && menu != null)
         {
-            setOverflowIconVisiable(menu);
+            setOverflowIconVisible(menu);
         }
 
         return super.onMenuOpened(featureId, menu);
@@ -225,76 +253,76 @@ public class MainActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentTransaction transaction;
         switch (item.getItemId()) {
-            case R.id.action_notice:
-                if(GetMessageFromCache("Notice").size()>0) {
-                    setActionBarTitle(getResources().getString(string.noticetype),getResources().getString(string.module_explore));
-                    NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.article_module_layout, noticeFragment, "notice");
-                    transaction.addToBackStack("notice");
-                    transaction.commit();
-                }
-                break;
-            case R.id.action_attendance:
-                if(GetMessageFromCache("Punch").size()>0) {
-                    setActionBarTitle(getResources().getString(string.attendancetype),getResources().getString(string.module_explore));
-                    AttendanceFragment attendanceFragment = AttendanceFragment.newInstance(null, null);
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.article_module_layout, attendanceFragment, "attendance");
-                    transaction.addToBackStack("attendance");
-                    transaction.commit();
-                }
-                break;
-            case R.id.action_schedule:
-                if(GetMessageFromCache("Schedule").size()>0) {
-                    setActionBarTitle(getResources().getString(string.attendancetype),getResources().getString(string.module_explore));
-                    ScheduleFragment scheduleFragment = ScheduleFragment.newInstance(null, null);
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.article_module_layout, scheduleFragment, "schedule");
-                    transaction.addToBackStack("schedule");
-                    transaction.commit();
-                }
-                break;
-            case R.id.action_report:
-                if(GetMessageFromCache("Report").size()>0) {
-                    setActionBarTitle(getResources().getString(string.report),getResources().getString(string.module_explore));
-                    ReportFragment reportFragment = ReportFragment.newInstance(null, null);
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.article_module_layout, reportFragment, "report");
-                    transaction.addToBackStack("report");
-                    transaction.commit();
-                }
-                break;
-            case R.id.action_food:
-                if(GetMessageFromCache("Food").size()>0) {
-                    setActionBarTitle(getResources().getString(string.food),getResources().getString(string.module_explore));
-                    FoodFragment foodFragment = FoodFragment.newInstance(null, null);
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.article_module_layout, foodFragment, "food");
-                    transaction.addToBackStack("food");
-                    transaction.commit();
-                }
-                break;
-            case R.id.action_streaming:
-                if(GetMessageFromCache("OpenClass").size()>0) {
-                    setActionBarTitle(getResources().getString(string.openclass),getResources().getString(string.module_explore));
-                    StreamingFragment streamingFragment = StreamingFragment.newInstance(null, null);
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.article_module_layout, streamingFragment, "streaming");
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
-                break;
-            case R.id.action_picture:
-                if(GetMessageFromCache("Article").size()>0) {
-                    setActionBarTitle(getResources().getString(string.picture),getResources().getString(string.module_explore));
-                    PictureFragment pictureFragment = PictureFragment.newInstance(null, null);
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.article_module_layout, pictureFragment, "article");
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
-                break;
+//            case R.id.action_notice:
+//                if(GetMessageFromCache("Notice").size()>0) {
+//                    setActionBarTitle(getResources().getString(string.noticetype),getResources().getString(string.module_explore));
+//                    NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
+//                    transaction = getSupportFragmentManager().beginTransaction();
+//                    transaction.replace(R.id.article_module_layout, noticeFragment, "notice");
+//                    transaction.addToBackStack("notice");
+//                    transaction.commit();
+//                }
+//                break;
+//            case R.id.action_attendance:
+//                if(GetMessageFromCache("Punch").size()>0) {
+//                    setActionBarTitle(getResources().getString(string.attendancetype),getResources().getString(string.module_explore));
+//                    AttendanceFragment attendanceFragment = AttendanceFragment.newInstance(null, null);
+//                    transaction = getSupportFragmentManager().beginTransaction();
+//                    transaction.replace(R.id.article_module_layout, attendanceFragment, "attendance");
+//                    transaction.addToBackStack("attendance");
+//                    transaction.commit();
+//                }
+//                break;
+//            case R.id.action_schedule:
+//                if(GetMessageFromCache("Schedule").size()>0) {
+//                    setActionBarTitle(getResources().getString(string.attendancetype),getResources().getString(string.module_explore));
+//                    ScheduleFragment scheduleFragment = ScheduleFragment.newInstance(null, null);
+//                    transaction = getSupportFragmentManager().beginTransaction();
+//                    transaction.replace(R.id.article_module_layout, scheduleFragment, "schedule");
+//                    transaction.addToBackStack("schedule");
+//                    transaction.commit();
+//                }
+//                break;
+//            case R.id.action_report:
+//                if(GetMessageFromCache("Report").size()>0) {
+//                    setActionBarTitle(getResources().getString(string.report),getResources().getString(string.module_explore));
+//                    ReportFragment reportFragment = ReportFragment.newInstance(null, null);
+//                    transaction = getSupportFragmentManager().beginTransaction();
+//                    transaction.replace(R.id.article_module_layout, reportFragment, "report");
+//                    transaction.addToBackStack("report");
+//                    transaction.commit();
+//                }
+//                break;
+//            case R.id.action_food:
+//                if(GetMessageFromCache("Food").size()>0) {
+//                    setActionBarTitle(getResources().getString(string.food),getResources().getString(string.module_explore));
+//                    FoodFragment foodFragment = FoodFragment.newInstance(null, null);
+//                    transaction = getSupportFragmentManager().beginTransaction();
+//                    transaction.replace(R.id.article_module_layout, foodFragment, "food");
+//                    transaction.addToBackStack("food");
+//                    transaction.commit();
+//                }
+//                break;
+//            case R.id.action_streaming:
+//                if(GetMessageFromCache("OpenClass").size()>0) {
+//                    setActionBarTitle(getResources().getString(string.openclass),getResources().getString(string.module_explore));
+//                    StreamingFragment streamingFragment = StreamingFragment.newInstance(null, null);
+//                    transaction = getSupportFragmentManager().beginTransaction();
+//                    transaction.replace(R.id.article_module_layout, streamingFragment, "streaming");
+//                    transaction.addToBackStack(null);
+//                    transaction.commit();
+//                }
+//                break;
+//            case R.id.action_picture:
+//                if(GetMessageFromCache("Article").size()>0) {
+//                    setActionBarTitle(getResources().getString(string.picture),getResources().getString(string.module_explore));
+//                    PictureFragment pictureFragment = PictureFragment.newInstance(null, null);
+//                    transaction = getSupportFragmentManager().beginTransaction();
+//                    transaction.replace(R.id.article_module_layout, pictureFragment, "article");
+//                    transaction.addToBackStack(null);
+//                    transaction.commit();
+//                }
+//                break;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
                 setActionBarTitle(mUpperLeverTitle,"");
@@ -397,7 +425,6 @@ public class MainActivity extends BaseActivity implements
         }
     };
 
-
     /**
      *  Getters and Setters
      * @return
@@ -462,12 +489,13 @@ public class MainActivity extends BaseActivity implements
             return mFragments[position];
         }
 
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = (Fragment)super.instantiateItem(container, position);
-//            mFragementTags.add(position,fragment.getTag());
-            return fragment;
-        }
+//        @Override
+//        public Object instantiateItem(ViewGroup container, int position) {
+//            Fragment fragment = (Fragment)super.instantiateItem(container, position);
+////            mFragementTags.add(position,fragment.getTag());
+//            return fragment;
+//        }
+
 
         @Override
         public int getPageIconResId(int position) {
@@ -484,7 +512,8 @@ public class MainActivity extends BaseActivity implements
         renew_sid();
     }
 
-    @Subscribe public void OnLoginResultEvent(LoginResultEvent event)
+    @Subscribe
+    public void onLoginResultEvent(LoginResultEvent event)
     {
         if(event.getIsLoginSuccess())
             LoginSuccessHandles();
@@ -722,7 +751,7 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    public void setOverflowIconVisiable(Menu menu)
+    public void setOverflowIconVisible(Menu menu)
     {
         try
         {

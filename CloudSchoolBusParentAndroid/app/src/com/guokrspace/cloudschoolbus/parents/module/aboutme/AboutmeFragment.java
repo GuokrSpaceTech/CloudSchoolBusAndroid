@@ -22,12 +22,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.support.utils.ImageUtil;
 import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
+import com.avast.android.dialogs.iface.ISimpleDialogListener;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
@@ -44,7 +46,7 @@ import java.net.URL;
  * Created by wangjianfeng on 15/8/13.
  */
 public class AboutmeFragment extends BaseFragment implements IListDialogListener,
-        ISimpleDialogCancelListener {
+        ISimpleDialogCancelListener, ISimpleDialogListener {
 
     //Styled Dialog defines
     private static final int REQUEST_PROGRESS = 1;
@@ -195,6 +197,13 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                         .show();
             }
         });
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signout();
+            }
+        });
     }
 
     @Override
@@ -217,7 +226,6 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                 doTakePhoto();
         }
     }
-
     @Override
     public void onCancelled(int requestCode) {
 
@@ -310,5 +318,37 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.clear();
+    }
+
+    //Signout
+    public void signout()
+    {
+        SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage("注意：注销这部，本地数据将会被删除")
+                .setPositiveButtonText("知道了").setNegativeButtonText("取消操作")
+                .setTargetFragment(mFragment, REQUEST_SIMPLE_DIALOG).show();
+    }
+
+    // ISimpleDialogListener
+    @Override
+    public void onPositiveButtonClicked(int requestCode) {
+        if (requestCode == REQUEST_SIMPLE_DIALOG) {
+            Toast.makeText(mParentContext, "Positive button clicked", Toast.LENGTH_SHORT).show();
+            mApplication.clearBaseinfo();
+            mApplication.clearConfig();
+            mApplication.clearDb();
+            MainActivity mainActivity = (MainActivity)mParentContext;
+            mainActivity.finish();
+        }
+    }
+    @Override
+    public void onNegativeButtonClicked(int requestCode) {
+        if (requestCode == REQUEST_SIMPLE_DIALOG) {
+            Toast.makeText(mParentContext, "Negative button clicked", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+    @Override
+    public void onNeutralButtonClicked(int requestCode) {
+
     }
 }

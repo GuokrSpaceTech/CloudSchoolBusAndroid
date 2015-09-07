@@ -159,8 +159,8 @@ public class CloudSchoolBusParentsApplication extends Application {
 
     public void initBaseinfo()
     {
-        SchoolEntityDao schoolEntityDao = mDaoSession.getSchoolEntityDao();
-        ClassEntityDao classEntityDao = mDaoSession.getClassEntityDao();
+        SchoolEntityDao  schoolEntityDao = mDaoSession.getSchoolEntityDao();
+        ClassEntityDao   classEntityDao = mDaoSession.getClassEntityDao();
         TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
         StudentEntityDao studentEntityDao = mDaoSession.getStudentEntityDao();
 
@@ -168,5 +168,34 @@ public class CloudSchoolBusParentsApplication extends Application {
         mClasses = classEntityDao.queryBuilder().list();
         mTeachers = teacherEntityDao.queryBuilder().list();
         mStudents = studentEntityDao.queryBuilder().list();
+    }
+
+    public void clearBaseinfo()
+    {
+        SchoolEntityDao  schoolEntityDao = mDaoSession.getSchoolEntityDao();
+        ClassEntityDao   classEntityDao = mDaoSession.getClassEntityDao();
+        TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
+        StudentEntityDao studentEntityDao = mDaoSession.getStudentEntityDao();
+
+        schoolEntityDao.deleteAll();
+        classEntityDao.deleteAll();
+        teacherEntityDao.deleteAll();
+        studentEntityDao.deleteAll();
+
+        mClasses = null;
+        mSchools = null;
+        mStudents = null;
+        mTeachers = null;
+    }
+
+    public void clearConfig()
+    {
+        ConfigEntityDao configEntityDao = mDaoSession.getConfigEntityDao();
+        configEntityDao.deleteAll();
+        mConfig = null;
+    }
+
+    public void clearDb() {
+        mDaoSession.clear();
     }
 }

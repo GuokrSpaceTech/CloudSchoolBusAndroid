@@ -131,8 +131,8 @@ public class FoodFragment extends BaseFragment {
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
                 MessageEntity noticeEntity = mFoodEntities.get(0);
-                String endtime = noticeEntity.getSendtime();
-                GetNewMessagesFromServer(endtime, mHandler);
+                String messageid = noticeEntity.getMessageid();
+                GetNewMessagesFromServer(messageid, mHandler);
             }
         });
 
@@ -265,7 +265,7 @@ public class FoodFragment extends BaseFragment {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+        public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.clear();
     }

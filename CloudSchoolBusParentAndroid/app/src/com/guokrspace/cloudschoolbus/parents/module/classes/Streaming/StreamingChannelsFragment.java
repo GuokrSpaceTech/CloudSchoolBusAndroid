@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -95,6 +96,8 @@ public class StreamingChannelsFragment extends BaseFragment {
 
         buildCards();
 
+        setHasOptionsMenu(true);
+
         return root;
     }
 
@@ -103,11 +106,11 @@ public class StreamingChannelsFragment extends BaseFragment {
         materialListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(CardItemView view, int position) {
-                Intent intent = new Intent(mParentContext,Preview.class);
+                Intent intent = new Intent(mParentContext, Preview.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("ipcparams", mIpcparam);
                 intent.putExtras(bundle);
-                intent.putExtra("id",position); //Which camera
+                intent.putExtra("id", position); //Which camera
                 startActivity(intent);
             }
 
@@ -126,7 +129,6 @@ public class StreamingChannelsFragment extends BaseFragment {
             smallImageCard.setDescription(getResources().getString(R.string.realtime_streaming));
             smallImageCard.setTitle(channel.getChanneldesc());
             smallImageCard.setDrawable(getResources().getDrawable(R.drawable.ic_image_default));
-
             materialListView.add(smallImageCard);
         }
     }
@@ -139,5 +141,11 @@ public class StreamingChannelsFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }

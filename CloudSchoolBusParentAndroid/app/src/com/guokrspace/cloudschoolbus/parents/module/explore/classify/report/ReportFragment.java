@@ -129,8 +129,8 @@ public class ReportFragment extends BaseFragment {
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
                 MessageEntity noticeEntity = mReportEntities.get(0);
-                String endtime = noticeEntity.getSendtime();
-                GetNewMessagesFromServer(endtime, mHandler);
+                String messageid = noticeEntity.getMessageid();
+                GetNewMessagesFromServer(messageid, mHandler);
             }
         });
 

@@ -66,10 +66,10 @@ public class ReportListCardItemView extends CardItemView<ReportListCard> {
         cardTypeTextView.setText(card.getCardType());
 
         /* Report Title */
-        TextView reportTypeTextView = (TextView)findViewById(R.id.textViewReportTitle);
+        TextView reportTypeTextView = (TextView)findViewById(R.id.description);
         reportTypeTextView.setText(card.getReporttype());
 
-        LinearLayout layout = (LinearLayout)findViewById(R.id.report_detail_linear_layout);
+        LinearLayout layout = (LinearLayout)findViewById(R.id.taptoviewLayout);
         layout.setOnClickListener(card.getClickListener());
     }
 }

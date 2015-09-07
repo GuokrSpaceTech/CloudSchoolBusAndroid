@@ -13,4 +13,8 @@ public class LoginResultEvent {
     public void setIsLoginSuccess(Boolean isLoginSuccess) {
         this.isLoginSuccess = isLoginSuccess;
     }
+
+    public LoginResultEvent(Boolean isLoginSuccess) {
+        this.isLoginSuccess = isLoginSuccess;
+    }
 }

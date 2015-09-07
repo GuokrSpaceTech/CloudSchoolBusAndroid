@@ -13,7 +13,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/small_padding"
+                android:paddingLeft="@dimen/small_padding">
 
                 <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="48dp"
@@ -84,16 +86,16 @@
                         android:focusableInTouchMode="false"
                         android:id="@+id/taptoviewLayout"
                         android:paddingBottom="1dp"
-                        android:layout_gravity="right">
+                        android:layout_gravity="left">
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center"
-                            android:src = "@drawable/play"
+                            android:src = "@drawable/ic_food"
                             android:scaleType="center"
                             android:layout_weight="10"
-                            android:cropToPadding="true" />
+                            android:cropToPadding="false" />
 
                         <TextView
                             android:id="@+id/description"
@@ -106,7 +108,8 @@
                             android:textSize="@dimen/description_size"
                             android:singleLine="false"
                             android:layout_marginLeft="4dp"
-                            android:layout_gravity="center_vertical" />
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/primary_dark" />
 
                     </LinearLayout>
                 </LinearLayout>

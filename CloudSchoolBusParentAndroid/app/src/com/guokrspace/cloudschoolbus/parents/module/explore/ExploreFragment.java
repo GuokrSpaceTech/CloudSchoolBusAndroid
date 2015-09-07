@@ -4,16 +4,19 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.dexafree.materialList.model.Card;
@@ -25,8 +28,19 @@ import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
+import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.picture.PictureFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
 
 import org.json.JSONObject;
+
+import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * A fragment representing a list of Items.
@@ -144,20 +158,6 @@ public class ExploreFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        if (Version.DEBUG) {
-            ClearCache();
-            GetLastestMessagesFromServer(mHandler);
-        } else {
-            GetMessagesFromCache(mHandler);
-
-            if (mMesageEntities.size() == 0)
-                GetLastestMessagesFromServer(mHandler);
-            else {
-                MessageEntity messageEntity = mMesageEntities.get(0);
-                GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
-            }
-        }
     }
 
     @Override
@@ -173,7 +173,22 @@ public class ExploreFragment extends BaseFragment {
         MainActivity mainActivity = (MainActivity) mParentContext;
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
+        if (Version.DEBUG) {
+            ClearCache();
+            GetLastestMessagesFromServer(mHandler);
+        } else {
+            GetMessagesFromCache();
+            if(mMesageEntities.size()>0) {
+                mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
+                MessageEntity messageEntity = mMesageEntities.get(0);
+                GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
+            } else if (mMesageEntities.size() == 0)
+                GetLastestMessagesFromServer(mHandler);
+        }
+
         setListeners();
+
+        setHasOptionsMenu(true);
 
         return root;
     }
@@ -189,7 +204,7 @@ public class ExploreFragment extends BaseFragment {
                 } else {
                     if (mMesageEntities.size() > 0) {
                         MessageEntity messageEntity = mMesageEntities.get(0);
-                        GetNewMessagesFromServer(messageEntity.getSendtime(), mHandler);
+                        GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
                     } else {
                         GetLastestMessagesFromServer(mHandler);
                     }
@@ -223,7 +238,7 @@ public class ExploreFragment extends BaseFragment {
 
                     Log.i("...", "end called");
                     MessageEntity messageEntity = mMesageEntities.get(mMesageEntities.size() - 1);
-                    GetOldMessagesFromServer(messageEntity.getSendtime(), mHandler);
+                    GetOldMessagesFromServer(messageEntity.getMessageid(), mHandler);
 
                     loading = true;
                 }
@@ -282,13 +297,8 @@ public class ExploreFragment extends BaseFragment {
         public void onFragmentInteraction(String id);
     }
 
-//    private void AppendCards() {
-//        for (int i = 0; i < mMesageEntities.size(); i++) {
-//            mMaterialListView.add((Card) buildcard(mMesageEntities.get(i)));
-//        }
-//    }
-
     private void AddCards() {
+        mMaterialListView.clear();
         for (int i = 0; i < mMesageEntities.size(); i++) {
             Card theCard = (Card) buildcard(mMesageEntities.get(i), i);
             if (theCard != null)
@@ -296,18 +306,22 @@ public class ExploreFragment extends BaseFragment {
         }
     }
 
-//    private void InsertCardsAtBeginning() {
-//        for (int i = mMesageEntities.size() - 1; i >= 0; i--) {
-//            mMaterialListView.addAtStart((Card) buildcard(mMesageEntities.get(i)));
-//        }
-//    }
-
-    //Get all Messages from cache
-    private void GetMessagesFromCache(android.os.Handler handler) {
-        final MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
-        mMesageEntities = messageEntityDao.queryBuilder().list();
-        if (mMesageEntities.size() != 0)
-            handler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
+    public void filterCards(String type) {
+        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+        List<MessageEntity> messageEntityList;
+        if (type.equals("All")) {
+            messageEntityList = queryBuilder.orderDesc(MessageEntityDao.Properties.Messageid).list();
+        } else {
+            messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type))
+                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
+        }
+        mMaterialListView.clear();
+        for (int i = 0; i < messageEntityList.size(); i++) {
+            Card theCard = (Card) buildcard(messageEntityList.get(i), i);
+            if (theCard != null)
+                mMaterialListView.add(theCard);
+        }
     }
 
     private void ClearCache() {
@@ -347,5 +361,50 @@ public class ExploreFragment extends BaseFragment {
 
     private String messageType(MessageEntity msg) {
         return msg.getApptype();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_notice:
+                filterCards("Notice");
+                setActionBarTitle(getResources().getString(R.string.noticetype),getResources().getString(R.string.module_explore));
+                break;
+            case R.id.action_attendance:
+                filterCards("Punch");
+                setActionBarTitle(getResources().getString(R.string.attendancetype), getResources().getString(R.string.module_explore));
+                break;
+            case R.id.action_schedule:
+                filterCards("Schedule");
+                setActionBarTitle(getResources().getString(R.string.schedule), getResources().getString(R.string.module_explore));
+                break;
+            case R.id.action_report:
+                setActionBarTitle(getResources().getString(R.string.report),getResources().getString(R.string.module_explore));
+                filterCards("Report");
+                break;
+            case R.id.action_food:
+                filterCards("Food");
+                setActionBarTitle(getResources().getString(R.string.food), getResources().getString(R.string.module_explore));
+                break;
+            case R.id.action_streaming:
+                filterCards("OpenClass");
+                setActionBarTitle(getResources().getString(R.string.openclass), getResources().getString(R.string.module_explore));
+                break;
+            case R.id.action_picture:
+                filterCards("Article");
+                setActionBarTitle(getResources().getString(R.string.picturetype), getResources().getString(R.string.module_explore));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setActionBarTitle(String title, String preTitle)
+    {
+        MainActivity mainActivity = (MainActivity)mParentContext;
+        View view =   mainActivity.getSupportActionBar().getCustomView();
+        TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+        textView.setText(title);
+        mainActivity.mCurrentTitle = title;
+        mainActivity.mUpperLeverTitle = preTitle;
     }
 }

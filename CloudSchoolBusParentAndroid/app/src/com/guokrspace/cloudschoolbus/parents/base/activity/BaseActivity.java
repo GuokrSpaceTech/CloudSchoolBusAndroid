@@ -20,6 +20,7 @@ import android.support.v7.internal.widget.ActionBarContainer;
 import com.alibaba.fastjson.JSONException;
 import com.android.support.debug.DebugLog;
 import com.android.support.utils.SDCardToolUtil;
+import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.android.support.dialog.*;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
@@ -158,7 +159,6 @@ abstract public class BaseActivity extends ActionBarActivity {
 		}
 	}
 
-
 	@Subscribe
 	public void renew_sid() throws JSONException {
 
@@ -206,19 +206,6 @@ abstract public class BaseActivity extends ActionBarActivity {
 		});
 	}
 
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		BusProvider.getInstance().register(this);
-	}
-
-	@Override
-	public void onPause() {
-        super.onPause();
-		BusProvider.getInstance().unregister(this);
-    }
-
 	public Fragment getCurrentFragment(){
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
@@ -240,5 +227,4 @@ abstract public class BaseActivity extends ActionBarActivity {
 		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
 		return (ArrayList<MessageEntity>)queryBuilder.list();
 	}
-
 }

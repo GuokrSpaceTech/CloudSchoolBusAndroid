@@ -74,7 +74,7 @@ public class LoginActivity extends BaseActivity {
     private String imToken = "IWb9/EypgQlMEo/W/o3qSLI6ZiT8q7s0UEaMPWY0lMyB3UonaGf0gmlCJbN+zU7OvAaDYa9d8U6xzmBRkFjv+Q==";
     private String userid;
 
-    private LoginResultEvent loginResultEvent = new LoginResultEvent();
+//    private LoginResultEvent loginResultEvent = new LoginResultEvent();
 
     private Thread  thread;
     private boolean threadStopFlag = false;
@@ -126,10 +126,7 @@ public class LoginActivity extends BaseActivity {
                         break;
                     //Get the base info
                     case HandlerConstant.MSG_BASEINFO_OK:
-//                        Intent resultIntent = new Intent();
-//                        setResult(Activity.RESULT_OK, resultIntent);
-                        loginResultEvent.setIsLoginSuccess(true);
-                        BusProvider.getInstance().post(ProduceLoginResultEvent());
+                        BusProvider.getInstance().post(new LoginResultEvent(true));
                         finish();
                         break;
                     case HandlerConstant.MSG_BASEINFO_FAIL:
@@ -204,11 +201,13 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
+        BusProvider.getInstance().register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        BusProvider.getInstance().unregister(this);
     }
 
     /**
@@ -640,9 +639,9 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    @Produce public LoginResultEvent ProduceLoginResultEvent()
-    {
-        return loginResultEvent;
-    }
+//    @Produce public LoginResultEvent ProduceLoginResultEvent()
+//    {
+//        return loginResultEvent;
+//    }
 }
 

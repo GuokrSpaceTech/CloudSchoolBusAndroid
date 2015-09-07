@@ -132,8 +132,8 @@ public class StreamingFragment extends BaseFragment {
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
                 MessageEntity noticeEntity = streamingEntities.get(0);
-                String endtime = noticeEntity.getSendtime();
-                GetNewMessagesFromServer(endtime, mHandler);
+                String messageid = noticeEntity.getMessageid();
+                GetNewMessagesFromServer(messageid, mHandler);
             }
         });
 
@@ -234,37 +234,14 @@ public class StreamingFragment extends BaseFragment {
     private void addCards() {
         for (int i = 0; i < streamingEntities.size(); i++) {
             MessageEntity entity = streamingEntities.get(i);
-            StreamingNoticeCard card = BuildCard(entity);
+            StreamingNoticeCard card = BuildStreamingNoticeCard(entity);
             mMaterialListView.add(card);
         }
     }
 
-    private StreamingNoticeCard BuildCard(final MessageEntity messageEntity) {
-        StreamingNoticeCard streamingNoticeCard = new StreamingNoticeCard(mParentContext);
-        streamingNoticeCard.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
-        streamingNoticeCard.setKindergartenName(messageEntity.getSenderEntity().getName());
-        streamingNoticeCard.setClassName(messageEntity.getSenderEntity().getClassname());
-        streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(),mParentContext));
-        streamingNoticeCard.setCardType(cardType(messageEntity.getApptype()));
-        streamingNoticeCard.setContext(mParentContext);
-        streamingNoticeCard.setDescription(messageEntity.getDescription());
-        String messageBody = messageEntity.getBody();
-        final Ipcparam ipcpara = FastJsonTools.getObject(messageBody, Ipcparam.class);
-        streamingNoticeCard.setClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                StreamingChannelsFragment fragment = StreamingChannelsFragment.newInstance(ipcpara);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.article_module_layout, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });
-        return streamingNoticeCard;
-    }
-
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }

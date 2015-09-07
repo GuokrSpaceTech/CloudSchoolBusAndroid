@@ -74,6 +74,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -190,25 +192,25 @@ public class BaseFragment extends Fragment {
 
 	public void GetMessagesFromCache()
 	{
-		mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder().list();
+		mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder().orderDesc(MessageEntityDao.Properties.Messageid).list();
 	}
 
 	//Get all articles from newest in Cache to newest in Server
-	public void GetNewMessagesFromServer(String endtime, android.os.Handler handler) {
-		GetMessagesFromServer("0", endtime, handler);
+	public void GetNewMessagesFromServer(String messageid, android.os.Handler handler) {
+		GetMessagesFromServer(messageid, OldNewFlag.NEW_FLAG, handler);
 	}
 
 	//Get the older 20 articles from server then update the cache
-	public void GetOldMessagesFromServer(String starttime, android.os.Handler handler) {
-		GetMessagesFromServer(starttime, "0", handler);
+	public void GetOldMessagesFromServer(String messageid, android.os.Handler handler) {
+		GetMessagesFromServer(messageid, OldNewFlag.OLD_FLAG, handler);
 	}
 
-	//Get Lastest 20 Articles from server, only used when there is no cache
+	//Get Oldest 50 Articles from server, only used when there is no cache
 	public void GetLastestMessagesFromServer(android.os.Handler handler) {
-		GetMessagesFromServer(null, null, handler);
+		GetMessagesFromServer("0", OldNewFlag.NEW_FLAG, handler);
 	}
 
-	void GetMessagesFromServer(final String starttime, final String endtime, final android.os.Handler handler) {
+	void GetMessagesFromServer(final String messageid, final OldNewFlag flag, final android.os.Handler handler) {
 		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
@@ -216,11 +218,11 @@ public class BaseFragment extends Fragment {
 //		showWaitDialog("", null);
 
 		HashMap<String, String> params = new HashMap<String, String>();
-		if(starttime!=null)
-		    params.put("newid", starttime);
+		if(messageid!=null && flag.equals(OldNewFlag.NEW_FLAG))
+		    params.put("newid", messageid);
 
-		if(endtime!=null)
-		    params.put("oldid", endtime);
+		if(messageid!=null && flag.equals(OldNewFlag.OLD_FLAG))
+		    params.put("oldid", messageid);
 
 		CloudSchoolBusRestClient.get(ProtocolDef.METHOD_timeline, params, new JsonHttpResponseHandler() {
 			MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
@@ -332,18 +334,26 @@ public class BaseFragment extends Fragment {
 		});
 	}
 
-	public void changeAvatarStudent(String studentid, String imageFilePath, final android.os.Handler handler) {
+	public void changeAvatarStudent(String studentid, String imageFilePath, final android.os.Handler handler){
 		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
 		}
 
-		showWaitDialog("", null);
+//		showWaitDialog("", null);
 
 		RequestParams params = new RequestParams();
 
 		if(studentid!=null) params.put("studentid", studentid);
-		if(imageFilePath!=null) params.put("fbody", ImageUtil.getPicString(imageFilePath, 512));
+		if(imageFilePath!=null) {
+//			params.put("fbody", ImageUtil.getPicString(imageFilePath, 512));
+			File file = new File(imageFilePath);
+			try {
+				params.put("fbody",file);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 
 		CloudSchoolBusRestClient.post(ProtocolDef.METHOD_changeAvartarStudent, params, new JsonHttpResponseHandler() {
 			@Override
@@ -710,5 +720,10 @@ public class BaseFragment extends Fragment {
 		MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
 		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
 		return (ArrayList<MessageEntity>)queryBuilder.list();
+	}
+
+	public enum OldNewFlag
+	{
+		OLD_FLAG,NEW_FLAG
 	}
 }
