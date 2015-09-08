@@ -36,10 +36,9 @@
 
                 <ImageView
                     android:id="@+id/imageViewAvatar"
-                    android:layout_width="68dp"
-                    android:layout_height="68dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:layout_weight="15"
-                    android:background="@drawable/ic_image_default"
                     android:padding="@dimen/small_padding"
                     android:contentDescription="avatar" />
 
@@ -63,41 +62,6 @@
                 android:orientation="vertical"
                 android:background="#FFFFFFFF"
                 android:layout_gravity="center_vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:baselineAligned="true"
-                    android:background="#FFFFFFFF"
-                    android:id="@+id/linearLayoutName"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        style="@style/CardTitle"
-                        android:textColor="@android:color/black"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="70"
-                        android:padding="@dimen/big_padding"
-                        android:text="@string/name"
-                        android:textSize="16dp" />
-
-                    <TextView
-                        android:id="@+id/textViewName"
-                        android:textColor="@android:color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="15"
-                        android:padding="@dimen/small_padding" />
-
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:background="@drawable/ic_next"
-                        android:layout_marginRight="5dp" />
-                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -187,14 +151,15 @@
                 android:background="#00000000"/>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/switchButton"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/switch_child"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:textColor="#FFFFFF"
-                android:background="@drawable/shape_normal_big_button" />
+                android:background="@drawable/shape_normal_big_button"
+                android:textSize="20dp" />
 
         </LinearLayout>
     </ScrollView>

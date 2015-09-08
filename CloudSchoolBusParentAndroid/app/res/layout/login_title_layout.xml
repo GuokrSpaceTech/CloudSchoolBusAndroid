@@ -6,14 +6,13 @@
     android:orientation="horizontal">
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
         android:text="my Title"
         android:textColor="#FFFFFFFF"
         android:id="@+id/abs_layout_titleTextView"
         style="@style/CardTitle"
-        android:layout_marginLeft="2dp"
-        android:layout_weight="99" />
+        android:layout_marginLeft="-2dp"
+        android:gravity="center" />
 
 </LinearLayout>

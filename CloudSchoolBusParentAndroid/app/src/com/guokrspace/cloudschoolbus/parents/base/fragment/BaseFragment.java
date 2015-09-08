@@ -31,6 +31,8 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
@@ -48,6 +50,7 @@ import com.guokrspace.cloudschoolbus.parents.entity.Schedule;
 import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
 import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
@@ -101,9 +104,16 @@ public class BaseFragment extends Fragment {
 		mFragment = this;
 		mApplication = (CloudSchoolBusParentsApplication) mParentContext
 				.getApplicationContext();
+		BusProvider.getInstance().register(this);
 		DebugLog.setTag(mFragment.getClass().getName());
 	}
-	
+
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		BusProvider.getInstance().unregister(this);
+	}
 
 	protected void setViewData(View view) {
 		
@@ -153,13 +163,11 @@ public class BaseFragment extends Fragment {
 	
 	@Override
 	public void onResume() {
-        BusProvider.getInstance().register(this);
         super.onResume();
 	}
 	
 	@Override
 	public void onPause() {
-        BusProvider.getInstance().unregister(this);
         super.onPause();
 	}
 	
@@ -193,7 +201,11 @@ public class BaseFragment extends Fragment {
 
 	public void GetMessagesFromCache()
 	{
-		mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder().orderDesc(MessageEntityDao.Properties.Messageid).list();
+		String currentstudentid = mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid();
+		mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+				.orderDesc(MessageEntityDao.Properties.Messageid)
+				.where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
+				.list();
 	}
 
 	//Get all articles from newest in Cache to newest in Server
@@ -725,8 +737,19 @@ public class BaseFragment extends Fragment {
 		return (ArrayList<MessageEntity>)queryBuilder.list();
 	}
 
-	public enum OldNewFlag
-	{
-		OLD_FLAG,NEW_FLAG
+	public enum OldNewFlag {
+		OLD_FLAG, NEW_FLAG
 	}
+
+	public void switchChildren(int currentChild)
+	{
+		ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
+		ConfigEntity oldConfigEntity = configEntityDao.queryBuilder().limit(1).list().get(0);
+		oldConfigEntity.setCurrentChild(currentChild);
+		ConfigEntity newConfigEntity = oldConfigEntity;
+		configEntityDao.update(newConfigEntity);
+		mApplication.mConfig = newConfigEntity;
+
+		BusProvider.getInstance().post(new ChildSwitchedEvent(currentChild));
+ 	}
 }

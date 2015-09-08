@@ -28,13 +28,10 @@ import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
-import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.picture.PictureFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleFragment;
+import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
+import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
+import com.squareup.otto.Subscribe;
 
 import org.json.JSONObject;
 
@@ -66,6 +63,7 @@ public class ExploreFragment extends BaseFragment {
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private int mCurrentChild;
     private int previousTotal = 0;
     private int visibleThreshold = 3;
     int firstVisibleItem, visibleItemCount, totalItemCount;
@@ -304,6 +302,9 @@ public class ExploreFragment extends BaseFragment {
             if (theCard != null)
                 mMaterialListView.add(theCard);
         }
+
+        BusProvider.getInstance().post(new ImReadyEvent());
+
     }
 
     public void filterCards(String type) {
@@ -316,6 +317,20 @@ public class ExploreFragment extends BaseFragment {
             messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type))
                     .orderDesc(MessageEntityDao.Properties.Messageid).list();
         }
+        mMaterialListView.clear();
+        for (int i = 0; i < messageEntityList.size(); i++) {
+            Card theCard = (Card) buildcard(messageEntityList.get(i), i);
+            if (theCard != null)
+                mMaterialListView.add(theCard);
+        }
+    }
+
+    public void filterCardsChild(String studentid) {
+        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+        List<MessageEntity> messageEntityList;
+        messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Studentid.eq(studentid))
+                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
         mMaterialListView.clear();
         for (int i = 0; i < messageEntityList.size(); i++) {
             Card theCard = (Card) buildcard(messageEntityList.get(i), i);
@@ -406,5 +421,13 @@ public class ExploreFragment extends BaseFragment {
         textView.setText(title);
         mainActivity.mCurrentTitle = title;
         mainActivity.mUpperLeverTitle = preTitle;
+    }
+
+    @Subscribe
+    public void onChildrenSwitched(ChildSwitchedEvent event)
+    {
+        mCurrentChild = event.getCurrentChild();
+        String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
+        filterCardsChild(studentId);
     }
 }

@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">云中校车</string>
-    <string name="mobile_num">请输入您在幼儿园登记的手机号码</string>
+    <string name="mobile_num">输入已登记的手机号码</string>
     <string name="verify_code">验证码</string>
     <string name="no_network">无法链接网络，请检查网络设置</string>
     <string name="server_error">出现错误了，一会再试试</string>
@@ -64,5 +64,15 @@
     <string name="attendancetime">考勤时间: </string>
     <string name="classify">分类</string>
     <string name="alltype">全部</string>
+    <string name="slogan">云中校车，以爱为名</string>
+    <string name="title_activity_startup">StartupActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="altersignout">"注意：本地数据将会被删除"</string>
+
 
 </resources>

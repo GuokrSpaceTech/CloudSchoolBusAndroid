@@ -17,11 +17,13 @@
 
 set -e
 
-NDK=/Users/wangjianfeng/Documents/AndroidDevelopment/android-ndk-r9c
-ARM_PLATFORM=$NDK/platforms/android-19/arch-arm/
+NDK=/Users/wangjianfeng/Documents/AndroidDevelopment/android-ndk-r10e
+ARM_PLATFORM=$NDK/platforms/android-21/arch-arm/
 ARM_PREBUILT=$NDK/toolchains/arm-linux-androideabi-4.8/prebuilt/darwin-x86
-X86_PLATFORM=$NDK/platforms/android-19/arch-x86/
-X86_PREBUILT=$NDK/toolchains/x86-4.8/prebuilt/darwin-x86
+X86_PLATFORM=$NDK/platforms/android-21/arch-x86/
+X86_64_PLATFORM=$NDK/platforms/android-21/arch-x86_64/
+X86_PREBUILT=$NDK/toolchains/x86-4.9/prebuilt/darwin-x86
+X86_64_PREBUILT=$NDK/toolchains/x86_64-4.9/prebuilt/darwin-x86_64
 function build_one
 {
 if [ $ARCH == "arm" ] 
@@ -30,8 +32,8 @@ then
     PREBUILT=$ARM_PREBUILT
     HOST=arm-linux-androideabi
 else
-    PLATFORM=$X86_PLATFORM
-    PREBUILT=$X86_PREBUILT
+    PLATFORM=$X86_64_PLATFORM
+    PREBUILT=$X86_64_PREBUILT
     HOST=i686-linux-android
 fi
 
@@ -134,5 +136,13 @@ CPU=i686
 ARCH=i686
 OPTIMIZE_CFLAGS="-fomit-frame-pointer"
 PREFIX=`pwd`/ffmpeg-android/${CPU} 
+ADDITIONAL_CONFIGURE_FLAG=
+build_one
+
+#x86-64
+CPU=i686
+ARCH=i686
+OPTIMIZE_CFLAGS="-fomit-frame-pointer"
+PREFIX=`pwd`/ffmpeg-android/${CPU}
 ADDITIONAL_CONFIGURE_FLAG=
 build_one

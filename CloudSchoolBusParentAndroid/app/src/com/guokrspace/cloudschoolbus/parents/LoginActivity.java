@@ -10,16 +10,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
@@ -66,6 +70,8 @@ public class LoginActivity extends BaseActivity {
     private View     mProgressView;
     private View     mLoginFormView;
     private Button mClicktoGetVerifyCodeButton;
+    private TextView mTextViewBrand;
+    private TextView mTextViewProduct;
 
     private String mobile;
     private String verifyCode;
@@ -110,7 +116,7 @@ public class LoginActivity extends BaseActivity {
                         break;
                     //Get Session ID
                     case HandlerConstant.MSG_VERIFY_OK:
-                        mApplication.mConfig = new ConfigEntity(null, sid, loginToken, mobile, userid, imToken);
+                        mApplication.mConfig = new ConfigEntity(null, sid, loginToken, mobile, userid, imToken, 0);
                         ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
                         configEntityDao.insert(mApplication.mConfig);
                         CloudSchoolBusRestClient.updateSessionid(sid);
@@ -177,7 +183,6 @@ public class LoginActivity extends BaseActivity {
         mVerifyCodeEditText = (EditText) findViewById(R.id.verify_code);
 
         mSigninButton = (Button) findViewById(R.id.sign_in_button);
-        mSigninButton.setVisibility(View.GONE);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -196,6 +201,17 @@ public class LoginActivity extends BaseActivity {
                 attempVerify();
             }
         });
+
+        mTextViewProduct = (TextView)findViewById(R.id.textView_product);
+        mTextViewProduct.setText(Version.productName);
+        mTextViewBrand = (TextView)findViewById(R.id.textView_brand);
+        mTextViewBrand.setText(Version.desc);
+
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.login_title_layout);
+        View view = getSupportActionBar().getCustomView();
+        TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+        textView.setText(getResources().getString(R.string.logintitle));
     }
 
     @Override
@@ -555,7 +571,7 @@ public class LoginActivity extends BaseActivity {
                         sid = response.getString("sid");
                         loginToken = response.getString("token");
                         userid = response.getString("userid");
-                        if(response.getString("rongtoken")!=null || !response.getString("rongtoken").isEmpty())
+                        if (response.getString("rongtoken") != null || !response.getString("rongtoken").isEmpty())
                             imToken = response.getString("rongtoken");
                     } catch (org.json.JSONException e) {
                         e.printStackTrace();
@@ -639,9 +655,14 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-//    @Produce public LoginResultEvent ProduceLoginResultEvent()
-//    {
-//        return loginResultEvent;
-//    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                return true;
+            default:
+                return super.onKeyDown(keyCode, event);
+        }
+    }
 }
 

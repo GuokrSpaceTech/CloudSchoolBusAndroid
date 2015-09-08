@@ -30,13 +30,17 @@ import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
 import com.avast.android.dialogs.iface.ISimpleDialogListener;
+import com.guokrspace.cloudschoolbus.parents.LoginActivity;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
+import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
+import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.widget.ChatMessageCard;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
@@ -71,6 +75,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     private LinearLayout layoutSystemSetting;
     private LinearLayout layoutHelpFeedback;
     private Button logoutButton;
+    private int currentChild;
 
     // 上传图片
     private Bitmap bitMap;
@@ -140,24 +145,10 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         textViewChildName = (TextView)root.findViewById(R.id.child_name);
         buttonKindergarten = (Button)root.findViewById(R.id.kindergarten_name);
 
-        /* Get the current child's avatar */
-        StudentEntity studentEntity = null;
-        String avatar = "";
-        for (int i = 0; i < mApplication.mStudents.size(); i++) {
-            studentEntity = mApplication.mStudents.get(i);
-            if(!studentEntity.getStudentid().equals(mApplication.mConfig.getUserid()))
-            {
-                avatar = studentEntity.getAvatar();
-//                avatar = "http://cloud.yunxiaoche.com/images/teacher.jpg";
-                Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
-                break;
-            }
-        }
+        currentChild = mApplication.mConfig.getCurrentChild();
 
-        if(studentEntity.getNikename()==null)
-            textViewChildName.setText(studentEntity.getCnname());
-        else
-            textViewChildName.setText(studentEntity.getNikename());
+        /* Get the current child's avatar */
+        updateChildInformation();
 
         buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
 
@@ -183,20 +174,6 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             }
         });
 
-        imageViewAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ListDialogFragment
-                        .createBuilder(mParentContext, getFragmentManager())
-                        .setTitle(getResources().getString(R.string.picture_ops))
-                        .setItems(new String[]{getResources().getString(R.string.picture_ops_album),
-                                getResources().getString(R.string.picture_ops_take_pic)})
-                        .setRequestCode(REQUEST_LIST_SINGLE)
-                        .setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
-                        .setTargetFragment(mFragment, REQUEST_LIST_SIMPLE)
-                        .show();
-            }
-        });
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -323,8 +300,8 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     //Signout
     public void signout()
     {
-        SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage("注意：注销这部，本地数据将会被删除")
-                .setPositiveButtonText("知道了").setNegativeButtonText("取消操作")
+        SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.altersignout))
+                .setPositiveButtonText(getResources().getString(R.string.OKAY)).setNegativeButtonText(getResources().getString(R.string.cancel))
                 .setTargetFragment(mFragment, REQUEST_SIMPLE_DIALOG).show();
     }
 
@@ -332,23 +309,51 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     @Override
     public void onPositiveButtonClicked(int requestCode) {
         if (requestCode == REQUEST_SIMPLE_DIALOG) {
-            Toast.makeText(mParentContext, "Positive button clicked", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mParentContext, "Positive button clicked", Toast.LENGTH_SHORT).show();
             mApplication.clearBaseinfo();
             mApplication.clearConfig();
             mApplication.clearDb();
-            MainActivity mainActivity = (MainActivity)mParentContext;
-            mainActivity.finish();
+            Intent intent = new Intent(mParentContext, LoginActivity.class);
+            startActivity(intent);
         }
     }
     @Override
     public void onNegativeButtonClicked(int requestCode) {
         if (requestCode == REQUEST_SIMPLE_DIALOG) {
-            Toast.makeText(mParentContext, "Negative button clicked", Toast.LENGTH_SHORT).show();
-
         }
     }
     @Override
     public void onNeutralButtonClicked(int requestCode) {
 
+    }
+
+    @Subscribe
+    public void onAvatarChanged(AvatarChangedEvent event)
+    {
+        Bitmap avatarBitmap = event.getBitMap();
+        imageViewAvatar.setImageBitmap(avatarBitmap);
+    }
+
+    @Subscribe
+    public void onChildrenSwitched(ChildSwitchedEvent event)
+    {
+        currentChild = event.getCurrentChild();
+        updateChildInformation();
+    }
+
+    private void updateChildInformation()
+    {
+        /* Get the current child's avatar */
+        StudentEntity studentEntity = null;
+        String avatar = "";
+        studentEntity = mApplication.mStudents.get(currentChild);
+
+        avatar = studentEntity.getAvatar();
+        Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
+
+        if(studentEntity.getNikename()==null)
+            textViewChildName.setText(studentEntity.getCnname());
+        else
+            textViewChildName.setText(studentEntity.getNikename());
     }
 }

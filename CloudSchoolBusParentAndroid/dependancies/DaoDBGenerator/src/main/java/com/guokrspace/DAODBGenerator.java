@@ -42,6 +42,7 @@ public class DAODBGenerator {
         note.addStringProperty("mobile");
         note.addStringProperty("userid");
         note.addStringProperty("imToken");
+        note.addIntProperty("currentChild");
     }
 
     private static void addBaseInfo(Schema schema) {

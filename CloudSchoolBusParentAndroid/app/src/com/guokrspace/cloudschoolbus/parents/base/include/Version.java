@@ -13,11 +13,11 @@ public class Version {
 	
 	
 	// 产品描述
-	public final static String desc = "教师助手";
+	public final static String desc = "云中校车";
 	// 更新内容
 	public final static String updateContent = "正式版本";
 	// 产品名称
-	public final static String productName = "CloudSchoolBusParent";
+	public final static String productName = "家长端";
 	// 产品别名
 	public final static String minProductName = "CloudSchoolBusParent";
 	// 下载地址

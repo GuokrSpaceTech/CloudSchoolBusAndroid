@@ -11,8 +11,9 @@
 
     <ImageView
             android:id="@+id/item_img"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_height="68dp"
+            android:layout_width="68dp"
+            android:padding="@dimen/small_padding"
             android:layout_gravity="center_horizontal"
             />
 
@@ -22,8 +23,8 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:ellipsize="end"
-            android:padding="1dp"
-            android:gravity="center"
-            />
+            android:padding="5dp"
+            android:textSize="20dp"
+            android:gravity="center"/>
 
 </LinearLayout>

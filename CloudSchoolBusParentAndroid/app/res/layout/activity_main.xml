@@ -3,42 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    <RelativeLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".MainActivity"
-        android:layout_above="@+id/tabs" />
+        android:layout_height="wrap_content">
 
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="48dip"
-        android:background="@drawable/background_tabs"
-        app:pstsDividerColor="#00FFFFFF"
-        app:pstsIndicatorColor="#FFFFA500"
-        app:pstsShouldExpand="true"
-        app:pstsTabPaddingLeftRight="14dip"
-        app:pstsIndicatorHeight="1dip"
-        app:pstsUnderlineColor="#FFFFA500"
-        app:pstsUnderlineHeight = "0dip"
-        android:layout_alignParentBottom="true"
-        android:fillViewport="false" />
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tabs"
+            tools:context=".MainActivity" />
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/background_tabs"
+            android:fillViewport="false"
+            app:pstsDividerColor="#00FFFFFF"
+            app:pstsIndicatorColor="#FFFFA500"
+            app:pstsIndicatorHeight="1dip"
+            app:pstsShouldExpand="true"
+            app:pstsTabPaddingLeftRight="14dip"
+            app:pstsUnderlineColor="#FFFFA500"
+            app:pstsUnderlineHeight="0dip" />
+    </RelativeLayout>
 
 </RelativeLayout>
 
-    <!--/*-->
-    <!--pstsIndicatorColor Color of the sliding indicator-->
-    <!--pstsUnderlineColor Color of the full-width line on the bottom of the view-->
-    <!--pstsDividerColor Color of the dividers between tabs-->
-    <!--pstsIndicatorHeight Height of the sliding indicator-->
-    <!--pstsUnderlineHeight Height of the full-width line on the bottom of the view-->
-    <!--pstsDividerPadding Top and bottom padding of the dividers-->
-    <!--pstsTabPaddingLeftRight Left and right padding of each tab-->
-    <!--pstsScrollOffset Scroll offset of the selected tab-->
-    <!--pstsTabBackground Background drawable of each tab, should be a StateListDrawable-->
-    <!--pstsShouldExpand If set to true, each tab is given the same weight, default false-->
-    <!--pstsTextAllCaps If true, all tab titles will be upper case, default true-->
-    <!--*/-->
+    <!--/*--><!--pstsIndicatorColor Color of the sliding indicator--><!--pstsUnderlineColor Color of the full-width line on the bottom of the view--><!--pstsDividerColor Color of the dividers between tabs--><!--pstsIndicatorHeight Height of the sliding indicator--><!--pstsUnderlineHeight Height of the full-width line on the bottom of the view--><!--pstsDividerPadding Top and bottom padding of the dividers--><!--pstsTabPaddingLeftRight Left and right padding of each tab--><!--pstsScrollOffset Scroll offset of the selected tab--><!--pstsTabBackground Background drawable of each tab, should be a StateListDrawable--><!--pstsShouldExpand If set to true, each tab is given the same weight, default false--><!--pstsTextAllCaps If true, all tab titles will be upper case, default true--><!--*/-->

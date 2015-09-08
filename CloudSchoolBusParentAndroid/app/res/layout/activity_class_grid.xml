@@ -16,5 +16,41 @@
             android:layout_width="match_parent"
             android:numColumns="@integer/column_count"
             />
+
     </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/primary_dark">
+    </View>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/big_padding">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/button2"
+            android:layout_weight="50"
+            android:background="@android:color/transparent" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/primary_dark">
+        </View>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/button3"
+            android:layout_weight="50"
+            android:background="@android:color/transparent" />
+    </LinearLayout>
+
 </LinearLayout>

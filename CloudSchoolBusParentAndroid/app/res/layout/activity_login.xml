@@ -1,63 +1,138 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:gravity="center_horizontal"
-    android:orientation="vertical" android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.guokrspace.cloudschoolbus.parents.LoginActivity">
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="com.guokrspace.cloudschoolbus.parents.LoginActivity"
+    android:background="@drawable/login_background">
 
     <!-- Login progress -->
+
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginBottom="8dp" android:visibility="gone" />
 
-    <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+    <ImageView
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:id="@+id/big_icon"
+        android:background="@drawable/cloudschoolbu_big_icon" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/big_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/textView_brand"
+            android:textSize="@dimen/bigger_title_size"
+            android:textColor="#1E5268"
+            android:layout_marginLeft="60dp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:text="New Text"
+            android:id="@+id/textView_product"
+            android:textColor="#EA5514"
+            android:background="@drawable/shape_product_round_tag"
+            android:layout_marginTop="-8dp" />
+    </LinearLayout>
+
+
+
+    <LinearLayout android:id="@+id/login_form" android:layout_width="fill_parent"
+        android:layout_height="310dp">
 
         <LinearLayout android:id="@+id/mobil_login_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
 
-            <EditText android:id="@+id/mobile" android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:hint="@string/mobile_num"
-                android:inputType="textPhonetic" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center_vertical"
+                android:background="#C0FFFFFF"
+                android:paddingLeft="@dimen/small_padding"
+                android:paddingRight="@dimen/small_padding">
 
-        <LinearLayout
+                <EditText android:id="@+id/mobile" android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:hint="@string/mobile_num"
+                    android:inputType="textPhonetic"
+                    android:textColorHint="#9FA0A0"
+                    android:textSize="18dp"
+                    android:layout_weight="70"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/primary_dark" />
+
+                <Button android:id="@+id/sms_verifycode_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="0dp"
+                    android:layout_weight="30"
+                    android:layout_height="25dp"
+                    android:text="@string/click_get_verify_code"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical|right"
+                    android:background="@drawable/shape_round_bluebutton" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="5dp"
+                android:id="@+id/line"
+                android:background="@android:color/transparent" />
+            <LinearLayout
             android:id="@+id/linearLayout_sms_verify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+                android:background="@android:color/transparent">
             <EditText
                 android:id="@+id/verify_code"
-                android:layout_width="0dp" android:layout_weight="60" android:layout_height="wrap_content"
+                android:layout_width="0dp" android:layout_weight="60" android:layout_height="45dp"
                 android:layout_gravity="bottom"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1" android:singleLine="true"
-                android:hint="@string/verify_code" />
+                android:hint="@string/verify_code"
+                android:background="#C0FFFFFF"
+                android:textColorHint="#9FA0A0"
+                android:textSize="18dp"
+                android:padding="@dimen/small_padding"
+                android:textColor="@color/primary_dark" />
 
-            <Button android:id="@+id/sms_verifycode_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="0dp"
-                android:layout_weight="40"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/click_get_verify_code"
-                android:textStyle="bold" />
             </LinearLayout>
 
             <Button android:id="@+id/sign_in_button" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" android:text="@string/action_register"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="#C0FFFFFF"
+                android:textColor="#1E5268"
+                android:textSize="20dp" />
 
         </LinearLayout>
+    </LinearLayout>
+    </LinearLayout>
     </ScrollView>
-
 </LinearLayout>
 

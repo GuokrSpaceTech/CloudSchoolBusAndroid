@@ -9,7 +9,7 @@
 
         <!-- Support library compatibility -->
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
-        <item name="android:homeAsUpIndicator">@color/action_bar_icon</item>
+        <item name="android:homeAsUpIndicator">@color/accent</item>
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
     </style>
 

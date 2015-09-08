@@ -36,7 +36,7 @@ build
 signing.properties
 
 #ffmpeg
-app/jni/ffmpeg
+app/jni/ffmpeg*
 app/jni/ffmpeg-android
 
 #DaoDBGenerator

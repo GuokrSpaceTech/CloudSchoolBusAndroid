@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONException;
@@ -52,16 +53,19 @@ import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
+import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.StartupFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.notice.NoticeFragment;
@@ -94,9 +98,11 @@ public class MainActivity extends BaseActivity implements
         ExploreFragment.OnFragmentInteractionListener
 
 {
+    private Thread  thread;
+    private boolean threadStopFlag = false;
 
     private PagerSlidingTabStrip tabs;
-    private TextView mActionBarTitle;
+    private RelativeLayout mStartupPage;
     private List<BadgeView> badgeViews = new ArrayList();
     private ViewPager pager;
     private MyPagerAdapter adapter;
@@ -132,7 +138,14 @@ public class MainActivity extends BaseActivity implements
                             .setMessage(getResources().getString(R.string.failure_renewsid))
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
+                case HandlerConstant.MSG_TIMER_TICK:
+                    break;
+                case HandlerConstant.MSG_TIMER_TIMEOUT:
+                    //When startup page is off, show the main page
+                    threadStopFlag = false;
+                    CheckLoginCredential();
 
+                    break;
             }
             return false;
         }
@@ -141,10 +154,11 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showStartupPage();
         setContentView(R.layout.activity_main);
         BusProvider.getInstance().register(this);
-        CheckLoginCredential();
     }
+
 
     @Override
     public void onResume() {
@@ -207,6 +221,7 @@ public class MainActivity extends BaseActivity implements
                 if(postion==0)
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
+                    setActionBarTitle(getResources().getString(string.module_explore));
                     theFragment.filterCards("All");
                 }
             }
@@ -221,6 +236,7 @@ public class MainActivity extends BaseActivity implements
                     // block where back has been pressed. since backstack is zero.
                     getTabs().setVisibility(View.VISIBLE);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    getSupportActionBar().show();
                 }
                 // Next Level of Fragment(Conversation), has Homeasup Arrow, without bottom Tabs
                 if (backCount > 0) {
@@ -240,12 +256,10 @@ public class MainActivity extends BaseActivity implements
     @Override
     public boolean onMenuOpened(int featureId, Menu menu)
     {
-
         if(featureId == Window.FEATURE_ACTION_BAR && menu != null)
         {
             setOverflowIconVisible(menu);
         }
-
         return super.onMenuOpened(featureId, menu);
     }
 
@@ -253,76 +267,6 @@ public class MainActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentTransaction transaction;
         switch (item.getItemId()) {
-//            case R.id.action_notice:
-//                if(GetMessageFromCache("Notice").size()>0) {
-//                    setActionBarTitle(getResources().getString(string.noticetype),getResources().getString(string.module_explore));
-//                    NoticeFragment noticeFragment = NoticeFragment.newInstance(null, null);
-//                    transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.article_module_layout, noticeFragment, "notice");
-//                    transaction.addToBackStack("notice");
-//                    transaction.commit();
-//                }
-//                break;
-//            case R.id.action_attendance:
-//                if(GetMessageFromCache("Punch").size()>0) {
-//                    setActionBarTitle(getResources().getString(string.attendancetype),getResources().getString(string.module_explore));
-//                    AttendanceFragment attendanceFragment = AttendanceFragment.newInstance(null, null);
-//                    transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.article_module_layout, attendanceFragment, "attendance");
-//                    transaction.addToBackStack("attendance");
-//                    transaction.commit();
-//                }
-//                break;
-//            case R.id.action_schedule:
-//                if(GetMessageFromCache("Schedule").size()>0) {
-//                    setActionBarTitle(getResources().getString(string.attendancetype),getResources().getString(string.module_explore));
-//                    ScheduleFragment scheduleFragment = ScheduleFragment.newInstance(null, null);
-//                    transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.article_module_layout, scheduleFragment, "schedule");
-//                    transaction.addToBackStack("schedule");
-//                    transaction.commit();
-//                }
-//                break;
-//            case R.id.action_report:
-//                if(GetMessageFromCache("Report").size()>0) {
-//                    setActionBarTitle(getResources().getString(string.report),getResources().getString(string.module_explore));
-//                    ReportFragment reportFragment = ReportFragment.newInstance(null, null);
-//                    transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.article_module_layout, reportFragment, "report");
-//                    transaction.addToBackStack("report");
-//                    transaction.commit();
-//                }
-//                break;
-//            case R.id.action_food:
-//                if(GetMessageFromCache("Food").size()>0) {
-//                    setActionBarTitle(getResources().getString(string.food),getResources().getString(string.module_explore));
-//                    FoodFragment foodFragment = FoodFragment.newInstance(null, null);
-//                    transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.article_module_layout, foodFragment, "food");
-//                    transaction.addToBackStack("food");
-//                    transaction.commit();
-//                }
-//                break;
-//            case R.id.action_streaming:
-//                if(GetMessageFromCache("OpenClass").size()>0) {
-//                    setActionBarTitle(getResources().getString(string.openclass),getResources().getString(string.module_explore));
-//                    StreamingFragment streamingFragment = StreamingFragment.newInstance(null, null);
-//                    transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.article_module_layout, streamingFragment, "streaming");
-//                    transaction.addToBackStack(null);
-//                    transaction.commit();
-//                }
-//                break;
-//            case R.id.action_picture:
-//                if(GetMessageFromCache("Article").size()>0) {
-//                    setActionBarTitle(getResources().getString(string.picture),getResources().getString(string.module_explore));
-//                    PictureFragment pictureFragment = PictureFragment.newInstance(null, null);
-//                    transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.article_module_layout, pictureFragment, "article");
-//                    transaction.addToBackStack(null);
-//                    transaction.commit();
-//                }
-//                break;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
                 setActionBarTitle(mUpperLeverTitle);
@@ -634,8 +578,9 @@ public class MainActivity extends BaseActivity implements
         String sid = response.getString("sid");
         String token = response.getString("token");
         String imToken = response.getString("rongtoken");
-        ConfigEntity configEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken);
-        mApplication.mDaoSession.getConfigEntityDao().insertOrReplace(configEntity);
+        ConfigEntity oldConfigEntity =  mApplication.mDaoSession.getConfigEntityDao().queryBuilder().limit(1).list().get(0);
+        ConfigEntity newConfigEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken,oldConfigEntity.getCurrentChild());
+        mApplication.mDaoSession.getConfigEntityDao().insertOrReplace(newConfigEntity);
         mApplication.mConfig.setSid(response.getString("sid"));
         mApplication.mConfig.setToken(token);
         mApplication.mConfig.setImToken(imToken);
@@ -780,5 +725,43 @@ public class MainActivity extends BaseActivity implements
         textView.setText(title);
         mUpperLeverTitle = mCurrentTitle;
         mCurrentTitle = title;
+    }
+
+    private void showStartupPage()
+    {
+        TimerTick(1);
+        StartupFragment theFragment = StartupFragment.newInstance(null, null);
+        FragmentTransaction transaction;
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_layout, theFragment, "startup");
+        transaction.addToBackStack("startup");
+        transaction.commit();
+    }
+
+    private void hideStartupPage()
+    {
+        getSupportFragmentManager().popBackStack("startup", 1);
+        getSupportActionBar().show();
+    }
+
+    private void TimerTick(final int max_seconds) {
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int seconds_left = max_seconds;
+                while (seconds_left > 0 && !threadStopFlag) {
+                    seconds_left--;
+                    try {
+                        thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                handler.sendEmptyMessage(HandlerConstant.MSG_TIMER_TIMEOUT);
+            }
+        });
+        if (!thread.isAlive()) {
+            thread.start();
+        }
     }
 }
