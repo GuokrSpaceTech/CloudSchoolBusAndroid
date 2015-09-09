@@ -1,10 +1,13 @@
 package com.guokrspace.cloudschoolbus.parents.base.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 
+import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 
 /**
@@ -20,6 +23,9 @@ public class BaseWebViewActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        String title = intent.getExtras().getString("title");
+        getSupportActionBar().setTitle(title);
 	}
 
 	/**
@@ -65,5 +71,11 @@ public class BaseWebViewActivity extends BaseActivity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.clear();
+		return super.onPrepareOptionsMenu(menu);
 	}
 }

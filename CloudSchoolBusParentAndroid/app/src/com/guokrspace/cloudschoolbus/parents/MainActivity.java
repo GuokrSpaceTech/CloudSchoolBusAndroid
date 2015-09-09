@@ -155,6 +155,8 @@ public class MainActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         showStartupPage();
+        //Hack for force the overflow button in the actionbar
+        getOverflowMenu();
         setContentView(R.layout.activity_main);
         BusProvider.getInstance().register(this);
     }
@@ -162,6 +164,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onResume() {
+
         super.onResume();
     }
 
@@ -204,10 +207,8 @@ public class MainActivity extends BaseActivity implements
         //Customise the Action Bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.abs_layout);
-        setActionBarTitle(getResources().getString(string.module_explore));
+        setActionBarTitle(getResources().getString(string.module_explore),"");
 
-        //Hack for force the overflow button in the actionbar
-        getOverflowMenu();
     }
 
     private void setListeners()
@@ -221,7 +222,7 @@ public class MainActivity extends BaseActivity implements
                 if(postion==0)
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
-                    setActionBarTitle(getResources().getString(string.module_explore));
+                    setActionBarTitle(getResources().getString(string.module_explore),"");
                     theFragment.filterCards("All");
                 }
             }
@@ -247,11 +248,10 @@ public class MainActivity extends BaseActivity implements
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public boolean onMenuOpened(int featureId, Menu menu)
@@ -269,7 +269,7 @@ public class MainActivity extends BaseActivity implements
         switch (item.getItemId()) {
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
-                setActionBarTitle(mUpperLeverTitle);
+                setActionBarTitle(mUpperLeverTitle,"");
                 break;
         }
 
@@ -666,13 +666,13 @@ public class MainActivity extends BaseActivity implements
 
             // Check if this is the page you want.
             if (mFragments[position] instanceof ExploreFragment) {
-                setActionBarTitle(getResources().getString(string.module_explore));
+                setActionBarTitle(getResources().getString(string.module_explore),"");
             } else if (mFragments[position] instanceof TeacherListFragment) {
-                setActionBarTitle(getResources().getString(string.module_teacher));
+                setActionBarTitle(getResources().getString(string.module_teacher),"");
             } else if (mFragments[position] instanceof HobbyFragment) {
-                setActionBarTitle(getResources().getString(string.module_hobby));
+                setActionBarTitle(getResources().getString(string.module_hobby),"");
             } else if (mFragments[position] instanceof AboutmeFragment) {
-                setActionBarTitle(getResources().getString(string.module_aboutme));
+                setActionBarTitle(getResources().getString(string.module_aboutme),"");
             }
         }
 
@@ -718,12 +718,12 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    public void setActionBarTitle(String title)
+    public void setActionBarTitle(String title, String upLeverTitle)
     {
         View view = getSupportActionBar().getCustomView();
         TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
         textView.setText(title);
-        mUpperLeverTitle = mCurrentTitle;
+        mUpperLeverTitle = upLeverTitle;
         mCurrentTitle = title;
     }
 

@@ -10,6 +10,11 @@ ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
 	LOCAL_LDFLAGS := -L$(LOCAL_PATH)/ffmpeg-android/armv7-a/lib
 endif
 
+ifeq ($(TARGET_ARCH_ABI),arm64-v8a)
+	LOCAL_C_INCLUDES := $(LOCAL_C_INCLUDES) $(LOCAL_PATH)/ffmpeg-android/arm64-v8a/include
+	LOCAL_LDFLAGS := -L$(LOCAL_PATH)/ffmpeg-android/arm64-v8a/lib
+endif
+
 ifeq ($(TARGET_ARCH_ABI),armeabi)
 	LOCAL_C_INCLUDES := $(LOCAL_C_INCLUDES) $(LOCAL_PATH)/ffmpeg-android/armv5te/include
 	LOCAL_LDFLAGS := -L$(LOCAL_PATH)/ffmpeg-android/armv5te/lib

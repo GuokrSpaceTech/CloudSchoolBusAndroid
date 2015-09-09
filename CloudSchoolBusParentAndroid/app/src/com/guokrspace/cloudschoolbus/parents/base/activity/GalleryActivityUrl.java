@@ -31,14 +31,16 @@ public class GalleryActivityUrl extends BaseActivity{
         setContentView(R.layout.activity_image_viewer);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(title(position,items.size()));
 
         UrlPagerAdapter pagerAdapter = new ru.truba.touchgallery.GalleryWidget.UrlPagerAdapter(this, items);
+        final List<String> finalItems = items;
         pagerAdapter.setOnItemChangeListener(new OnItemChangeListener()
         {
             @Override
             public void onItemChange(int currentPosition)
             {
-//                Toast.makeText(GalleryActivityUrl.this, "Current item is " + currentPosition, Toast.LENGTH_SHORT).show();
+                getSupportActionBar().setTitle(title(currentPosition, finalItems.size()));
             }
         });
 
@@ -60,4 +62,10 @@ public class GalleryActivityUrl extends BaseActivity{
 
         return super.onOptionsItemSelected(item);
     }
+
+    private String title(int current, int total)
+    {
+        return getResources().getString(R.string.picturetype)+"("+ current + "/" + total +")";
+    }
+
 }

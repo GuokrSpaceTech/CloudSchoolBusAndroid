@@ -3,7 +3,9 @@ package com.guokrspace.cloudschoolbus.parents.module.classes.Streaming;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 
@@ -54,6 +56,7 @@ public class Preview extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.viewer_layout);
+
 		layout = (FrameLayout)findViewById(R.id.flayout);
 
 		//Create the imageView that takes over main UI thread receiving the streaming data
@@ -74,6 +77,9 @@ public class Preview extends BaseActivity {
         int i = intent.getIntExtra("id",0);
         client.m_sDVRName = mIpcparam.getChannels().get(i).getDevice();
         client.m_iChnNo = Integer.parseInt(mIpcparam.getChannels().get(i).getChannelid());
+
+        getSupportActionBar().setTitle(mIpcparam.getChannels().get(i).getChanneldesc());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		//Init the streaming source for the imageView 
 		image.source = client;
@@ -265,4 +271,14 @@ public class Preview extends BaseActivity {
 		image.setStreamReady(1);	
 		return;
 	}
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

@@ -635,6 +635,8 @@ public class BaseFragment extends Fragment {
 		streamingNoticeCard.setClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				MainActivity mainActivity = (MainActivity)mParentContext;
+				mainActivity.setActionBarTitle(getResources().getString(R.string.openclass), getResources().getString(R.string.module_explore));
 				StreamingChannelsFragment fragment = StreamingChannelsFragment.newInstance(ipcpara);
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
 				transaction.replace(R.id.article_module_layout, fragment);
@@ -662,7 +664,7 @@ public class BaseFragment extends Fragment {
 			@Override
 			public void onClick(View view) {
 				MainActivity mainActivity = (MainActivity)mParentContext;
-				mainActivity.setActionBarTitle(getResources().getString(R.string.report));
+				mainActivity.setActionBarTitle(getResources().getString(R.string.report), getResources().getString(R.string.module_explore));
 				ReportDetailFragment reportDetailFragment = ReportDetailFragment.newInstance(messageEntity.getSendtime(), studentReport.getReportUrl());
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
 				transaction.replace(R.id.article_module_layout, reportDetailFragment);
@@ -688,6 +690,8 @@ public class BaseFragment extends Fragment {
 		card.setClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				MainActivity mainActivity = (MainActivity)mParentContext;
+				mainActivity.setActionBarTitle(getResources().getString(R.string.food), getResources().getString(R.string.module_explore));
 				FoodDetailFragment fragment = FoodDetailFragment.newInstance(foodUrl);
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
 				transaction.replace(R.id.article_module_layout, fragment);
@@ -713,6 +717,8 @@ public class BaseFragment extends Fragment {
 		card.setClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				MainActivity mainActivity = (MainActivity)mParentContext;
+				mainActivity.setActionBarTitle(getResources().getString(R.string.schedule), getResources().getString(R.string.module_explore));
 				ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(scheduleUrl);
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
 				transaction.replace(R.id.article_module_layout, fragment);

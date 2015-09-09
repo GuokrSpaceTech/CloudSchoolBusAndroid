@@ -8,6 +8,7 @@
 # ARMv6+VFP 
 # ARMv7+VFPv3-d16 (Tegra2) 
 # ARMv7+Neon (Cortex-A8)
+# arm64-v8a
 # Customizing:
 # 1. Feel free to change ./configure parameters for more features
 # 2. To adapt other ARM variants
@@ -20,6 +21,8 @@ set -e
 NDK=/Users/macbook/Documents/android-sdk-macosx/android-ndk-r10e
 ARM_PLATFORM=$NDK/platforms/android-21/arch-arm/
 ARM_PREBUILT=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64
+ARM64_PLATFORM=$NDK/platforms/android-21/arch-arm64/
+ARM64_PREBUILT=$NDK/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64
 X86_PLATFORM=$NDK/platforms/android-21/arch-x86/
 X86_PREBUILT=$NDK/toolchains/x86-4.9/prebuilt/darwin-x8_64
 X86_64_PLATFORM=$NDK/platforms/android-21/arch-x86_64/
@@ -29,9 +32,14 @@ function build_one
 if [ $ARCH == "arm" ] 
 then
     PLATFORM=$ARM_PLATFORM
-    PREBUILT=$ARM_PREBUILT
+    PREBUILT=$ARM_PREBUILTarch64
     HOST=arm-linux-androideabi
-elif [$ARCH == "x86"]
+elif [ $ARCH == "arm64" ]
+then
+    PLATFORM=$ARM64_PLATFORM
+    PREBUILT=$ARM64_PREBUILT
+    HOST=aarch64-linux-android
+elif [ $ARCH == "x86" ]
 then
     PLATFORM=$X86_PLATFORM
     PREBUILT=$X86_PREBUILT
@@ -105,12 +113,12 @@ popd
 #build_one
 
 #arm v7vfpv3
-CPU=armv7-a
-ARCH=arm
-OPTIMIZE_CFLAGS="-mfloat-abi=softfp -mfpu=vfpv3-d16 -marm -march=$CPU "
-PREFIX=`pwd`/ffmpeg-android/$CPU
-ADDITIONAL_CONFIGURE_FLAG=
-build_one
+#CPU=armv7-a
+#ARCH=arm
+#OPTIMIZE_CFLAGS="-mfloat-abi=softfp -mfpu=vfpv3-d16 -marm -march=$CPU "
+#PREFIX=`pwd`/ffmpeg-android/$CPU
+#ADDITIONAL_CONFIGURE_FLAG=
+#build_one
 
 #arm v7vfp
 #CPU=armv7-a
@@ -136,6 +144,14 @@ build_one
 #ADDITIONAL_CONFIGURE_FLAG=
 #build_one
 
+#arm v6+vfp
+CPU=arm64-v8a
+ARCH=arm64
+OPTIMIZE_CFLAGS="-DCMP_HAVE_VFP"
+PREFIX=`pwd`/ffmpeg-android/${CPU}
+ADDITIONAL_CONFIGURE_FLAG=
+build_one
+
 #x86
 #CPU=i686
 #ARCH=i686
@@ -145,9 +161,9 @@ build_one
 #build_one
 
 #x86-64
-CPU=x86-64
-ARCH=x86-84
-OPTIMIZE_CFLAGS="-fomit-frame-pointer"
-PREFIX=`pwd`/ffmpeg-android/${CPU}
-ADDITIONAL_CONFIGURE_FLAG=
-build_one
+#CPU=x86-64
+#ARCH=x86-84
+#OPTIMIZE_CFLAGS="-fomit-frame-pointer"
+#PREFIX=`pwd`/ffmpeg-android/${CPU}
+#ADDITIONAL_CONFIGURE_FLAG="-msse4.2 -mpopcnt -m64 -mtune=intel"
+#build_one

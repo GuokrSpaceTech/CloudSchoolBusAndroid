@@ -128,7 +128,7 @@ public class StreamingChannelsFragment extends BaseFragment {
             SmallImageCard smallImageCard = new SmallImageCard(mParentContext);
             smallImageCard.setDescription(getResources().getString(R.string.realtime_streaming));
             smallImageCard.setTitle(channel.getChanneldesc());
-            smallImageCard.setDrawable(getResources().getDrawable(R.drawable.ic_image_default));
+            smallImageCard.setDrawable(getResources().getDrawable(R.drawable.ic_streaming));
             materialListView.add(smallImageCard);
         }
     }
