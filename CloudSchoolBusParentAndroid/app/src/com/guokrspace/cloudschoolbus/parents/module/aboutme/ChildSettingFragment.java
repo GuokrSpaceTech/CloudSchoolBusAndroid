@@ -297,7 +297,7 @@ public class ChildSettingFragment extends BaseFragment implements IListDialogLis
     private void showSwithChildDialog()
     {
         SelectChildDialogFragment theDialogFragment = SelectChildDialogFragment.newInstance((ArrayList)mApplication.mStudents);
-//        theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.AppTheme);
+        theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.dialog_light);
         theDialogFragment.show(getFragmentManager(),"");
     }
 }

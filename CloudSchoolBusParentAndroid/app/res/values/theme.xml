@@ -28,10 +28,12 @@
     <!--<item name="android:background">#FF666666</item>-->
     <!--</style>-->
 
-    <color name="custom_theme_color">#b0b0ff</color>
-    <style name="CustomerDiaglogTheme" parent="@android:style/Theme.Dialog">
-        <item name="android:windowBackground">@color/primary_white</item>
-        <item name="android:textColorPrimary">#231815</item>
+    <color name="black">#FF000000</color>
+    <color name="whitegrey">#FFF2F2F2</color>
+
+    <style name="dialog_light" parent="@android:style/Theme.Dialog">
+        <item name="@android:windowBackground">@color/whitegrey</item>
+        <item name="@android:textColor">@color/black</item>
     </style>
 
 </resources>

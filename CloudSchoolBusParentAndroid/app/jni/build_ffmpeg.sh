@@ -17,12 +17,12 @@
 
 set -e
 
-NDK=/Users/wangjianfeng/Documents/AndroidDevelopment/android-ndk-r10e
+NDK=/Users/macbook/Documents/android-sdk-macosx/android-ndk-r10e
 ARM_PLATFORM=$NDK/platforms/android-21/arch-arm/
-ARM_PREBUILT=$NDK/toolchains/arm-linux-androideabi-4.8/prebuilt/darwin-x86
+ARM_PREBUILT=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64
 X86_PLATFORM=$NDK/platforms/android-21/arch-x86/
+X86_PREBUILT=$NDK/toolchains/x86-4.9/prebuilt/darwin-x8_64
 X86_64_PLATFORM=$NDK/platforms/android-21/arch-x86_64/
-X86_PREBUILT=$NDK/toolchains/x86-4.9/prebuilt/darwin-x86
 X86_64_PREBUILT=$NDK/toolchains/x86_64-4.9/prebuilt/darwin-x86_64
 function build_one
 {
@@ -31,10 +31,15 @@ then
     PLATFORM=$ARM_PLATFORM
     PREBUILT=$ARM_PREBUILT
     HOST=arm-linux-androideabi
+elif [$ARCH == "x86"]
+then
+    PLATFORM=$X86_PLATFORM
+    PREBUILT=$X86_PREBUILT
+    HOST=i686-linux-android
 else
     PLATFORM=$X86_64_PLATFORM
     PREBUILT=$X86_64_PREBUILT
-    HOST=i686-linux-android
+    HOST=x86_64-linux-android
 fi
 
 pushd ffmpeg
@@ -84,12 +89,12 @@ popd
 }
 
 #arm v5te
-CPU=armv5te
-ARCH=arm
-OPTIMIZE_CFLAGS="-marm -march=$CPU"
-PREFIX=`pwd`/ffmpeg-android/$CPU 
-ADDITIONAL_CONFIGURE_FLAG=
-build_one
+#CPU=armv5te
+#ARCH=arm
+#OPTIMIZE_CFLAGS="-marm -march=$CPU"
+#PREFIX=`pwd`/ffmpeg-android/$CPU 
+#ADDITIONAL_CONFIGURE_FLAG=
+#build_one
 
 #arm v6
 #CPU=armv6
@@ -132,16 +137,16 @@ build_one
 #build_one
 
 #x86
-CPU=i686
-ARCH=i686
-OPTIMIZE_CFLAGS="-fomit-frame-pointer"
-PREFIX=`pwd`/ffmpeg-android/${CPU} 
-ADDITIONAL_CONFIGURE_FLAG=
-build_one
+#CPU=i686
+#ARCH=i686
+#OPTIMIZE_CFLAGS="-fomit-frame-pointer"
+#PREFIX=`pwd`/ffmpeg-android/${CPU} 
+#ADDITIONAL_CONFIGURE_FLAG=
+#build_one
 
 #x86-64
-CPU=i686
-ARCH=i686
+CPU=x86-64
+ARCH=x86-84
 OPTIMIZE_CFLAGS="-fomit-frame-pointer"
 PREFIX=`pwd`/ffmpeg-android/${CPU}
 ADDITIONAL_CONFIGURE_FLAG=

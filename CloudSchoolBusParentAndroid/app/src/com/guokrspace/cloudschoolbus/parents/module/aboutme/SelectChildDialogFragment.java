@@ -72,6 +72,7 @@ public class SelectChildDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setStyle(DialogFragment.STYLE_NORMAL,);
 
         mChildren = (List<StudentEntity>)getArguments().getSerializable(CHILDINFO);
     }

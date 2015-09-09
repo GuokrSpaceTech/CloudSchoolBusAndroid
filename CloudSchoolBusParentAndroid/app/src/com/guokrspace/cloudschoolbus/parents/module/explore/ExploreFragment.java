@@ -72,6 +72,8 @@ public class ExploreFragment extends BaseFragment {
         @Override
         public boolean handleMessage(Message msg) {
 
+            BusProvider.getInstance().post(new ImReadyEvent());
+
             switch (msg.what) {
                 case HandlerConstant.MSG_ONREFRESH:
                     AddCards();
@@ -302,9 +304,6 @@ public class ExploreFragment extends BaseFragment {
             if (theCard != null)
                 mMaterialListView.add(theCard);
         }
-
-        BusProvider.getInstance().post(new ImReadyEvent());
-
     }
 
     public void filterCards(String type) {
