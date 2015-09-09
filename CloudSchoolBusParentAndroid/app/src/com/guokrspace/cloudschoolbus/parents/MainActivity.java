@@ -64,6 +64,7 @@ import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
+import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.StartupFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.attendance.AttendanceFragment;
@@ -182,7 +183,8 @@ public class MainActivity extends BaseActivity implements
     private void initFragments() {
         mFragments[0] = ExploreFragment.newInstance(null, null);
         mFragments[1] = TeacherListFragment.newInstance();
-        mFragments[2] = HobbyFragment.newInstance();
+//        mFragments[2] = HobbyFragment.newInstance();
+        mFragments[2] = ClassFragment.newInstance();
         mFragments[3] = AboutmeFragment.newInstance();
     }
 

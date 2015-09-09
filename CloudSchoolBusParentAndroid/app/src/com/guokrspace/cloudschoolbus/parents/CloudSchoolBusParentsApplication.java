@@ -19,7 +19,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
-import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
+import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;

@@ -1,4 +1,6 @@
-include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs', ':dynamicgrid', ':DaoDBGenerator', ':materialList', ':android-week-view', ':Android-AdvancedWebView-master', ':IMKit', ':AndroidTouchGallery'
+include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs', ':dynamicgrid'
+include ':DaoDBGenerator', ':materialList',':android-week-view', ':Android-AdvancedWebView-master'
+include  ':IMKit', ':AndroidTouchGallery', ':PictureChooseLib'
 include 'app'
 project(':pagerSlidingTabStrip').projectDir = new File('dependancies/pagerSlidingTabStrip')
 project(':AndroidSupport').projectDir = new File('dependancies/AndroidSupport')
@@ -10,3 +12,4 @@ project(':android-week-view').projectDir = new File('dependancies/android-week-v
 project(':Android-AdvancedWebView-master').projectDir = new File('dependancies/Android-AdvancedWebView-master')
 project(':IMKit').projectDir = new File('dependancies/IMKit')
 project(':AndroidTouchGallery').projectDir = new File('dependancies/AndroidTouchGallery')
+project(':PictureChooseLib').projectDir = new File('dependancies/PictureChooseLib')

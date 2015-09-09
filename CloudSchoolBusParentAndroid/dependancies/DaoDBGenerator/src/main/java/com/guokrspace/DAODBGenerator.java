@@ -30,6 +30,7 @@ public class DAODBGenerator {
         addSchedule(schema);
         addLetter(schema);
         addReport(schema);
+        addUploadingPhotos(schema);
 
         new DaoGenerator().generateAll(schema, "src-gen");
     }
@@ -140,7 +141,7 @@ public class DAODBGenerator {
         reportItem.addStringProperty("answer");
         Property reportId = reportItem.addStringProperty("reportId").notNull().getProperty();
 
-        ToMany report2ReporItem = report.addToMany(reportItem,reportId);
+        ToMany report2ReporItem = report.addToMany(reportItem, reportId);
     }
 
     private static void addNotice(Schema schema)
@@ -238,5 +239,18 @@ public class DAODBGenerator {
         letters.addStringProperty("addtime");
         letters.addStringProperty("content");
         letters.addBooleanProperty("isShowDate");
+    }
+
+    private static void addUploadingPhotos(Schema schema)
+    {
+        Entity uploading = schema.addEntity("UploadingPhotos");
+        uploading.addStringProperty("picPathString");
+        uploading.addStringProperty("picFileString");
+        uploading.addStringProperty("picSizeString");
+        uploading.addStringProperty("studentId");
+        uploading.addStringProperty("classuid");
+        uploading.addStringProperty("intro");
+        uploading.addStringProperty("photoTag");
+        uploading.addStringProperty("teacherid");
     }
 }

@@ -1,56 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/activity_class_layout"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/class_module_layout">
-    <org.askerov.dynamicgrid.DynamicGridView
-            android:id="@+id/dynamic_grid"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:numColumns="@integer/column_count"
-            />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/primary_dark">
-    </View>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_class_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/big_padding">
+        android:background="@drawable/class_head_background"
+        android:layout_weight="25">
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button2"
-            android:layout_weight="50"
-            android:background="@android:color/transparent" />
-        <View
-            android:layout_width="1dp"
-            android:layout_height="fill_parent"
-            android:background="@color/primary_dark">
-        </View>
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/teacher_avatar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_image_default"
+            app:border_color="#00000000"
+            app:border_width="1px" />
 
-        <Button
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button3"
-            android:layout_weight="50"
-            android:background="@android:color/transparent" />
+            android:orientation="vertical"
+            android:padding="@dimen/big_padding">
+
+            <TextView
+                android:id="@+id/teacher_name"
+                style="@style/CardTitle"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/small_padding"
+                android:text="小花老师"
+                android:textColor="@color/primary_white"
+                android:textSize="@dimen/title_size" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/shape_transparent_dark_backgroud"
+                android:padding="@dimen/small_padding">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_house" />
+
+                <TextView
+                    android:id="@+id/kindergarten_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_white"
+                    android:textSize="@dimen/subtitle_size"
+                    tools:text="2小时前"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+
+    <org.askerov.dynamicgrid.DynamicGridView
+        android:id="@+id/dynamic_grid"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:numColumns="@integer/column_count"
+        android:layout_weight="75" />
 
 </LinearLayout>

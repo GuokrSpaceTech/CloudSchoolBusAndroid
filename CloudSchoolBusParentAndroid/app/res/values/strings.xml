@@ -74,5 +74,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="altersignout">"注意：本地数据将会被删除"</string>
 
-
+    <string name="gallery_choose">Gallery Select</string>
+    <string name="camera_choose">Now Photograph</string>
 </resources>

@@ -13,7 +13,7 @@ import com.android.support.debug.DebugLog;
 import com.android.support.dialog.CustomWaitDialog;
 import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
-import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
+import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 
 import java.util.ArrayList;

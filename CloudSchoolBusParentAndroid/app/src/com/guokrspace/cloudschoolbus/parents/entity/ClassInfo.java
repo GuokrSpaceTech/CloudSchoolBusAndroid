@@ -7,7 +7,7 @@ import java.util.List;
  * Created by kai on 12/25/14.
  */
 
-public class Classinfo implements Serializable{
+public class ClassInfo implements Serializable{
     List<Teacher> teacher;
     List<String>  student;
     private String classname;

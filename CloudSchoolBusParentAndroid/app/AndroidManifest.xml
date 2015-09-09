@@ -49,6 +49,11 @@
             android:name=".base.activity.GalleryActivityUrl"
             android:configChanges="orientation" >
         </activity>
+        <activity
+            android:name=".module.classes.SelectPictureActivity"
+            android:allowTaskReparenting="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
 
         <!-- push应用定义消息receiver声明 -->
         <receiver android:name=".base.baidupush.BaiduPushMessageReceiver" >

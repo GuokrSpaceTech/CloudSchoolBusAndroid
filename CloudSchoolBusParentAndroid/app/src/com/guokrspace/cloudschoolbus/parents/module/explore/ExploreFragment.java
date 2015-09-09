@@ -120,9 +120,9 @@ public class ExploreFragment extends BaseFragment {
                         errorMsg = getResources().getString(R.string.server_error);
                     }
 
-                    SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(errorMsg)
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-                    hideWaitDialog();
+//                    SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(errorMsg)
+//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+//                    hideWaitDialog();
                     break;
                 case HandlerConstant.MSG_CONFIRM_OK:
                     hideWaitDialog();

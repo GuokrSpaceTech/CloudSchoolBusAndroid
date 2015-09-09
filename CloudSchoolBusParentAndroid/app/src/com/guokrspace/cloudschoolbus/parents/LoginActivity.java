@@ -36,7 +36,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
 
-import com.guokrspace.cloudschoolbus.parents.entity.Classinfo;
+import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
@@ -380,10 +380,10 @@ public class LoginActivity extends BaseActivity {
                             SchoolEntity schoolEntity = new SchoolEntity(baseinfo.getSchools().get(i).getSchoolid(),baseinfo.getSchools().get(i).getSchoolname(), baseinfo.getSchools().get(i).getAddress());
                             schoolEntityDao.insertOrReplace(schoolEntity);
                             //Save Class Information
-                            List<Classinfo> classes = baseinfo.getSchools().get(i).getClasses();
+                            List<ClassInfo> classes = baseinfo.getSchools().get(i).getClasses();
                             for(int j=0; j<classes.size(); j++)
                             {
-                                Classinfo classinfo = classes.get(j);
+                                ClassInfo classinfo = classes.get(j);
                                 ClassEntity classEntity = new ClassEntity(classes.get(j).getClassid(),classes.get(j).getClassname(), schoolEntity.getId());
                                 classEntityDao.insertOrReplace(classEntity);
 

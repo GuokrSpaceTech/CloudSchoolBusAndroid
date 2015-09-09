@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.soulwolf.image.picturelib" >
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name" >
+        <activity
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:name="net.soulwolf.image.picturelib.ui.PictureChooseActivity"/>
+        <activity
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:name="net.soulwolf.image.picturelib.ui.GalleryChooseActivity"/>
+        <activity
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:name="net.soulwolf.image.picturelib.ui.CropPictureActivity"/>
+    </application>
+
+</manifest>

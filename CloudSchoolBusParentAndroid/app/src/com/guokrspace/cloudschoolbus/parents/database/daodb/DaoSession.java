@@ -36,6 +36,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig letterEntityDaoConfig;
     private final DaoConfig reportEntityDaoConfig;
     private final DaoConfig reportItemEntityDaoConfig;
+    private final DaoConfig uploadingPhotosDaoConfig;
 
     private final ConfigEntityDao configEntityDao;
     private final StudentEntityDao studentEntityDao;
@@ -55,6 +56,7 @@ public class DaoSession extends AbstractDaoSession {
     private final LetterEntityDao letterEntityDao;
     private final ReportEntityDao reportEntityDao;
     private final ReportItemEntityDao reportItemEntityDao;
+    private final UploadingPhotoEntityDao uploadingPhotosDao;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -114,6 +116,9 @@ public class DaoSession extends AbstractDaoSession {
         reportItemEntityDaoConfig = daoConfigMap.get(ReportItemEntityDao.class).clone();
         reportItemEntityDaoConfig.initIdentityScope(type);
 
+        uploadingPhotosDaoConfig = daoConfigMap.get(UploadingPhotoEntityDao.class).clone();
+        uploadingPhotosDaoConfig.initIdentityScope(type);
+
         configEntityDao = new ConfigEntityDao(configEntityDaoConfig, this);
         studentEntityDao = new StudentEntityDao(studentEntityDaoConfig, this);
         teacherEntityDao = new TeacherEntityDao(teacherEntityDaoConfig, this);
@@ -132,6 +137,7 @@ public class DaoSession extends AbstractDaoSession {
         letterEntityDao = new LetterEntityDao(letterEntityDaoConfig, this);
         reportEntityDao = new ReportEntityDao(reportEntityDaoConfig, this);
         reportItemEntityDao = new ReportItemEntityDao(reportItemEntityDaoConfig, this);
+        uploadingPhotosDao = new UploadingPhotoEntityDao(uploadingPhotosDaoConfig, this);
 
         registerDao(ConfigEntity.class, configEntityDao);
         registerDao(StudentEntity.class, studentEntityDao);
@@ -151,6 +157,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(LetterEntity.class, letterEntityDao);
         registerDao(ReportEntity.class, reportEntityDao);
         registerDao(ReportItemEntity.class, reportItemEntityDao);
+        registerDao(UploadingPhotoEntity.class, uploadingPhotosDao);
     }
     
     public void clear() {
@@ -172,6 +179,7 @@ public class DaoSession extends AbstractDaoSession {
         letterEntityDaoConfig.getIdentityScope().clear();
         reportEntityDaoConfig.getIdentityScope().clear();
         reportItemEntityDaoConfig.getIdentityScope().clear();
+        uploadingPhotosDaoConfig.getIdentityScope().clear();
     }
 
     public ConfigEntityDao getConfigEntityDao() {
@@ -244,6 +252,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public ReportItemEntityDao getReportItemEntityDao() {
         return reportItemEntityDao;
+    }
+
+    public UploadingPhotoEntityDao getUploadingPhotosDao() {
+        return uploadingPhotosDao;
     }
 
 }

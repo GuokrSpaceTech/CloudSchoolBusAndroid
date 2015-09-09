@@ -19,7 +19,7 @@ public class Version {
 	// 产品名称
 	public final static String productName = "家长端";
 	// 产品别名
-	public final static String minProductName = "CloudSchoolBusParent";
+	public final static String minProductName = "CloudSchoolBus";
 	// 下载地址
 	public static String url = "";
 	// 当前版本是否必须更新
