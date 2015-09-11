@@ -38,6 +38,11 @@
         android:icon="@drawable/ic_picture"
         android:title="@string/picture"
         app:showAsAction="collapseActionView|withText" />
+    <item
+        android:id="@+id/action_activity"
+        android:icon="@drawable/ic_picture"
+        android:title="@string/activity"
+        app:showAsAction="collapseActionView|withText" />
 </menu>
 
     <!--ifRoom、never、always、withText、collapseActionView-->

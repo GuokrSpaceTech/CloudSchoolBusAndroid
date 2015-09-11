@@ -11,15 +11,20 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.baidu.android.pushservice.PushMessageReceiver;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
+import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.NewMessageEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 /*
  * Push消息处理receiver。请编写您需要的回调函数， 一般来说： onBind是必须的，用来处理startWork返回值；
@@ -50,6 +55,7 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 	public static final String TAG = BaiduPushMessageReceiver.class
 			.getSimpleName();
 
+	private int badgeCount;
 	/**
 	 * 调用PushManager.startWork后，sdk将对push
 	 * server发起绑定请求，这个过程是异步的。绑定请求的结果通过onBind返回。 如果您需要用单播推送，需要把这里获取的channel
@@ -149,8 +155,8 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 			}
 		}
 
-		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-		updateContent(context, messageString);
+		incrementAppBadgetCount(context);
+		BusProvider.getInstance().post(new NewMessageEvent(badgeCount));
 	}
 
 	/**
@@ -171,6 +177,7 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 		String notifyString = "通知点击 title=\"" + title + "\" description=\""
 				+ description + "\" customContent=" + customContentString;
 		Log.d(TAG, notifyString);
+		ShortcutBadger.with(context.getApplicationContext()).remove();
 
 		// 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
 		if (!TextUtils.isEmpty(customContentString)) {
@@ -186,9 +193,10 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 				e.printStackTrace();
 			}
 		}
-
-		// 更新界面展示代码，应用请在这里加入自己的处理逻辑
-		updateContent(context, notifyString);
+		Intent intent = new Intent();
+		intent.setClass(context.getApplicationContext(), MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.getApplicationContext().startActivity(intent);
 	}
 
 	/**
@@ -207,32 +215,31 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 	@Override
 	public void onNotificationArrived(Context context, String title,
 									  String description, String customContentString) {
-		//DO NOTHING AT THE MOMENT
+//		DO NOTHING AT THE MOMENT
 
-//		String notifyString = "onNotificationArrived  title=\"" + title
-//				+ "\" description=\"" + description + "\" customContent="
-//				+ customContentString;
-//		Log.d(TAG, notifyString);
+		String notifyString = "onNotificationArrived  title=\"" + title
+				+ "\" description=\"" + description + "\" customContent="
+				+ customContentString;
+		Log.d(TAG, notifyString);
 
-		// 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
-		// Currently all pushes is from main message timeline
-		// just show the first module
-//		if (!TextUtils.isEmpty(customContentString)) {
-//			JSONObject customJson = null;
-//			try {
-//				customJson = new JSONObject(customContentString);
-//				String myvalue = null;
-//				if (!customJson.isNull("mykey")) {
-//					myvalue = customJson.getString("mykey");
-//				}
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-		// 你可以參考 onNotificationClicked中的提示从自定义内容获取具体值
-//		updateContent(context, notifyString);
+		incrementAppBadgetCount(context);
+
+//		 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
+//		 Currently all pushes is from main message timeline
+//		 just show the first module
+		if (!TextUtils.isEmpty(customContentString)) {
+			JSONObject customJson = null;
+			try {
+				customJson = new JSONObject(customContentString);
+				String myvalue = null;
+				if (!customJson.isNull("mykey")) {
+					myvalue = customJson.getString("mykey");
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -242,8 +249,6 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 	 *            上下文
 	 * @param errorCode
 	 *            错误码。0表示某些tag已经设置成功；非0表示所有tag的设置均失败。
-	 * @param successTags
-	 *            设置成功的tag
 	 * @param failTags
 	 *            设置失败的tag
 	 * @param requestId
@@ -268,8 +273,6 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 	 *            上下文
 	 * @param errorCode
 	 *            错误码。0表示某些tag已经删除成功；非0表示所有tag均删除失败。
-	 * @param successTags
-	 *            成功删除的tag
 	 * @param failTags
 	 *            删除失败的tag
 	 * @param requestId
@@ -329,8 +332,6 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 		if (errorCode == 0) {
 			// 解绑定成功
 		}
-		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-		updateContent(context, responseString);
 	}
 
 	private void updateContent(Context context, String content) {
@@ -346,11 +347,27 @@ public class BaiduPushMessageReceiver extends PushMessageReceiver {
 		logText += content;
 
 		BaiduPushUtils.logStringCache = logText;
+	}
 
-		Intent intent = new Intent();
-		intent.setClass(context.getApplicationContext(), MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		context.getApplicationContext().startActivity(intent);
+
+	private void incrementAppBadgetCount(Context context)
+	{
+		SharedPreferences preferences = context.getSharedPreferences("cloudschoolbuspref", Context.MODE_PRIVATE);
+		badgeCount = preferences.getInt("unreadmessages",0);
+		badgeCount ++;
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt("unreadmessages", badgeCount);
+		editor.commit();
+		ShortcutBadger.with(context.getApplicationContext()).count(badgeCount);
+	}
+
+	private void clearAppBadgetCount(Context context)
+	{
+		SharedPreferences preferences = context.getSharedPreferences("cloudschoolbuspref", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt("unreadmessages", 0);
+		editor.commit();
+		ShortcutBadger.with(context).remove();
 	}
 
 }

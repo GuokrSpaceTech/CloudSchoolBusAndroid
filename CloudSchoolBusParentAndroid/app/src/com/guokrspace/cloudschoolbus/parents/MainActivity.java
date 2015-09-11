@@ -61,6 +61,7 @@ import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
+import com.guokrspace.cloudschoolbus.parents.event.NewMessageEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
@@ -76,6 +77,7 @@ import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.Sc
 import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
 import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
+import com.guokrspace.cloudschoolbus.parents.widget.BadgeDotView;
 import com.guokrspace.cloudschoolbus.parents.widget.BadgeView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -90,6 +92,7 @@ import java.util.List;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
 
@@ -203,14 +206,15 @@ public class MainActivity extends BaseActivity implements
         for (int i = 0; i < mFragments.length; i++) {
             BadgeView badgeView = new BadgeView(c);
             badgeView.setTargetView(tabs.getTabsContainer().getChildAt(i));
+            badgeView.setBadgeMargin(6);
             badgeViews.add(badgeView);
+//            clearBadge(i);
         }
 
         //Customise the Action Bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.abs_layout);
         setActionBarTitle(getResources().getString(string.module_explore),"");
-
     }
 
     private void setListeners()
@@ -220,13 +224,14 @@ public class MainActivity extends BaseActivity implements
         tabs.delegateOnTabClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int postion = (int)view.getTag();
-                if(postion==0)
+                int position = (int)view.getTag();
+                if(position==0)
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
                     setActionBarTitle(getResources().getString(string.module_explore),"");
                     theFragment.filterCards("All");
                 }
+                clearBadge(position);
             }
         };
 
@@ -309,9 +314,7 @@ public class MainActivity extends BaseActivity implements
                     getSupportActionBar().setBackgroundDrawable(colorDrawable);
                 }
             } else {
-
                 TransitionDrawable td = new TransitionDrawable(new Drawable[]{oldBackground, ld});
-
                 // workaround for broken ActionBarContainer drawable handling on
                 // pre-API 17 builds
                 // https://github.com/android/platform_frameworks_base/commit/a7cc06d82e45918c37429a59b14545c6a57db4e4
@@ -470,6 +473,12 @@ public class MainActivity extends BaseActivity implements
     @Subscribe public void OnNetworkStateChange(NetworkStatusEvent event)
     {
         mApplication.networkStatusEvent = event;
+    }
+
+    @Subscribe public void OnNewMessageReceivedEvent(NewMessageEvent event)
+    {
+        getBadgeViews().get(0).setBadgeCount(event.getMessage_count());
+        ShortcutBadger.with(mContext).remove();
     }
 
 
@@ -646,9 +655,8 @@ public class MainActivity extends BaseActivity implements
                 }
             }
 
-             //This is the chat tab
-            badgeViews.get(1).setVisibility(View.VISIBLE);
-            badgeViews.get(1).setText(Integer.toString(left));
+            //Just set a red dot
+            setBadge(1,0);
 
             return false;
         }
@@ -664,7 +672,7 @@ public class MainActivity extends BaseActivity implements
         @Override
         public void onPageSelected(int position) {
             //Clear the badge icon
-            badgeViews.get(position).setVisibility(View.INVISIBLE);
+//            badgeViews.get(position).setVisibility(View.INVISIBLE);
 
             // Check if this is the page you want.
             if (mFragments[position] instanceof ExploreFragment) {
@@ -746,6 +754,31 @@ public class MainActivity extends BaseActivity implements
         getSupportActionBar().show();
     }
 
+    private void setBadge(int position, int badge)
+    {
+        if(badge==0)
+        {
+            badgeViews.get(position).setTextSize(TypedValue.COMPLEX_UNIT_SP, 6);
+            badgeViews.get(position).setPadding(dip2Px(3), dip2Px(1), dip2Px(3), dip2Px(1));
+            badgeViews.get(position).setTextColor(Color.parseColor("#d3321b"));
+            badgeViews.get(position).setBadgeMargin(12);
+            badgeViews.get(position).invalidate();
+        } else {
+            badgeViews.get(position).setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+            badgeViews.get(position).setPadding(dip2Px(5), dip2Px(1), dip2Px(5), dip2Px(1));
+            badgeViews.get(position).setTextColor(Color.WHITE);
+            badgeViews.get(position).setBadgeMargin(6);
+            badgeViews.get(position).setBadgeCount(badge);
+            badgeViews.get(position).invalidate();
+        }
+        badgeViews.get(position).setVisibility(View.VISIBLE);
+    }
+
+    private void clearBadge(int position)
+    {
+        badgeViews.get(position).setVisibility(View.INVISIBLE);
+    }
+
     private void TimerTick(final int max_seconds) {
         thread = new Thread(new Runnable() {
             @Override
@@ -765,5 +798,12 @@ public class MainActivity extends BaseActivity implements
         if (!thread.isAlive()) {
             thread.start();
         }
+    }
+
+    /*
+     * converts dip to px
+     */
+    private int dip2Px(float dip) {
+        return (int) (dip * mContext.getResources().getDisplayMetrics().density + 0.5f);
     }
 }

@@ -22,36 +22,37 @@ package com.guokrspace.cloudschoolbus.parents.widget;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-        import android.content.Context;
-        import android.graphics.Color;
-        import android.graphics.Typeface;
-        import android.graphics.drawable.ShapeDrawable;
-        import android.graphics.drawable.shapes.RoundRectShape;
-        import android.util.AttributeSet;
-        import android.util.Log;
-        import android.util.TypedValue;
-        import android.view.Gravity;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.FrameLayout;
-        import android.widget.FrameLayout.LayoutParams;
-        import android.widget.TabWidget;
-        import android.widget.TextView;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
+import android.widget.TabWidget;
+import android.widget.TextView;
 
 
-public class BadgeView extends TextView {
+public class BadgeDotView extends TextView {
 
     private boolean mHideOnNull = true;
 
-    public BadgeView(Context context) {
+    public BadgeDotView(Context context) {
         this(context, null);
     }
 
-    public BadgeView(Context context, AttributeSet attrs) {
+    public BadgeDotView(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.textViewStyle);
     }
 
-    public BadgeView(Context context, AttributeSet attrs, int defStyle) {
+    public BadgeDotView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         init();
@@ -61,17 +62,17 @@ public class BadgeView extends TextView {
         if (!(getLayoutParams() instanceof LayoutParams)) {
             LayoutParams layoutParams =
                     new LayoutParams(
-                            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-                            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
                             Gravity.RIGHT | Gravity.TOP);
             setLayoutParams(layoutParams);
         }
 
         // set default font
-        setTextColor(Color.WHITE);
+        setTextColor(Color.parseColor("#d3321b"));
         setTypeface(Typeface.DEFAULT_BOLD);
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
-        setPadding(dip2Px(5), dip2Px(1), dip2Px(5), dip2Px(1));
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 6);
+        setPadding(dip2Px(3), dip2Px(1), dip2Px(3), dip2Px(1));
 
         // set default background
         setBackground(9, Color.parseColor("#d3321b"));
@@ -143,13 +144,13 @@ public class BadgeView extends TextView {
     }
 
     public void setBadgeGravity(int gravity) {
-        FrameLayout.LayoutParams params = (LayoutParams) getLayoutParams();
+        LayoutParams params = (LayoutParams) getLayoutParams();
         params.gravity = gravity;
         setLayoutParams(params);
     }
 
     public int getBadgeGravity() {
-        FrameLayout.LayoutParams params = (LayoutParams) getLayoutParams();
+        LayoutParams params = (LayoutParams) getLayoutParams();
         return params.gravity;
     }
 
@@ -158,7 +159,7 @@ public class BadgeView extends TextView {
     }
 
     public void setBadgeMargin(int leftDipMargin, int topDipMargin, int rightDipMargin, int bottomDipMargin) {
-        FrameLayout.LayoutParams params = (LayoutParams) getLayoutParams();
+        LayoutParams params = (LayoutParams) getLayoutParams();
         params.leftMargin = dip2Px(leftDipMargin);
         params.topMargin = dip2Px(topDipMargin);
         params.rightMargin = dip2Px(rightDipMargin);
@@ -167,7 +168,7 @@ public class BadgeView extends TextView {
     }
 
     public int[] getBadgeMargin() {
-        FrameLayout.LayoutParams params = (LayoutParams) getLayoutParams();
+        LayoutParams params = (LayoutParams) getLayoutParams();
         return new int[] { params.leftMargin, params.topMargin, params.rightMargin, params.bottomMargin };
     }
 

@@ -1,6 +1,7 @@
 package com.guokrspace.cloudschoolbus.parents;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -90,6 +91,14 @@ public class CloudSchoolBusParentsApplication extends Application {
         mDaoMaster = new DaoMaster(db);
         mDaoSession = mDaoMaster.newSession();
     }
+
+//    private void initSharedPreference()
+//    {
+//        SharedPreferences messageCount = this.getSharedPreferences("cloudschoolbuspref", MODE_WORLD_WRITEABLE);
+//        SharedPreferences.Editor editor = messageCount.edit();
+//        editor.putInt("unreadmessages",0);
+//        editor.commit();
+//    }
 
     private void initImageLoader() {
         // 以下的设置再调用displayImage()有效，使用loadImage()无效

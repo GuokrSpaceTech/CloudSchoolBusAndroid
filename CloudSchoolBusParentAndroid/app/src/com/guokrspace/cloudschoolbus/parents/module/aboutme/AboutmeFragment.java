@@ -30,9 +30,12 @@ import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
 import com.avast.android.dialogs.iface.ISimpleDialogListener;
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.LoginActivity;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
@@ -45,6 +48,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
+
+import io.rong.imlib.RongIMClient;
 
 /**
  * Created by wangjianfeng on 15/8/13.
@@ -313,6 +318,8 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             mApplication.clearBaseinfo();
             mApplication.clearConfig();
             mApplication.clearDb();
+            //stop Baidu Push
+            PushManager.stopWork(mParentContext);
             Intent intent = new Intent(mParentContext, LoginActivity.class);
             startActivity(intent);
         }

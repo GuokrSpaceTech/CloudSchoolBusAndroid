@@ -1,6 +1,8 @@
 package com.guokrspace.cloudschoolbus.parents.module.explore;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
@@ -37,9 +40,11 @@ import com.squareup.otto.Subscribe;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 /**
  * A fragment representing a list of Items.
@@ -78,6 +83,7 @@ public class ExploreFragment extends BaseFragment {
 
             switch (msg.what) {
                 case HandlerConstant.MSG_ONREFRESH:
+                    clearAppBadgetCount(mParentContext);
                     AddCards();
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
@@ -91,6 +97,7 @@ public class ExploreFragment extends BaseFragment {
                     AddCards();
                     break;
                 case HandlerConstant.MSG_NOCHANGE:
+                    clearAppBadgetCount(mParentContext);
                     hideWaitDialog();
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
@@ -117,7 +124,7 @@ public class ExploreFragment extends BaseFragment {
                             errorMsg = getResources().getString(R.string.server_error);
                         }
                     } else {
-                        errorMsg = getResources().getString(R.string.server_error);
+//                        errorMsg = getResources().getString(R.string.server_error);
                     }
 
 //                    SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(errorMsg)
@@ -367,12 +374,13 @@ public class ExploreFragment extends BaseFragment {
             return BuildFoodNoticeCard(messageEntity);
         } else if (messageEntity.getApptype().equals("Schedule")) {
             return BuildScheduleNoticeCard(messageEntity);
-        } else {
+        } else if (messageEntity.getApptype().equals("Active") | messageEntity.getApptype().equals("Event"))
+            return BuildActivityCard(messageEntity, mHandler);
+        else {
             SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.unknow_message))
                     .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+            return null;
         }
-
-        return null;
     }
 
     private String messageType(MessageEntity msg) {
@@ -395,7 +403,7 @@ public class ExploreFragment extends BaseFragment {
                 setActionBarTitle(getResources().getString(R.string.schedule), getResources().getString(R.string.module_explore));
                 break;
             case R.id.action_report:
-                setActionBarTitle(getResources().getString(R.string.report),getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.report), getResources().getString(R.string.module_explore));
                 filterCards("Report");
                 break;
             case R.id.action_food:
@@ -409,6 +417,10 @@ public class ExploreFragment extends BaseFragment {
             case R.id.action_picture:
                 filterCards("Article");
                 setActionBarTitle(getResources().getString(R.string.picturetype), getResources().getString(R.string.module_explore));
+                break;
+            case R.id.action_activity:
+                filterCards("Active");
+                setActionBarTitle(getResources().getString(R.string.activity), getResources().getString(R.string.module_explore));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -435,11 +447,46 @@ public class ExploreFragment extends BaseFragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        if(menu != null)
+        {
+            setOverflowIconVisible(menu);
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void setOverflowIconVisible(Menu menu)
+    {
+        try
+        {
+            Class clazz=Class.forName("android.support.v7.internal.view.menu.MenuBuilder");
+            Field field=clazz.getDeclaredField("mOptionalIconsVisible");
+            if(field!=null)
+            {
+                field.setAccessible(true);
+                field.set(menu, true);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void clearAppBadgetCount(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences("cloudschoolbuspref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("unreadmessages", 0);
+        editor.commit();
+        ShortcutBadger.with(context).remove();
     }
 }

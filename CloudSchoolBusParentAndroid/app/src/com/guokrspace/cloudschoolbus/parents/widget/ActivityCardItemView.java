@@ -12,28 +12,25 @@ import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * Created by Yang Kai on 15/7/14.
  */
-public class NoticeCardItemView extends CardItemView<NoticeCard> {
+public class ActivityCardItemView extends CardItemView<ActivityCard> {
 
-    public NoticeCardItemView(Context context) {
+    public ActivityCardItemView(Context context) {
         super(context);
     }
 
-    public NoticeCardItemView(Context context, AttributeSet attrs) {
+    public ActivityCardItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public NoticeCardItemView(Context context, AttributeSet attrs, int defStyle) {
+    public ActivityCardItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     @Override
-    public void build(NoticeCard card) {
+    public void build(ActivityCard card) {
         super.build(card);
 
         //Teacher Head
@@ -101,10 +98,11 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
          * Card Bottom
          */
         Button confirmButton = (Button) findViewById(R.id.confirm);
+        //1: need user confirm 2: already confirmed 3: no user ops need
         if(card.getIsNeedConfirm().equals("1")) {
             confirmButton.setOnClickListener(card.getmConfirmButtonClickListener());
         } else if(card.getIsNeedConfirm().equals("2")) {
-                confirmButton.setEnabled(false);
+            confirmButton.setEnabled(false);
         } else {
             confirmButton.setVisibility(View.GONE);
         }

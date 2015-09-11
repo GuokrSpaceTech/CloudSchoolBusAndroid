@@ -21,6 +21,8 @@ dependencies {
     compile project(':IMKit')
     compile project(':AndroidTouchGallery')
     compile project(':PictureChooseLib')
+    compile 'me.leolin:ShortcutBadger:1.1.3@aar'
+//    compile 'com.github.elevenetc:badgeview:v1.0.0'
 }
 
 android {

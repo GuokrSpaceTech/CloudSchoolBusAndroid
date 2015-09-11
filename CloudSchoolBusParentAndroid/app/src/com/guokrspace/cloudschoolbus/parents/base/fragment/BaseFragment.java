@@ -2,8 +2,6 @@ package com.guokrspace.cloudschoolbus.parents.base.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,16 +13,13 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.android.support.debug.DebugLog;
 import com.android.support.dialog.CustomWaitDialog;
 import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
 import com.android.support.utils.DateUtils;
-import com.android.support.utils.ImageUtil;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
-import com.dexafree.materialList.model.Card;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
@@ -42,6 +37,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.entity.ActivityBody;
 import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecord;
 import com.guokrspace.cloudschoolbus.parents.entity.Food;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
@@ -51,17 +47,16 @@ import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
 import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
-import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.ImageAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.explore.TagRecycleViewAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
+import com.guokrspace.cloudschoolbus.parents.widget.ActivityCard;
 import com.guokrspace.cloudschoolbus.parents.widget.AttendanceRecordCard;
 import com.guokrspace.cloudschoolbus.parents.widget.FoodNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
@@ -71,7 +66,6 @@ import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -258,8 +252,6 @@ public class BaseFragment extends Fragment {
 				{
 					BusProvider.getInstance().post(new SidExpireEvent(mApplication.mConfig.getSid()));
 				}
-
-
 			}
 
 			@Override
@@ -413,7 +405,7 @@ public class BaseFragment extends Fragment {
 		});
 	}
 
-	public void NoticeConfirm(String messageid, final Button button, final android.os.Handler handler) {
+	public void UserConfirm(String messageid, final Button button, final android.os.Handler handler) {
 		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
@@ -474,6 +466,8 @@ public class BaseFragment extends Fragment {
 			}
 		});
 	}
+
+
 	public void animation(View v) {
 		v.clearAnimation();
 		ScaleAnimation animation = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -528,6 +522,8 @@ public class BaseFragment extends Fragment {
 			cardtype = getResources().getString(R.string.food);
 		else if(type.equals("Schedule"))
 			cardtype = getResources().getString(R.string.schedule);
+        else if(type.equals("Active"))
+            cardtype = getResources().getString(R.string.activity);
 		return cardtype;
 	}
 
@@ -597,10 +593,33 @@ public class BaseFragment extends Fragment {
 		noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				NoticeConfirm(messageEntity.getMessageid(), (Button) view, handler);
+				UserConfirm(messageEntity.getMessageid(), (Button) view, handler);
 			}
 		});
 		return noticeCard;
+	}
+
+	public ActivityCard BuildActivityCard(final MessageEntity messageEntity, final Handler handler)
+	{
+		ActivityCard theCard = new ActivityCard(mParentContext);
+		String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+		theCard.setTeacherAvatarUrl(teacherAvatarString);
+		theCard.setTeacherName(messageEntity.getSenderEntity().getName());
+		theCard.setClassName(messageEntity.getSenderEntity().getClassname());
+		theCard.setCardType(cardType(messageEntity.getApptype()));
+		theCard.setSentTime(messageEntity.getSendtime());
+		theCard.setIsNeedConfirm(messageEntity.getIsconfirm());
+		theCard.setTitle(messageEntity.getTitle());
+		theCard.setDescription(messageEntity.getDescription());
+		ActivityBody messageBody = FastJsonTools.getObject(messageEntity.getBody(), ActivityBody.class);
+		if (messageBody != null) theCard.setDrawable(messageBody.getPList().get(0));
+		theCard.setmConfirmButtonClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				UserConfirm(messageEntity.getMessageid(), (Button) view, handler);
+			}
+		});
+		return theCard;
 	}
 
 	public AttendanceRecordCard BuildAttendanceCard(MessageEntity messageEntity)
