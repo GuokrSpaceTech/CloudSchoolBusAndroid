@@ -29,9 +29,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
+import com.guokrspace.cloudschoolbus.parents.event.PictureSelectionEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity;
+import com.guokrspace.cloudschoolbus.parents.module.classes.adapter.PictureAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.classes.photo.SelectStudentActivity;
+import com.squareup.otto.Subscribe;
+import com.toaker.common.tlog.TLog;
+
+import net.soulwolf.image.picturelib.PictureFrom;
+import net.soulwolf.image.picturelib.PictureProcess;
+import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
+import net.soulwolf.image.picturelib.model.Picture;
 
 import org.askerov.dynamicgrid.BaseDynamicGridAdapter;
 import org.askerov.dynamicgrid.DynamicGridView;
@@ -46,7 +58,11 @@ public class ClassFragment extends BaseFragment {
     private static final String TAG = ClassFragment.class.getName();
     private OnCompleteListener mListener;
 
+    PictureProcess mPictureProcess;
+    List<Picture> mPictureList = new ArrayList<>();
+    PictureAdapter mPictureAdapter;
     private DynamicGridView gridView;
+    private Context mContext;
 //    private int position;
 
     public static ClassFragment newInstance() {
@@ -60,6 +76,7 @@ public class ClassFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPictureProcess = new PictureProcess(this);
 
 //        position = getArguments().getInt(ARG_POSITION);
     }
@@ -79,11 +96,9 @@ public class ClassFragment extends BaseFragment {
 
         //add callback to stop edit mode if needed
         //add callback to stop edit mode if needed
-        gridView.setOnDropListener(new DynamicGridView.OnDropListener()
-        {
+        gridView.setOnDropListener(new DynamicGridView.OnDropListener() {
             @Override
-            public void onActionDrop()
-            {
+            public void onActionDrop() {
                 gridView.stopEditMode();
             }
         });
@@ -111,13 +126,12 @@ public class ClassFragment extends BaseFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ClassifyDynamicAdapter.ClassifyModule classifyModule = (ClassifyDynamicAdapter.ClassifyModule)parent.getAdapter().getItem(position);
+                ClassifyDynamicAdapter.ClassifyModule classifyModule = (ClassifyDynamicAdapter.ClassifyModule) parent.getAdapter().getItem(position);
 //                Toast.makeText(getActivity(), classModule.getTitle(),
 //                        Toast.LENGTH_SHORT).show();
 
                 FragmentTransaction transaction;
-                switch (classifyModule.getTitle())
-                {
+                switch (classifyModule.getTitle()) {
                     case "视频公开课":
                         Intent intent = new Intent(getActivity(), IpcSelectionActivity.class);
                         startActivity(intent);
@@ -146,8 +160,10 @@ public class ClassFragment extends BaseFragment {
 //                        dismiss();
                         break;
                     case "相册":
-                        intent = new Intent(getActivity(), SelectPictureActivity.class);
-                        startActivity(intent);
+                        mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
+                        mPictureProcess.setClip(false);
+                        mPictureProcess.setMaxPictureCount(9);
+                        mPictureProcess.execute((MainActivity)mParentContext);
                         break;
                 }
             }
@@ -175,8 +191,8 @@ public class ClassFragment extends BaseFragment {
     public static class ClassifyComponent {
 
         public static ClassifyDynamicAdapter.ClassifyModule[] classifyModules = {
-                new ClassifyDynamicAdapter.ClassifyModule("晨检考勤",R.drawable.ic_attendance), new ClassifyDynamicAdapter.ClassifyModule("班级报告",R.drawable.ic_report), new ClassifyDynamicAdapter.ClassifyModule("通知消息",R.drawable.ic_notice),
-                new ClassifyDynamicAdapter.ClassifyModule("视频公开课",R.drawable.ic_streaming), new ClassifyDynamicAdapter.ClassifyModule("课程表",R.drawable.ic_schedule), new ClassifyDynamicAdapter.ClassifyModule("食谱",R.drawable.ic_food),
+                new ClassifyDynamicAdapter.ClassifyModule("晨检考勤", R.drawable.ic_attendance), new ClassifyDynamicAdapter.ClassifyModule("班级报告", R.drawable.ic_report), new ClassifyDynamicAdapter.ClassifyModule("通知消息", R.drawable.ic_notice),
+                new ClassifyDynamicAdapter.ClassifyModule("视频公开课", R.drawable.ic_streaming), new ClassifyDynamicAdapter.ClassifyModule("课程表", R.drawable.ic_schedule), new ClassifyDynamicAdapter.ClassifyModule("食谱", R.drawable.ic_food),
                 new ClassifyDynamicAdapter.ClassifyModule("相册", R.drawable.ic_picture)
         };
     }
@@ -197,7 +213,7 @@ public class ClassFragment extends BaseFragment {
                 holder = (ClassViewHolder) convertView.getTag();
             }
 
-            ClassifyModule classifyModule = (ClassifyModule)getItem(position);
+            ClassifyModule classifyModule = (ClassifyModule) getItem(position);
 
             holder.build(classifyModule.getTitle(), classifyModule.getImageRes());
             return convertView;
@@ -246,5 +262,28 @@ public class ClassFragment extends BaseFragment {
                 this.imageRes = imageRes;
             }
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPictureProcess.onProcessResult(requestCode, resultCode, data);
+    }
+
+    protected void updatePictureList(List<Picture> list) {
+        mPictureList.clear();
+        if (list != null) {
+            mPictureList.addAll(list);
+        }
+        mPictureAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onPictureSelected(PictureSelectionEvent event)
+    {
+        Intent intent = new Intent(mParentContext, SelectStudentActivity.class);
+        intent.putExtra("pictures", event.getPictures());
+        startActivity(intent);
+//        updatePictureList(event.getPictures());
     }
 }

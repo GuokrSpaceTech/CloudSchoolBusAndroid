@@ -50,9 +50,12 @@
             android:configChanges="orientation" >
         </activity>
         <activity
-            android:name=".module.classes.SelectPictureActivity"
-            android:allowTaskReparenting="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:name=".module.classes.photo.SelectStudentActivity"
+            android:label="@string/title_activity_select_student"
+            android:parentActivityName="net.soulwolf.image.picturelib.ui.PictureChooseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.soulwolf.image.picturelib.ui.PictureChooseActivity" />
         </activity>
 
         <!-- push应用定义消息receiver声明 -->

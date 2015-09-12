@@ -54,6 +54,7 @@ import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
@@ -62,6 +63,7 @@ import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NewMessageEvent;
+import com.guokrspace.cloudschoolbus.parents.event.PictureSelectionEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
@@ -82,6 +84,10 @@ import com.guokrspace.cloudschoolbus.parents.widget.BadgeView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
+import com.toaker.common.tlog.TLog;
+
+import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
+import net.soulwolf.image.picturelib.model.Picture;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -99,7 +105,7 @@ import static com.guokrspace.cloudschoolbus.parents.R.string;
 //http://stackoverflow.com/questions/24838668/icon-selector-not-working-with-pagerslidingtabstrips
 
 public class MainActivity extends BaseActivity implements
-        ExploreFragment.OnFragmentInteractionListener
+        ExploreFragment.OnFragmentInteractionListener, OnPicturePickListener
 
 {
     private Thread  thread;
@@ -805,5 +811,27 @@ public class MainActivity extends BaseActivity implements
      */
     private int dip2Px(float dip) {
         return (int) (dip * mContext.getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    @Override
+    public void onSuccess(List<Picture> pictures) {
+        if(Version.DEBUG){
+            TLog.i("", "OnSuccess:%s", pictures);
+        }
+        BusProvider.getInstance().post(new PictureSelectionEvent((ArrayList)pictures));
+
+
+    }
+
+    @Override
+    public void onError(Exception e) {
+        TLog.e("","onError",e);
+    }
+
+    @Override
+    public void onSuccessString(List<String> pictures) {
+        if(Version.DEBUG){
+            TLog.i("", "OnSuccess:%s", pictures);
+        }
     }
 }

@@ -33,6 +33,7 @@ import net.soulwolf.image.picturelib.exception.FileCreateException;
 import net.soulwolf.image.picturelib.exception.PhotographException;
 import net.soulwolf.image.picturelib.exception.PictureCropException;
 import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
+import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.task.ImageLoadHandler;
 import net.soulwolf.image.picturelib.task.ImageLoadTask;
 import net.soulwolf.image.picturelib.ui.PictureChooseActivity;
@@ -158,9 +159,9 @@ public class PictureProcess {
             }
         }else if(requestCode == PictureProcess.GALLERY_REQUEST_CODE){
             if(resultCode == PictureChooseActivity.RESULT_OK && data != null){
-                ArrayList<String> picture = data.getStringArrayListExtra(Constants.PICTURE_CHOOSE_LIST);
+                ArrayList<Picture> picture = (ArrayList<Picture>)data.getSerializableExtra(Constants.PICTURE_CHOOSE_LIST);
                 if(isClip && picture != null && picture.size() == 1){
-                    cropPicture(new File(picture.get(0)));
+//                    cropPicture(new File(picture.get(0)));
                 }else {
                     onSuccess(picture);
                 }
@@ -176,7 +177,7 @@ public class PictureProcess {
         }
     }
 
-    protected void onSuccess(List<String> pictures){
+    protected void onSuccess(List<Picture> pictures){
         if(mOnPicturePickListener != null){
             mOnPicturePickListener.onSuccess(pictures);
         }
@@ -188,7 +189,7 @@ public class PictureProcess {
             pictures.add(file.getAbsolutePath());
         }
         if(mOnPicturePickListener != null){
-            mOnPicturePickListener.onSuccess(pictures);
+            mOnPicturePickListener.onSuccessString(pictures);
         }
     }
 

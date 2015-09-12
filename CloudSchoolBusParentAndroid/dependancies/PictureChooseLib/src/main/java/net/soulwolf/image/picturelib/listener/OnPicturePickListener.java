@@ -18,6 +18,8 @@
  */
 package net.soulwolf.image.picturelib.listener;
 
+import net.soulwolf.image.picturelib.model.Picture;
+
 import java.util.List;
 
 /**
@@ -30,7 +32,9 @@ public interface OnPicturePickListener {
      * The picture choose success callback!
      * @param pictures choose picture list!
      */
-    void onSuccess(List<String> pictures);
+    void onSuccess(List<Picture> pictures);
+
+    void onSuccessString(List<String> pictures);
 
     /**
      * The picture choose error callback!

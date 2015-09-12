@@ -19,6 +19,7 @@
 package net.soulwolf.image.picturelib.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,10 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import net.soulwolf.image.picturelib.R;
+import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.task.ImageLoadTask;
 import net.soulwolf.image.picturelib.utils.Utils;
 
@@ -44,11 +48,11 @@ public class PictureChooseAdapter extends BaseAdapter {
 
     int     mMaxPictureCount;
 
-    List<String> mPictureList;
+    List<Picture> mPictureList;
 
     List<Integer> mPictureChoose;
 
-    public PictureChooseAdapter(Context context,List<String> pictures,int maxCount){
+    public PictureChooseAdapter(Context context,List<Picture> pictures,int maxCount){
         this.mContext = context;
         this.mPictureList = pictures;
         this.mMaxPictureCount = maxCount;
@@ -61,7 +65,7 @@ public class PictureChooseAdapter extends BaseAdapter {
     }
 
     @Override
-    public String getItem(int position) {
+    public Picture getItem(int position) {
         return mPictureList == null ? null : mPictureList.get(position);
     }
 
@@ -83,8 +87,13 @@ public class PictureChooseAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         // load image
-        String url = getItem(position);
-        ImageLoadTask.getInstance().display(holder.mPictureView, Utils.urlFromFile(url));
+        String url = getItem(position).getPicturePath();
+        if(url==null)
+            url = getItem(position).getThumbPath();
+
+        Log.i("",url);
+        Picasso.with(mContext).load(Utils.urlFromFile(url)).fit().centerCrop().into(holder.mPictureView);
+//        ImageLoadTask.getInstance().display(holder.mPictureView, Utils.urlFromFile(url));
         if(mPictureChoose.contains(position)){
             if(holder.mPictureState.getVisibility() != View.VISIBLE){
                 holder.mPictureState.setVisibility(View.VISIBLE);
@@ -121,8 +130,8 @@ public class PictureChooseAdapter extends BaseAdapter {
         return this.mPictureChoose.size();
     }
 
-    public ArrayList<String> getPictureChoosePath(){
-        ArrayList<String> pictures = new ArrayList<>();
+    public ArrayList<Picture> getPictureChoosePath(){
+        ArrayList<Picture> pictures = new ArrayList<>();
         for (int position:mPictureChoose){
             pictures.add(getItem(position));
         }

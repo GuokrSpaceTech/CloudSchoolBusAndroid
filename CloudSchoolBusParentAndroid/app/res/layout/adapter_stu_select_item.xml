@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:id="@+id/mainLayout"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/itemLayout"
+        android:layout_width="70dip"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/headImageView"
+            android:layout_width="74dip"
+            android:layout_height="40dip"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_image_default" />
+
+        <ImageView
+            android:id="@+id/selectImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/headImageView"
+            android:layout_alignTop="@id/headImageView"
+            android:src="@drawable/ic_teacher_selected"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <TextView
+        android:singleLine="true"
+        android:id="@+id/stuNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+</LinearLayout>

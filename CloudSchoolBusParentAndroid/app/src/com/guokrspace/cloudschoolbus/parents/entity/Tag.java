@@ -1,14 +1,17 @@
 package com.guokrspace.cloudschoolbus.parents.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by kai on 11/26/14.
  */
-public class Tag {
+public class Tag implements Serializable{
     private String tagid;
     private String tagName;
     private String tagnamedesc;
     private String tagname_en;
     private String tagnamedesc_en;
+    private boolean isSelected;
 
     public String getTagid() {
         return tagid;
@@ -48,5 +51,13 @@ public class Tag {
 
     public void setTagnamedesc_en(String tagnamedesc_en) {
         this.tagnamedesc_en = tagnamedesc_en;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 }

@@ -50,7 +50,7 @@ else
     HOST=x86_64-linux-android
 fi
 
-pushd ffmpeg
+pushd FFmpeg-n2.8
 ./configure --target-os=linux \
     --prefix=$PREFIX \
     --enable-cross-compile \

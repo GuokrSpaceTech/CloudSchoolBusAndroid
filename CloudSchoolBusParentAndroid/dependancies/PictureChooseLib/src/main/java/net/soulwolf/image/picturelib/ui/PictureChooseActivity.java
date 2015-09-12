@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import net.soulwolf.image.picturelib.R;
 import net.soulwolf.image.picturelib.adapter.PictureChooseAdapter;
+import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.rx.ResponseHandler;
 import net.soulwolf.image.picturelib.task.PictureTask;
 import net.soulwolf.image.picturelib.utils.Constants;
@@ -28,7 +29,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
     GridView mPictureGrid;
 
-    ArrayList<String> mPictureList;
+    ArrayList<Picture> mPictureList;
 
     PictureChooseAdapter mPictureChooseAdapter;
 
@@ -40,9 +41,9 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_choose);
-        if(getIntent() != null){
-            mMaxPictureCount = getIntent().getIntExtra(Constants.MAX_PICTURE_COUNT,1);
-            mTitleBarBackground = getIntent().getIntExtra(Constants.TITLE_BAR_BACKGROUND,mTitleBarBackground);
+        if (getIntent() != null) {
+            mMaxPictureCount = getIntent().getIntExtra(Constants.MAX_PICTURE_COUNT, 1);
+            mTitleBarBackground = getIntent().getIntExtra(Constants.TITLE_BAR_BACKGROUND, mTitleBarBackground);
         }
         mPictureGrid = (GridView) findViewById(R.id.pi_picture_choose_grid);
         setTitleBarBackground(mTitleBarBackground);
@@ -51,14 +52,14 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
         setRightText(R.string.ps_complete);
 
         mPictureList = new ArrayList<>();
-        mPictureChooseAdapter = new PictureChooseAdapter(this,mPictureList,mMaxPictureCount);
+        mPictureChooseAdapter = new PictureChooseAdapter(this, mPictureList, mMaxPictureCount);
         mPictureGrid.setAdapter(mPictureChooseAdapter);
         mPictureGrid.setOnItemClickListener(this);
 
-        getRecentlyPicture();
+        getAllPictures();
     }
 
-    private void updatePictureList(List<String> paths) {
+    private void updatePictureList(List<Picture> paths) {
         mPictureList.clear();
         if(paths != null){
             mPictureList.addAll(paths);
@@ -68,9 +69,25 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
     private void getRecentlyPicture() {
         PictureTask.getRecentlyPicture(getContentResolver(),30)
-                .subscribe(new ResponseHandler<List<String>>() {
+                .subscribe(new ResponseHandler<List<Picture>>() {
                     @Override
-                    public void onSuccess(List<String> strings) throws Exception {
+                    public void onSuccess(List<Picture> strings) throws Exception {
+                        updatePictureList(strings);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable error) {
+                        super.onFailure(error);
+                        Toast.makeText(getApplicationContext(), R.string.ps_load_image_error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void getAllPictures() {
+        PictureTask.getAllPictures(getContentResolver())
+                .subscribe(new ResponseHandler<List<Picture>>() {
+                    @Override
+                    public void onSuccess(List<Picture> strings) throws Exception {
                         updatePictureList(strings);
                     }
 
@@ -87,7 +104,15 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                 .subscribe(new ResponseHandler<List<String>>() {
                     @Override
                     public void onSuccess(List<String> strings) throws Exception {
-                        updatePictureList(strings);
+                        List<Picture> pictures = new ArrayList<>();
+                        for(int i=0;i<strings.size();i++)
+                        {
+                            Picture picture = new Picture();
+                            picture.setPicturePath(strings.get(i));
+                            pictures.add(picture);
+                        }
+
+                        updatePictureList(pictures);
                     }
 
                     @Override
@@ -128,9 +153,9 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     @Override
     protected void onRightClick(View view) {
         super.onRightClick(view);
-        ArrayList<String> list = mPictureChooseAdapter.getPictureChoosePath();
+        ArrayList<Picture> list = mPictureChooseAdapter.getPictureChoosePath();
         Intent data = new Intent();
-        data.putStringArrayListExtra(Constants.PICTURE_CHOOSE_LIST,list);
+        data.putExtra(Constants.PICTURE_CHOOSE_LIST, list);
         setResult(RESULT_OK, data);
         finish();
     }

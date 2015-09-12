@@ -17,6 +17,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
@@ -66,6 +67,7 @@ public class CloudSchoolBusParentsApplication extends Application {
     public List<ClassEntity> mClasses;
     public List<TeacherEntity> mTeachers;
     public List<StudentEntity> mStudents;
+    public List<TagEntity> mTags;
 
     @Override
     public void onCreate() {

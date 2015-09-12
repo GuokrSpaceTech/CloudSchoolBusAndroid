@@ -18,6 +18,7 @@
  */
 package net.soulwolf.image.picturelib.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
@@ -106,12 +107,23 @@ public class Utils {
     }
 
     public static String urlFromFile(String filePath){
-        return String.format("%s%s","file://",filePath);
+        if(!filePath.contains("file://"))
+            return String.format("%s%s","file://",filePath);
+        else
+            return filePath;
     }
 
     public static <T> void checkNullPointer(T t){
         if(t == null){
             throw new NullPointerException();
         }
+    }
+
+    public static boolean fileExists(Context context, String filename) {
+        File file = context.getFileStreamPath(filename);
+        if(file == null || !file.exists()) {
+            return false;
+        }
+        return true;
     }
 }
