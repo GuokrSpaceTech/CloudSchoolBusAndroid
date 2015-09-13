@@ -13,7 +13,7 @@ import com.guokrspace.cloudschoolbus.parents.entity.Tag;
 
 import java.util.List;
 
-public class EditContentAdapter extends BaseAdapter {
+public class TagsAdapter extends BaseAdapter {
 
 	private Context mContext;
 	private List<Tag> mPhotoTagList;
@@ -22,7 +22,7 @@ public class EditContentAdapter extends BaseAdapter {
 	private int mLastIndex = -1;
 	private TextView mAllButton;
 
-	public EditContentAdapter(Context context, List<Tag> editContentAreas) {
+	public TagsAdapter(Context context, List<Tag> editContentAreas) {
 		mContext = context;
 		mPhotoTagList = editContentAreas;
 	}
@@ -59,13 +59,7 @@ public class EditContentAdapter extends BaseAdapter {
 
 			@Override
 			public void onClick(View arg0) {
-				// photoTag.isSelected = !photoTag.isSelected;
-				// textView.setSelected(photoTag.isSelected);
 				setSelectedIndex(position,false);
-				if(null != mAllButton){
-					mAllButton.setEnabled(true);
-					mAllButton.setSelected(false);
-				}
 			}
 		});
 		return arg1;
@@ -92,7 +86,7 @@ public class EditContentAdapter extends BaseAdapter {
 
 	/**
 	 * 返回当前选中的index
-	 * 
+	 *
 	 * @return
 	 */
 	public int getCurrentItem() {
@@ -130,7 +124,7 @@ public class EditContentAdapter extends BaseAdapter {
     }
 
 	/**
-	 * 
+	 *
 	 * @param index
 	 * @param ignore
 	 *            true标示忽略此次设置
@@ -142,17 +136,8 @@ public class EditContentAdapter extends BaseAdapter {
 			boolean result = !mPhotoTagList.get(index).isSelected();
 			mPhotoTagList.get(index).setIsSelected(result);
 
-            //Ensure only 1 button is selected
-//			if (-1 != mLastIndex && index != mLastIndex)
-//				mPhotoTagList.get(mLastIndex).isSelected = false;
-
             mLastIndex = index;
 
-			// if (mAllSelected) {
-			// clearSelected();
-			// mPhotoTagList.get(index).isSelected = true;
-			// }
-			// mAllSelected = false;
 			notifyDataSetChanged();
 			return result;
 		} else {

@@ -17,7 +17,6 @@
         android:lines="5"
         android:maxLength="280"
         android:padding="5dip" >
-
         <requestFocus />
     </EditText>
 
@@ -33,17 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text="0/280" />
-
-        <TextView
-            android:id="@+id/allButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/btn_photo_tag_xml"
-            android:gravity="center"
-            android:text="@string/all"
-            android:textColor="@color/primary_dark" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

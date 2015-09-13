@@ -17,7 +17,10 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,15 +37,12 @@ public class StuSelectAdapter extends BaseAdapter {
 	private static final String ITEM = "item";
 
 	private Context mContext;
-	private CloudSchoolBusParentsApplication mApplication;
-	private List<StudentEntity> mStudents;
-    private Map<Integer, StudentEntity> mSelections;
+	private ArrayList<StudentEntity> mStudents = new ArrayList<>();
+    private HashMap<Integer, StudentEntity> mSelections = new HashMap<>();
 
 	public StuSelectAdapter(Context context, List<StudentEntity> students) {
 		mContext = context;
-		mStudents = students;
-		mApplication = (CloudSchoolBusParentsApplication) mContext
-				.getApplicationContext();
+		mStudents = (ArrayList)students;
 	}
 
 	@Override
@@ -64,91 +64,85 @@ public class StuSelectAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int arg0, View arg1, ViewGroup arg2) {
+	public View getView(final int position, View view, ViewGroup arg2) {
 
-		if (null == arg1) {
-			if (0 == arg0) {
-				arg1 = LayoutInflater.from(mContext).inflate(
+		if (null == view) {
+			if (0 == position) {
+				view = LayoutInflater.from(mContext).inflate(
 						R.layout.adapter_stu_select_all, null);
-				arg1.setTag(ALL_SELECT);
-			} else if (arg0 > 0) {
-				arg1 = LayoutInflater.from(mContext).inflate(
+				view.setTag(ALL_SELECT);
+			} else if (position > 0) {
+				view = LayoutInflater.from(mContext).inflate(
 						R.layout.adapter_stu_select_item, null);
-				arg1.setTag(ITEM);
+				view.setTag(ITEM);
 			}
 		} else {
-			if (0 == arg0 && !ALL_SELECT.equals(arg1.getTag())) {
-				arg1 = LayoutInflater.from(mContext).inflate(
+			if (0 == position && !ALL_SELECT.equals(view.getTag())) {
+				view = LayoutInflater.from(mContext).inflate(
 						R.layout.adapter_stu_select_all, null);
-				arg1.setTag(ALL_SELECT);
-			} else if (arg0 > 0 && !ITEM.equals(arg1.getTag())) {
-				arg1 = LayoutInflater.from(mContext).inflate(
+				view.setTag(ALL_SELECT);
+			} else if (position > 0 && !ITEM.equals(view.getTag())) {
+				view = LayoutInflater.from(mContext).inflate(
 						R.layout.adapter_stu_select_item, null);
-				arg1.setTag(ITEM);
+				view.setTag(ITEM);
 			}
 		}
 
-		if (0 == arg0) {
-			final ImageView allSelectImageView = (ImageView) arg1
+		if (0 == position) {
+			final ImageView allSelectImageView = (ImageView) view
 					.findViewById(R.id.allSelectImageView);
-			final ViewGroup mainLayout = (ViewGroup) arg1
+			final ViewGroup mainLayout = (ViewGroup) view
 					.findViewById(R.id.mainLayout);
 			mainLayout.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-                    if(mSelections==null || mSelections.containsKey(0))
+                    if(!mSelections.containsKey(0))
                     {
-                        StudentEntity dummyStudent = mSelections.get(0);
-                        mSelections.remove(dummyStudent);
-//                        allSelectImageView.setVisibility(View.GONE);
+						StudentEntity studentEntity = new StudentEntity(); //Dummy object indicates select all
+						mSelections.put(0, studentEntity);
+                        allSelectImageView.setVisibility(View.GONE);
                     } else {
-                        StudentEntity studentEntity = new StudentEntity(); //Dummy object indicates select all
-                        mSelections.put(0,studentEntity);
-//                        allSelectImageView.setVisibility(View.VISIBLE);
+						mSelections.remove(0);
+                        allSelectImageView.setVisibility(View.VISIBLE);
                     }
                 }
 			});
-		} else if (arg0 > 0) {
-            final int studentPosition = arg0 - 1;
+		} else if (position > 0) {
+            final int studentPosition = position - 1;
 			final StudentEntity student = mStudents.get(studentPosition);
-			final ImageView selectImageView = (ImageView) arg1.findViewById(R.id.selectImageView);
+			final ImageView selectImageView = (ImageView) view.findViewById(R.id.selectImageView);
 
-			if (mSelections==null || mSelections.containsValue(student)) {
-				selectImageView.setVisibility(View.VISIBLE);
-			} else {
-				selectImageView.setVisibility(View.GONE);
-			}
-			ImageView headImageView = (ImageView) arg1
+			ImageView headImageView = (ImageView) view
 					.findViewById(R.id.headImageView);
 			if (!TextUtils.isEmpty(student.getAvatar())) {
                 Picasso.with(mContext).load(student.getAvatar()).fit().centerCrop().into(headImageView);
 			}
-			TextView stuNameTextView = (TextView) arg1
+			TextView stuNameTextView = (TextView) view
 					.findViewById(R.id.stuNameTextView);
 			stuNameTextView.setText(student.getCnname());
 
-			ViewGroup mainLayout = (ViewGroup) arg1
+			ViewGroup mainLayout = (ViewGroup) view
 					.findViewById(R.id.mainLayout);
 			mainLayout.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
-                    if(mSelections==null || mSelections.containsValue(student))
+                    if(mSelections.containsKey(position))
                     {
                         selectImageView.setVisibility(View.GONE);
-                        mSelections.remove(student);
+                        mSelections.remove(position);
                     } else {
-                        mSelections.put(studentPosition,student);
+                        mSelections.put(position,student);
                         selectImageView.setVisibility(View.VISIBLE);
                     }
 				}
 			});
 		}
 
-		return arg1;
+		return view;
 	}
 
-    public Map<Integer, StudentEntity> getmSelections() {
+    public HashMap<Integer, StudentEntity> getmSelections() {
         return mSelections;
     }
 }

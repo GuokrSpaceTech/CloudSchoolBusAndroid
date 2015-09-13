@@ -1,8 +1,8 @@
 package com.guokrspace.cloudschoolbus.parents.module.classes.photo;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -10,7 +10,8 @@ import android.widget.RelativeLayout;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
-import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.EditContentView;
+import com.guokrspace.cloudschoolbus.parents.module.classes.photo.service.UploadFileHelper;
+import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.EditCommentView;
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.SelectedStuView;
 
 import net.soulwolf.image.picturelib.model.Picture;
@@ -19,14 +20,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SelectStudentActivity extends BaseActivity {
 
     private ArrayList<UploadFile> mUploadFiles = new ArrayList<>();
     private ArrayList<Picture> mPictures;
+    private EditCommentView mCommentView;
+    private SelectedStuView mStudentView;
+    private String mCommentStr;
+    private String mTagListStr;
+    private String mStudentListStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class SelectStudentActivity extends BaseActivity {
             uploadFile.picSizeString = getPicSize(uploadFile.picPathString)
                     + "";
             uploadFile.picFileString = getPicName(uploadFile.picPathString);
-            uploadFile.studentIdList = new ArrayList<String>();
+            uploadFile.studentIdList = "";
             uploadFile.classuid = "";
             uploadFile.intro = null;
             uploadFile.photoTag = null;
@@ -50,14 +54,14 @@ public class SelectStudentActivity extends BaseActivity {
             mUploadFiles.add(uploadFile);
         }
 
-        EditContentView contentView = new EditContentView(this, mUploadFiles, mPictures);
-        SelectedStuView studentView = new SelectedStuView(this, mPictures ,mApplication.mStudents);
+        mCommentView = new EditCommentView(this, mPictures);
+        mStudentView = new SelectedStuView(this, mPictures ,mApplication.mStudents);
         RelativeLayout container = (RelativeLayout)findViewById(R.id.mainRelLayout);
-        container.addView(contentView);
+        container.addView(mCommentView);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        contentView.setId(getResources().getInteger(R.integer.content_edit));
-        params.addRule(RelativeLayout.BELOW, contentView.getId());
-        container.addView(studentView,params);
+        mCommentView.setId(getResources().getInteger(R.integer.content_edit));
+        params.addRule(RelativeLayout.BELOW, mCommentView.getId());
+        container.addView(mStudentView,params);
 
     }
 
@@ -75,8 +79,18 @@ public class SelectStudentActivity extends BaseActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_upload) {
+            mCommentStr = mCommentView.getCommentText();
+            mTagListStr = mCommentView.getTagListString();
+            mStudentListStr = mStudentView.getSelectionString();
+
+            updateUploadList();
+            UploadFileHelper.getUploadUtils().setContext(mContext);
+            UploadFileHelper.getUploadUtils().setUploadFileDB(mUploadFiles);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.mainRelLayout, new UploadListFragment(), "uploadList");
+            transaction.addToBackStack("uploadList");
+            transaction.commit();
             return true;
         }
 
@@ -111,5 +125,22 @@ public class SelectStudentActivity extends BaseActivity {
             e.printStackTrace();
         }
         return size;
+    }
+
+    private void updateUploadList()
+    {
+        for (int i = 0; i < mPictures.size(); i++) {
+            UploadFile uploadFile = new UploadFile();
+            uploadFile.picPathString = mPictures.get(i).getPicturePath();
+            uploadFile.picSizeString = getPicSize(uploadFile.picPathString)
+                    + "";
+            uploadFile.picFileString = getPicName(uploadFile.picPathString);
+            uploadFile.studentIdList = mStudentListStr;
+            uploadFile.classuid = "";
+            uploadFile.intro = mCommentStr;
+            uploadFile.photoTag = mTagListStr;
+            uploadFile.teacherid = mApplication.mConfig.getUserid();
+            mUploadFiles.add(uploadFile);
+        }
     }
 }

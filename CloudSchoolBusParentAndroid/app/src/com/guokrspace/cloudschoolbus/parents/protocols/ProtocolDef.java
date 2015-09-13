@@ -14,6 +14,7 @@ public class ProtocolDef {
     public static final String METHOD_noticeconfirm          =    "confirm";
     public static final String METHOD_changeAvartarStudent   =    "setStudentAvatar";
     public static final String METHOD_changeAvartarParent    =    "setParentAvatar";
+    public static final String METHOD_Source                 =   "file-receiver";
 
     /**获取sid,在登录的时候使用,GET*/
     public static final String METHOD_signin                 =    "signin";

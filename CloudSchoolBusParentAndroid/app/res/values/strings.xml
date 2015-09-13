@@ -80,4 +80,7 @@
     <string name="gallery_choose">Gallery Select</string>
     <string name="camera_choose">Now Photograph</string>
     <string name="title_activity_select_student">SelectStudentActivity</string>
+
+    <string name="delete">删除</string>
+    <string name="upload">上传</string>
 </resources>

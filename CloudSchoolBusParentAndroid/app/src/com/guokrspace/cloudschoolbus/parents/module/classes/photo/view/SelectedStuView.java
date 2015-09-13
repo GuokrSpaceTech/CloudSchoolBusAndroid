@@ -39,8 +39,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-//import com.cloud.school.bus.teacherhelper.modules.uploadlist.uploadutils.UploadUtils;
+import java.util.Map;
 
 
 /**
@@ -51,30 +53,18 @@ import java.util.List;
  */
 public class SelectedStuView extends BaseLinearLayout {
 
-	private ImageThumbRecycleViewAdapter mPictureThumbnailsAdapter;
 	private GridView mGridView;
 	private StuSelectAdapter mStuSelectAdapter;
 	private TextView mContentTextView;
 	private TextView mPictureNumberTextView;
-	private ViewFlipper mViewFlipper;
-	private EditContentView mEditContentView;
+
 
 	private List<StudentEntity> mStudents;
 	private List<Picture> mPictures;
 
 	private List<UploadFile> mUploadFiles = new ArrayList<UploadFile>();
 	/** 0表示所有照片，1表示相机拍摄 */
-	private int mFlag = 0;
 
-//    public SelectedStuView(Context context, List<Picture> pictures,
-//						   ViewFlipper viewFlipper, int flag) {
-//		super(context);
-//		mPictures = pictures;
-//		mViewFlipper = viewFlipper;
-//		mFlag = flag;
-//        mParentContext = context;
-//		init();
-//	}
 
 	public SelectedStuView(Context context,  AttributeSet attrs) {
 		super(context, attrs);
@@ -107,169 +97,17 @@ public class SelectedStuView extends BaseLinearLayout {
 		mPictureNumberTextView.setText("1/" + mPictures.size());
 
 		mGridView = (GridView) findViewById(R.id.gridView);
-		mStuSelectAdapter = new StuSelectAdapter(mContext, mApplication.mStudents);
+		//Test Purpose
+		ArrayList<StudentEntity> studentEntities = new ArrayList<>();
+		studentEntities.addAll(mStudents);
+		studentEntities.addAll(mStudents);
+		studentEntities.addAll(mStudents);
+		studentEntities.addAll(mStudents);
+		studentEntities.addAll(mStudents);
+		studentEntities.addAll(mStudents);
+		studentEntities.addAll(mStudents);
+		mStuSelectAdapter = new StuSelectAdapter(mContext, studentEntities);
 		mGridView.setAdapter(mStuSelectAdapter);
-
-		setListener();
-	}
-
-	private String getPicName(String picPathString) {
-		String picNameString = "";
-		picNameString = picPathString
-				.substring(picPathString.lastIndexOf("/") + 1);
-		return picNameString;
-	}
-
-	private int getPicSize(String picPathString) {
-		int size = 0;
-		try {
-			picPathString = picPathString.replace("file:///", "/");
-			FileInputStream inputStream = new FileInputStream(new File(
-					picPathString));
-			try {
-				size = inputStream.available();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		return size;
-	}
-
-
-	public void setContent(String photoTag, String contentString) {
-		if (TextUtils.isEmpty(photoTag) && TextUtils.isEmpty(contentString)) {
-			mContentTextView.setVisibility(View.GONE);
-			mContentTextView.setText("");
-		} else {
-			mContentTextView.setVisibility(View.VISIBLE);
-			mContentTextView.setText(photoTag + " " + contentString);
-		}
-	}
-
-
-    public void uploadPicture()
-    {
-        int i = 0;
-        for (i = 0; i < mUploadFiles.size(); i++) {
-            UploadFile uploadFile = mUploadFiles.get(i);
-            if (0 == uploadFile.studentIdList.size()) {
-                break;
-            }
-        }
-        if (mUploadFiles.size() == i)
-        {
-            // 都关联了学生
-            // 返回上一级
-            for (UploadFile uploadFile : mUploadFiles) {
-                uploadFile.setFileType(0);
-            }
-//            mApplication.imageLoaderInit(80, 80);
-            ((Activity) mContext).setResult(Activity.RESULT_OK);
-            ((Activity) mContext).finish();
-            saveUploadFile();
-        } else {
-            HandlerToastUI.getHandlerToastUI(mContext, "还有照片没有关联学生");
-        }
-    }
-
-	private void saveUploadFile() {
-		// new Thread(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// 保存数据
-//		UploadFileUtils.getUploadUtils().setContext(mContext);
-//		UploadFileUtils.getUploadUtils().setUploadFileDB(mUploadFiles);
-//		UploadFileUtils.getUploadUtils().uploadFileService();
-		// }
-		// }).start();
-	}
-
-//	public void setEditContentView(EditContentView editContentView) {
-//		mEditContentView = editContentView;
-//		mEditContentView.setUploadFile(mUploadFiles.get(mViewPager
-//				.getCurrentItem()));
-//		mEditContentView.setUploadFileList(mUploadFiles);
-//	}
-
-	protected void setListener() {
-//		Button contentButton = (Button) findViewById(R.id.contentButton);
-//		contentButton.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View arg0) {
-//				rotationHelper.applyRotation(Constants.viewB, 0, 90);
-//                ((SendFileToStuActivity)mParentContext).setCurrentView(SendFileToStuActivity.EDIT_CONTENT);
-//                ((SendFileToStuActivity)mParentContext).getSupportActionBar().setTitle(mContext.getString(R.string.say_something));
-//                ((SendFileToStuActivity)mParentContext).invalidateOptionsMenu();
-//			}
-//		});
-
-//        final Button signinButton = (Button) findViewById(R.id.signinButton);
-//        if(((SendFileToStuActivity)mParentContext).mApplication.isTrain == 1)
-//        {
-//            signinButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View arg0) {
-//                    picUploadType = picUploadType==Constant.UPLOAD_TYPE_SUBMIT?Constant.UPLOAD_TYPE_SHARE:Constant.UPLOAD_TYPE_SUBMIT;
-//                    signinButton.setBackgroundResource(picUploadType==Constant.UPLOAD_TYPE_SUBMIT?R.drawable.btn_sign_in_checked:R.drawable.btn_sign_in_unchecked);
-//                }
-//            });
-//        }
-//        else
-//        {
-//            signinButton.setVisibility(View.GONE);
-//        }
-
-//        mPictureThumbnailsAdapter.setOnClickListener(new View.OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//
-//				int position = mViewPager.getCurrentItem();
-//				List<Picture> pictures = new ArrayList<Picture>();
-//				pictures.add(mPictures.get(position));
-//				Intent intent = new Intent(mContext, BigPictureActivity.class);
-//				intent.putExtra("pictureList", (ArrayList<Picture>) pictures);
-//				intent.putExtra("position", position);
-//				intent.putExtra("flag", 1);
-//				((Activity) mContext).startActivityForResult(intent, 0);
-//			}
-//
-//		});
-//
-//		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
-//
-//			@Override
-//			public void onPageSelected(int arg0) {
-//				mPictureNumberTextView.setText((arg0 + 1) + "/"
-//						+ mPictures.size());
-//
-//				mEditContentView.setUploadFile(mUploadFiles.get(mViewPager
-//						.getCurrentItem()));
-//				// if (mUploadFiles.size() > 0)
-//				// mStuSelectAdapter.setUploadFile(mUploadFiles.get(mViewPager
-//				// .getCurrentItem()));
-//				refreshUiData(mViewPager.getCurrentItem());
-//			}
-//
-//			@Override
-//			public void onPageScrolled(int arg0, float arg1, int arg2) {
-//
-//			}
-//
-//			@Override
-//			public void onPageScrollStateChanged(int arg0) {
-//
-//			}
-//		});
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -286,17 +124,10 @@ public class SelectedStuView extends BaseLinearLayout {
 						mUploadFiles.remove(delPicIndex);
 
 						if (0 == mPictures.size()) {
-//							mApplication.imageLoaderInit(80, 80);
 							((Activity) mContext).finish();
 							return;
 						} else {
 						}
-						mPictureThumbnailsAdapter.notifyDataSetChanged();
-
-//						mPictureNumberTextView
-//								.setText((mViewPager.getCurrentItem() + 1)
-//										+ "/" + mPictures.size());
-//						refreshUiData(mViewPager.getCurrentItem());
 					}
 				}
 				break;
@@ -314,113 +145,22 @@ public class SelectedStuView extends BaseLinearLayout {
 		}
 	}
 
-//	public void cancel() {
-//		CustomAlertDialog customAlertDialog = new CustomAlertDialog(mContext,
-//				R.style.CustomAlertDialog);
-//		customAlertDialog.setTitleMessage("提示", Color.BLACK);
-//		customAlertDialog.setMessage("取消发送照片");
-//		customAlertDialog.setLeftButton("是", new View.OnClickListener() {
-//
-//			@Override
-//			public void onClick(View arg0) {
-//				mApplication.imageLoaderInit(80, 80);
-//				((Activity) mContext).finish();
-//			}
-//		});
-//		customAlertDialog.setRightButton("否", new View.OnClickListener() {
-//
-//			@Override
-//			public void onClick(View arg0) {
-//
-//			}
-//		});
-//		customAlertDialog.show();
-//	}
+    public String getSelectionString() {
+        String retStr="";
+        HashMap map = mStuSelectAdapter.getmSelections();
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
 
-	// private void uploadFile(final UploadFile uploadFile) {
-	//
-	// String picPathString = uploadFile.picPathString
-	// .replace("file:///", "/");
-	// StringBuilder studentIdStringBuilder = new StringBuilder();
-	// if (uploadFile.studentIdList.size() > 0) {
-	// for (int i = 0; i < uploadFile.studentIdList.size(); i++) {
-	// studentIdStringBuilder.append(uploadFile.studentIdList.get(i)).append(",");
-	// }
-	// studentIdStringBuilder.delete(studentIdStringBuilder.length() - 1,
-	// studentIdStringBuilder.length());
-	// }
-	//
-	// String fname = null, fsize = null, fbody = null, fext = null;
-	// if (!TextUtils.isEmpty(picPathString)) {
-	// fbody = PictureUtil.getPicString(picPathString, 512);
-	// fext = picPathString.substring(picPathString.lastIndexOf(".") + 1);
-	// fname = picPathString.substring(picPathString.lastIndexOf("/") + 1);
-	// fsize = fbody.length() + "";
-	// }
-	//
-	// NetworkClient.getNetworkClient().PostRequest(
-	// new UploadFileRequest(mContext.getApplicationContext(), fbody,
-	// fname, studentIdStringBuilder.toString(),
-	// mApplication.mClassInfo.uid, uploadFile.intro,
-	// uploadFile.photoTag, mApplication.mTeacher.teacherid),
-	// new UploadFileResponse() {
-	// @Override
-	// public void onResponse(
-	// ResponseHandlerInterface responseHandlerInterface) {
-	// DebugLog.logI("code : " + code);
-	// if ("1".equals(code)) {
-	// // 上传成功，更新上传列表
-	// UploadFileDB uploadFileDB = UploadFileDB
-	// .getUploadFileDB(mContext);
-	// uploadFileDB.remove(uploadFile);
-	// uploadFileDB.close();
-	//
-	// //刷新列表
-	// Intent intent = new Intent();
-	// intent.setAction(UploadListFragment.ACTION_UPDATE_UPLOAD_LIST);
-	// mContext.sendBroadcast(intent);
-	//
-	// }
-	// }
-	// }, new BaseStateListener() {
-	// }, null);
-	// }
+            if(pair.getKey() == 0) //Select all students
+            {
+                for(StudentEntity entity:mStudents)
+                    retStr += entity.getStudentid() + ",";
+            } else {
+                retStr += ((StudentEntity)pair.getValue()).getStudentid() + ",";
+            }
+        }
 
-//	@Override
-//	public void initSwapView() {
-//		// DebugLog.logI("initSwapView");
-//		init();
-//	}
-//
-//	@Override
-//	public RotationHelper getRotationHelper() {
-//		// DebugLog.logI("getRotationHelper");
-//		return rotationHelper;
-//	}
-//
-//	@Override
-//	public ViewGroup getViewGroup() {
-//		// DebugLog.logI("getViewGroup");
-//		return mViewFlipper;
-//	}
-//
-//	@Override
-//	public int getSwapView() {
-//		// DebugLog.logI("getSwapView");
-//		return Constants.viewB;
-//	}
-//
-//	@Override
-//	public void swapViewA() {
-//		// DebugLog.logI("swapViewA");
-//		mViewFlipper.setDisplayedChild(SendFileToStuActivity.SELECTED_STU);
-//	}
-//
-//	@Override
-//	public void swapViewB() {
-//		// DebugLog.logI("swapViewB");
-//		mViewFlipper.setDisplayedChild(SendFileToStuActivity.EDIT_CONTENT);
-//		mEditContentView.getRotationHelper().applyRotation(Constants.viewB,
-//				-90, 0);
-//	}
+        return retStr.substring(0, retStr.lastIndexOf(',') - 1);
+    }
 }

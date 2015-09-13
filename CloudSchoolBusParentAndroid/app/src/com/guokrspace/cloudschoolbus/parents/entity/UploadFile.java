@@ -27,7 +27,7 @@ public class UploadFile {
 	/**是否全选*/
 	public boolean isAllSelected;
 	/**学生id*/
-	public List<String> studentIdList = new ArrayList<String>();
+	public String studentIdList;
 	/**班级uid*/
 	public String classuid;
 	/**内容,不是必须*/
