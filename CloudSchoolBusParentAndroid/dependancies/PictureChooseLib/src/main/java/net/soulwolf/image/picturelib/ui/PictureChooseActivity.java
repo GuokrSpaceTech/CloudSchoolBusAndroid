@@ -9,8 +9,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.toaker.common.tlog.TLog;
+
+import net.soulwolf.image.picturelib.PictureFrom;
+import net.soulwolf.image.picturelib.PictureProcess;
 import net.soulwolf.image.picturelib.R;
 import net.soulwolf.image.picturelib.adapter.PictureChooseAdapter;
+import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
 import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.rx.ResponseHandler;
 import net.soulwolf.image.picturelib.task.PictureTask;
@@ -19,7 +24,7 @@ import net.soulwolf.image.picturelib.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PictureChooseActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class PictureChooseActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnPicturePickListener {
 
     public static final int RESULT_OK            = 200;
 
@@ -32,6 +37,8 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     ArrayList<Picture> mPictureList;
 
     PictureChooseAdapter mPictureChooseAdapter;
+
+    PictureProcess mPictureProcess;
 
     int mMaxPictureCount;
 
@@ -52,9 +59,12 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
         setRightText(R.string.ps_complete);
 
         mPictureList = new ArrayList<>();
+
         mPictureChooseAdapter = new PictureChooseAdapter(this, mPictureList, mMaxPictureCount);
         mPictureGrid.setAdapter(mPictureChooseAdapter);
         mPictureGrid.setOnItemClickListener(this);
+
+        mPictureProcess = new PictureProcess(this);
 
         getAllPictures();
     }
@@ -62,13 +72,17 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     private void updatePictureList(List<Picture> paths) {
         mPictureList.clear();
         if(paths != null){
+            Picture cameraIcon = new Picture();
+            cameraIcon.isDrawable = true;
+            cameraIcon.drawable = getResources().getDrawable(R.drawable.pd_empty_picture);
+            mPictureList.add(cameraIcon);
             mPictureList.addAll(paths);
             mPictureChooseAdapter.notifyDataSetChanged();
         }
     }
 
     private void getRecentlyPicture() {
-        PictureTask.getRecentlyPicture(getContentResolver(),30)
+        PictureTask.getRecentlyPicture(getContentResolver(), 30)
                 .subscribe(new ResponseHandler<List<Picture>>() {
                     @Override
                     public void onSuccess(List<Picture> strings) throws Exception {
@@ -94,7 +108,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                     @Override
                     public void onFailure(Throwable error) {
                         super.onFailure(error);
-                        Toast.makeText(getApplicationContext(),R.string.ps_load_image_error,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.ps_load_image_error, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -105,8 +119,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                     @Override
                     public void onSuccess(List<String> strings) throws Exception {
                         List<Picture> pictures = new ArrayList<>();
-                        for(int i=0;i<strings.size();i++)
-                        {
+                        for (int i = 0; i < strings.size(); i++) {
                             Picture picture = new Picture();
                             picture.setPicturePath(strings.get(i));
                             pictures.add(picture);
@@ -118,7 +131,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                     @Override
                     public void onFailure(Throwable error) {
                         super.onFailure(error);
-                        Toast.makeText(getApplicationContext(),R.string.ps_load_image_error,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.ps_load_image_error, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -126,6 +139,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mPictureProcess.onProcessResult(requestCode, resultCode, data);
         if(requestCode == GALLERY_REQUEST_CODE
                 && resultCode == GalleryChooseActivity.RESULT_OK
                 && data != null){
@@ -146,7 +160,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     protected void onLeftClick(View view) {
         super.onLeftClick(view);
         Intent intent = new Intent(this, GalleryChooseActivity.class);
-        intent.putExtra(Constants.TITLE_BAR_BACKGROUND,mTitleBarBackground);
+        intent.putExtra(Constants.TITLE_BAR_BACKGROUND, mTitleBarBackground);
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
@@ -170,22 +184,53 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if(mPictureChooseAdapter.contains(position)){
-            mPictureChooseAdapter.removePictureChoose(view,position);
-        }else {
-            if(mPictureChooseAdapter.pictureChooseSize() >= mMaxPictureCount){
-                Toast.makeText(this,
-                        getString(R.string.ps_select_up_count,mMaxPictureCount),Toast.LENGTH_LONG).show();
-                return;
+
+        if(position==0)
+        {
+            onCamera();
+        } else {
+
+            if (mPictureChooseAdapter.contains(position)) {
+                mPictureChooseAdapter.removePictureChoose(view, position);
+            } else {
+                if (mPictureChooseAdapter.pictureChooseSize() >= mMaxPictureCount) {
+                    Toast.makeText(this,
+                            getString(R.string.ps_select_up_count, mMaxPictureCount), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                mPictureChooseAdapter.addPictureChoose(view, position);
             }
-            mPictureChooseAdapter.addPictureChoose(view,position);
+            //mPictureChooseAdapter.notifyDataSetChanged();
+            if (mPictureChooseAdapter.pictureChooseSize() == 0) {
+                setTitleText(getString(R.string.ps_picture_choose));
+            } else {
+                setTitleText(getString(R.string.ps_picture_choose_count
+                        , mPictureChooseAdapter.pictureChooseSize()));
+            }
         }
-        //mPictureChooseAdapter.notifyDataSetChanged();
-        if(mPictureChooseAdapter.pictureChooseSize() == 0){
-            setTitleText(getString(R.string.ps_picture_choose));
-        }else {
-            setTitleText(getString(R.string.ps_picture_choose_count
-                    ,mPictureChooseAdapter.pictureChooseSize()));
-        }
+    }
+
+    public void onCamera(){
+        mPictureProcess.setPictureFrom(PictureFrom.CAMERA);
+        mPictureProcess.setClip(false);
+        mPictureProcess.setMaxPictureCount(1);
+        mPictureProcess.execute(this);
+    }
+
+    @Override
+    public void onSuccess(List<Picture> pictures) {
+            TLog.i("", "OnSuccess:%s", pictures);
+//        updatePictureList(pictures);
+    }
+
+    @Override
+    public void onSuccessString(List<String> pictures) {
+
+    }
+
+    @Override
+    public void onError(Exception e) {
+
+        TLog.e("", "onError", e);
     }
 }

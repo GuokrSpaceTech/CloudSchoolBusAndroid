@@ -1,17 +1,13 @@
-package com.guokrspace.cloudschoolbus.parents.module.explore;
+package com.guokrspace.cloudschoolbus.parents;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.guokrspace.cloudschoolbus.parents.MainActivity;
-import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
 import com.squareup.otto.Subscribe;
 

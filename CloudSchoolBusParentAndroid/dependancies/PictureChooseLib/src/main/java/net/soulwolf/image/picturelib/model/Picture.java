@@ -1,5 +1,6 @@
 package net.soulwolf.image.picturelib.model;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -16,7 +17,8 @@ public class Picture implements Serializable {
 	/** 表示是否选中，true选中，false没有选中 */
 	public boolean isSelected = false;
 	/** 该图片是否忽略 */
-	public boolean isIgnore = false;
+	public boolean isDrawable = false;
+	public Drawable drawable;
 
 	// 图片
 	public String pictureIds;

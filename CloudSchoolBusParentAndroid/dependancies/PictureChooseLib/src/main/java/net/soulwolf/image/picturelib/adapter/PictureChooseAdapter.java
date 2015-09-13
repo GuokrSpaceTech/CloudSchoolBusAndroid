@@ -86,14 +86,16 @@ public class PictureChooseAdapter extends BaseAdapter {
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
-        // load image
-        String url = getItem(position).getPicturePath();
-        if(url==null)
-            url = getItem(position).getThumbPath();
 
-        Log.i("",url);
-        Picasso.with(mContext).load(Utils.urlFromFile(url)).fit().centerCrop().into(holder.mPictureView);
-//        ImageLoadTask.getInstance().display(holder.mPictureView, Utils.urlFromFile(url));
+        if(getItem(position).isDrawable) {
+            holder.mPictureView.setImageDrawable(getItem(position).drawable);
+            holder.mPictureView.invalidate();
+        } else {
+            String url = getItem(position).getPicturePath();
+            if (url == null) url = getItem(position).getThumbPath();
+            Picasso.with(mContext).load(Utils.urlFromFile(url)).fit().centerCrop().into(holder.mPictureView);
+        }
+//      ImageLoadTask.getInstance().display(holder.mPictureView, Utils.urlFromFile(url));
         if(mPictureChoose.contains(position)){
             if(holder.mPictureState.getVisibility() != View.VISIBLE){
                 holder.mPictureState.setVisibility(View.VISIBLE);
