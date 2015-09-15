@@ -15,6 +15,7 @@ import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.EditComme
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.SelectedStuView;
 
 import net.soulwolf.image.picturelib.model.Picture;
+import net.soulwolf.image.picturelib.utils.PaintUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 public class SelectStudentActivity extends BaseActivity {
 
     private ArrayList<UploadFile> mUploadFiles = new ArrayList<>();
-    private ArrayList<Picture> mPictures;
+    private ArrayList<Picture> mPictures = new ArrayList<>();
     private EditCommentView mCommentView;
     private SelectedStuView mStudentView;
     private String mCommentStr;
@@ -38,13 +39,23 @@ public class SelectStudentActivity extends BaseActivity {
         setContentView(R.layout.activity_select_student);
 
         Intent intent = getIntent();
-        mPictures = (ArrayList<Picture>)intent.getSerializableExtra("pictures");
 
-        for (int i = 0; i < mPictures.size(); i++) {
+        ArrayList<?> data = (ArrayList<?>)intent.getSerializableExtra("pictures");
+
+        for (int i = 0; i < data.size(); i++) {
             UploadFile uploadFile = new UploadFile();
+            Picture picture = new Picture();
+
+            if(data.get(i) instanceof String) {
+                uploadFile.picPathString = (String) data.get(i);
+                picture.setPicturePath((String) data.get(i));
+            }
+            else if (data.get(i) instanceof Picture) {
+                picture = (Picture)data.get(i);
+            }
+            mPictures.add(i, picture);
             uploadFile.picPathString = mPictures.get(i).getPicturePath();
-            uploadFile.picSizeString = getPicSize(uploadFile.picPathString)
-                    + "";
+            uploadFile.picSizeString = getPicSize(uploadFile.picPathString) + "";
             uploadFile.picFileString = getPicName(uploadFile.picPathString);
             uploadFile.studentIdList = "";
             uploadFile.classuid = "";

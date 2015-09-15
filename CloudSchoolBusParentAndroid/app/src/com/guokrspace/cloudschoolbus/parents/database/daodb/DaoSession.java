@@ -24,6 +24,13 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig classEntityDaoConfig;
     private final DaoConfig lastIMMessageEntityDaoConfig;
     private final DaoConfig schoolEntityDaoConfig;
+    private final DaoConfig studentEntityTDaoConfig;
+    private final DaoConfig parentEntityTDaoConfig;
+    private final DaoConfig teacherEntityTDaoConfig;
+    private final DaoConfig classEntityTDaoConfig;
+    private final DaoConfig schoolEntityTDaoConfig;
+    private final DaoConfig settingsEntityTDaoConfig;
+    private final DaoConfig tagsEntityTDaoConfig;
     private final DaoConfig senderEntityDaoConfig;
     private final DaoConfig tagEntityDaoConfig;
     private final DaoConfig messageEntityDaoConfig;
@@ -36,7 +43,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig letterEntityDaoConfig;
     private final DaoConfig reportEntityDaoConfig;
     private final DaoConfig reportItemEntityDaoConfig;
-    private final DaoConfig uploadingPhotosDaoConfig;
+    private final DaoConfig uploadingPhotoEntityDaoConfig;
 
     private final ConfigEntityDao configEntityDao;
     private final StudentEntityDao studentEntityDao;
@@ -44,6 +51,13 @@ public class DaoSession extends AbstractDaoSession {
     private final ClassEntityDao classEntityDao;
     private final LastIMMessageEntityDao lastIMMessageEntityDao;
     private final SchoolEntityDao schoolEntityDao;
+    private final StudentEntityTDao studentEntityTDao;
+    private final ParentEntityTDao parentEntityTDao;
+    private final TeacherEntityTDao teacherEntityTDao;
+    private final ClassEntityTDao classEntityTDao;
+    private final SchoolEntityTDao schoolEntityTDao;
+    private final SettingsEntityTDao settingsEntityTDao;
+    private final TagsEntityTDao tagsEntityTDao;
     private final SenderEntityDao senderEntityDao;
     private final TagEntityDao tagEntityDao;
     private final MessageEntityDao messageEntityDao;
@@ -56,7 +70,7 @@ public class DaoSession extends AbstractDaoSession {
     private final LetterEntityDao letterEntityDao;
     private final ReportEntityDao reportEntityDao;
     private final ReportItemEntityDao reportItemEntityDao;
-    private final UploadingPhotoEntityDao uploadingPhotosDao;
+    private final UploadingPhotoEntityDao uploadingPhotoEntityDao;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -79,6 +93,27 @@ public class DaoSession extends AbstractDaoSession {
 
         schoolEntityDaoConfig = daoConfigMap.get(SchoolEntityDao.class).clone();
         schoolEntityDaoConfig.initIdentityScope(type);
+
+        studentEntityTDaoConfig = daoConfigMap.get(StudentEntityTDao.class).clone();
+        studentEntityTDaoConfig.initIdentityScope(type);
+
+        parentEntityTDaoConfig = daoConfigMap.get(ParentEntityTDao.class).clone();
+        parentEntityTDaoConfig.initIdentityScope(type);
+
+        teacherEntityTDaoConfig = daoConfigMap.get(TeacherEntityTDao.class).clone();
+        teacherEntityTDaoConfig.initIdentityScope(type);
+
+        classEntityTDaoConfig = daoConfigMap.get(ClassEntityTDao.class).clone();
+        classEntityTDaoConfig.initIdentityScope(type);
+
+        schoolEntityTDaoConfig = daoConfigMap.get(SchoolEntityTDao.class).clone();
+        schoolEntityTDaoConfig.initIdentityScope(type);
+
+        settingsEntityTDaoConfig = daoConfigMap.get(SettingsEntityTDao.class).clone();
+        settingsEntityTDaoConfig.initIdentityScope(type);
+
+        tagsEntityTDaoConfig = daoConfigMap.get(TagsEntityTDao.class).clone();
+        tagsEntityTDaoConfig.initIdentityScope(type);
 
         senderEntityDaoConfig = daoConfigMap.get(SenderEntityDao.class).clone();
         senderEntityDaoConfig.initIdentityScope(type);
@@ -116,8 +151,8 @@ public class DaoSession extends AbstractDaoSession {
         reportItemEntityDaoConfig = daoConfigMap.get(ReportItemEntityDao.class).clone();
         reportItemEntityDaoConfig.initIdentityScope(type);
 
-        uploadingPhotosDaoConfig = daoConfigMap.get(UploadingPhotoEntityDao.class).clone();
-        uploadingPhotosDaoConfig.initIdentityScope(type);
+        uploadingPhotoEntityDaoConfig = daoConfigMap.get(UploadingPhotoEntityDao.class).clone();
+        uploadingPhotoEntityDaoConfig.initIdentityScope(type);
 
         configEntityDao = new ConfigEntityDao(configEntityDaoConfig, this);
         studentEntityDao = new StudentEntityDao(studentEntityDaoConfig, this);
@@ -125,6 +160,13 @@ public class DaoSession extends AbstractDaoSession {
         classEntityDao = new ClassEntityDao(classEntityDaoConfig, this);
         lastIMMessageEntityDao = new LastIMMessageEntityDao(lastIMMessageEntityDaoConfig, this);
         schoolEntityDao = new SchoolEntityDao(schoolEntityDaoConfig, this);
+        studentEntityTDao = new StudentEntityTDao(studentEntityTDaoConfig, this);
+        parentEntityTDao = new ParentEntityTDao(parentEntityTDaoConfig, this);
+        teacherEntityTDao = new TeacherEntityTDao(teacherEntityTDaoConfig, this);
+        classEntityTDao = new ClassEntityTDao(classEntityTDaoConfig, this);
+        schoolEntityTDao = new SchoolEntityTDao(schoolEntityTDaoConfig, this);
+        settingsEntityTDao = new SettingsEntityTDao(settingsEntityTDaoConfig, this);
+        tagsEntityTDao = new TagsEntityTDao(tagsEntityTDaoConfig, this);
         senderEntityDao = new SenderEntityDao(senderEntityDaoConfig, this);
         tagEntityDao = new TagEntityDao(tagEntityDaoConfig, this);
         messageEntityDao = new MessageEntityDao(messageEntityDaoConfig, this);
@@ -137,7 +179,7 @@ public class DaoSession extends AbstractDaoSession {
         letterEntityDao = new LetterEntityDao(letterEntityDaoConfig, this);
         reportEntityDao = new ReportEntityDao(reportEntityDaoConfig, this);
         reportItemEntityDao = new ReportItemEntityDao(reportItemEntityDaoConfig, this);
-        uploadingPhotosDao = new UploadingPhotoEntityDao(uploadingPhotosDaoConfig, this);
+        uploadingPhotoEntityDao = new UploadingPhotoEntityDao(uploadingPhotoEntityDaoConfig, this);
 
         registerDao(ConfigEntity.class, configEntityDao);
         registerDao(StudentEntity.class, studentEntityDao);
@@ -145,6 +187,13 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(ClassEntity.class, classEntityDao);
         registerDao(LastIMMessageEntity.class, lastIMMessageEntityDao);
         registerDao(SchoolEntity.class, schoolEntityDao);
+        registerDao(StudentEntityT.class, studentEntityTDao);
+        registerDao(ParentEntityT.class, parentEntityTDao);
+        registerDao(TeacherEntityT.class, teacherEntityTDao);
+        registerDao(ClassEntityT.class, classEntityTDao);
+        registerDao(SchoolEntityT.class, schoolEntityTDao);
+        registerDao(SettingsEntityT.class, settingsEntityTDao);
+        registerDao(TagsEntityT.class, tagsEntityTDao);
         registerDao(SenderEntity.class, senderEntityDao);
         registerDao(TagEntity.class, tagEntityDao);
         registerDao(MessageEntity.class, messageEntityDao);
@@ -157,7 +206,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(LetterEntity.class, letterEntityDao);
         registerDao(ReportEntity.class, reportEntityDao);
         registerDao(ReportItemEntity.class, reportItemEntityDao);
-        registerDao(UploadingPhotoEntity.class, uploadingPhotosDao);
+        registerDao(UploadingPhotoEntity.class, uploadingPhotoEntityDao);
     }
     
     public void clear() {
@@ -167,6 +216,13 @@ public class DaoSession extends AbstractDaoSession {
         classEntityDaoConfig.getIdentityScope().clear();
         lastIMMessageEntityDaoConfig.getIdentityScope().clear();
         schoolEntityDaoConfig.getIdentityScope().clear();
+        studentEntityTDaoConfig.getIdentityScope().clear();
+        parentEntityTDaoConfig.getIdentityScope().clear();
+        teacherEntityTDaoConfig.getIdentityScope().clear();
+        classEntityTDaoConfig.getIdentityScope().clear();
+        schoolEntityTDaoConfig.getIdentityScope().clear();
+        settingsEntityTDaoConfig.getIdentityScope().clear();
+        tagsEntityTDaoConfig.getIdentityScope().clear();
         senderEntityDaoConfig.getIdentityScope().clear();
         tagEntityDaoConfig.getIdentityScope().clear();
         messageEntityDaoConfig.getIdentityScope().clear();
@@ -179,7 +235,7 @@ public class DaoSession extends AbstractDaoSession {
         letterEntityDaoConfig.getIdentityScope().clear();
         reportEntityDaoConfig.getIdentityScope().clear();
         reportItemEntityDaoConfig.getIdentityScope().clear();
-        uploadingPhotosDaoConfig.getIdentityScope().clear();
+        uploadingPhotoEntityDaoConfig.getIdentityScope().clear();
     }
 
     public ConfigEntityDao getConfigEntityDao() {
@@ -204,6 +260,34 @@ public class DaoSession extends AbstractDaoSession {
 
     public SchoolEntityDao getSchoolEntityDao() {
         return schoolEntityDao;
+    }
+
+    public StudentEntityTDao getStudentEntityTDao() {
+        return studentEntityTDao;
+    }
+
+    public ParentEntityTDao getParentEntityTDao() {
+        return parentEntityTDao;
+    }
+
+    public TeacherEntityTDao getTeacherEntityTDao() {
+        return teacherEntityTDao;
+    }
+
+    public ClassEntityTDao getClassEntityTDao() {
+        return classEntityTDao;
+    }
+
+    public SchoolEntityTDao getSchoolEntityTDao() {
+        return schoolEntityTDao;
+    }
+
+    public SettingsEntityTDao getSettingsEntityTDao() {
+        return settingsEntityTDao;
+    }
+
+    public TagsEntityTDao getTagsEntityTDao() {
+        return tagsEntityTDao;
     }
 
     public SenderEntityDao getSenderEntityDao() {
@@ -254,8 +338,8 @@ public class DaoSession extends AbstractDaoSession {
         return reportItemEntityDao;
     }
 
-    public UploadingPhotoEntityDao getUploadingPhotosDao() {
-        return uploadingPhotosDao;
+    public UploadingPhotoEntityDao getUploadingPhotoEntityDao() {
+        return uploadingPhotoEntityDao;
     }
 
 }

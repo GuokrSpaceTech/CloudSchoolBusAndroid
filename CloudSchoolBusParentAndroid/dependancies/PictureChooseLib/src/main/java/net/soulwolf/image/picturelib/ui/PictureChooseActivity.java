@@ -2,6 +2,7 @@ package net.soulwolf.image.picturelib.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,6 +25,8 @@ import net.soulwolf.image.picturelib.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.truba.touchgallery.GalleryWidget.GalleryViewPager;
+
 public class PictureChooseActivity extends BaseActivity implements AdapterView.OnItemClickListener, OnPicturePickListener {
 
     public static final int RESULT_OK            = 200;
@@ -33,6 +36,8 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     public static final int GALLERY_REQUEST_CODE = 1023;
 
     GridView mPictureGrid;
+
+    GalleryViewPager mViewPager;
 
     ArrayList<Picture> mPictureList;
 
@@ -215,6 +220,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
         mPictureProcess.setClip(false);
         mPictureProcess.setMaxPictureCount(1);
         mPictureProcess.execute(this);
+
     }
 
     @Override
@@ -225,7 +231,17 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
     @Override
     public void onSuccessString(List<String> pictures) {
+//        mPictureList.clear();
+//        Picture picture = new Picture();
+//        picture.setPicturePath(pictures.get(0));
+//        mPictureList.add(picture);
+//        mPictureChooseAdapter.setmPictureList(mPictureList);
+//        mPictureChooseAdapter.notifyDataSetChanged();
 
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.main_layout,new BigImageGalleryFragment().newInstance(pictures,0));
+//        transaction.addToBackStack("big_picture");
+        transaction.commit();
     }
 
     @Override

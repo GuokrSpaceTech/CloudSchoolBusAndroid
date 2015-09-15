@@ -65,6 +65,7 @@ import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
+import com.guokrspace.cloudschoolbus.parents.module.classes.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
 import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
@@ -74,6 +75,8 @@ import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
 import com.toaker.common.tlog.TLog;
 
+import net.soulwolf.image.picturelib.PictureFrom;
+import net.soulwolf.image.picturelib.PictureProcess;
 import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
 import net.soulwolf.image.picturelib.model.Picture;
 
@@ -94,13 +97,12 @@ import static com.guokrspace.cloudschoolbus.parents.R.string;
 
 public class MainActivity extends BaseActivity implements
         ExploreFragment.OnFragmentInteractionListener, OnPicturePickListener
-
 {
     private Thread  thread;
     private boolean threadStopFlag = false;
 
     private PagerSlidingTabStrip tabs;
-    private RelativeLayout mStartupPage;
+    private PictureProcess mPictureProcess;
     private List<BadgeView> badgeViews = new ArrayList();
     private ViewPager pager;
     private MyPagerAdapter adapter;
@@ -132,9 +134,9 @@ public class MainActivity extends BaseActivity implements
                             .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
                 case MSG_SID_RENEW_FAIL:
-                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                            .setMessage(getResources().getString(R.string.failure_renewsid))
-                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+//                    SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                            .setMessage(getResources().getString(R.string.failure_renewsid))
+//                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
                 case HandlerConstant.MSG_TIMER_TICK:
                     break;
@@ -156,19 +158,8 @@ public class MainActivity extends BaseActivity implements
         //Hack for force the overflow button in the actionbar
         getOverflowMenu();
         setContentView(R.layout.activity_main);
+        mPictureProcess = new PictureProcess(this);
         BusProvider.getInstance().register(this);
-    }
-
-
-    @Override
-    public void onResume() {
-
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -272,6 +263,14 @@ public class MainActivity extends BaseActivity implements
                 getSupportFragmentManager().popBackStack();
                 setActionBarTitle(mUpperLeverTitle,"");
                 break;
+            case R.id.action_take_photo:
+                mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
+                mPictureProcess.setClip(false);
+                mPictureProcess.setMaxPictureCount(9);
+                mPictureProcess.execute(this);
+                break;
+
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -398,6 +397,7 @@ public class MainActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //  Let the fragment to handle unhandled result
         /* http://stackoverflow.com/questions/6147884/onactivityresult-not-being-called-in-fragment?rq=1 */
+        mPictureProcess.onProcessResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -806,8 +806,9 @@ public class MainActivity extends BaseActivity implements
         if(Version.DEBUG){
             TLog.i("", "OnSuccess:%s", pictures);
         }
-        BusProvider.getInstance().post(new PictureSelectionEvent((ArrayList)pictures));
-
+        Intent intent = new Intent(this, SelectStudentActivity.class);
+        intent.putExtra("pictures", (ArrayList)pictures);
+        startActivity(intent);
 
     }
 
@@ -821,5 +822,7 @@ public class MainActivity extends BaseActivity implements
         if(Version.DEBUG){
             TLog.i("", "OnSuccess:%s", pictures);
         }
-    }
+        Intent intent = new Intent(this, SelectStudentActivity.class);
+        intent.putExtra("pictures", (ArrayList)pictures);
+        startActivity(intent);    }
 }

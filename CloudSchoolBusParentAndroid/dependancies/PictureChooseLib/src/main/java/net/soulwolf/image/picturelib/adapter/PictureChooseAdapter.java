@@ -140,6 +140,14 @@ public class PictureChooseAdapter extends BaseAdapter {
         return pictures;
     }
 
+    public List<Picture> getmPictureList() {
+        return mPictureList;
+    }
+
+    public void setmPictureList(List<Picture> mPictureList) {
+        this.mPictureList = mPictureList;
+    }
+
     public boolean contains(int position){
         return this.mPictureChoose.contains(position);
     }

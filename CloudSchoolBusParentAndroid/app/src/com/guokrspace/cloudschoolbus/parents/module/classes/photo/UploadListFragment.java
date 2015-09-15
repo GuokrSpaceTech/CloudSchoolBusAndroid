@@ -220,7 +220,7 @@ public class UploadListFragment extends BaseFragment {
                 List<UploadFile> tempUploadFiles = new ArrayList<UploadFile>();
 
                 tempUploadFiles.add(uploadFile);
-                mApplication.mDaoSession.getUploadingPhotosDao().delete(objToDbEntity(uploadFile));
+                mApplication.mDaoSession.getUploadingPhotoEntityDao().delete(objToDbEntity(uploadFile));
 
                 // 删除内存缓存
                 UploadFileHelper.getUploadUtils().remove(uploadFile);

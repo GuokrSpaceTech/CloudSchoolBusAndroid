@@ -160,10 +160,6 @@ public class ClassFragment extends BaseFragment {
 //                        dismiss();
                         break;
                     case "相册":
-                        mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
-                        mPictureProcess.setClip(false);
-                        mPictureProcess.setMaxPictureCount(9);
-                        mPictureProcess.execute((MainActivity)mParentContext);
                         break;
                 }
             }

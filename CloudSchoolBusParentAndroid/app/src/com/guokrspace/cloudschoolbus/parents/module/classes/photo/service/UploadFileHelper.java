@@ -62,7 +62,7 @@ public class UploadFileHelper {
 		mContext = context;
 		mApplication = (CloudSchoolBusParentsApplication) mContext
 				.getApplicationContext();
-		mUploadDB = mApplication.mDaoSession.getUploadingPhotosDao();
+		mUploadDB = mApplication.mDaoSession.getUploadingPhotoEntityDao();
 	}
 
 	public void setFragment(Fragment fragment) {
@@ -82,7 +82,7 @@ public class UploadFileHelper {
 
 		// 保存数据
 		for (int j = 0; j < uploadFileList.size(); j++) {
-			mApplication.mDaoSession.getUploadingPhotosDao().insert(objToDbEntity(uploadFileList.get(j)));
+			mApplication.mDaoSession.getUploadingPhotoEntityDao().insert(objToDbEntity(uploadFileList.get(j)));
 		}
 
 		mUploadFileList.addAll(uploadFileList);
@@ -100,7 +100,7 @@ public class UploadFileHelper {
 
 		// 读取数据
 		mUploadFileList.clear();
-		List<UploadingPhotoEntity> uploadingPhotoEntities = mApplication.mDaoSession.getUploadingPhotosDao().queryBuilder().list();
+		List<UploadingPhotoEntity> uploadingPhotoEntities = mApplication.mDaoSession.getUploadingPhotoEntityDao().queryBuilder().list();
 		for( UploadingPhotoEntity entity : uploadingPhotoEntities )
 		{
 			mUploadFileList.add(dBEntityToObj(entity));
