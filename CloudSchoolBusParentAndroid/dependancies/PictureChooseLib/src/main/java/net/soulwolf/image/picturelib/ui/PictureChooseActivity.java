@@ -1,8 +1,12 @@
 package net.soulwolf.image.picturelib.ui;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,6 +20,7 @@ import net.soulwolf.image.picturelib.PictureFrom;
 import net.soulwolf.image.picturelib.PictureProcess;
 import net.soulwolf.image.picturelib.R;
 import net.soulwolf.image.picturelib.adapter.PictureChooseAdapter;
+import net.soulwolf.image.picturelib.adapter.PictureChooseRecycerViewAdapter;
 import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
 import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.rx.ResponseHandler;
@@ -36,12 +41,14 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     public static final int GALLERY_REQUEST_CODE = 1023;
 
     GridView mPictureGrid;
+    RecyclerView mPictureGridRV;
 
     GalleryViewPager mViewPager;
 
     ArrayList<Picture> mPictureList;
 
     PictureChooseAdapter mPictureChooseAdapter;
+    PictureChooseRecycerViewAdapter mPictureChooseRVAdapter;
 
     PictureProcess mPictureProcess;
 
@@ -57,7 +64,8 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
             mMaxPictureCount = getIntent().getIntExtra(Constants.MAX_PICTURE_COUNT, 1);
             mTitleBarBackground = getIntent().getIntExtra(Constants.TITLE_BAR_BACKGROUND, mTitleBarBackground);
         }
-        mPictureGrid = (GridView) findViewById(R.id.pi_picture_choose_grid);
+//        mPictureGrid = (GridView) findViewById(R.id.pi_picture_choose_grid);
+        mPictureGridRV = (RecyclerView) findViewById(R.id.pi_picture_choose_grid);
         setTitleBarBackground(mTitleBarBackground);
         setTitleText(R.string.ps_picture_choose);
         setLeftText(R.string.ps_gallery);
@@ -65,9 +73,17 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
         mPictureList = new ArrayList<>();
 
-        mPictureChooseAdapter = new PictureChooseAdapter(this, mPictureList, mMaxPictureCount);
-        mPictureGrid.setAdapter(mPictureChooseAdapter);
-        mPictureGrid.setOnItemClickListener(this);
+//        mPictureChooseAdapter = new PictureChooseAdapter(this, mPictureList, mMaxPictureCount);
+        mPictureChooseRVAdapter = new PictureChooseRecycerViewAdapter(this,mPictureList);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        mPictureGridRV.setLayoutManager(gridLayoutManager);
+        mPictureGridRV.addItemDecoration(new SpacesItemDecoration(2));
+        mPictureGridRV.setHasFixedSize(true);
+//        mPictureGrid.setAdapter(mPictureChooseAdapter);
+        mPictureGridRV.setAdapter(mPictureChooseRVAdapter);
+//        mPictureGrid.setOnItemClickListener(this);
 
         mPictureProcess = new PictureProcess(this);
 
@@ -82,7 +98,8 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
             cameraIcon.drawable = getResources().getDrawable(R.drawable.pd_empty_picture);
             mPictureList.add(cameraIcon);
             mPictureList.addAll(paths);
-            mPictureChooseAdapter.notifyDataSetChanged();
+//            mPictureChooseAdapter.notifyDataSetChanged();
+            mPictureChooseRVAdapter.notifyDataSetChanged();
         }
     }
 
@@ -248,5 +265,25 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     public void onError(Exception e) {
 
         TLog.e("", "onError", e);
+    }
+
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+
+            // Add top margin only for the first item to avoid double space between items
+            if(parent.getChildPosition(view) == 0)
+                outRect.top = space;
+        }
     }
 }

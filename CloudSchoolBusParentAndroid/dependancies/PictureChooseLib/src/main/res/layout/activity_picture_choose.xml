@@ -11,15 +11,23 @@
 
         <include layout="@layout/pl_title_bar_layout" />
 
-        <GridView
+
+
+        <!--<GridView-->
+            <!--android:id="@+id/pi_picture_choose_grid"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginLeft="2dp"-->
+            <!--android:layout_marginRight="2dp"-->
+            <!--android:layout_marginTop="2dp"-->
+            <!--android:horizontalSpacing="1dp"-->
+            <!--android:numColumns="3"-->
+            <!--android:verticalSpacing="1dp" />-->
+
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/pi_picture_choose_grid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:horizontalSpacing="8dp"
-            android:numColumns="3"
-            android:verticalSpacing="8dp" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
     </LinearLayout>
 </FrameLayout>

@@ -1,7 +1,6 @@
 package com.guokrspace.cloudschoolbus.parents.module.classes.photo.view;
 
 import android.content.Context;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -25,7 +24,6 @@ import com.guokrspace.cloudschoolbus.parents.module.classes.photo.adapter.TagsAd
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.adapter.ImageThumbRecycleViewAdapter;
 
 import net.soulwolf.image.picturelib.model.Picture;
-import net.soulwolf.image.picturelib.ui.BigImageGalleryFragment;
 
 import java.util.ArrayList;
 

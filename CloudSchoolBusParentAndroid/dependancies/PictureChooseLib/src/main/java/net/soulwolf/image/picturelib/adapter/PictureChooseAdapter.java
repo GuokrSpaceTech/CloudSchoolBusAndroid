@@ -37,6 +37,8 @@ import net.soulwolf.image.picturelib.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
+
 
 /**
  * author: Soulwolf Created on 2015/7/13 23:49.
@@ -76,7 +78,7 @@ public class PictureChooseAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if(convertView == null){
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.listview_picture_choose_item,null);
@@ -93,7 +95,23 @@ public class PictureChooseAdapter extends BaseAdapter {
         } else {
             String url = getItem(position).getPicturePath();
             if (url == null) url = getItem(position).getThumbPath();
-            Picasso.with(mContext).load(Utils.urlFromFile(url)).fit().centerCrop().into(holder.mPictureView);
+            Picasso.with(mContext)
+                    .load(Utils.urlFromFile(url))
+                    .fit().centerCrop()
+                    .into(holder.mPictureView, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                           if(position == 0)
+                           {
+                               holder.mPictureView.setImageDrawable(getItem(position).drawable);
+                           }
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
         }
 //      ImageLoadTask.getInstance().display(holder.mPictureView, Utils.urlFromFile(url));
         if(mPictureChoose.contains(position)){

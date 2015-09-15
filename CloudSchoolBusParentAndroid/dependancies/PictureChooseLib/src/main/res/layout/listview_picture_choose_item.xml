@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="2dp"
-    android:background="@color/pc_gallery_bg">
+    android:padding="1sp"
+    android:background="@color/pc_black_t">
 
     <ImageView
         android:id="@+id/pi_picture_choose_item_image"
