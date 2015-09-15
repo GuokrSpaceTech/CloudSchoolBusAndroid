@@ -59,6 +59,7 @@ public class ImageThumbRecycleViewAdapter extends RecyclerView.Adapter<ImageThum
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        holder.mThumbnail.setTag(position);
         Picasso.with(mContext).load(mDataset.get(position).getPicturePath()).centerCrop().fit().into(holder.mThumbnail);
     }
 

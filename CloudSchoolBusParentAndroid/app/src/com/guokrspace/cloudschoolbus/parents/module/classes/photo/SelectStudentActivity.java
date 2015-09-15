@@ -3,10 +3,16 @@ package com.guokrspace.cloudschoolbus.parents.module.classes.photo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.android.support.debug.DebugLog;
+import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
+import com.dexafree.materialList.controller.RecyclerItemClickListener;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
@@ -15,6 +21,7 @@ import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.EditComme
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.SelectedStuView;
 
 import net.soulwolf.image.picturelib.model.Picture;
+import net.soulwolf.image.picturelib.ui.BigImageGalleryFragment;
 import net.soulwolf.image.picturelib.utils.PaintUtil;
 
 import java.io.File;
@@ -32,6 +39,7 @@ public class SelectStudentActivity extends BaseActivity {
     private String mCommentStr;
     private String mTagListStr;
     private String mStudentListStr;
+    private CommonRecyclerItemClickListener mThumbNailClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,16 +72,30 @@ public class SelectStudentActivity extends BaseActivity {
             uploadFile.teacherid = mApplication.mConfig.getUserid();
             mUploadFiles.add(uploadFile);
         }
+        mThumbNailClickListener = new CommonRecyclerItemClickListener(mContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.mainFrameLayout,new BigImageGalleryFragment().newInstance(mPictures,position));
+                transaction.addToBackStack("big_picture");
+                transaction.commit();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
 
         mCommentView = new EditCommentView(this, mPictures);
+        mCommentView.setmThumbNailClickListener(mThumbNailClickListener);
         mStudentView = new SelectedStuView(this, mPictures ,mApplication.mStudents);
-        RelativeLayout container = (RelativeLayout)findViewById(R.id.mainRelLayout);
+        RelativeLayout container = (RelativeLayout)findViewById(R.id.mainLayout);
         container.addView(mCommentView);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         mCommentView.setId(getResources().getInteger(R.integer.content_edit));
         params.addRule(RelativeLayout.BELOW, mCommentView.getId());
-        container.addView(mStudentView,params);
-
+        container.addView(mStudentView, params);
     }
 
     @Override

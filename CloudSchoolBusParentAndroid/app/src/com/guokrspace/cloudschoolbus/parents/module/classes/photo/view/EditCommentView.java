@@ -1,6 +1,7 @@
 package com.guokrspace.cloudschoolbus.parents.module.classes.photo.view;
 
 import android.content.Context;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -24,6 +25,7 @@ import com.guokrspace.cloudschoolbus.parents.module.classes.photo.adapter.TagsAd
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.adapter.ImageThumbRecycleViewAdapter;
 
 import net.soulwolf.image.picturelib.model.Picture;
+import net.soulwolf.image.picturelib.ui.BigImageGalleryFragment;
 
 import java.util.ArrayList;
 
@@ -41,6 +43,8 @@ public class EditCommentView extends BaseLinearLayout {
 	private TagsAdapter mTagsAdapter;
 	private ImageThumbRecycleViewAdapter mPictureThumbnailsAdapter;
 	private ArrayList<Picture> mPictures;
+    private RecyclerView.OnItemTouchListener  mThumbNailClickListener;
+    private RecyclerView thumbNails;
 
 	public EditCommentView(Context context, ArrayList<Picture> pictures) {
 		super(context);
@@ -57,7 +61,7 @@ public class EditCommentView extends BaseLinearLayout {
 	private void init() {
 		LayoutInflater.from(mContext).inflate(R.layout.view_edit_content, this, true);
 
-		RecyclerView thumbNails = (RecyclerView)findViewById(R.id.thumbnails_recycler_view);
+		thumbNails = (RecyclerView)findViewById(R.id.thumbnails_recycler_view);
 		mPictureThumbnailsAdapter = new ImageThumbRecycleViewAdapter(mContext, mPictures);
 		thumbNails.setHasFixedSize(true);
 		// use a linear layout manager
@@ -105,32 +109,32 @@ public class EditCommentView extends BaseLinearLayout {
 
 		mCommentEditText.addTextChangedListener(new TextWatcher() {
 
-			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-									  int arg3) {
-				mNumberTextView.setText(arg0.length() + "/280");
-			}
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+                                      int arg3) {
+                mNumberTextView.setText(arg0.length() + "/280");
+            }
 
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-										  int arg2, int arg3) {
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                                          int arg2, int arg3) {
 
-			}
+            }
 
-			@Override
-			public void afterTextChanged(Editable arg0) {
+            @Override
+            public void afterTextChanged(Editable arg0) {
 
-			}
-		});
+            }
+        });
 		mGridView.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-									long arg3) {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
 
-			}
-		});
-	}
+            }
+        });
+    }
 
 
 	public void cancel() {
@@ -146,4 +150,13 @@ public class EditCommentView extends BaseLinearLayout {
 	{
 		return mTagsAdapter.getSelection();
 	}
+
+    public RecyclerView.OnItemTouchListener getmThumbNailClickListener() {
+        return mThumbNailClickListener;
+    }
+
+    public void setmThumbNailClickListener(RecyclerView.OnItemTouchListener mThumbNailClickListener) {
+        this.mThumbNailClickListener = mThumbNailClickListener;
+        this.thumbNails.addOnItemTouchListener(mThumbNailClickListener);
+    }
 }

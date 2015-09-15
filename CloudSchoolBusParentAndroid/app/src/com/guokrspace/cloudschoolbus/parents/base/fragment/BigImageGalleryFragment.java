@@ -1,4 +1,4 @@
-package net.soulwolf.image.picturelib.ui;
+package com.guokrspace.cloudschoolbus.parents.base.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import net.soulwolf.image.picturelib.R;
-import net.soulwolf.image.picturelib.model.Picture;
+import net.soulwolf.image.picturelib.ui.PictureChooseActivity;
 import net.soulwolf.image.picturelib.utils.Constants;
 
 import java.util.ArrayList;
@@ -78,21 +78,16 @@ public class BigImageGalleryFragment extends Fragment{
             public void onClick(View view) {
                 Intent data = new Intent();
                 data.putExtra(Constants.PICTURE_CHOOSE_LIST, (ArrayList) mPictureList);
-                PictureChooseActivity theActivity = (PictureChooseActivity) getActivity();
+                PictureChooseActivity theActivity = (PictureChooseActivity)getActivity();
                 theActivity.setResult(theActivity.RESULT_OK, data);
                 theActivity.finish();
             }
         });
 
         List<String> mUrlPaths = new ArrayList<>();
-
-        for( Object picture: (List<?>)mPictureList)
+        for(String picturePath: (List<String>)mPictureList)
         {
-            String urlPath = "";
-            if(picture instanceof Picture)
-                urlPath = "file://" + ((Picture) picture).getPicturePath();
-            else if (picture instanceof String)
-                urlPath = "file://" + ((String) picture);
+            String urlPath = "file://" + picturePath;
             mUrlPaths.add(urlPath);
         }
 
