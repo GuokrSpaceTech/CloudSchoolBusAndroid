@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import net.soulwolf.image.picturelib.R;
+import net.soulwolf.image.picturelib.listener.RecyclerItemClickListener;
 import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.utils.Utils;
 
@@ -158,4 +159,5 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
     public boolean contains(int position){
         return this.mPictureChoose.contains(position);
     }
+
 }

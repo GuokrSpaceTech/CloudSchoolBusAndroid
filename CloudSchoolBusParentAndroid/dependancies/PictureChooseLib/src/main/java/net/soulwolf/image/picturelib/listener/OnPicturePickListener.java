@@ -42,4 +42,6 @@ public interface OnPicturePickListener {
      */
     void onError(Exception e);
 
+    void onCancel();
+
 }

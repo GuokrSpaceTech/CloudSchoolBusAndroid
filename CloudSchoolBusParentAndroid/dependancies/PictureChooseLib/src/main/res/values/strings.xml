@@ -6,7 +6,7 @@
     <string name="ps_picture_choose">选择图片</string>
     <string name="ps_picture_choose_count">选择图片(%s)</string>
     <string name="ps_gallery_choose">选择相册</string>
-    <string name="ps_gallery">相册</string>
+    <string name="ps_gallery">文件夹</string>
     <string name="ps_cancel">取消</string>
     <string name="ps_complete">完成</string>
     <string name="ps_select_up_count">最多只能选择%s张图片</string>

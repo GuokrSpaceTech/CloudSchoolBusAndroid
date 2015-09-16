@@ -397,8 +397,8 @@ public class MainActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //  Let the fragment to handle unhandled result
         /* http://stackoverflow.com/questions/6147884/onactivityresult-not-being-called-in-fragment?rq=1 */
-        mPictureProcess.onProcessResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
+        mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
+        super.onActivityResult(requestCode, resultCode, data); //Rest of the activity results goes to respective fragment
     }
 
     public class MyPagerAdapter extends FragmentPagerAdapter
@@ -815,6 +815,11 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onError(Exception e) {
         TLog.e("","onError",e);
+    }
+
+    @Override
+    public void onCancel() {
+
     }
 
     @Override

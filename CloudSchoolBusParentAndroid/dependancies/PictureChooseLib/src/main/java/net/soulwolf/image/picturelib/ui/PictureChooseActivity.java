@@ -22,6 +22,7 @@ import net.soulwolf.image.picturelib.R;
 import net.soulwolf.image.picturelib.adapter.PictureChooseAdapter;
 import net.soulwolf.image.picturelib.adapter.PictureChooseRecycerViewAdapter;
 import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
+import net.soulwolf.image.picturelib.listener.RecyclerItemClickListener;
 import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.rx.ResponseHandler;
 import net.soulwolf.image.picturelib.task.PictureTask;
@@ -66,10 +67,13 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
         }
 //        mPictureGrid = (GridView) findViewById(R.id.pi_picture_choose_grid);
         mPictureGridRV = (RecyclerView) findViewById(R.id.pi_picture_choose_grid);
+        mPictureGridRV.setHorizontalScrollBarEnabled(true);
         setTitleBarBackground(mTitleBarBackground);
         setTitleText(R.string.ps_picture_choose);
-        setLeftText(R.string.ps_gallery);
+        setLeftText(R.string.ps_cancel);
         setRightText(R.string.ps_complete);
+        mActionRight.setEnabled(false); //Will enable only when users selected picture
+        setBottomLeftText(R.string.ps_gallery);
 
         mPictureList = new ArrayList<>();
 
@@ -84,6 +88,42 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 //        mPictureGrid.setAdapter(mPictureChooseAdapter);
         mPictureGridRV.setAdapter(mPictureChooseRVAdapter);
 //        mPictureGrid.setOnItemClickListener(this);
+        RecyclerItemClickListener mRvListener = new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if(position==0)
+                {
+                    onCamera();
+                } else {
+                    if (mPictureChooseRVAdapter.contains(position)) {
+                        mPictureChooseRVAdapter.removePictureChoose(view, position);
+                    } else {
+                        if (mPictureChooseRVAdapter.pictureChooseSize() >= mMaxPictureCount) {
+                            Toast.makeText(getApplicationContext(), getString(R.string.ps_select_up_count, mMaxPictureCount), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        mPictureChooseRVAdapter.addPictureChoose(view, position);
+                    }
+                    //mPictureChooseAdapter.notifyDataSetChanged();
+                    if (mPictureChooseRVAdapter.pictureChooseSize() == 0) {
+                        setTitleText(getString(R.string.ps_picture_choose));
+                    } else {
+                        setTitleText(getString(R.string.ps_picture_choose_count
+                                , mPictureChooseRVAdapter.pictureChooseSize()));
+                    }
+                }
+
+                if(mPictureChooseRVAdapter.pictureChooseSize()>0)
+                    mActionRight.setEnabled(true);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
+        mRvListener.setRecyclerView(mPictureGridRV);
+        mPictureGridRV.addOnItemTouchListener(mRvListener);
 
         mPictureProcess = new PictureProcess(this);
 
@@ -180,20 +220,40 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
     @Override
     protected void onLeftClick(View view) {
-        super.onLeftClick(view);
-        Intent intent = new Intent(this, GalleryChooseActivity.class);
-        intent.putExtra(Constants.TITLE_BAR_BACKGROUND, mTitleBarBackground);
-        startActivityForResult(intent, GALLERY_REQUEST_CODE);
+        super.onRightClick(view);
+//        ArrayList<Picture> list = mPictureChooseRVAdapter.getPictureChoosePath();
+        Intent data = new Intent();
+//        data.putExtra(Constants.PICTURE_CHOOSE_LIST, list);
+        setResult(RESULT_CANCEL, data);
+        finish();
     }
 
     @Override
     protected void onRightClick(View view) {
         super.onRightClick(view);
-        ArrayList<Picture> list = mPictureChooseAdapter.getPictureChoosePath();
+        ArrayList<Picture> list = mPictureChooseRVAdapter.getPictureChoosePath();
         Intent data = new Intent();
         data.putExtra(Constants.PICTURE_CHOOSE_LIST, list);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    @Override
+    protected void onBottomRightClick(View view) {
+        super.onRightClick(view);
+        ArrayList<Picture> list = mPictureChooseRVAdapter.getPictureChoosePath();
+        Intent data = new Intent();
+        data.putExtra(Constants.PICTURE_CHOOSE_LIST, list);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    @Override
+    protected void onBottomLeftClick(View view) {
+        super.onLeftClick(view);
+        Intent intent = new Intent(this, GalleryChooseActivity.class);
+        intent.putExtra(Constants.TITLE_BAR_BACKGROUND, mTitleBarBackground);
+        startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
     @Override
@@ -203,6 +263,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
         }
         return super.onKeyDown(keyCode, event);
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -265,6 +326,11 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     public void onError(Exception e) {
 
         TLog.e("", "onError", e);
+    }
+
+    @Override
+    public void onCancel() {
+
     }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {

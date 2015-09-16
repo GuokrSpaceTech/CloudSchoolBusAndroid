@@ -43,6 +43,13 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     protected RelativeLayout mTitleBar;
 
+
+    protected Button   mActionBottomLeft;
+
+    protected Button   mActionBottomRight;
+
+    protected RelativeLayout mBottomBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +70,22 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
             this.mActionRight.setOnClickListener(this);
         }
         this.mActionRight.setText(redId);
+    }
+
+    protected void setBottomLeftText(@StringRes int redId){
+        if(mActionBottomLeft == null){
+            this.mActionBottomLeft = (Button) findViewById(R.id.pi_bottom_bar_left);
+            this.mActionBottomLeft.setOnClickListener(this);
+        }
+        this.mActionBottomLeft.setText(redId);
+    }
+
+    protected void setBottomRightText(@StringRes int redId){
+        if(mActionBottomRight == null){
+            this.mActionBottomRight = (Button) findViewById(R.id.pi_bottom_bar_right);
+            this.mActionBottomRight.setOnClickListener(this);
+        }
+        this.mActionBottomRight.setText(redId);
     }
 
     protected void setTitleText(String text){
@@ -87,6 +110,14 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    protected void onBottomLeftClick(View view){
+
+    }
+
+    protected void onBottomRightClick(View view){
+
+    }
+
     protected void setTitleBarBackground(@ColorInt int background){
         if(mTitleBar == null){
             mTitleBar = (RelativeLayout) findViewById(R.id.pi_title_bar);
@@ -106,7 +137,12 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
             onLeftClick(v);
         }else if(v == mActionRight){
             onRightClick(v);
+        }else if(v == mActionBottomLeft){
+            onBottomLeftClick(v);
+        }else if(v==mActionBottomRight){
+            onBottomRightClick(v);
         }
+
     }
 
 //    protected String getString(@StringRes int resId,Object ... args){

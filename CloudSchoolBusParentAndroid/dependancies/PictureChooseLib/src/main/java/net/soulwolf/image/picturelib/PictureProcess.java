@@ -161,10 +161,11 @@ public class PictureProcess {
             if(resultCode == PictureChooseActivity.RESULT_OK && data != null){
                 ArrayList<Picture> picture = (ArrayList<Picture>)data.getSerializableExtra(Constants.PICTURE_CHOOSE_LIST);
                 if(isClip && picture != null && picture.size() == 1){
-//                    cropPicture(new File(picture.get(0)));
+                    cropPicture(new File(picture.get(0).getPicturePath()));
                 }else {
                     onSuccess(picture);
                 }
+            } else if ( resultCode == PictureChooseActivity.RESULT_CANCEL ) {
             }
         }
     }
