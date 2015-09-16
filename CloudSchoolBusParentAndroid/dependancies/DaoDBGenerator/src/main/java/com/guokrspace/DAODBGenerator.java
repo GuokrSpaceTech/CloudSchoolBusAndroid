@@ -313,6 +313,7 @@ public class DAODBGenerator {
     private static void addUploadingPhotos(Schema schema)
     {
         Entity uploading = schema.addEntity("UploadingPhotoEntity");
+        uploading.addStringProperty("key").primaryKey().notNull();
         uploading.addStringProperty("picPathString");
         uploading.addStringProperty("picFileString");
         uploading.addStringProperty("picSizeString");

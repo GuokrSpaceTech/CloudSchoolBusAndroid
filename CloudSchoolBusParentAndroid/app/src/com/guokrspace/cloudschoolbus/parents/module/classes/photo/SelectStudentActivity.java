@@ -10,8 +10,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.android.support.debug.DebugLog;
+import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.avast.android.dialogs.iface.ISimpleDialogListener;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.dexafree.materialList.controller.RecyclerItemClickListener;
 import com.guokrspace.cloudschoolbus.parents.R;
@@ -31,7 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SelectStudentActivity extends BaseActivity {
+public class SelectStudentActivity extends BaseActivity implements ISimpleDialogListener{
 
     private ArrayList<UploadFile> mUploadFiles = new ArrayList<>();
     private ArrayList<Picture> mPictures = new ArrayList<>();
@@ -43,6 +46,8 @@ public class SelectStudentActivity extends BaseActivity {
     public MenuItem mUploadAction;
     private CommonRecyclerItemClickListener mThumbNailClickListener;
     public AdapterView.OnItemClickListener mStudentClickListener;
+
+    private static final int REQUEST_SIMPLE_DIALOG = 42;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,10 +161,22 @@ public class SelectStudentActivity extends BaseActivity {
             return true;
         }
         else if (id == android.R.id.home) {
-            if(getSupportFragmentManager().getBackStackEntryCount()>0)
+            //If we are at a fragment, just pop the fragment, if this is upload fragment, finish the activity as well
+            if(getSupportFragmentManager().getBackStackEntryCount()>0) {
+                UploadListFragment theFragment = (UploadListFragment) getSupportFragmentManager().findFragmentByTag("uploadList");
+                if (theFragment != null && theFragment.isVisible()) {
+                    finish();
+                }
                 getSupportFragmentManager().popBackStack();
-            else
-                finish();
+            }
+            //If we are just in the activity page, check if user really want to exit
+            else {
+                SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager()).setMessage(getResources().getString(R.string.confirm_cancel_upload))
+                        .setPositiveButtonText(getResources().getString(R.string.OKAY))
+                        .setNegativeButtonText(getResources().getString(R.string.cancel))
+                        .setRequestCode(REQUEST_SIMPLE_DIALOG)
+                        .show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -197,6 +214,7 @@ public class SelectStudentActivity extends BaseActivity {
 
     private void updateUploadList()
     {
+        mUploadFiles.clear();
         for (int i = 0; i < mPictures.size(); i++) {
             UploadFile uploadFile = new UploadFile();
             uploadFile.picPathString = mPictures.get(i).getPicturePath();
@@ -209,6 +227,29 @@ public class SelectStudentActivity extends BaseActivity {
             uploadFile.photoTag = mTagListStr;
             uploadFile.teacherid = mApplication.mConfig.getUserid();
             mUploadFiles.add(uploadFile);
+        }
+    }
+
+    // ISimpleDialogListener
+
+    @Override
+    public void onPositiveButtonClicked(int requestCode) {
+        if (requestCode == REQUEST_SIMPLE_DIALOG) {
+            finish();
+        }
+    }
+
+    @Override
+    public void onNegativeButtonClicked(int requestCode) {
+        if (requestCode == REQUEST_SIMPLE_DIALOG) {
+            return; //do nothing
+        }
+    }
+
+    @Override
+    public void onNeutralButtonClicked(int requestCode) {
+        if (requestCode == REQUEST_SIMPLE_DIALOG) {
+            Toast.makeText(this, "Neutral button clicked", Toast.LENGTH_SHORT).show();
         }
     }
 }

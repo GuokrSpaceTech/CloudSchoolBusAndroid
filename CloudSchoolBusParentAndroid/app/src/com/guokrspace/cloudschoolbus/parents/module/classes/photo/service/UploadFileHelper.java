@@ -196,7 +196,7 @@ public class UploadFileHelper {
 			params.put("teacherid", uploadFile.teacherid);
 		}
 		params.put("register", 0); //Normal
-		params.put("pickey", (System.currentTimeMillis() + new Random().nextInt(1000)) + "");
+		params.put("pickey", uploadFile.generateKey());
 
 		DebugLog.logI("mMethod : " + ProtocolDef.METHOD_Source + " RequestParams : " + params.toString());
 		CloudSchoolBusRestClient.upload(ProtocolDef.METHOD_Source, params, new AsyncHttpResponseHandler() {
@@ -213,9 +213,12 @@ public class UploadFileHelper {
 
 			@Override
 			public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-				FileUploadedEvent event = new FileUploadedEvent(uploadFile);
-				event.setIsSuccess(false);
-				BusProvider.getInstance().post(event);
+                mUploadDB.delete(objToDbEntity(uploadFile));
+                mUploadFileList.remove(uploadFile);
+                FileUploadedEvent event = new FileUploadedEvent(uploadFile);
+                event.setIsSuccess(true);
+                BusProvider.getInstance().post(event);
+                uploadFirstFile();
 			}
 
 			@Override
@@ -247,6 +250,7 @@ public class UploadFileHelper {
 		entity.setStudentId(obj.studentIdList);
 		entity.setPicSizeString(obj.picSizeString);
 		entity.setTeacherid(obj.teacherid);
+        entity.setKey(obj.generateKey());
 		return entity;
 	}
 
@@ -261,6 +265,7 @@ public class UploadFileHelper {
 		uploadFile.picPathString = dbEntity.getPicPathString();
 		uploadFile.picSizeString = dbEntity.getPicSizeString();
 		uploadFile.teacherid = dbEntity.getTeacherid();
+        uploadFile.key = dbEntity.getKey();
 		return uploadFile;
 	}
 }

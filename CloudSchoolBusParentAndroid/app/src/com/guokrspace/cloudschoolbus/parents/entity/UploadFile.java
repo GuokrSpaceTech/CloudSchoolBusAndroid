@@ -4,6 +4,7 @@ import com.loopj.android.http.RequestHandle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 上传文件列表
@@ -39,6 +40,8 @@ public class UploadFile {
 	/**当前上传文件的句柄，可以再等待队列中删除*/
 //	public Future<?> future;
 	/**网络请求句柄*/
+    public String key;
+
 	public RequestHandle requestHandle;
 
     public int getUploadType() {
@@ -69,5 +72,11 @@ public class UploadFile {
 
     public void setFileType(int pictureType) {
         this.uploadType = pictureType;
+    }
+
+
+    public String generateKey() {
+        this.key = System.currentTimeMillis() + teacherid;
+        return this.key;
     }
 }

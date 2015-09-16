@@ -20,4 +20,12 @@ public class FileUploadedEvent {
     public void setIsSuccess(boolean isSuccess) {
         this.isSuccess = isSuccess;
     }
+
+    public UploadFile getmUploadFile() {
+        return mUploadFile;
+    }
+
+    public void setmUploadFile(UploadFile mUploadFile) {
+        this.mUploadFile = mUploadFile;
+    }
 }

@@ -5,6 +5,7 @@
     <string name="mobile_num">输入已登记的手机号码</string>
     <string name="verify_code">验证码</string>
     <string name="no_network">无法链接网络，请检查网络设置</string>
+    <string name="confirm_cancel_upload">确定要取消发送吗？</string>
     <string name="server_error">出现错误了，一会再试试</string>
     <string name="unknow_message">消息类型不支持</string>
     <string name="invalid_mobile">手机未在学校登记，请联系学校老师</string>
@@ -85,5 +86,8 @@
     <string name="upload">文件上传</string>
     <string name="send">发送</string>
     <string name="comment_hint">此刻你的想法</string>
+    <string name="prompt_tagging">别忘了帮我添加标签哦！</string>
+    <string name="prompt_send">发给谁呢？</string>
+
 
 </resources>

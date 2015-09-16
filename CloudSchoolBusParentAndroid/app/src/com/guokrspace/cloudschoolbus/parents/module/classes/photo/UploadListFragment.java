@@ -24,8 +24,10 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadingPhotoEntity;
 import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
+import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.adapter.UploadQueueAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.service.UploadFileHelper;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,7 @@ public class UploadListFragment extends BaseFragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.fragment_upload_list, null);
 		setViewData(view);
+        setHasOptionsMenu(true);
 		return view;
 	}
 
@@ -91,10 +94,11 @@ public class UploadListFragment extends BaseFragment {
         switch (item.getItemId())
         {
             case android.R.id.home:
+//                getFragmentManager().popBackStack(); //Do not break, let the activity to finish itself.
             default:
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item); //
     }
 
 	protected void setListener(View view) {
@@ -252,6 +256,34 @@ public class UploadListFragment extends BaseFragment {
 		entity.setStudentId(obj.studentIdList);
 		entity.setPicSizeString(obj.picSizeString);
 		entity.setTeacherid(obj.teacherid);
+        entity.setKey(obj.generateKey());
 		return entity;
 	}
+
+
+    @Subscribe public void onReceiveFileUploadEvent(FileUploadedEvent event)
+    {
+        UploadFile uploadFile = event.getmUploadFile();
+        // 删除数据库
+        List<UploadFile> tempUploadFiles = new ArrayList<UploadFile>();
+
+        tempUploadFiles.add(uploadFile);
+        mApplication.mDaoSession.getUploadingPhotoEntityDao().delete(objToDbEntity(uploadFile));
+
+        // 删除内存缓存
+        UploadFileHelper.getUploadUtils().remove(uploadFile);
+
+        // 删除列表
+        mUploadFiles.removeAll(tempUploadFiles);
+
+        if (0 == mUploadFiles.size()) {
+
+            mUploadFileAdapter.setDeleteUploadFile(false);
+            noResult();
+        }
+        mUploadFileAdapter.notifyDataSetChanged();
+
+        UploadFileHelper.getUploadUtils().uploadFileService();
+
+    }
 }
