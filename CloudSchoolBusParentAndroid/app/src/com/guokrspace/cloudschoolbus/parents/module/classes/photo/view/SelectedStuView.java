@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -57,6 +58,7 @@ public class SelectedStuView extends BaseLinearLayout {
 	private StuSelectAdapter mStuSelectAdapter;
 	private TextView mContentTextView;
 	private TextView mPictureNumberTextView;
+	private AdapterView.OnItemClickListener mItemClickListener;
 
 
 	private List<StudentEntity> mStudents;
@@ -83,32 +85,32 @@ public class SelectedStuView extends BaseLinearLayout {
 	}
 
 	private void init() {
-		LayoutInflater.from(mContext).inflate(R.layout.view_selected_stu, this, true);
+        LayoutInflater.from(mContext).inflate(R.layout.view_selected_stu, this, true);
 
 
-		ViewGroup pagerLayout = (ViewGroup) findViewById(R.id.pagerLayout);
-		int height = (ScreenUtils.getScreenBounds(mContext)[1] - ToolUtils.dipToPx(mContext, 45)) / 2;
+//		ViewGroup pagerLayout = (ViewGroup) findViewById(R.id.pagerLayout);
+//		int height = (ScreenUtils.getScreenBounds(mContext)[1] - ToolUtils.dipToPx(mContext, 45)) / 2;
 //		DebugLog.logI("viewpager height : " + height);
 //		pagerLayout.setLayoutParams(new LinearLayout.LayoutParams(
 //				LinearLayout.LayoutParams.MATCH_PARENT, height));
 
-		mContentTextView = (TextView) findViewById(R.id.contentTextView);
-		mPictureNumberTextView = (TextView) findViewById(R.id.pictureNumberTextView);
-		mPictureNumberTextView.setText("1/" + mPictures.size());
+//		mContentTextView = (TextView) findViewById(R.id.contentTextView);
+//		mPictureNumberTextView = (TextView) findViewById(R.id.pictureNumberTextView);
+//		mPictureNumberTextView.setText("1/" + mPictures.size());
 
-		mGridView = (GridView) findViewById(R.id.gridView);
-		//Test Purpose
-		ArrayList<StudentEntity> studentEntities = new ArrayList<>();
-		studentEntities.addAll(mStudents);
-		studentEntities.addAll(mStudents);
-		studentEntities.addAll(mStudents);
-		studentEntities.addAll(mStudents);
-		studentEntities.addAll(mStudents);
-		studentEntities.addAll(mStudents);
-		studentEntities.addAll(mStudents);
-		mStuSelectAdapter = new StuSelectAdapter(mContext, studentEntities);
-		mGridView.setAdapter(mStuSelectAdapter);
-	}
+        mGridView = (GridView) findViewById(R.id.gridView);
+        //Test Purpose
+        ArrayList<StudentEntity> studentEntities = new ArrayList<>();
+        studentEntities.addAll(mStudents);
+        studentEntities.addAll(mStudents);
+        studentEntities.addAll(mStudents);
+        studentEntities.addAll(mStudents);
+        studentEntities.addAll(mStudents);
+        studentEntities.addAll(mStudents);
+        studentEntities.addAll(mStudents);
+        mStuSelectAdapter = new StuSelectAdapter(mContext, studentEntities);
+        mGridView.setAdapter(mStuSelectAdapter);
+    }
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
@@ -145,7 +147,16 @@ public class SelectedStuView extends BaseLinearLayout {
 		}
 	}
 
-    public String getSelectionString() {
+	public AdapterView.OnItemClickListener getmItemClickListener() {
+		return mItemClickListener;
+	}
+
+	public void setmItemClickListener(AdapterView.OnItemClickListener mItemClickListener) {
+		this.mItemClickListener = mItemClickListener;
+		mGridView.setOnItemClickListener(mItemClickListener);
+	}
+
+	public String getSelectionString() {
         String retStr="";
         HashMap map = mStuSelectAdapter.getmSelections();
         Iterator it = map.entrySet().iterator();

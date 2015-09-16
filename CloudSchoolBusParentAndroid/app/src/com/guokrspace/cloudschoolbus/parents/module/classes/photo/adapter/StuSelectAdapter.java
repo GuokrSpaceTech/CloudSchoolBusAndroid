@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.module.classes.photo.SelectStudentActivity;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Array;
@@ -100,11 +101,19 @@ public class StuSelectAdapter extends BaseAdapter {
                     {
 						StudentEntity studentEntity = new StudentEntity(); //Dummy object indicates select all
 						mSelections.put(0, studentEntity);
-                        allSelectImageView.setVisibility(View.GONE);
+						selectAllStudents();
+						notifyDataSetChanged();
+//                        allSelectImageView.setVisibility(View.GONE);
                     } else {
-						mSelections.remove(0);
-                        allSelectImageView.setVisibility(View.VISIBLE);
+						mSelections.clear();
+//                        allSelectImageView.setVisibility(View.VISIBLE);
+                        notifyDataSetChanged();
                     }
+
+                    if(getmSelections().size()!=0)
+                        ((SelectStudentActivity)mContext).mUploadAction.setEnabled(true);
+                    else
+                        ((SelectStudentActivity)mContext).mUploadAction.setEnabled(false);
                 }
 			});
 		} else if (position > 0) {
@@ -115,11 +124,21 @@ public class StuSelectAdapter extends BaseAdapter {
 			ImageView headImageView = (ImageView) view
 					.findViewById(R.id.headImageView);
 			if (!TextUtils.isEmpty(student.getAvatar())) {
-                Picasso.with(mContext).load(student.getAvatar()).fit().centerCrop().into(headImageView);
+				String avatarpath="";
+				if(student.getAvatar().contains("jpg."))
+					avatarpath=student.getAvatar().substring(0,student.getAvatar().lastIndexOf('.'));
+
+                Picasso.with(mContext).load(avatarpath).fit().centerCrop().into(headImageView);
 			}
 			TextView stuNameTextView = (TextView) view
 					.findViewById(R.id.stuNameTextView);
 			stuNameTextView.setText(student.getCnname());
+
+			if(mSelections.containsKey(position)) {
+				selectImageView.setVisibility(View.VISIBLE);
+			} else {
+				selectImageView.setVisibility(View.INVISIBLE);
+			}
 
 			ViewGroup mainLayout = (ViewGroup) view
 					.findViewById(R.id.mainLayout);
@@ -127,15 +146,21 @@ public class StuSelectAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View arg0) {
-                    if(mSelections.containsKey(position))
-                    {
-                        selectImageView.setVisibility(View.GONE);
-                        mSelections.remove(position);
-                    } else {
-                        mSelections.put(position,student);
-                        selectImageView.setVisibility(View.VISIBLE);
-                    }
-				}
+					if (mSelections.containsKey(position)) {
+						selectImageView.setVisibility(View.GONE);
+						mSelections.remove(position);
+					} else {
+						mSelections.put(position, student);
+						selectImageView.setVisibility(View.VISIBLE);
+					}
+
+                    if(getmSelections().size()!=0)
+                        ((SelectStudentActivity)mContext).mUploadAction.setEnabled(true);
+                    else
+                        ((SelectStudentActivity)mContext).mUploadAction.setEnabled(false);
+
+
+                }
 			});
 		}
 
@@ -145,4 +170,13 @@ public class StuSelectAdapter extends BaseAdapter {
     public HashMap<Integer, StudentEntity> getmSelections() {
         return mSelections;
     }
+
+	private void selectAllStudents()
+	{
+		int i=1; // 0 - Dummy Student indicating selecting all
+		for( StudentEntity student : mStudents) {
+			mSelections.put(i, student);
+            i++;
+		}
+	}
 }

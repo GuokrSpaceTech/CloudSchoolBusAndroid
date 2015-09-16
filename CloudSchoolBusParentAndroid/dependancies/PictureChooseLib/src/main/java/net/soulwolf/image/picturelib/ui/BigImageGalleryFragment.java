@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,7 @@ public class BigImageGalleryFragment extends Fragment{
     int mTitleBarBackground = 0xFF16C2DD;
     private List<?> mPictureList;
     private int mCurrent;
+    private boolean mHasTitleBar;
     protected RelativeLayout mTitleBar;
     protected TextView mTitleText;
 
@@ -37,12 +40,13 @@ public class BigImageGalleryFragment extends Fragment{
 
     protected Button   mActionRight;
 
-    public static BigImageGalleryFragment newInstance(List<?> pictureList, int current)
+    public static BigImageGalleryFragment newInstance(List<?> pictureList, int current, boolean hasTitleBar)
     {
         BigImageGalleryFragment fragment = new BigImageGalleryFragment();
         Bundle args = new Bundle();
         args.putSerializable("pictures", (ArrayList)pictureList);
-        args.putInt("current", current );
+        args.putInt("current", current);
+        args.putBoolean("hasTitleBar", hasTitleBar);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +60,10 @@ public class BigImageGalleryFragment extends Fragment{
         if (getArguments() != null) {
             mPictureList = (ArrayList) getArguments().get("pictures");
             mCurrent = (int)getArguments().get("current");
+            mHasTitleBar = (boolean)getArguments().get("hasTitleBar");
         }
 
+        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
 
@@ -66,6 +72,7 @@ public class BigImageGalleryFragment extends Fragment{
 
         View root = inflater.inflate(R.layout.fragment_image_viewer, container, false);
         mTitleBar = (RelativeLayout) root.findViewById(R.id.pi_title_bar);
+        if(!mHasTitleBar) mTitleBar.setVisibility(View.GONE);
         mTitleBar.setBackgroundColor(0xFF16C2DD);
         mTitleText = (TextView)root.findViewById(R.id.pi_title_bar_title);
         mActionLeft = (Button)root.findViewById(R.id.pi_title_bar_left);
@@ -117,12 +124,20 @@ public class BigImageGalleryFragment extends Fragment{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                break;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if(menu != null)
+        {
+            menu.clear();
+        }
+    }
 }

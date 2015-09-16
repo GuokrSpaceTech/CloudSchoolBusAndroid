@@ -82,5 +82,8 @@
     <string name="title_activity_select_student">SelectStudentActivity</string>
 
     <string name="delete">删除</string>
-    <string name="upload">上传</string>
+    <string name="upload">文件上传</string>
+    <string name="send">发送</string>
+    <string name="comment_hint">此刻你的想法</string>
+
 </resources>

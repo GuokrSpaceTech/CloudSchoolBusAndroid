@@ -5,32 +5,32 @@
     android:background="@color/primary_white"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/pagerLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/pagerLayout"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content" >-->
 
-        <TextView
-            android:id="@+id/pictureNumberTextView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:gravity="center" />
+        <!--<TextView-->
+            <!--android:id="@+id/pictureNumberTextView"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:gravity="center" />-->
 
-        <TextView
-            android:id="@+id/contentTextView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:layout_alignParentBottom="true"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:singleLine="true"
-            android:background="#cccccccc"
-            android:gravity="center_vertical|left"
-            android:visibility="gone" />
-    </RelativeLayout>
+        <!--<TextView-->
+            <!--android:id="@+id/contentTextView"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingTop="5dip"-->
+            <!--android:paddingBottom="5dip"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:paddingLeft="10dip"-->
+            <!--android:paddingRight="10dip"-->
+            <!--android:singleLine="true"-->
+            <!--android:background="#cccccccc"-->
+            <!--android:gravity="center_vertical|left"-->
+            <!--android:visibility="gone" />-->
+    <!--</RelativeLayout>-->
 
     <GridView
         android:id="@+id/gridView"

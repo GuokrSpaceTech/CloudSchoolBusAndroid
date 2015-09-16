@@ -317,7 +317,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 //        mPictureChooseAdapter.notifyDataSetChanged();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.main_layout,new BigImageGalleryFragment().newInstance(pictures,0));
+        transaction.add(R.id.main_layout,new BigImageGalleryFragment().newInstance(pictures,0,true));
 //        transaction.addToBackStack("big_picture");
         transaction.commit();
     }

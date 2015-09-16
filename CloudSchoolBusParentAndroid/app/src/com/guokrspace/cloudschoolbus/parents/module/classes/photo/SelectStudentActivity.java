@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 
 import com.android.support.debug.DebugLog;
@@ -39,7 +40,9 @@ public class SelectStudentActivity extends BaseActivity {
     private String mCommentStr;
     private String mTagListStr;
     private String mStudentListStr;
+    public MenuItem mUploadAction;
     private CommonRecyclerItemClickListener mThumbNailClickListener;
+    public AdapterView.OnItemClickListener mStudentClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,7 @@ public class SelectStudentActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.mainFrameLayout,new BigImageGalleryFragment().newInstance(mPictures,position));
+                transaction.add(R.id.mainFrameLayout,new BigImageGalleryFragment().newInstance(mPictures,position,false));
                 transaction.addToBackStack("big_picture");
                 transaction.commit();
             }
@@ -87,21 +90,47 @@ public class SelectStudentActivity extends BaseActivity {
             }
         });
 
+
         mCommentView = new EditCommentView(this, mPictures);
         mCommentView.setmThumbNailClickListener(mThumbNailClickListener);
         mStudentView = new SelectedStuView(this, mPictures ,mApplication.mStudents);
+        mStudentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!mStudentView.getSelectionString().equals(""))
+                {
+                    mUploadAction.setEnabled(false);
+                } else
+                    mUploadAction.setEnabled(true);
+            }
+        });
         RelativeLayout container = (RelativeLayout)findViewById(R.id.mainLayout);
         container.addView(mCommentView);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         mCommentView.setId(getResources().getInteger(R.integer.content_edit));
         params.addRule(RelativeLayout.BELOW, mCommentView.getId());
         container.addView(mStudentView, params);
+        mStudentClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(!mStudentView.getSelectionString().equals(""))
+                {
+                    mUploadAction.setEnabled(false);
+                } else
+                    mUploadAction.setEnabled(true);
+            }
+        };
+        mStudentView.setmItemClickListener(mStudentClickListener);
+        getSupportActionBar().setTitle(getResources().getString(R.string.upload));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_select_student, menu);
+        mUploadAction = menu.findItem(R.id.action_upload);
+        mUploadAction.setEnabled(false);
         return true;
     }
 
@@ -121,10 +150,16 @@ public class SelectStudentActivity extends BaseActivity {
             UploadFileHelper.getUploadUtils().setContext(mContext);
             UploadFileHelper.getUploadUtils().setUploadFileDB(mUploadFiles);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.mainRelLayout, new UploadListFragment(), "uploadList");
+            transaction.add(R.id.mainFrameLayout, new UploadListFragment(), "uploadList");
             transaction.addToBackStack("uploadList");
             transaction.commit();
             return true;
+        }
+        else if (id == android.R.id.home) {
+            if(getSupportFragmentManager().getBackStackEntryCount()>0)
+                getSupportFragmentManager().popBackStack();
+            else
+                finish();
         }
 
         return super.onOptionsItemSelected(item);
