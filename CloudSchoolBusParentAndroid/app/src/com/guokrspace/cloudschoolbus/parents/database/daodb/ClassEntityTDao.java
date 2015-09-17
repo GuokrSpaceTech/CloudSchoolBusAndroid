@@ -29,13 +29,10 @@ public class ClassEntityTDao extends AbstractDao<ClassEntityT, String> {
         public final static Property Classid = new Property(0, String.class, "classid", true, "CLASSID");
         public final static Property Classname = new Property(1, String.class, "classname", false, "CLASSNAME");
         public final static Property Remark = new Property(2, String.class, "remark", false, "REMARK");
-        public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
+        public final static Property Dutyid = new Property(3, String.class, "dutyid", false, "DUTYID");
+        public final static Property Schoolid = new Property(4, String.class, "schoolid", false, "SCHOOLID");
     };
 
-    private DaoSession daoSession;
-
-    private Query<ClassEntityT> studentEntityT_ClassEntityTListQuery;
-    private Query<ClassEntityT> teacherEntityT_ClassEntityTListQuery;
     private Query<ClassEntityT> schoolEntityT_ClassEntityTListQuery;
 
     public ClassEntityTDao(DaoConfig config) {
@@ -44,7 +41,6 @@ public class ClassEntityTDao extends AbstractDao<ClassEntityT, String> {
     
     public ClassEntityTDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -54,7 +50,8 @@ public class ClassEntityTDao extends AbstractDao<ClassEntityT, String> {
                 "'CLASSID' TEXT PRIMARY KEY NOT NULL ," + // 0: classid
                 "'CLASSNAME' TEXT," + // 1: classname
                 "'REMARK' TEXT," + // 2: remark
-                "'AVATAR' TEXT);"); // 3: avatar
+                "'DUTYID' TEXT," + // 3: dutyid
+                "'SCHOOLID' TEXT NOT NULL );"); // 4: schoolid
     }
 
     /** Drops the underlying database table. */
@@ -79,16 +76,11 @@ public class ClassEntityTDao extends AbstractDao<ClassEntityT, String> {
             stmt.bindString(3, remark);
         }
  
-        String avatar = entity.getAvatar();
-        if (avatar != null) {
-            stmt.bindString(4, avatar);
+        String dutyid = entity.getDutyid();
+        if (dutyid != null) {
+            stmt.bindString(4, dutyid);
         }
-    }
-
-    @Override
-    protected void attachEntity(ClassEntityT entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
+        stmt.bindString(5, entity.getSchoolid());
     }
 
     /** @inheritdoc */
@@ -104,7 +96,8 @@ public class ClassEntityTDao extends AbstractDao<ClassEntityT, String> {
             cursor.getString(offset + 0), // classid
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // classname
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // remark
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // avatar
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // dutyid
+            cursor.getString(offset + 4) // schoolid
         );
         return entity;
     }
@@ -115,7 +108,8 @@ public class ClassEntityTDao extends AbstractDao<ClassEntityT, String> {
         entity.setClassid(cursor.getString(offset + 0));
         entity.setClassname(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setRemark(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setAvatar(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setDutyid(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setSchoolid(cursor.getString(offset + 4));
      }
     
     /** @inheritdoc */
@@ -140,45 +134,17 @@ public class ClassEntityTDao extends AbstractDao<ClassEntityT, String> {
         return true;
     }
     
-    /** Internal query to resolve the "classEntityTList" to-many relationship of StudentEntityT. */
-    public List<ClassEntityT> _queryStudentEntityT_ClassEntityTList(String classid) {
-        synchronized (this) {
-            if (studentEntityT_ClassEntityTListQuery == null) {
-                QueryBuilder<ClassEntityT> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Classid.eq(null));
-                studentEntityT_ClassEntityTListQuery = queryBuilder.build();
-            }
-        }
-        Query<ClassEntityT> query = studentEntityT_ClassEntityTListQuery.forCurrentThread();
-        query.setParameter(0, classid);
-        return query.list();
-    }
-
-    /** Internal query to resolve the "classEntityTList" to-many relationship of TeacherEntityT. */
-    public List<ClassEntityT> _queryTeacherEntityT_ClassEntityTList(String classid) {
-        synchronized (this) {
-            if (teacherEntityT_ClassEntityTListQuery == null) {
-                QueryBuilder<ClassEntityT> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Classid.eq(null));
-                teacherEntityT_ClassEntityTListQuery = queryBuilder.build();
-            }
-        }
-        Query<ClassEntityT> query = teacherEntityT_ClassEntityTListQuery.forCurrentThread();
-        query.setParameter(0, classid);
-        return query.list();
-    }
-
     /** Internal query to resolve the "classEntityTList" to-many relationship of SchoolEntityT. */
-    public List<ClassEntityT> _querySchoolEntityT_ClassEntityTList(String classid) {
+    public List<ClassEntityT> _querySchoolEntityT_ClassEntityTList(String schoolid) {
         synchronized (this) {
             if (schoolEntityT_ClassEntityTListQuery == null) {
                 QueryBuilder<ClassEntityT> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Classid.eq(null));
+                queryBuilder.where(Properties.Schoolid.eq(null));
                 schoolEntityT_ClassEntityTListQuery = queryBuilder.build();
             }
         }
         Query<ClassEntityT> query = schoolEntityT_ClassEntityTListQuery.forCurrentThread();
-        query.setParameter(0, classid);
+        query.setParameter(0, schoolid);
         return query.list();
     }
 

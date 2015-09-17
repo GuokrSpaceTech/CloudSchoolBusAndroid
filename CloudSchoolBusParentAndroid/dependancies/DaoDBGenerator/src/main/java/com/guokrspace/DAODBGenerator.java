@@ -87,6 +87,21 @@ public class DAODBGenerator {
     }
 
     private static void addBaseInfoTeacher(Schema schema) {
+
+        Entity school = schema.addEntity("SchoolEntityT");
+        Property schoolid = school.addStringProperty("id").notNull().primaryKey().getProperty();
+        school.addStringProperty("groupid");
+        school.addStringProperty("name");
+        school.addStringProperty("remark");
+        school.addStringProperty("address");
+
+        Entity classEntity = schema.addEntity("ClassEntityT");
+        Property classId = classEntity.addStringProperty("classid").notNull().primaryKey().getProperty();
+        classEntity.addStringProperty("classname");
+        classEntity.addStringProperty("remark");
+        classEntity.addStringProperty("dutyid");
+        Property schoolidclass = classEntity.addStringProperty("schoolid").notNull().getProperty();
+
         Entity student = schema.addEntity("StudentEntityT");
         Property studentId = student.addStringProperty("studentid").notNull().primaryKey().getProperty();
         student.addStringProperty("nikename");
@@ -94,8 +109,6 @@ public class DAODBGenerator {
         student.addStringProperty("sex");
         student.addStringProperty("birthday");
         student.addStringProperty("avatar");
-        Property classIdStudent = student.addStringProperty("classid").notNull().getProperty();
-        Property parentIdStudent = student.addStringProperty("parentid").notNull().getProperty();
 
         Entity parent = schema.addEntity("ParentEntityT");
         Property parentId = parent.addStringProperty("parentid").notNull().primaryKey().getProperty();
@@ -103,7 +116,6 @@ public class DAODBGenerator {
         parent.addStringProperty("relationship");
         parent.addStringProperty("mobile");
         parent.addStringProperty("avatar");
-        Property studentIdParent = parent.addStringProperty("studentid").notNull().getProperty();
 
         Entity teacher = schema.addEntity("TeacherEntityT");
         Property teacherId = teacher.addStringProperty("teacherid").notNull().primaryKey().getProperty();
@@ -113,47 +125,54 @@ public class DAODBGenerator {
         teacher.addStringProperty("nickname");
         teacher.addStringProperty("sex");
         teacher.addStringProperty("mobile");
+        Property schoolidteacher = teacher.addStringProperty("schoolid").notNull().getProperty();
 
-        Entity classEntity = schema.addEntity("ClassEntityT");
-        Property classId = classEntity.addStringProperty("classid").notNull().primaryKey().getProperty();
-        classEntity.addStringProperty("classname");
-        classEntity.addStringProperty("remark");
-        classEntity.addStringProperty("avatar");
-
-        Entity school = schema.addEntity("SchoolEntityT");
-        Property schoolid = school.addStringProperty("id").notNull().primaryKey().getProperty();
-        school.addStringProperty("groupid");
-        school.addStringProperty("name");
-        school.addStringProperty("groudid");
-        school.addStringProperty("remark");
-        school.addStringProperty("address");
-
-        Entity settings = schema.addEntity("SettingsEntityT");
-        Property settingsId = settings.addStringProperty("id").primaryKey().getProperty();
-        settings.addStringProperty("message_type");
-        settings.addStringProperty("class_module");
-        Property schoolIdSettings = settings.addStringProperty("schoolid").notNull().getProperty();
-
+        //Settings related tables
         Entity tags = schema.addEntity("TagsEntityT");
         Property tagsId = tags.addStringProperty("tagid").primaryKey().getProperty();
         tags.addStringProperty("tagname");
         tags.addStringProperty("tagname_en");
         tags.addStringProperty("tagnamedesc");
         tags.addStringProperty("tagnamedesc_en");
-        Property schoolIdTags = tags.addStringProperty("schoolid").notNull().getProperty();
+        Property schoolidtags = tags.addStringProperty("schoolid").notNull().getProperty();
 
-        ToMany parentToStudents = parent.addToMany(student, studentId);
-        ToMany studentToParents = student.addToMany(parent, parentId);
+        Entity messagetype = schema.addEntity("MessageTypeEntity");
+        Property messgetypeid = messagetype.addStringProperty("id").notNull().primaryKey().getProperty();
+        messagetype.addStringProperty("type");
+        Property schoolidmessagetype = messagetype.addStringProperty("schoolid").notNull().getProperty();
 
-        ToMany classToStudents  = classEntity.addToMany(student, studentId);
-        ToMany studentToClasses = student.addToMany(classEntity, classId);
+        Entity classmodule = schema.addEntity("ClassModuleEntity");
+        classmodule.addStringProperty("id").notNull().primaryKey();
+        classmodule.addStringProperty("icon");
+        classmodule.addStringProperty("url");
+        classmodule.addStringProperty("title");
+        Property schoolidclassmodule = classmodule.addStringProperty("schoolid").notNull().getProperty();
 
-        ToMany classToTeachers  = classEntity.addToMany(teacher, teacherId);
-        ToMany teacherToClasses = teacher.addToMany(classEntity, classId);
+        Entity teacherDuty = schema.addEntity("TeacherDutyEntity");
+        teacherDuty.addStringProperty("id").primaryKey().notNull();
+        teacherDuty.addStringProperty("duty");
+        Property schoolidteacherduty = teacherDuty.addStringProperty("schoolid").notNull().getProperty();
 
-        ToMany schoolToClass = school.addToMany(classEntity, classId);
-        ToMany schoolToSettings = school.addToMany(settings, settingsId);
-        ToMany schoolToTags = school.addToMany(tags, tagsId);
+        //Many2many Relationship Tables
+        Entity teacherdutyclass = schema.addEntity("TeacherDutyClassRelationEntity");
+        teacherdutyclass.addStringProperty("classid");
+        teacherdutyclass.addStringProperty("dutyid");
+        teacherdutyclass.addStringProperty("teacherid");
+
+        Entity studentClassEntity = schema.addEntity("StudentClassRelationEntity");
+        studentClassEntity.addStringProperty("studentid");
+        studentClassEntity.addStringProperty("classid");
+
+        Entity studentParentEntity = schema.addEntity("StudentParentRelationEntity");
+        studentParentEntity.addStringProperty("studentid");
+        studentParentEntity.addStringProperty("parentid");
+
+        ToMany schoolToClass = school.addToMany(classEntity, schoolidclass);
+        ToMany schoolToTags = school.addToMany(tags, schoolidtags);
+        ToMany schoolTomessagetype = school.addToMany(messagetype, schoolidmessagetype);
+        ToMany schoolToclassmodule = school.addToMany(classmodule, schoolidclassmodule);
+        ToMany schoolToduty = school.addToMany(teacherDuty, schoolidteacherduty);
+        ToMany schoolToTeacher = school.addToMany(teacher,schoolidteacher);
     }
 
     private static void addTimeline(Schema schema)

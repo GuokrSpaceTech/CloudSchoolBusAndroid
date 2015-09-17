@@ -33,11 +33,10 @@ public class TeacherEntityTDao extends AbstractDao<TeacherEntityT, String> {
         public final static Property Nickname = new Property(4, String.class, "nickname", false, "NICKNAME");
         public final static Property Sex = new Property(5, String.class, "sex", false, "SEX");
         public final static Property Mobile = new Property(6, String.class, "mobile", false, "MOBILE");
+        public final static Property Schoolid = new Property(7, String.class, "schoolid", false, "SCHOOLID");
     };
 
-    private DaoSession daoSession;
-
-    private Query<TeacherEntityT> classEntityT_TeacherEntityTListQuery;
+    private Query<TeacherEntityT> schoolEntityT_TeacherEntityTListQuery;
 
     public TeacherEntityTDao(DaoConfig config) {
         super(config);
@@ -45,7 +44,6 @@ public class TeacherEntityTDao extends AbstractDao<TeacherEntityT, String> {
     
     public TeacherEntityTDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -58,7 +56,8 @@ public class TeacherEntityTDao extends AbstractDao<TeacherEntityT, String> {
                 "'REALNAME' TEXT," + // 3: realname
                 "'NICKNAME' TEXT," + // 4: nickname
                 "'SEX' TEXT," + // 5: sex
-                "'MOBILE' TEXT);"); // 6: mobile
+                "'MOBILE' TEXT," + // 6: mobile
+                "'SCHOOLID' TEXT NOT NULL );"); // 7: schoolid
     }
 
     /** Drops the underlying database table. */
@@ -102,12 +101,7 @@ public class TeacherEntityTDao extends AbstractDao<TeacherEntityT, String> {
         if (mobile != null) {
             stmt.bindString(7, mobile);
         }
-    }
-
-    @Override
-    protected void attachEntity(TeacherEntityT entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
+        stmt.bindString(8, entity.getSchoolid());
     }
 
     /** @inheritdoc */
@@ -126,7 +120,8 @@ public class TeacherEntityTDao extends AbstractDao<TeacherEntityT, String> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // realname
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // nickname
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // sex
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // mobile
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // mobile
+            cursor.getString(offset + 7) // schoolid
         );
         return entity;
     }
@@ -141,6 +136,7 @@ public class TeacherEntityTDao extends AbstractDao<TeacherEntityT, String> {
         entity.setNickname(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setSex(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setMobile(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setSchoolid(cursor.getString(offset + 7));
      }
     
     /** @inheritdoc */
@@ -165,17 +161,17 @@ public class TeacherEntityTDao extends AbstractDao<TeacherEntityT, String> {
         return true;
     }
     
-    /** Internal query to resolve the "teacherEntityTList" to-many relationship of ClassEntityT. */
-    public List<TeacherEntityT> _queryClassEntityT_TeacherEntityTList(String teacherid) {
+    /** Internal query to resolve the "teacherEntityTList" to-many relationship of SchoolEntityT. */
+    public List<TeacherEntityT> _querySchoolEntityT_TeacherEntityTList(String schoolid) {
         synchronized (this) {
-            if (classEntityT_TeacherEntityTListQuery == null) {
+            if (schoolEntityT_TeacherEntityTListQuery == null) {
                 QueryBuilder<TeacherEntityT> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Teacherid.eq(null));
-                classEntityT_TeacherEntityTListQuery = queryBuilder.build();
+                queryBuilder.where(Properties.Schoolid.eq(null));
+                schoolEntityT_TeacherEntityTListQuery = queryBuilder.build();
             }
         }
-        Query<TeacherEntityT> query = classEntityT_TeacherEntityTListQuery.forCurrentThread();
-        query.setParameter(0, teacherid);
+        Query<TeacherEntityT> query = schoolEntityT_TeacherEntityTListQuery.forCurrentThread();
+        query.setParameter(0, schoolid);
         return query.list();
     }
 

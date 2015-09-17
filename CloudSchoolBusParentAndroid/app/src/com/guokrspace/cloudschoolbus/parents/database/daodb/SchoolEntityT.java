@@ -15,7 +15,6 @@ public class SchoolEntityT {
     private String id;
     private String groupid;
     private String name;
-    private String groudid;
     private String remark;
     private String address;
 
@@ -26,8 +25,11 @@ public class SchoolEntityT {
     private transient SchoolEntityTDao myDao;
 
     private List<ClassEntityT> classEntityTList;
-    private List<SettingsEntityT> settingsEntityTList;
     private List<TagsEntityT> tagsEntityTList;
+    private List<MessageTypeEntity> messageTypeEntityList;
+    private List<ClassModuleEntity> classModuleEntityList;
+    private List<TeacherDutyEntity> teacherDutyEntityList;
+    private List<TeacherEntityT> teacherEntityTList;
 
     public SchoolEntityT() {
     }
@@ -36,11 +38,10 @@ public class SchoolEntityT {
         this.id = id;
     }
 
-    public SchoolEntityT(String id, String groupid, String name, String groudid, String remark, String address) {
+    public SchoolEntityT(String id, String groupid, String name, String remark, String address) {
         this.id = id;
         this.groupid = groupid;
         this.name = name;
-        this.groudid = groudid;
         this.remark = remark;
         this.address = address;
     }
@@ -75,14 +76,6 @@ public class SchoolEntityT {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getGroudid() {
-        return groudid;
-    }
-
-    public void setGroudid(String groudid) {
-        this.groudid = groudid;
     }
 
     public String getRemark() {
@@ -124,28 +117,6 @@ public class SchoolEntityT {
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<SettingsEntityT> getSettingsEntityTList() {
-        if (settingsEntityTList == null) {
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            SettingsEntityTDao targetDao = daoSession.getSettingsEntityTDao();
-            List<SettingsEntityT> settingsEntityTListNew = targetDao._querySchoolEntityT_SettingsEntityTList(id);
-            synchronized (this) {
-                if(settingsEntityTList == null) {
-                    settingsEntityTList = settingsEntityTListNew;
-                }
-            }
-        }
-        return settingsEntityTList;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    public synchronized void resetSettingsEntityTList() {
-        settingsEntityTList = null;
-    }
-
-    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<TagsEntityT> getTagsEntityTList() {
         if (tagsEntityTList == null) {
             if (daoSession == null) {
@@ -165,6 +136,94 @@ public class SchoolEntityT {
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetTagsEntityTList() {
         tagsEntityTList = null;
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<MessageTypeEntity> getMessageTypeEntityList() {
+        if (messageTypeEntityList == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MessageTypeEntityDao targetDao = daoSession.getMessageTypeEntityDao();
+            List<MessageTypeEntity> messageTypeEntityListNew = targetDao._querySchoolEntityT_MessageTypeEntityList(id);
+            synchronized (this) {
+                if(messageTypeEntityList == null) {
+                    messageTypeEntityList = messageTypeEntityListNew;
+                }
+            }
+        }
+        return messageTypeEntityList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetMessageTypeEntityList() {
+        messageTypeEntityList = null;
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<ClassModuleEntity> getClassModuleEntityList() {
+        if (classModuleEntityList == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            ClassModuleEntityDao targetDao = daoSession.getClassModuleEntityDao();
+            List<ClassModuleEntity> classModuleEntityListNew = targetDao._querySchoolEntityT_ClassModuleEntityList(id);
+            synchronized (this) {
+                if(classModuleEntityList == null) {
+                    classModuleEntityList = classModuleEntityListNew;
+                }
+            }
+        }
+        return classModuleEntityList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetClassModuleEntityList() {
+        classModuleEntityList = null;
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<TeacherDutyEntity> getTeacherDutyEntityList() {
+        if (teacherDutyEntityList == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            TeacherDutyEntityDao targetDao = daoSession.getTeacherDutyEntityDao();
+            List<TeacherDutyEntity> teacherDutyEntityListNew = targetDao._querySchoolEntityT_TeacherDutyEntityList(id);
+            synchronized (this) {
+                if(teacherDutyEntityList == null) {
+                    teacherDutyEntityList = teacherDutyEntityListNew;
+                }
+            }
+        }
+        return teacherDutyEntityList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetTeacherDutyEntityList() {
+        teacherDutyEntityList = null;
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<TeacherEntityT> getTeacherEntityTList() {
+        if (teacherEntityTList == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            TeacherEntityTDao targetDao = daoSession.getTeacherEntityTDao();
+            List<TeacherEntityT> teacherEntityTListNew = targetDao._querySchoolEntityT_TeacherEntityTList(id);
+            synchronized (this) {
+                if(teacherEntityTList == null) {
+                    teacherEntityTList = teacherEntityTListNew;
+                }
+            }
+        }
+        return teacherEntityTList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetTeacherEntityTList() {
+        teacherEntityTList = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */

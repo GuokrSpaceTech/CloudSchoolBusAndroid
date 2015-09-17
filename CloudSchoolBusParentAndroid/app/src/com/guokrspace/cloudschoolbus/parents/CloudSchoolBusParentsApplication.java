@@ -7,19 +7,37 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityTDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassModuleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoMaster;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageTypeEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageTypeEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityTDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityTDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityTDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentParentRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityTDao;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
 import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
@@ -64,10 +82,20 @@ public class CloudSchoolBusParentsApplication extends Application {
 
     public ConfigEntity mConfig;
     public List<SchoolEntity> mSchools;
+    public List<SchoolEntityT> mSchoolsT;
     public List<ClassEntity> mClasses;
+    public List<ClassEntityT> mClassesT;
     public List<TeacherEntity> mTeachers;
+    public List<TeacherEntityT> mTeachersT;
     public List<StudentEntity> mStudents;
-    public List<TagEntity> mTags;
+    public List<StudentEntityT> mStudentsT;
+    public List<TagsEntityT> mTagsT;
+    public List<MessageTypeEntity> mMessageTypes;
+    public List<ClassModuleEntity> mClassModules;
+    public List<ParentEntityT> mParents;
+    public List<TeacherDutyClassRelationEntity> mTeacherClassDutys;
+    public List<StudentClassRelationEntity> mStudentClasses;
+    public List<StudentParentRelationEntity> mStudentParents;
 
     @Override
     public void onCreate() {
@@ -170,33 +198,74 @@ public class CloudSchoolBusParentsApplication extends Application {
 
     public void initBaseinfo()
     {
-        SchoolEntityDao  schoolEntityDao = mDaoSession.getSchoolEntityDao();
-        ClassEntityDao   classEntityDao = mDaoSession.getClassEntityDao();
-        TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
-        StudentEntityDao studentEntityDao = mDaoSession.getStudentEntityDao();
+        if(Version.PARENT) {
+            SchoolEntityDao schoolEntityDao = mDaoSession.getSchoolEntityDao();
+            ClassEntityDao classEntityDao = mDaoSession.getClassEntityDao();
+            TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
+            StudentEntityDao studentEntityDao = mDaoSession.getStudentEntityDao();
 
-        mSchools = schoolEntityDao.queryBuilder().list();
-        mClasses = classEntityDao.queryBuilder().list();
-        mTeachers = teacherEntityDao.queryBuilder().list();
-        mStudents = studentEntityDao.queryBuilder().list();
+            mSchools = schoolEntityDao.queryBuilder().list();
+            mClasses = classEntityDao.queryBuilder().list();
+            mTeachers = teacherEntityDao.queryBuilder().list();
+            mStudents = studentEntityDao.queryBuilder().list();
+        } else {
+            mSchoolsT = mDaoSession.getSchoolEntityTDao().queryBuilder().list();
+            mClassesT = mDaoSession.getClassEntityTDao().queryBuilder().list();
+            mTeachersT = mDaoSession.getTeacherEntityTDao().queryBuilder().list();
+            mStudentsT = mDaoSession.getStudentEntityTDao().queryBuilder().list();
+            mParents = mDaoSession.getParentEntityTDao().queryBuilder().list();
+            mMessageTypes = mDaoSession.getMessageTypeEntityDao().queryBuilder().list();
+            mTagsT = mDaoSession.getTagsEntityTDao().queryBuilder().list();
+            mClassModules = mDaoSession.getClassModuleEntityDao().queryBuilder().list();
+            mTeacherClassDutys = mDaoSession.getTeacherDutyClassRelationEntityDao().queryBuilder().list();
+            mStudentParents = mDaoSession.getStudentParentRelationEntityDao().queryBuilder().list();
+            mStudentClasses = mDaoSession.getStudentClassRelationEntityDao().queryBuilder().list();
+        }
     }
 
     public void clearBaseinfo()
     {
-        SchoolEntityDao  schoolEntityDao = mDaoSession.getSchoolEntityDao();
-        ClassEntityDao   classEntityDao = mDaoSession.getClassEntityDao();
-        TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
-        StudentEntityDao studentEntityDao = mDaoSession.getStudentEntityDao();
+        if(Version.PARENT) {
+            SchoolEntityDao schoolEntityDao = mDaoSession.getSchoolEntityDao();
+            ClassEntityDao classEntityDao = mDaoSession.getClassEntityDao();
+            TeacherEntityDao teacherEntityDao = mDaoSession.getTeacherEntityDao();
+            StudentEntityDao studentEntityDao = mDaoSession.getStudentEntityDao();
 
-        schoolEntityDao.deleteAll();
-        classEntityDao.deleteAll();
-        teacherEntityDao.deleteAll();
-        studentEntityDao.deleteAll();
+            schoolEntityDao.deleteAll();
+            classEntityDao.deleteAll();
+            teacherEntityDao.deleteAll();
+            studentEntityDao.deleteAll();
 
-        mClasses = null;
-        mSchools = null;
-        mStudents = null;
-        mTeachers = null;
+            mClasses = null;
+            mSchools = null;
+            mStudents = null;
+            mTeachers = null;
+        } else {
+            mDaoSession.getSchoolEntityTDao().deleteAll();
+            mDaoSession.getClassEntityTDao().deleteAll();
+            mDaoSession.getTeacherEntityTDao().deleteAll();
+            mDaoSession.getStudentEntityTDao().deleteAll();
+            mDaoSession.getParentEntityTDao().deleteAll();
+            mDaoSession.getMessageTypeEntityDao().deleteAll();
+            mDaoSession.getTagsEntityTDao().deleteAll();
+            mDaoSession.getClassModuleEntityDao().deleteAll();
+            mDaoSession.getStudentParentRelationEntityDao().deleteAll();
+            mDaoSession.getTeacherDutyClassRelationEntityDao().deleteAll();
+            mDaoSession.getStudentParentRelationEntityDao().deleteAll();
+
+
+            mSchoolsT = null;
+            mClassesT = null;
+            mTeachersT = null;
+            mStudentsT = null;
+            mParents = null;
+            mMessageTypes = null;
+            mTagsT = null;
+            mClassModules = null;
+            mTeacherClassDutys = null;
+            mStudentClasses = null;
+            mStudentParents = null;
+        }
     }
 
     public void clearConfig()

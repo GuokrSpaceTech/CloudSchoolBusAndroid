@@ -148,16 +148,16 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
     }
     
     /** Internal query to resolve the "tagsEntityTList" to-many relationship of SchoolEntityT. */
-    public List<TagsEntityT> _querySchoolEntityT_TagsEntityTList(String tagid) {
+    public List<TagsEntityT> _querySchoolEntityT_TagsEntityTList(String schoolid) {
         synchronized (this) {
             if (schoolEntityT_TagsEntityTListQuery == null) {
                 QueryBuilder<TagsEntityT> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Tagid.eq(null));
+                queryBuilder.where(Properties.Schoolid.eq(null));
                 schoolEntityT_TagsEntityTListQuery = queryBuilder.build();
             }
         }
         Query<TagsEntityT> query = schoolEntityT_TagsEntityTListQuery.forCurrentThread();
-        query.setParameter(0, tagid);
+        query.setParameter(0, schoolid);
         return query.list();
     }
 
