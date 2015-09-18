@@ -208,10 +208,12 @@ public class MainActivity extends BaseActivity implements
         }
 
         //Customise the Action Bar
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.abs_layout);
+        if(Version.PARENT) {
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            getSupportActionBar().setCustomView(R.layout.abs_layout);
+        }
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.rc_ic_setting_friends_add));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if(Version.PARENT) setActionBarTitle(getResources().getString(string.module_explore), "");
         else setActionBarTitle("", "");
 
@@ -305,6 +307,7 @@ public class MainActivity extends BaseActivity implements
         switch (item.getItemId()) {
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
+                if(Version.PARENT)
                 setActionBarTitle(mUpperLeverTitle,"");
                 break;
             case R.id.action_take_photo:
@@ -723,13 +726,24 @@ public class MainActivity extends BaseActivity implements
 
             // Check if this is the page you want.
             if (mFragments[position] instanceof ExploreFragment) {
-                setActionBarTitle(getResources().getString(string.module_explore),"");
+                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+                if(Version.PARENT)
+                    setActionBarTitle(getResources().getString(string.module_explore),"");
+                else
+                    getSupportActionBar().setTitle("");
             } else if (mFragments[position] instanceof TeacherListFragment) {
                 setActionBarTitle(getResources().getString(string.module_teacher),"");
+                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             } else if (mFragments[position] instanceof HobbyFragment) {
                 setActionBarTitle(getResources().getString(string.module_hobby),"");
+                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             } else if (mFragments[position] instanceof AboutmeFragment) {
                 setActionBarTitle(getResources().getString(string.module_aboutme),"");
+                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            } else if (mFragments[position] instanceof ClassFragment)
+            {
+                getSupportActionBar().setTitle(getResources().getString(string.module_class));
+                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             }
         }
 
@@ -777,11 +791,19 @@ public class MainActivity extends BaseActivity implements
 
     public void setActionBarTitle(String title, String upLeverTitle)
     {
-        View view = getSupportActionBar().getCustomView();
-        TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-        textView.setText(title);
-        mUpperLeverTitle = upLeverTitle;
-        mCurrentTitle = title;
+        if(Version.PARENT) {
+            View view = getSupportActionBar().getCustomView();
+            TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+            textView.setText(title);
+            mUpperLeverTitle = upLeverTitle;
+            mCurrentTitle = title;
+        } else {
+            //First Tab do not have title
+            if(upLeverTitle.equals(getResources().getString(R.string.module_explore)))
+                getSupportActionBar().setTitle("");
+            else
+                getSupportActionBar().setTitle(title);
+        }
     }
 
     private void showStartupPage()

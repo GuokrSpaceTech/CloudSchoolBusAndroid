@@ -29,6 +29,7 @@ import com.android.support.utils.ToolUtils;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.BaseLinearLayout;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.adapter.ImageThumbRecycleViewAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.adapter.StuSelectAdapter;
@@ -100,15 +101,15 @@ public class SelectedStuView extends BaseLinearLayout {
 
         mGridView = (GridView) findViewById(R.id.gridView);
         //Test Purpose
-        ArrayList<StudentEntity> studentEntities = new ArrayList<>();
-        studentEntities.addAll(mStudents);
-        studentEntities.addAll(mStudents);
-        studentEntities.addAll(mStudents);
-        studentEntities.addAll(mStudents);
-        studentEntities.addAll(mStudents);
-        studentEntities.addAll(mStudents);
-        studentEntities.addAll(mStudents);
-        mStuSelectAdapter = new StuSelectAdapter(mContext, studentEntities);
+//        ArrayList<StudentEntity> studentEntities = new ArrayList<>();
+//        studentEntities.addAll(mStudents);
+//        studentEntities.addAll(mStudents);
+//        studentEntities.addAll(mStudents);
+//        studentEntities.addAll(mStudents);
+//        studentEntities.addAll(mStudents);
+//        studentEntities.addAll(mStudents);
+//        studentEntities.addAll(mStudents);
+        mStuSelectAdapter = new StuSelectAdapter(mContext, mApplication.mStudentsT);
         mGridView.setAdapter(mStuSelectAdapter);
     }
 
@@ -168,7 +169,7 @@ public class SelectedStuView extends BaseLinearLayout {
                 for(StudentEntity entity:mStudents)
                     retStr += entity.getStudentid() + ",";
             } else {
-                retStr += ((StudentEntity)pair.getValue()).getStudentid() + ",";
+                retStr += ((StudentEntityT)pair.getValue()).getStudentid() + ",";
             }
         }
 

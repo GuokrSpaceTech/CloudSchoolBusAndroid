@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,9 @@ import com.guokrspace.cloudschoolbus.parents.event.PictureSelectionEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity;
 import com.guokrspace.cloudschoolbus.parents.module.classes.adapter.PictureAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.SelectStudentActivity;
+import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 import com.toaker.common.tlog.TLog;
 
 import net.soulwolf.image.picturelib.PictureFrom;
@@ -57,12 +60,14 @@ public class ClassFragment extends BaseFragment {
     private static final String ARG_POSITION = "position";
     private static final String TAG = ClassFragment.class.getName();
     private OnCompleteListener mListener;
-
-    PictureProcess mPictureProcess;
     List<Picture> mPictureList = new ArrayList<>();
     PictureAdapter mPictureAdapter;
+    private ImageView mTeacherAvatar;
+    private TextView  mClassName;
+    private TextView  mSchoolName;
     private DynamicGridView gridView;
     private Context mContext;
+    private ActionBar mActionBar;
 //    private int position;
 
     public static ClassFragment newInstance() {
@@ -76,8 +81,6 @@ public class ClassFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPictureProcess = new PictureProcess(this);
-
 //        position = getArguments().getInt(ARG_POSITION);
     }
 
@@ -86,8 +89,17 @@ public class ClassFragment extends BaseFragment {
 
         View root = inflater.inflate(R.layout.activity_class_grid, container, false);
 
-//        getDialog().setTitle(getResources().getString(R.string.classify));
-//        getDialog().setCancelable(true);
+        ((MainActivity) mParentContext).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((MainActivity) mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ((MainActivity) mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.module_class));
+
+        mTeacherAvatar = (ImageView)root.findViewById(R.id.teacher_avatar);
+        mClassName = (TextView)root.findViewById(R.id.class_name);
+        mSchoolName = (TextView)root.findViewById(R.id.kindergarten_name);
+
+        Picasso.with(mParentContext).load(getMyself().getAvatar()).into(mTeacherAvatar);
+        mClassName.setText(findCurrentClass(0).getClassname());
+        mSchoolName.setText(mApplication.mSchoolsT.get(0).getName());
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
         gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(),
@@ -127,41 +139,11 @@ public class ClassFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ClassifyDynamicAdapter.ClassifyModule classifyModule = (ClassifyDynamicAdapter.ClassifyModule) parent.getAdapter().getItem(position);
-//                Toast.makeText(getActivity(), classModule.getTitle(),
-//                        Toast.LENGTH_SHORT).show();
-
-                FragmentTransaction transaction;
-                switch (classifyModule.getTitle()) {
-                    case "视频公开课":
-                        Intent intent = new Intent(getActivity(), IpcSelectionActivity.class);
-                        startActivity(intent);
-//                        dismiss();
-
-                        break;
-                    case "通知消息":
-//                        mListener.onComplete("notice");
-//                        dismiss();
-                        break;
-
-                    case "晨检考勤":
-//                        mListener.onComplete("attendance");
-//                        dismiss();
-                        break;
-                    case "课程表":
-//                        mListener.onComplete("schedule");
-//                        dismiss();
-                        break;
-                    case "班级报告":
-//                        mListener.onComplete("report");
-//                        dismiss();
-                        break;
-                    case "食谱":
-//                        mListener.onComplete("food");
-//                        dismiss();
-                        break;
-                    case "相册":
-                        break;
-                }
+                WebviewFragment fragment = WebviewFragment.newInstance(classifyModule.getUrl());
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_class_layout, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 
@@ -172,24 +154,19 @@ public class ClassFragment extends BaseFragment {
         public abstract void onComplete(String time);
     }
 
-
-    // make sure the Activity implemented it
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        try {
-//            mListener = (OnCompleteListener)activity;
-//        }
-//        catch (final ClassCastException e) {
-//            throw new ClassCastException(activity.toString() + " must implement OnCompleteListener");
-//        }
-//    }
-
     public static class ClassifyComponent {
 
+        final static String url = "http://m.yunxiaoche.com";
+
         public static ClassifyDynamicAdapter.ClassifyModule[] classifyModules = {
-                new ClassifyDynamicAdapter.ClassifyModule("晨检考勤", R.drawable.ic_attendance), new ClassifyDynamicAdapter.ClassifyModule("班级报告", R.drawable.ic_report), new ClassifyDynamicAdapter.ClassifyModule("通知消息", R.drawable.ic_notice),
-                new ClassifyDynamicAdapter.ClassifyModule("视频公开课", R.drawable.ic_streaming), new ClassifyDynamicAdapter.ClassifyModule("课程表", R.drawable.ic_schedule), new ClassifyDynamicAdapter.ClassifyModule("食谱", R.drawable.ic_food),
-                new ClassifyDynamicAdapter.ClassifyModule("相册", R.drawable.ic_picture)
+
+                new ClassifyDynamicAdapter.ClassifyModule("晨检考勤", R.drawable.ic_attendance,url),
+                new ClassifyDynamicAdapter.ClassifyModule("班级报告", R.drawable.ic_report, url),
+                new ClassifyDynamicAdapter.ClassifyModule("通知消息", R.drawable.ic_notice, url),
+                new ClassifyDynamicAdapter.ClassifyModule("视频公开课", R.drawable.ic_streaming,url),
+                new ClassifyDynamicAdapter.ClassifyModule("课程表", R.drawable.ic_schedule, url),
+                new ClassifyDynamicAdapter.ClassifyModule("食谱", R.drawable.ic_food, url),
+                new ClassifyDynamicAdapter.ClassifyModule("相册", R.drawable.ic_picture, url)
         };
     }
 
@@ -236,10 +213,12 @@ public class ClassFragment extends BaseFragment {
         public static class ClassifyModule {
             private String title;
             private Integer imageRes;
+            private String url;
 
-            public ClassifyModule(String title, Integer imageRes) {
+            public ClassifyModule(String title, Integer imageRes, String url) {
                 this.title = title;
                 this.imageRes = imageRes;
+                this.url = url;
             }
 
             public String getTitle() {
@@ -257,29 +236,19 @@ public class ClassFragment extends BaseFragment {
             public void setImageRes(Integer imageRes) {
                 this.imageRes = imageRes;
             }
+
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mPictureProcess.onProcessResult(requestCode, resultCode, data);
-    }
-
-    protected void updatePictureList(List<Picture> list) {
-        mPictureList.clear();
-        if (list != null) {
-            mPictureList.addAll(list);
-        }
-        mPictureAdapter.notifyDataSetChanged();
-    }
-
-    @Subscribe
-    public void onPictureSelected(PictureSelectionEvent event)
-    {
-        Intent intent = new Intent(mParentContext, SelectStudentActivity.class);
-        intent.putExtra("pictures", event.getPictures());
-        startActivity(intent);
-//        updatePictureList(event.getPictures());
     }
 }

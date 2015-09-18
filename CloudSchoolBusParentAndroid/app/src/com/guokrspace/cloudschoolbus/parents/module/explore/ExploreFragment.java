@@ -166,8 +166,10 @@ public class ExploreFragment extends BaseFragment {
 
         mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
 
-        MainActivity mainActivity = (MainActivity) mParentContext;
-        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((MainActivity) mParentContext).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((MainActivity) mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        setActionBarTitle(getResources().getString(R.string.module_explore),"");
+        ((MainActivity) mParentContext).getSupportActionBar().setTitle("");
 
         if (Version.DEBUG) {
             ClearCache();
@@ -417,12 +419,14 @@ public class ExploreFragment extends BaseFragment {
 
     public void setActionBarTitle(String title, String preTitle)
     {
-        MainActivity mainActivity = (MainActivity)mParentContext;
-        View view =   mainActivity.getSupportActionBar().getCustomView();
-        TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-        textView.setText(title);
-        mainActivity.mCurrentTitle = title;
-        mainActivity.mUpperLeverTitle = preTitle;
+        if(Version.PARENT) {
+            MainActivity mainActivity = (MainActivity) mParentContext;
+            View view = mainActivity.getSupportActionBar().getCustomView();
+            TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+            textView.setText(title);
+            mainActivity.mCurrentTitle = title;
+            mainActivity.mUpperLeverTitle = preTitle;
+        }
     }
 
     @Subscribe

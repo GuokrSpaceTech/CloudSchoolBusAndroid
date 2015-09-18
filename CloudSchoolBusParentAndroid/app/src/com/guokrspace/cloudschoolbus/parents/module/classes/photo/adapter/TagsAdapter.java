@@ -9,22 +9,22 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.entity.Tag;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
 
 import java.util.List;
 
 public class TagsAdapter extends BaseAdapter {
 
 	private Context mContext;
-	private List<Tag> mPhotoTagList;
-	/** 是否是全部选择 */
-	// private boolean mAllSelected = false;
-	private int mLastIndex = -1;
-	private TextView mAllButton;
+	private List<TagsEntityT> mPhotoTagList;
+    private boolean[] mSeletions;
 
-	public TagsAdapter(Context context, List<Tag> editContentAreas) {
+	public TagsAdapter(Context context, List<TagsEntityT> tags) {
 		mContext = context;
-		mPhotoTagList = editContentAreas;
+		mPhotoTagList = tags;
+        mSeletions = new boolean[tags.size()];
+        for(int i=0; i<tags.size(); i++)
+            mSeletions[i] = false;
 	}
 
 	@Override
@@ -50,53 +50,24 @@ public class TagsAdapter extends BaseAdapter {
 					R.layout.adapter_edit_content, null);
 		}
 
-		final Tag photoTag = mPhotoTagList.get(position);
+		final TagsEntityT photoTag = mPhotoTagList.get(position);
 
 		final TextView textView = (TextView) arg1.findViewById(R.id.textView);
-		textView.setText(photoTag.getTagName());
-		textView.setSelected(photoTag.isSelected());
+		textView.setText(photoTag.getTagname());
+		textView.setSelected(mSeletions[position]);
 		textView.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				setSelectedIndex(position,false);
+            @Override
+            public void onClick(View arg0) {
+                setSelectedIndex(position);
 			}
 		});
 		return arg1;
 	}
 
-	public void setAllButton(TextView allButton){
-		mAllButton = allButton;
-	}
-
-	public void clearAllSelected() {
-		clearSelected();
-		// mAllSelected = false;
-		notifyDataSetChanged();
-	}
-
 	public void clearSelected() {
 		for (int i = 0; i < mPhotoTagList.size(); i++)
-			mPhotoTagList.get(i).setIsSelected(false);
-	}
-
-	// public boolean getAllSelected() {
-	// return mAllSelected;
-	// }
-
-	/**
-	 * 返回当前选中的index
-	 *
-	 * @return
-	 */
-	public int getCurrentItem() {
-		int index = -1;
-		for (int i = 0; i < mPhotoTagList.size(); i++) {
-			if (mPhotoTagList.get(i).isSelected()) {
-				index = i;
-			}
-		}
-		return index;
+			mSeletions[i]=false;
 	}
 
     /**
@@ -105,11 +76,9 @@ public class TagsAdapter extends BaseAdapter {
      * @return
      */
     public String getSelection() {
-        int index = -1;
         String tagList = "";
         for (int i = 0; i < mPhotoTagList.size(); i++) {
-            if (mPhotoTagList.get(i).isSelected()) {
-                index = i;
+            if (mSeletions[i]) {
                 tagList += mPhotoTagList.get(i).getTagid() + ",";
             }
         }
@@ -126,24 +95,10 @@ public class TagsAdapter extends BaseAdapter {
 	/**
 	 *
 	 * @param index
-	 * @param ignore
-	 *            true标示忽略此次设置
 	 * @return 返回表示当前item是否选中
 	 */
-	public boolean setSelectedIndex(int index, boolean ignore) {
-		boolean defaultResult = mPhotoTagList.get(index).isSelected();
-		if (!ignore) {
-			boolean result = !mPhotoTagList.get(index).isSelected();
-			mPhotoTagList.get(index).setIsSelected(result);
-
-            mLastIndex = index;
-
+	public void setSelectedIndex(int index) {
+			mSeletions[index] = !mSeletions[index];
 			notifyDataSetChanged();
-			return result;
-		} else {
-			return defaultResult;
-		}
-
 	}
-
 }

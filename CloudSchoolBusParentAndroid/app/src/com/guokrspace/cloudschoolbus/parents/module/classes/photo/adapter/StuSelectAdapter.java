@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.module.classes.photo.SelectStudentActivity;
 import com.squareup.picasso.Picasso;
 
@@ -38,10 +39,10 @@ public class StuSelectAdapter extends BaseAdapter {
 	private static final String ITEM = "item";
 
 	private Context mContext;
-	private ArrayList<StudentEntity> mStudents = new ArrayList<>();
-    private HashMap<Integer, StudentEntity> mSelections = new HashMap<>();
+	private ArrayList<StudentEntityT> mStudents = new ArrayList<>();
+    private HashMap<Integer, StudentEntityT> mSelections = new HashMap<>();
 
-	public StuSelectAdapter(Context context, List<StudentEntity> students) {
+	public StuSelectAdapter(Context context, List<StudentEntityT> students) {
 		mContext = context;
 		mStudents = (ArrayList)students;
 	}
@@ -99,7 +100,7 @@ public class StuSelectAdapter extends BaseAdapter {
 				public void onClick(View arg0) {
                     if(!mSelections.containsKey(0))
                     {
-						StudentEntity studentEntity = new StudentEntity(); //Dummy object indicates select all
+						StudentEntityT studentEntity = new StudentEntityT(); //Dummy object indicates select all
 						mSelections.put(0, studentEntity);
 						selectAllStudents();
 						notifyDataSetChanged();
@@ -118,7 +119,7 @@ public class StuSelectAdapter extends BaseAdapter {
 			});
 		} else if (position > 0) {
             final int studentPosition = position - 1;
-			final StudentEntity student = mStudents.get(studentPosition);
+			final StudentEntityT student = mStudents.get(studentPosition);
 			final ImageView selectImageView = (ImageView) view.findViewById(R.id.selectImageView);
 
 			ImageView headImageView = (ImageView) view
@@ -127,8 +128,8 @@ public class StuSelectAdapter extends BaseAdapter {
 				String avatarpath="";
 				if(student.getAvatar().contains("jpg."))
 					avatarpath=student.getAvatar().substring(0,student.getAvatar().lastIndexOf('.'));
-
-                Picasso.with(mContext).load(avatarpath).fit().centerCrop().into(headImageView);
+                if(!avatarpath.equals(""))
+                    Picasso.with(mContext).load(avatarpath).fit().centerCrop().into(headImageView);
 			}
 			TextView stuNameTextView = (TextView) view
 					.findViewById(R.id.stuNameTextView);
@@ -167,14 +168,14 @@ public class StuSelectAdapter extends BaseAdapter {
 		return view;
 	}
 
-    public HashMap<Integer, StudentEntity> getmSelections() {
+    public HashMap<Integer, StudentEntityT> getmSelections() {
         return mSelections;
     }
 
 	private void selectAllStudents()
 	{
 		int i=1; // 0 - Dummy Student indicating selecting all
-		for( StudentEntity student : mStudents) {
+		for( StudentEntityT student : mStudents) {
 			mSelections.put(i, student);
             i++;
 		}

@@ -155,7 +155,7 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             UploadFileHelper.getUploadUtils().setContext(mContext);
             UploadFileHelper.getUploadUtils().setUploadFileDB(mUploadFiles);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.mainFrameLayout, new UploadListFragment(), "uploadList");
+            transaction.replace(R.id.mainFrameLayout, new UploadListFragment(), "uploadList");
             transaction.addToBackStack("uploadList");
             transaction.commit();
             return true;

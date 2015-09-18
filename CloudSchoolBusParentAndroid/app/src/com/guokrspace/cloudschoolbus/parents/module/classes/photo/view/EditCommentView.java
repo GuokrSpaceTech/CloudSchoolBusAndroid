@@ -72,16 +72,7 @@ public class EditCommentView extends BaseLinearLayout {
 
 		mGridView = (GridView) findViewById(R.id.gridView);
 
-		//Test code
-		ArrayList<Tag> tags = new ArrayList<>();
-		for(int i=0; i<5; i++)
-		{
-			Tag tag = new Tag();
-			tag.setTagid(String.valueOf(i));
-			tag.setTagName("TestTag");
-			tags.add(tag);
-		}
-		mTagsAdapter = new TagsAdapter(mContext, tags);
+		mTagsAdapter = new TagsAdapter(mContext, mApplication.mTagsT);
 		mTagsAdapter.clearSelected();
 		mGridView.setAdapter(mTagsAdapter);
 

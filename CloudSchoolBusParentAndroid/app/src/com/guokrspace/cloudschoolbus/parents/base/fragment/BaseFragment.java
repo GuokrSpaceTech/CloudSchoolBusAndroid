@@ -27,6 +27,7 @@ import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
@@ -35,9 +36,12 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.entity.ActivityBody;
 import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecord;
 import com.guokrspace.cloudschoolbus.parents.entity.Food;
@@ -784,4 +788,34 @@ public class BaseFragment extends Fragment {
 
 		BusProvider.getInstance().post(new ChildSwitchedEvent(currentChild));
  	}
+
+    public TeacherEntityT getMyself()
+    {
+        TeacherEntityT entity = null;
+        for(TeacherEntityT teacher:mApplication.mTeachersT)
+        {
+            if(teacher.getTeacherid().equals(mApplication.mConfig.getUserid())) {
+                entity = teacher;
+                break;
+            }
+        }
+        return entity;
+    }
+
+    public ClassEntityT findCurrentClass(int current)
+    {
+        ClassEntityT retEntity=null;
+
+        String classid = mApplication.mTeacherClassDutys.get(current).getClassid();
+
+        for(ClassEntityT theClass: mApplication.mClassesT)
+        {
+            if(theClass.getClassid().equals(classid))
+            {
+                retEntity = theClass; break;
+            }
+        }
+
+        return retEntity;
+    }
 }
