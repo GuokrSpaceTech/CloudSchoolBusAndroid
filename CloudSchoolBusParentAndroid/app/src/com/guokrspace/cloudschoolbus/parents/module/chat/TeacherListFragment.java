@@ -22,14 +22,18 @@ import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
+import com.guokrspace.cloudschoolbus.parents.entity.Parent;
 import com.guokrspace.cloudschoolbus.parents.widget.TeacherListCard;
 import com.squareup.otto.Produce;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import io.rong.imkit.RongIM;
@@ -126,7 +130,10 @@ public class TeacherListFragment extends BaseFragment {
 
     private void initData()
     {
-        for(int i=0; i<mApplication.mTeachers.size(); i++)
+        List<?> teachers = (Version.PARENT == true) ? (mApplication.mTeachers) : (mApplication.mTeachersT);
+
+        if(Version.PARENT)
+        for(int i=0; i<teachers.size(); i++)
         {
             //Get the teacher Inbox entity
             final TeacherInbox teacherInbox = new TeacherInbox();
@@ -159,6 +166,16 @@ public class TeacherListFragment extends BaseFragment {
 
             //Add the card
             listview.add(card);
+        } else {
+            List<ParentEntityT> parents = mApplication.mParents;
+            for(ParentEntityT parent:parents) {
+                TeacherListCard card = new TeacherListCard(mParentContext); //This card can be teacher or parents
+                card.setTeacherAvatarUrl(parent.getAvatar()); //Avatar
+                card.setTeacherName(parent.getNikename()); //Name
+
+                //Find the kids
+                listview.add(card);
+            }
         }
     }
 

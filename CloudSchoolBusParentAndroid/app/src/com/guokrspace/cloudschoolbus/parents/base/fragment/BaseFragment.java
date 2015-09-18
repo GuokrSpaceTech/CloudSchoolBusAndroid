@@ -25,6 +25,7 @@ import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
@@ -133,17 +134,17 @@ public class BaseFragment extends Fragment {
 			mCustomWaitDialog.setMessage(messageString);
 			mCustomWaitDialog.setOnKeyCancelListener(new OnKeyCancel() {
 
-				@Override
-				public void onKeyCancelListener() {
-					if (null != onKeyCancel) {
-						onKeyCancel.onKeyCancelListener();
-					}
-					if (null != mCustomWaitDialog) {
-						mCustomWaitDialog.cancel();
-						mCustomWaitDialog = null;
-					}
-				}
-			});
+                @Override
+                public void onKeyCancelListener() {
+                    if (null != onKeyCancel) {
+                        onKeyCancel.onKeyCancelListener();
+                    }
+                    if (null != mCustomWaitDialog) {
+                        mCustomWaitDialog.cancel();
+                        mCustomWaitDialog = null;
+                    }
+                }
+            });
 			mCustomWaitDialog.show();
 		}
 	}
@@ -195,11 +196,17 @@ public class BaseFragment extends Fragment {
 
 	public void GetMessagesFromCache()
 	{
-		String currentstudentid = mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid();
-		mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-				.orderDesc(MessageEntityDao.Properties.Messageid)
-				.where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
-				.list();
+        if(Version.PARENT) {
+            String currentstudentid = mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid();
+            mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+                    .orderDesc(MessageEntityDao.Properties.Messageid)
+                    .where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
+                    .list();
+        } else {
+            mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
+        }
+
 	}
 
 	//Get all articles from newest in Cache to newest in Server

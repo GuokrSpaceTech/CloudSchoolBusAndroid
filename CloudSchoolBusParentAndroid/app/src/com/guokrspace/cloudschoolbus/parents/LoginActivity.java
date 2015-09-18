@@ -453,7 +453,7 @@ public class LoginActivity extends BaseActivity {
                                 schoolDb.setGroupid(school.getGroupid());
                                 schoolDb.setName(school.getName());
                                 schoolDb.setRemark(school.getRemark());
-                                mApplication.mDaoSession.getSchoolEntityTDao().insert(schoolDb);
+                                mApplication.mDaoSession.getSchoolEntityTDao().insertOrReplace(schoolDb);
 
                                 for(TagT tag:school.getTags())
                                 {
@@ -464,7 +464,7 @@ public class LoginActivity extends BaseActivity {
                                     tagDb.setTagnamedesc(tag.getTagnamedesc());
                                     tagDb.setTagnamedesc_en(tag.getTagnamedesc_en());
                                     tagDb.setSchoolid(school.getId());
-                                    mApplication.mDaoSession.getTagsEntityTDao().insert(tagDb);
+                                    mApplication.mDaoSession.getTagsEntityTDao().insertOrReplace(tagDb);
                                 }
 
                                 Setting setting = school.getSettings();
@@ -476,7 +476,7 @@ public class LoginActivity extends BaseActivity {
                                     messageTypeDb.setId(Integer.toString(i));
                                     messageTypeDb.setType(messagetype);
                                     i++;
-                                    mApplication.mDaoSession.getMessageTypeEntityDao().insert(messageTypeDb);
+                                    mApplication.mDaoSession.getMessageTypeEntityDao().insertOrReplace(messageTypeDb);
                                 }
 
                                 i=0;

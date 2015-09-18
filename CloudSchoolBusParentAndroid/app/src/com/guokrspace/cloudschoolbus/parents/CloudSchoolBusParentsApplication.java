@@ -115,7 +115,10 @@ public class CloudSchoolBusParentsApplication extends Application {
 
     private void initDB() {
         SQLiteDatabase db;
-        mDBhelper = new DaoMaster.DevOpenHelper(this, "cloudschoolbusparents-db", null);
+        if(Version.PARENT)
+            mDBhelper = new DaoMaster.DevOpenHelper(this, "cloudschoolbusparents-db", null);
+        else
+            mDBhelper = new DaoMaster.DevOpenHelper(this, "cloudschoolbusteacher-db", null);
         db = mDBhelper.getWritableDatabase();
 
         mDaoMaster = new DaoMaster(db);

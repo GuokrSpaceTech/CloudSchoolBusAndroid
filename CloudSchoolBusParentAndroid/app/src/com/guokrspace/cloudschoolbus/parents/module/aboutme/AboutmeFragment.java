@@ -38,7 +38,9 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
 import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
@@ -155,7 +157,10 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         /* Get the current child's avatar */
         updateChildInformation();
 
+        if(Version.PARENT)
         buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
+        else
+            buttonKindergarten.setText(mApplication.mSchoolsT.get(0).getName());
 
         setHasOptionsMenu(true);
 
@@ -353,14 +358,29 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         /* Get the current child's avatar */
         StudentEntity studentEntity = null;
         String avatar = "";
-        studentEntity = mApplication.mStudents.get(currentChild);
+        if(Version.PARENT) {
+            studentEntity = mApplication.mStudents.get(currentChild);
 
-        avatar = studentEntity.getAvatar();
-        Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
+            avatar = studentEntity.getAvatar();
+            Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
 
-        if(studentEntity.getNikename()==null)
-            textViewChildName.setText(studentEntity.getCnname());
-        else
-            textViewChildName.setText(studentEntity.getNikename());
+            if (studentEntity.getNikename() == null)
+                textViewChildName.setText(studentEntity.getCnname());
+            else
+                textViewChildName.setText(studentEntity.getNikename());
+        } else {
+            TeacherEntityT user = null;
+            for(TeacherEntityT teacher:mApplication.mTeachersT)
+            {
+                if(teacher.getTeacherid().equals(mApplication.mConfig.getUserid()))
+                    user = teacher;
+                    break;
+            }
+
+            if(user!=null) {
+                Picasso.with(mParentContext).load(user.getAvatar()).into(imageViewAvatar);
+                textViewChildName.setText(user.getRealname());
+            }
+        }
     }
 }

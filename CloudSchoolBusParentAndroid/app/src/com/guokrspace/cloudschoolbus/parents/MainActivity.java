@@ -41,7 +41,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONException;
@@ -107,6 +109,7 @@ public class MainActivity extends BaseActivity implements
     private ViewPager pager;
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
+    private ArrayList<MenuSpinnerAdapter.MessageType> mMessageTypes = new ArrayList<>();
 //    private List<String> mFragementTags = new ArrayList();
 
     public String mUpperLeverTitle="";
@@ -121,6 +124,7 @@ public class MainActivity extends BaseActivity implements
     private static final int REQUEST_CODE = 1;
 
     MainActivity c = this;
+    SpinnerAdapter mSpinnerAdapter;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -155,6 +159,7 @@ public class MainActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         showStartupPage();
+        initMessageTypes();
         //Hack for force the overflow button in the actionbar
         getOverflowMenu();
         setContentView(R.layout.activity_main);
@@ -169,11 +174,17 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initFragments() {
-        mFragments[0] = ExploreFragment.newInstance(null, null);
-        mFragments[1] = TeacherListFragment.newInstance();
-//        mFragments[2] = HobbyFragment.newInstance();
-        mFragments[2] = ClassFragment.newInstance();
-        mFragments[3] = AboutmeFragment.newInstance();
+        if(Version.PARENT) {
+            mFragments[0] = ExploreFragment.newInstance(null, null);
+            mFragments[1] = TeacherListFragment.newInstance();
+            mFragments[2] = HobbyFragment.newInstance();
+            mFragments[3] = AboutmeFragment.newInstance();
+        }else {
+            mFragments[0] = ExploreFragment.newInstance(null, null);
+            mFragments[1] = ClassFragment.newInstance();
+            mFragments[2] = TeacherListFragment.newInstance();
+            mFragments[3] = AboutmeFragment.newInstance();
+        }
     }
 
     void setupViews() {
@@ -199,7 +210,40 @@ public class MainActivity extends BaseActivity implements
         //Customise the Action Bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.abs_layout);
-        setActionBarTitle(getResources().getString(string.module_explore),"");
+        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.rc_ic_setting_friends_add));
+        if(Version.PARENT) setActionBarTitle(getResources().getString(string.module_explore), "");
+        else setActionBarTitle("", "");
+
+//        mSpinnerAdapter = ArrayAdapter.createFromResource(mContext, R.array.action_list, android.R.layout.simple_dropdown_item_1line);
+        mSpinnerAdapter = new MenuSpinnerAdapter(c, mMessageTypes);
+        getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, new ActionBar.OnNavigationListener() {
+            @Override
+            public boolean onNavigationItemSelected(int i, long l) {
+                ExploreFragment theFragement = (ExploreFragment)mFragments[0];
+                theFragement.filterCards(mMessageTypes.get(i).messageType);
+                return false;
+            }
+        });
+    }
+
+    private void initMessageTypes()
+    {
+        String[]  messageTypes = {"All","Article", "Notice", "Event", "Punch", "Report", "OpenClass", "Food", "Schedule"};
+        Integer[] resIcon = {R.drawable.ic_picture, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_notice, R.drawable.ic_attendance,
+                             R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
+        Integer[]  descriptions = {string.all, string.picture, string.noticetype, string.noticetype, string.attendancetype,
+                                   string.report, string.openclass, string.food, string.schedule};
+
+        int i=0;
+        for(String type:messageTypes) {
+            MenuSpinnerAdapter.MessageType messageType = new MenuSpinnerAdapter.MessageType();
+            messageType.messageType = type;
+            messageType.description = getResources().getString(descriptions[i]);
+            messageType.iconRes = resIcon[i];
+            mMessageTypes.add(messageType);
+            i++;
+        }
     }
 
     private void setListeners()
@@ -484,12 +528,21 @@ public class MainActivity extends BaseActivity implements
      */
     public void CheckLoginCredential() throws JSONException {
 
-        if (mApplication.mConfig == null || mApplication.mSchools == null || mApplication.mClasses == null) {
-            //Ask for login
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivityForResult(intent, REQUEST_CODE);
-        } else
-            LoginSuccessHandles();
+        if(Version.PARENT) {
+            if (mApplication.mConfig == null || mApplication.mSchools == null || mApplication.mClasses == null) {
+                //Ask for login
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+            } else
+                LoginSuccessHandles();
+        } else {
+            if (mApplication.mConfig == null || mApplication.mSchoolsT == null || mApplication.mClassesT == null) {
+                //Ask for login
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+            } else
+                LoginSuccessHandles();
+        }
     }
 
     /**

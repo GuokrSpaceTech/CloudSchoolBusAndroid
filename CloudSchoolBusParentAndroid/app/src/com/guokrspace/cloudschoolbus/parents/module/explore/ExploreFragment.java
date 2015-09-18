@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,7 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
@@ -52,16 +55,6 @@ import me.leolin.shortcutbadger.ShortcutBadger;
  * interface.
  */
 public class ExploreFragment extends BaseFragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     private MaterialListView mMaterialListView;
@@ -144,8 +137,6 @@ public class ExploreFragment extends BaseFragment {
     public static ExploreFragment newInstance(String param1, String param2) {
         ExploreFragment fragment = new ExploreFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -162,8 +153,6 @@ public class ExploreFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -193,9 +182,9 @@ public class ExploreFragment extends BaseFragment {
                 GetLastestMessagesFromServer(mHandler);
         }
 
-        setListeners();
-
         setHasOptionsMenu(true);
+
+        setListeners();
 
         return root;
     }
@@ -244,13 +233,15 @@ public class ExploreFragment extends BaseFragment {
                     // End has been reached
 
                     Log.i("...", "end called");
-                    MessageEntity messageEntity = mMesageEntities.get(mMesageEntities.size() - 1);
-                    GetOldMessagesFromServer(messageEntity.getMessageid(), mHandler);
-
-                    loading = true;
+                    if(mMesageEntities.size()>0) {
+                        MessageEntity messageEntity = mMesageEntities.get(mMesageEntities.size() - 1);
+                        GetOldMessagesFromServer(messageEntity.getMessageid(), mHandler);
+                        loading = true;
+                    }
                 }
             }
         });
+
     }
 
     @Override
@@ -453,7 +444,11 @@ public class ExploreFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
+        if(Version.PARENT)
+            inflater.inflate(R.menu.main, menu);
+        else
+            inflater.inflate(R.menu.main_teacher, menu);
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
