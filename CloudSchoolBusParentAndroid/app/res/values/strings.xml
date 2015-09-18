@@ -49,7 +49,8 @@
     <string name="phone">联系方式</string>
     <string name="relation">与孩子关系</string>
     <string name="switch_child">切换孩子</string>
-    <string name="childsetting">孩子设置</string>
+    <string name="switch_class">切换班级</string>
+    <string name="usersetting">用户设置</string>
     <string name="systemsetting">系统设置</string>
     <string name="helpfeedback">帮助与反馈</string>
     <string name="logout">退出登录</string>

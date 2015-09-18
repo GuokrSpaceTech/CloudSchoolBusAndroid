@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,41 +16,31 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.support.utils.ImageUtil;
-import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
 import com.avast.android.dialogs.iface.ISimpleDialogListener;
-import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.LoginActivity;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
-import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
 import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
-import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
-import com.guokrspace.cloudschoolbus.parents.widget.ChatMessageCard;
+import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
-import java.net.URL;
-
-import io.rong.imlib.RongIMClient;
 
 /**
  * Created by wangjianfeng on 15/8/13.
@@ -73,12 +62,10 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     /* 用来标识请求gallery的activity */
     private static final int PHOTO_PICKED_WITH_DATA = 1002;
 
-    static String ARG_IPCPARAM = "ipcparam";
-    private Ipcparam mIpcparam;
     private ImageView imageViewAvatar;
     private TextView  textViewChildName;
     private Button  buttonKindergarten;
-    private LinearLayout layoutChildSetting;
+    private LinearLayout layoutUserSetting;
     private LinearLayout layoutSystemSetting;
     private LinearLayout layoutHelpFeedback;
     private Button logoutButton;
@@ -134,7 +121,6 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     public void onCreate(Bundle savedInstanceState) {
 
         if (getArguments() != null) {
-            mIpcparam = (Ipcparam) getArguments().get(ARG_IPCPARAM);
         }
 
         super.onCreate(savedInstanceState);
@@ -144,7 +130,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.activity_aboutme, container, false);
-        layoutChildSetting = (LinearLayout)root.findViewById(R.id.linearLayoutChildSetting);
+        layoutUserSetting = (LinearLayout)root.findViewById(R.id.linearLayoutChildSetting);
         layoutSystemSetting = (LinearLayout)root.findViewById(R.id.linearLayoutSystemSetting);
         layoutHelpFeedback = (LinearLayout)root.findViewById(R.id.linearLayoutHelp);
         logoutButton = (Button)root.findViewById(R.id.logoutButton);
@@ -152,13 +138,14 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         textViewChildName = (TextView)root.findViewById(R.id.child_name);
         buttonKindergarten = (Button)root.findViewById(R.id.kindergarten_name);
 
-        currentChild = mApplication.mConfig.getCurrentChild();
+        if(Version.PARENT)
+            currentChild = mApplication.mConfig.getCurrentChild();
 
         /* Get the current child's avatar */
-        updateChildInformation();
+        updateUserInformation();
 
         if(Version.PARENT)
-        buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
+            buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
         else
             buttonKindergarten.setText(mApplication.mSchoolsT.get(0).getName());
 
@@ -171,19 +158,23 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
     private void setListeners()
     {
-        layoutChildSetting.setOnClickListener(new View.OnClickListener() {
+        layoutUserSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MainActivity activity = (MainActivity) mParentContext;
-                activity.setActionBarTitle(getResources().getString(R.string.childsetting),getResources().getString(R.string.module_aboutme));
-                ChildSettingFragment fragment = new ChildSettingFragment();
+                activity.setActionBarTitle(getResources().getString(R.string.usersetting), getResources().getString(R.string.module_aboutme));
+                UserSettingFragment fragment=null;
+                if(Version.PARENT)
+                    fragment = new UserSettingFragment().newInstance(mApplication.mSchools.get(mApplication.mConfig.getCurrentChild()));
+                else
+                    fragment = new UserSettingFragment().newInstance(getMyself());
+
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container,fragment);
+                transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
-
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,7 +288,10 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
         if(!bitmapFilePath.equals(""))
         {
-            changeAvatarStudent(mApplication.mStudents.get(0).getStudentid(),bitmapFilePath, mHandler);
+            if(Version.PARENT)
+                changeAvatarStudent(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(),bitmapFilePath, mHandler);
+            else
+                changeAvatarStudent(getMyself().getTeacherid(),bitmapFilePath, mHandler);
         }
     }
 
@@ -347,13 +341,13 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     }
 
     @Subscribe
-    public void onChildrenSwitched(ChildSwitchedEvent event)
+    public void onChildrenSwitched(InfoSwitchedEvent event)
     {
         currentChild = event.getCurrentChild();
-        updateChildInformation();
+        updateUserInformation();
     }
 
-    private void updateChildInformation()
+    private void updateUserInformation()
     {
         /* Get the current child's avatar */
         StudentEntity studentEntity = null;

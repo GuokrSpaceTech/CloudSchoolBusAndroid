@@ -36,7 +36,6 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
@@ -51,7 +50,7 @@ import com.guokrspace.cloudschoolbus.parents.entity.Schedule;
 import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
 import com.guokrspace.cloudschoolbus.parents.entity.Timeline;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
-import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
+import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.ImageAdapter;
@@ -786,7 +785,7 @@ public class BaseFragment extends Fragment {
 		configEntityDao.update(newConfigEntity);
 		mApplication.mConfig = newConfigEntity;
 
-		BusProvider.getInstance().post(new ChildSwitchedEvent(currentChild));
+		BusProvider.getInstance().post(new InfoSwitchedEvent(currentChild));
  	}
 
     public TeacherEntityT getMyself()
@@ -813,6 +812,22 @@ public class BaseFragment extends Fragment {
             if(theClass.getClassid().equals(classid))
             {
                 retEntity = theClass; break;
+            }
+        }
+
+        return retEntity;
+    }
+
+    public ArrayList<ClassEntityT> findMyClass()
+    {
+        ArrayList<ClassEntityT> retEntity= new ArrayList<ClassEntityT>();
+
+        for(ClassEntityT theClass: mApplication.mClassesT)
+        {
+            for(TeacherDutyClassRelationEntity relation:mApplication.mTeacherClassDutys) {
+                if (theClass.getClassid().equals(relation.getClassid())) {
+                    retEntity.add(theClass);
+                }
             }
         }
 

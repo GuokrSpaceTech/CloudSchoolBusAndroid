@@ -18,10 +18,8 @@ package com.guokrspace.cloudschoolbus.parents.module.aboutme;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,38 +31,37 @@ import android.widget.TextView;
 
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
-import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
-import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity;
+import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.squareup.picasso.Picasso;
 
 import org.askerov.dynamicgrid.BaseDynamicGridAdapter;
 import org.askerov.dynamicgrid.DynamicGridView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class SelectChildDialogFragment extends DialogFragment {
+public class SelectUserDialogFragment extends DialogFragment {
 
-    private static final String CHILDINFO = "childinfo";
-    private static final String TAG = SelectChildDialogFragment.class.getName();
+    private static final String USERINFO = "userinfo";
+    private static final String TAG = SelectUserDialogFragment.class.getName();
     private List<StudentEntity> mChildren;
+    private List<ClassEntityT> mClasses;
     private int currentChild;
 
     private DynamicGridView gridView;
-    private Button confirmButton;
     private Button cancelButton;
-//    private int position;
 
-    public static SelectChildDialogFragment newInstance(ArrayList<StudentEntity> childInfos) {
-        SelectChildDialogFragment f = new SelectChildDialogFragment();
+    public static SelectUserDialogFragment newInstance(ArrayList<?> infos, String type) {
+        SelectUserDialogFragment f = new SelectUserDialogFragment();
         Bundle b = new Bundle();
-        b.putSerializable(CHILDINFO, childInfos);
+        b.putSerializable(USERINFO, infos);
+        b.putString("type",type);
         f.setArguments(b);
         return f;
     }
@@ -72,9 +69,13 @@ public class SelectChildDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setStyle(DialogFragment.STYLE_NORMAL,);
 
-        mChildren = (List<StudentEntity>)getArguments().getSerializable(CHILDINFO);
+        Object infos = getArguments().get(USERINFO);
+        String type = getArguments().getString("type");
+        if(type.equals("class"))
+            mClasses = (ArrayList<ClassEntityT>)infos;
+        else if(type.equals("student"))
+            mChildren = (ArrayList<StudentEntity>)infos;
     }
 
     @Override
@@ -82,7 +83,9 @@ public class SelectChildDialogFragment extends DialogFragment {
 
         View root = inflater.inflate(R.layout.fragment_switch_children_layout, container, false);
 
-        getDialog().setTitle(getResources().getString(R.string.switch_child));
+        if(Version.PARENT) getDialog().setTitle(getResources().getString(R.string.switch_child));
+        else getDialog().setTitle(getResources().getString(R.string.switch_class));
+
         getDialog().setCancelable(true);
 
         cancelButton = (Button)root.findViewById(R.id.cancelButton);
@@ -95,7 +98,11 @@ public class SelectChildDialogFragment extends DialogFragment {
 
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
-        gridView.setAdapter(new ChildrenSwitchDynamicAdapter(getActivity(), mChildren, getResources().getInteger(R.integer.column_count)));
+
+        if(mChildren!=null)
+            gridView.setAdapter(new SwitchAdapter(getActivity(), mChildren, getResources().getInteger(R.integer.column_count)));
+        else
+            gridView.setAdapter(new SwitchAdapter(getActivity(), mClasses,  getResources().getInteger(R.integer.column_count)));
 
         //add callback to stop edit mode if needed
         gridView.setOnDropListener(new DynamicGridView.OnDropListener()
@@ -142,8 +149,8 @@ public class SelectChildDialogFragment extends DialogFragment {
         super.onAttach(activity);
     }
 
-    public static class ChildrenSwitchDynamicAdapter extends BaseDynamicGridAdapter {
-        public ChildrenSwitchDynamicAdapter(Context context, List<?> items, int columnCount) {
+    public static class SwitchAdapter extends BaseDynamicGridAdapter {
+        public SwitchAdapter(Context context, List<?> items, int columnCount) {
             super(context, items, columnCount);
         }
 
@@ -158,8 +165,13 @@ public class SelectChildDialogFragment extends DialogFragment {
                 holder = (ClassViewHolder) convertView.getTag();
             }
 
-            StudentEntity childInfo = (StudentEntity)getItem(position);
-            holder.build(childInfo.getCnname(),childInfo.getAvatar());
+            if(getItem(position) instanceof StudentEntity) {
+                StudentEntity childInfo = (StudentEntity) getItem(position);
+                holder.build(childInfo.getCnname(), childInfo.getAvatar());
+            } else if(getItem(position) instanceof ClassEntityT) {
+                ClassEntityT theClass = (ClassEntityT)getItem(position);
+                holder.build(theClass.getClassname(), "");
+            }
 
             return convertView;
         }
@@ -175,12 +187,14 @@ public class SelectChildDialogFragment extends DialogFragment {
 
             void build(String title, String avatarUrl) {
                 titleText.setText(title);
-                Picasso.with(getContext()).load(avatarUrl).into(image);
+
+                if(!avatarUrl.equals(""))
+                    Picasso.with(getContext()).load(avatarUrl).into(image);
             }
         }
     }
 
-    public void switchChildren(int currentChild)
+    public void switchChildren(int current)
     {
         CloudSchoolBusParentsApplication theApplication = (CloudSchoolBusParentsApplication) getActivity()
                 .getApplicationContext();
@@ -191,7 +205,7 @@ public class SelectChildDialogFragment extends DialogFragment {
         configEntityDao.update(newConfigEntity);
         theApplication.mConfig = newConfigEntity;
 
-        BusProvider.getInstance().post(new ChildSwitchedEvent(currentChild));
+        BusProvider.getInstance().post(new InfoSwitchedEvent(current));
 
     }
 }

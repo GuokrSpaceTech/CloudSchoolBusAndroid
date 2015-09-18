@@ -19,9 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
@@ -35,7 +33,7 @@ import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
-import com.guokrspace.cloudschoolbus.parents.event.ChildSwitchedEvent;
+import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
 import com.squareup.otto.Subscribe;
 
@@ -430,7 +428,7 @@ public class ExploreFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void onChildrenSwitched(ChildSwitchedEvent event)
+    public void onChildrenSwitched(InfoSwitchedEvent event)
     {
         mCurrentChild = event.getCurrentChild();
         String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();

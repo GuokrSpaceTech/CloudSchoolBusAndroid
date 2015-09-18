@@ -25,25 +25,29 @@ import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
-import com.avast.android.dialogs.iface.ISimpleDialogListener;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.ListIterator;
+import java.util.List;
 
 /**
  * Created by wangjianfeng on 15/8/13.
  */
-public class ChildSettingFragment extends BaseFragment implements IListDialogListener, ISimpleDialogCancelListener {
+public class UserSettingFragment extends BaseFragment implements IListDialogListener, ISimpleDialogCancelListener {
 
     //Styled Dialog defines
     private static final int REQUEST_PROGRESS = 1;
@@ -60,18 +64,17 @@ public class ChildSettingFragment extends BaseFragment implements IListDialogLis
     private static final int PHOTO_PICKED_WITH_DATA = 1002;
 
     /* 用来标识请求gallery的activity */
-    static String ARG_IPCPARAM = "ipcparam";
-    private Ipcparam mIpcparam;
     private ImageView imageViewAvatar;
     private LinearLayout layoutName;
     private LinearLayout layoutPhone;
     private LinearLayout layoutRelation;
-    private Button switchChildButton;
+    private Button switchInfoButton;
 
         // 上传图片
         private Bitmap bitMap;
         private String bitmapFilePath = "";
 
+    private Object mUser;
 
         private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -111,23 +114,23 @@ public class ChildSettingFragment extends BaseFragment implements IListDialogLis
         }
     });
 
-    public static ChildSettingFragment newInstance(Ipcparam ipcparam)
+    public static UserSettingFragment newInstance(Object user)
     {
-        ChildSettingFragment fragment = new ChildSettingFragment();
+        UserSettingFragment fragment = new UserSettingFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_IPCPARAM, ipcparam);
+        args.putSerializable("user", (Serializable) user);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public ChildSettingFragment() {
+    public UserSettingFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if (getArguments() != null) {
-            mIpcparam = (Ipcparam) getArguments().get(ARG_IPCPARAM);
+        if (getArguments() != null){
+            mUser = getArguments().get("user");
         }
 
         super.onCreate(savedInstanceState);
@@ -140,20 +143,17 @@ public class ChildSettingFragment extends BaseFragment implements IListDialogLis
         layoutPhone = (LinearLayout)root.findViewById(R.id.linearLayoutPhone);
         layoutRelation = (LinearLayout)root.findViewById(R.id.linearLayoutRelation);
         imageViewAvatar = (ImageView)root.findViewById(R.id.imageViewAvatar);
-        switchChildButton = (Button)root.findViewById(R.id.switchButton);
+        switchInfoButton = (Button)root.findViewById(R.id.switchButton);
 
-        StudentEntity studentEntity = null;
         String avatar = "";
-        for (int i = 0; i < mApplication.mStudents.size(); i++) {
-            studentEntity = mApplication.mStudents.get(i);
-            if(!studentEntity.getStudentid().equals(mApplication.mConfig.getUserid()))
-            {
-                avatar = studentEntity.getAvatar();
-//                avatar = "http://cloud.yunxiaoche.com/images/teacher.jpg";
-                Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
-                break;
-            }
+        if(mUser instanceof StudentEntity) {
+            avatar = ((StudentEntity)mUser).getAvatar();
+        } else if(mUser instanceof StudentEntityT) {
+            avatar = ((StudentEntityT)mUser).getAvatar();
+        } else if(mUser instanceof TeacherEntityT) {
+            avatar = ((TeacherEntityT)mUser).getAvatar();
         }
+        Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
 
         setListeners();
 
@@ -177,10 +177,10 @@ public class ChildSettingFragment extends BaseFragment implements IListDialogLis
             }
         });
 
-        switchChildButton.setOnClickListener(new View.OnClickListener() {
+        switchInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSwithChildDialog();
+                showSwithUserDialog();
             }
         });
 
@@ -199,7 +199,6 @@ public class ChildSettingFragment extends BaseFragment implements IListDialogLis
     @Override
     public void onListItemSelected(CharSequence value, int number, int requestCode) {
         if (requestCode == REQUEST_LIST_SIMPLE || requestCode == REQUEST_LIST_SINGLE) {
-//            Toast.makeText(mParentContext, "Selected: " + value, Toast.LENGTH_SHORT).show();
             if(value.equals(getResources().getString(R.string.picture_ops_album)))
                 doSelectImageFromLocal();
             else if(value.equals(getResources().getString(R.string.picture_ops_take_pic)))
@@ -290,14 +289,25 @@ public class ChildSettingFragment extends BaseFragment implements IListDialogLis
 
         if(!bitmapFilePath.equals(""))
         {
-            changeAvatarStudent(mApplication.mStudents.get(0).getStudentid(),bitmapFilePath, mHandler);
+            if(Version.PARENT)
+                changeAvatarStudent(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(),bitmapFilePath, mHandler);
+            else
+                changeAvatarStudent(getMyself().getTeacherid(),bitmapFilePath, mHandler);
         }
     }
 
-    private void showSwithChildDialog()
+    private void showSwithUserDialog()
     {
-        SelectChildDialogFragment theDialogFragment = SelectChildDialogFragment.newInstance((ArrayList)mApplication.mStudents);
-        theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.dialog_light);
+        ArrayList<ClassEntityT> classes = findMyClass();
+        SelectUserDialogFragment theDialogFragment = null;
+        if (Version.PARENT) {
+            theDialogFragment  = SelectUserDialogFragment.newInstance((ArrayList) mApplication.mStudents, "student");
+        } else {
+            theDialogFragment = SelectUserDialogFragment.newInstance(classes, "class");
+        }
+
+        theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_light);
+
         theDialogFragment.show(getFragmentManager(),"");
     }
 }

@@ -16,7 +16,7 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
-import com.guokrspace.cloudschoolbus.parents.module.aboutme.ChildSettingFragment;
+import com.guokrspace.cloudschoolbus.parents.module.aboutme.UserSettingFragment;
 
 /**
  * Created by wangjianfeng on 15/8/13.
@@ -102,7 +102,7 @@ public class HobbyFragment extends BaseFragment {
         layoutChildSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ChildSettingFragment fragment = new ChildSettingFragment();
+                UserSettingFragment fragment = new UserSettingFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.layout.activity_aboutme,fragment);
                 transaction.addToBackStack(null);
