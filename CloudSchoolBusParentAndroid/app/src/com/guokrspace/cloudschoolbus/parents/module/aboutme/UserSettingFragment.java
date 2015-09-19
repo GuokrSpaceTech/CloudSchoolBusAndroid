@@ -139,7 +139,11 @@ public class UserSettingFragment extends BaseFragment implements IListDialogList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.activity_setting, container, false);
+        View root = null;
+        if(Version.PARENT)
+            root = inflater.inflate(R.layout.activity_setting, container, false);
+        else
+            root = inflater.inflate(R.layout.fragment_user_setting, container, false);
         layoutPhone = (LinearLayout)root.findViewById(R.id.linearLayoutPhone);
         layoutRelation = (LinearLayout)root.findViewById(R.id.linearLayoutRelation);
         imageViewAvatar = (ImageView)root.findViewById(R.id.imageViewAvatar);
@@ -306,7 +310,7 @@ public class UserSettingFragment extends BaseFragment implements IListDialogList
             theDialogFragment = SelectUserDialogFragment.newInstance(classes, "class");
         }
 
-        theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_light);
+//        theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_light);
 
         theDialogFragment.show(getFragmentManager(),"");
     }
