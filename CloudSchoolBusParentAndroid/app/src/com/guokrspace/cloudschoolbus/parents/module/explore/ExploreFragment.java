@@ -436,8 +436,10 @@ public class ExploreFragment extends BaseFragment {
     public void onChildrenSwitched(InfoSwitchedEvent event)
     {
         mCurrentChild = event.getCurrentChild();
-        String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
-        filterCardsChild(studentId);
+        if(Version.PARENT) {
+            String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
+            filterCardsChild(studentId);
+        }
     }
 
     @Override
@@ -514,6 +516,7 @@ public class ExploreFragment extends BaseFragment {
                 R.string.report, R.string.openclass, R.string.food, R.string.schedule};
 
         int i=0;
+        mMessageTypes.clear();
         for(String type:messageTypes) {
             MenuSpinnerAdapter.MessageType messageType = new MenuSpinnerAdapter.MessageType();
             messageType.messageType = type;

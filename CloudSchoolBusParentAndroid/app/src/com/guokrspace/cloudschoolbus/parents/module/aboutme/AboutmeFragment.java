@@ -170,7 +170,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                     fragment = new UserSettingFragment().newInstance(getMyself());
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, fragment);
+                transaction.add(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
