@@ -32,10 +32,14 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentParentRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
@@ -832,5 +836,61 @@ public class BaseFragment extends Fragment {
         }
 
         return retEntity;
+    }
+
+    public ArrayList<ParentEntityT> findParentsinClass(String classid)
+    {
+        ArrayList<ParentEntityT> retParents = new ArrayList<>();
+        ArrayList<StudentEntityT> retStudents = new ArrayList<>();
+        for(StudentEntityT student:mApplication.mStudentsT)
+        {
+            for(StudentClassRelationEntity relation:mApplication.mStudentClasses) {
+                if(relation.getClassid().equals(classid)) {
+                    if (student.getStudentid().equals(relation.getStudentid()))
+                    {
+                        //Found the student, then find the parents
+                        retStudents.add(student);
+                        break;
+                    }
+                }
+            }
+        }
+
+        for(StudentEntityT student:retStudents){
+            for(StudentParentRelationEntity relation:mApplication.mStudentParents)
+            {
+                if(student.getStudentid().equals(relation.getStudentid()))
+                {
+                    //find the parentid, get the entity
+                    for(ParentEntityT parent:mApplication.mParents)
+                    {
+                        if(parent.getParentid().equals(relation.getParentid()))
+                        {
+                            retParents.add(parent);
+                        }
+                    }
+                }
+            }
+        }
+
+        return retParents;
+    }
+
+    public ArrayList<TeacherEntityT> findTeachersinClass(String classid)
+    {
+        ArrayList<TeacherEntityT> retTeachers = new ArrayList<>();
+        for(TeacherEntityT teacher:mApplication.mTeachersT) {
+            for (TeacherDutyClassRelationEntity relation : mApplication.mTeacherClassDutys) {
+                if (relation.getClassid().equals(classid)) {
+                    if (teacher.getTeacherid().equals(relation.getTeacherid())) {
+                        //Found the student, then find the parents
+                        retTeachers.add(teacher);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return retTeachers;
     }
 }

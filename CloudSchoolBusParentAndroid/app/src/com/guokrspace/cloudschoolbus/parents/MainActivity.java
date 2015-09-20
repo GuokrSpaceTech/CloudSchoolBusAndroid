@@ -62,7 +62,7 @@ import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NewMessageEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
-import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
+import com.guokrspace.cloudschoolbus.parents.module.chat.UserListFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
 import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
@@ -106,7 +106,6 @@ public class MainActivity extends BaseActivity implements
     private ViewPager pager;
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
-    private ArrayList<MenuSpinnerAdapter.MessageType> mMessageTypes = new ArrayList<>();
 //    private List<String> mFragementTags = new ArrayList();
 
     public String mUpperLeverTitle="";
@@ -156,7 +155,7 @@ public class MainActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         showStartupPage();
-        initMessageTypes();
+//        initMessageTypes();
         //Hack for force the overflow button in the actionbar
         getOverflowMenu();
         setContentView(R.layout.activity_main);
@@ -173,13 +172,13 @@ public class MainActivity extends BaseActivity implements
     private void initFragments() {
         if(Version.PARENT) {
             mFragments[0] = ExploreFragment.newInstance(null, null);
-            mFragments[1] = TeacherListFragment.newInstance();
+            mFragments[1] = UserListFragment.newInstance();
             mFragments[2] = HobbyFragment.newInstance();
             mFragments[3] = AboutmeFragment.newInstance();
         }else {
             mFragments[0] = ExploreFragment.newInstance(null, null);
             mFragments[1] = ClassFragment.newInstance();
-            mFragments[2] = TeacherListFragment.newInstance();
+            mFragments[2] = UserListFragment.newInstance();
             mFragments[3] = AboutmeFragment.newInstance();
         }
     }
@@ -212,38 +211,9 @@ public class MainActivity extends BaseActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if(Version.PARENT) setActionBarTitle(getResources().getString(string.module_explore), "");
         else setActionBarTitle("", "");
-
-        //Setup the spinner menu
-        mSpinnerAdapter = new MenuSpinnerAdapter(c, mMessageTypes);
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, new ActionBar.OnNavigationListener() {
-            @Override
-            public boolean onNavigationItemSelected(int i, long l) {
-                ExploreFragment theFragement = (ExploreFragment) mFragments[0];
-                theFragement.filterCards(mMessageTypes.get(i).messageType);
-                return false;
-            }
-        });
     }
 
-    private void initMessageTypes()
-    {
-        String[]  messageTypes = {"All","Article", "Notice", "Event", "Punch", "Report", "OpenClass", "Food", "Schedule"};
-        Integer[] resIcon = {R.drawable.ic_picture, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_notice, R.drawable.ic_attendance,
-                             R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
-        Integer[]  descriptions = {string.all, string.picture, string.noticetype, string.activity, string.attendancetype,
-                                   string.report, string.openclass, string.food, string.schedule};
 
-        int i=0;
-        for(String type:messageTypes) {
-            MenuSpinnerAdapter.MessageType messageType = new MenuSpinnerAdapter.MessageType();
-            messageType.messageType = type;
-            messageType.description = getResources().getString(descriptions[i]);
-            messageType.iconRes = resIcon[i];
-            mMessageTypes.add(messageType);
-            i++;
-        }
-    }
 
     private void setListeners()
     {
@@ -729,9 +699,9 @@ public class MainActivity extends BaseActivity implements
                     setActionBarTitle(getResources().getString(string.module_explore),"");
                 else
                     getSupportActionBar().setTitle("");
-            } else if (mFragments[position] instanceof TeacherListFragment) {
+            } else if (mFragments[position] instanceof UserListFragment) {
                 setActionBarTitle(getResources().getString(string.module_teacher),"");
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             } else if (mFragments[position] instanceof HobbyFragment) {
                 setActionBarTitle(getResources().getString(string.module_hobby),"");
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);

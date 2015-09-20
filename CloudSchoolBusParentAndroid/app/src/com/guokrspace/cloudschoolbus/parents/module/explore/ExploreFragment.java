@@ -26,6 +26,7 @@ import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
+import com.guokrspace.cloudschoolbus.parents.MenuSpinnerAdapter;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
@@ -40,6 +41,7 @@ import com.squareup.otto.Subscribe;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
@@ -63,6 +65,9 @@ public class ExploreFragment extends BaseFragment {
     private int previousTotal = 0;
     private int visibleThreshold = 3;
     int firstVisibleItem, visibleItemCount, totalItemCount;
+
+    private ArrayList<MenuSpinnerAdapter.MessageType> mMessageTypes = new ArrayList<>();
+
 
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -233,7 +238,7 @@ public class ExploreFragment extends BaseFragment {
                     // End has been reached
 
                     Log.i("...", "end called");
-                    if(mMesageEntities.size()>0) {
+                    if (mMesageEntities.size() > 0) {
                         MessageEntity messageEntity = mMesageEntities.get(mMesageEntities.size() - 1);
                         GetOldMessagesFromServer(messageEntity.getMessageid(), mHandler);
                         loading = true;
@@ -448,9 +453,24 @@ public class ExploreFragment extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if(Version.PARENT)
             inflater.inflate(R.menu.main, menu);
-        else
+        else {
+
             inflater.inflate(R.menu.main_teacher, menu);
 
+            //Setup the spinner menu
+            MainActivity mainActivity = (MainActivity)mParentContext;
+            initMessageTypes();
+
+            MenuSpinnerAdapter mSpinnerAdapter = new MenuSpinnerAdapter(mParentContext, mMessageTypes);
+            mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, new ActionBar.OnNavigationListener() {
+                @Override
+                public boolean onNavigationItemSelected(int i, long l) {
+                    filterCards(mMessageTypes.get(i).messageType);
+                    return false;
+                }
+            });
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -483,5 +503,24 @@ public class ExploreFragment extends BaseFragment {
         editor.putInt("unreadmessages", 0);
         editor.commit();
         ShortcutBadger.with(context).remove();
+    }
+
+    private void initMessageTypes()
+    {
+        String[]  messageTypes = {"All","Article", "Notice", "Event", "Punch", "Report", "OpenClass", "Food", "Schedule"};
+        Integer[] resIcon = {R.drawable.ic_picture, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_notice, R.drawable.ic_attendance,
+                R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
+        Integer[]  descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.activity, R.string.attendancetype,
+                R.string.report, R.string.openclass, R.string.food, R.string.schedule};
+
+        int i=0;
+        for(String type:messageTypes) {
+            MenuSpinnerAdapter.MessageType messageType = new MenuSpinnerAdapter.MessageType();
+            messageType.messageType = type;
+            messageType.description = getResources().getString(descriptions[i]);
+            messageType.iconRes = resIcon[i];
+            mMessageTypes.add(messageType);
+            i++;
+        }
     }
 }

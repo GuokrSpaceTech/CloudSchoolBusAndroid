@@ -4,36 +4,37 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 
 import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.controller.RecyclerItemClickListener;
 import com.dexafree.materialList.model.CardItemView;
 import com.dexafree.materialList.view.MaterialListView;
-import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ArticleEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
-import com.guokrspace.cloudschoolbus.parents.entity.Parent;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityTDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.widget.TeacherListCard;
-import com.squareup.otto.Produce;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import io.rong.imkit.RongIM;
@@ -43,19 +44,21 @@ import io.rong.imlib.model.Conversation;
 /**
  * Created by macbook on 15-8-9.
  */
-public class TeacherListFragment extends BaseFragment {
+public class UserListFragment extends BaseFragment {
 
     private MaterialListView listview;
     private MainActivity mainActivity;
     private String teacherName;
+    private String mCurrentClassid;
+    private boolean mIsParent;
 
-    public static TeacherListFragment newInstance()
+    public static UserListFragment newInstance()
     {
-        TeacherListFragment f = new TeacherListFragment();
+        UserListFragment f = new UserListFragment();
         return f;
     }
 
-    public TeacherListFragment() {
+    public UserListFragment() {
     }
 
     @Override
@@ -87,11 +90,20 @@ public class TeacherListFragment extends BaseFragment {
             @Override
             public void onItemClick(CardItemView view, int position) {
 
-                teacherName = mApplication.mTeachers.get(position).getName();
                 MainActivity activity = (MainActivity) mParentContext;
-                activity.setActionBarTitle(teacherName, getResources().getString(R.string.module_teacher));
 
-                String mTargetID = mApplication.mTeachers.get(position).getId();
+                String mTargetID = "";
+                if(!Version.PARENT) {
+                    if (mIsParent) {
+                        mTargetID = findParentsinClass(mCurrentClassid).get(position).getParentid();
+                    } else {
+                        mTargetID = findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
+                    }
+                } else {
+                    activity.setActionBarTitle(teacherName, getResources().getString(R.string.module_teacher));
+                    teacherName = mApplication.mTeachers.get(position).getName();
+                    mTargetID = mApplication.mTeachers.get(position).getId();
+                }
                 ConversationFragment fragment = new ConversationFragment();
                 Uri uri = Uri.parse("rong://" + getActivity().getApplicationInfo().packageName).buildUpon()
                         .appendPath("conversation").appendPath(io.rong.imlib.model.Conversation.ConversationType.PRIVATE.getName().toLowerCase())
@@ -136,18 +148,18 @@ public class TeacherListFragment extends BaseFragment {
         for(int i=0; i<teachers.size(); i++)
         {
             //Get the teacher Inbox entity
-            final TeacherInbox teacherInbox = new TeacherInbox();
-            teacherInbox.setTeacherEntity(mApplication.mTeachers.get(i));
+            final UserInbox userInbox = new UserInbox();
+            userInbox.setTeacherEntity(mApplication.mTeachers.get(i));
 
             /*
              * Init the card
              */
             TeacherListCard card = new TeacherListCard(mParentContext);
-            card.setTeacherAvatarUrl(teacherInbox.getTeacherEntity().getAvatar()); //Avatar
-            card.setTeacherName(teacherInbox.getTeacherEntity().getName()); //Name
+            card.setTeacherAvatarUrl(userInbox.getTeacherEntity().getAvatar()); //Avatar
+            card.setTeacherName(userInbox.getTeacherEntity().getName()); //Name
             //Classname
             QueryBuilder queryBuilder = mApplication.mDaoSession.getClassEntityDao().queryBuilder();
-            List<ClassEntity> results = queryBuilder.where(ClassEntityDao.Properties.Classid.eq(teacherInbox.getTeacherEntity().getClassid())).list();
+            List<ClassEntity> results = queryBuilder.where(ClassEntityDao.Properties.Classid.eq(userInbox.getTeacherEntity().getClassid())).list();
             ClassEntity classEntity = null;
             if(results.size()!=0) {
                 classEntity = results.get(0);
@@ -158,7 +170,7 @@ public class TeacherListFragment extends BaseFragment {
             List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao().queryBuilder().list();
             for(int j=0;j<lastIMs.size();j++)
             {
-                if(lastIMs.get(j).getTeacherid().equals(teacherInbox.getTeacherEntity().getId()))
+                if(lastIMs.get(j).getTeacherid().equals(userInbox.getTeacherEntity().getId()))
                 {
                     card.setTimestamp(DateUtils.timelineTimestamp(lastIMs.get(j).getTimestamp(), mParentContext));
                 }
@@ -167,15 +179,10 @@ public class TeacherListFragment extends BaseFragment {
             //Add the card
             listview.add(card);
         } else {
-            List<ParentEntityT> parents = mApplication.mParents;
-            for(ParentEntityT parent:parents) {
-                TeacherListCard card = new TeacherListCard(mParentContext); //This card can be teacher or parents
-                card.setTeacherAvatarUrl(parent.getAvatar()); //Avatar
-                card.setTeacherName(parent.getNikename()); //Name
 
-                //Find the kids
-                listview.add(card);
-            }
+            mCurrentClassid = findMyClass().get(0).getClassid();
+            mIsParent = true;
+            selectContacts(mCurrentClassid,mIsParent);
         }
     }
 
@@ -189,6 +196,82 @@ public class TeacherListFragment extends BaseFragment {
         super.onAttach(activity);
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_contacts, menu);
+
+        SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext,findMyClass());
+
+        ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
+            @Override
+            public boolean onNavigationItemSelected(int i, long l) {
+                mCurrentClassid = findMyClass().get(i).getClassid();
+                selectContacts(mCurrentClassid,mIsParent);
+                return false;
+            }
+        };
+
+        mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
+        mainActivity.getSupportActionBar().setTitle("");
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+//        menu.clear();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId())
+        {
+            case R.id.action_teacher:
+                mIsParent = false;
+                selectContacts(mCurrentClassid,mIsParent);
+                break;
+            case R.id.action_parents:
+                mIsParent = true;
+                selectContacts(mCurrentClassid,mIsParent);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void selectContacts(String classid, boolean mIsParent)
+    {
+        if(mIsParent)
+        {
+            listview.clear();
+            List<ParentEntityT> parents = findParentsinClass(classid);
+
+            for(ParentEntityT parent:parents) {
+                TeacherListCard card = new TeacherListCard(mParentContext); //This card can be teacher or parents
+                card.setTeacherAvatarUrl(parent.getAvatar()); //Avatar
+                card.setTeacherName(parent.getNikename()); //Name
+
+                //Find the kids
+                listview.add(card);
+            }
+
+        } else {
+            listview.clear();
+            List<TeacherEntityT> teacherList = findTeachersinClass(classid);
+            for(TeacherEntityT teacher:teacherList) {
+                TeacherListCard card = new TeacherListCard(mParentContext); //This card can be teacher or parents
+                card.setTeacherAvatarUrl(teacher.getAvatar()); //Avatar
+                card.setTeacherName(teacher.getRealname()); //Name
+
+                //Find the kids
+                listview.add(card);
+            }
+        }
+
+    }
 
     /**
      * 接收未读消息的监听器。
@@ -206,9 +289,5 @@ public class TeacherListFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        menu.clear();
-    }
+
 }

@@ -5,7 +5,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 /**
  * Created by macbook on 15-8-18.
  */
-public class TeacherInbox {
+public class UserInbox {
     TeacherEntity teacherEntity;
     String lastmessage_timestamp;
     String lastmessage_id;
