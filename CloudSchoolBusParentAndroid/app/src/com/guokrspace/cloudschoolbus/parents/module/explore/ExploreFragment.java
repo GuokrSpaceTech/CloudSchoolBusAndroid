@@ -171,7 +171,7 @@ public class ExploreFragment extends BaseFragment {
 
         ((MainActivity) mParentContext).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //        ((MainActivity) mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        setActionBarTitle(getResources().getString(R.string.module_explore),"");
+//        setActionBarTitle(getResources().getString(R.string.module_explore),"");
 //        ((MainActivity) mParentContext).getSupportActionBar().setTitle("");
 
         if (Version.DEBUG) {
@@ -453,14 +453,16 @@ public class ExploreFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(Version.PARENT)
+        MainActivity mainActivity = (MainActivity)mParentContext;
+
+        if(Version.PARENT) {
+            mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
             inflater.inflate(R.menu.main, menu);
-        else {
+        }else {
 
             inflater.inflate(R.menu.main_teacher, menu);
 
             //Setup the spinner menu
-            MainActivity mainActivity = (MainActivity)mParentContext;
             initMessageTypes();
 
             MenuSpinnerAdapter mSpinnerAdapter = new MenuSpinnerAdapter(mParentContext, mMessageTypes);
