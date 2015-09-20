@@ -1,32 +1,28 @@
-package com.guokrspace.cloudschoolbus.parents.module.classes.photo;
+package com.guokrspace.cloudschoolbus.parents.module.photo;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.android.support.debug.DebugLog;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.ISimpleDialogListener;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
-import com.dexafree.materialList.controller.RecyclerItemClickListener;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
-import com.guokrspace.cloudschoolbus.parents.module.classes.photo.service.UploadFileHelper;
-import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.EditCommentView;
-import com.guokrspace.cloudschoolbus.parents.module.classes.photo.view.SelectedStuView;
+import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
+import com.guokrspace.cloudschoolbus.parents.module.photo.view.EditCommentView;
+import com.guokrspace.cloudschoolbus.parents.module.photo.view.SelectedStuView;
 
 import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.ui.BigImageGalleryFragment;
-import net.soulwolf.image.picturelib.utils.PaintUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -155,15 +151,15 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             UploadFileHelper.getUploadUtils().setContext(mContext);
             UploadFileHelper.getUploadUtils().setUploadFileDB(mUploadFiles);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.mainFrameLayout, new UploadListFragment(), "uploadList");
-            transaction.addToBackStack("uploadList");
+            transaction.replace(R.id.mainFrameLayout, new UploadListFragment(), "uploadlist");
+            transaction.addToBackStack("uploadlist");
             transaction.commit();
             return true;
         }
         else if (id == android.R.id.home) {
             //If we are at a fragment, just pop the fragment, if this is upload fragment, finish the activity as well
             if(getSupportFragmentManager().getBackStackEntryCount()>0) {
-                UploadListFragment theFragment = (UploadListFragment) getSupportFragmentManager().findFragmentByTag("uploadList");
+                UploadListFragment theFragment = (UploadListFragment) getSupportFragmentManager().findFragmentByTag("uploadlist");
                 if (theFragment != null && theFragment.isVisible()) {
                     finish();
                 }
@@ -251,5 +247,31 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         if (requestCode == REQUEST_SIMPLE_DIALOG) {
             Toast.makeText(this, "Neutral button clicked", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+
+        if (keyCode == KeyEvent.KEYCODE_BACK ) {
+            //If we are at a fragment, just pop the fragment, if this is upload fragment, finish the activity as well
+            if(getSupportFragmentManager().getBackStackEntryCount()>0) {
+                UploadListFragment theFragment = (UploadListFragment) getSupportFragmentManager().findFragmentByTag("uploadlist");
+                if (theFragment != null && theFragment.isVisible()) {
+                    finish();
+                } else {
+                    getSupportFragmentManager().popBackStack();
+                }
+            }
+            //If we are just in the activity page, check if user really want to exit
+            else {
+                SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager()).setMessage(getResources().getString(R.string.confirm_cancel_upload))
+                        .setPositiveButtonText(getResources().getString(R.string.OKAY))
+                        .setNegativeButtonText(getResources().getString(R.string.cancel))
+                        .setRequestCode(REQUEST_SIMPLE_DIALOG)
+                        .show();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

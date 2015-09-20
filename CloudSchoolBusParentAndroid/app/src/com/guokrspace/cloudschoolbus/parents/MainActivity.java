@@ -41,8 +41,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
-import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
@@ -62,12 +60,11 @@ import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NewMessageEvent;
-import com.guokrspace.cloudschoolbus.parents.event.PictureSelectionEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.TeacherListFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
-import com.guokrspace.cloudschoolbus.parents.module.classes.photo.SelectStudentActivity;
+import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
 import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
@@ -212,17 +209,17 @@ public class MainActivity extends BaseActivity implements
             getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             getSupportActionBar().setCustomView(R.layout.abs_layout);
         }
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if(Version.PARENT) setActionBarTitle(getResources().getString(string.module_explore), "");
         else setActionBarTitle("", "");
 
-//        mSpinnerAdapter = ArrayAdapter.createFromResource(mContext, R.array.action_list, android.R.layout.simple_dropdown_item_1line);
+        //Setup the spinner menu
         mSpinnerAdapter = new MenuSpinnerAdapter(c, mMessageTypes);
+        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, new ActionBar.OnNavigationListener() {
             @Override
             public boolean onNavigationItemSelected(int i, long l) {
-                ExploreFragment theFragement = (ExploreFragment)mFragments[0];
+                ExploreFragment theFragement = (ExploreFragment) mFragments[0];
                 theFragement.filterCards(mMessageTypes.get(i).messageType);
                 return false;
             }
@@ -234,7 +231,7 @@ public class MainActivity extends BaseActivity implements
         String[]  messageTypes = {"All","Article", "Notice", "Event", "Punch", "Report", "OpenClass", "Food", "Schedule"};
         Integer[] resIcon = {R.drawable.ic_picture, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_notice, R.drawable.ic_attendance,
                              R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
-        Integer[]  descriptions = {string.all, string.picture, string.noticetype, string.noticetype, string.attendancetype,
+        Integer[]  descriptions = {string.all, string.picture, string.noticetype, string.activity, string.attendancetype,
                                    string.report, string.openclass, string.food, string.schedule};
 
         int i=0;
@@ -259,7 +256,8 @@ public class MainActivity extends BaseActivity implements
                 if(position==0)
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
-                    setActionBarTitle(getResources().getString(string.module_explore),"");
+//                    setActionBarTitle(getResources().getString(string.module_explore),"");
+                    getSupportActionBar().setSelectedNavigationItem(0); //Select all
                     theFragment.filterCards("All");
                 }
                 clearBadge(position);
@@ -740,8 +738,7 @@ public class MainActivity extends BaseActivity implements
             } else if (mFragments[position] instanceof AboutmeFragment) {
                 setActionBarTitle(getResources().getString(string.module_aboutme),"");
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            } else if (mFragments[position] instanceof ClassFragment)
-            {
+            } else if (mFragments[position] instanceof ClassFragment) {
                 getSupportActionBar().setTitle(getResources().getString(string.module_class));
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             }

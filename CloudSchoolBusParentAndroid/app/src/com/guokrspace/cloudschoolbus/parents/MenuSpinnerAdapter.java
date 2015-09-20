@@ -1,14 +1,11 @@
 package com.guokrspace.cloudschoolbus.parents;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -62,9 +59,6 @@ public class MenuSpinnerAdapter extends BaseAdapter {
         ImageView icon = (ImageView)dropDownView.findViewById(R.id.imageViewIcon);
         title.setText(mDataSet.get(position).description);
         icon.setBackgroundResource(mDataSet.get(position).iconRes);
-
-        if(position==0) //Do not show filter option of All
-            dropDownView.setLayoutParams(new LinearLayout.LayoutParams(0,0));
 
         return dropDownView;
     }

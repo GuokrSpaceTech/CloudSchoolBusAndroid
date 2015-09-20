@@ -50,7 +50,7 @@
             android:configChanges="orientation" >
         </activity>
         <activity
-            android:name=".module.classes.photo.SelectStudentActivity"
+            android:name=".module.photo.SelectStudentActivity"
             android:label="@string/title_activity_select_student" >
         </activity>
 

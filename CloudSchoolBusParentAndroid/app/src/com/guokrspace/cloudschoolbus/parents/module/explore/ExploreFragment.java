@@ -165,9 +165,9 @@ public class ExploreFragment extends BaseFragment {
         mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
 
         ((MainActivity) mParentContext).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((MainActivity) mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//        ((MainActivity) mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         setActionBarTitle(getResources().getString(R.string.module_explore),"");
-        ((MainActivity) mParentContext).getSupportActionBar().setTitle("");
+//        ((MainActivity) mParentContext).getSupportActionBar().setTitle("");
 
         if (Version.DEBUG) {
             ClearCache();

@@ -33,19 +33,9 @@ import android.widget.TextView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.base.include.Version;
-import com.guokrspace.cloudschoolbus.parents.event.PictureSelectionEvent;
-import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity;
 import com.guokrspace.cloudschoolbus.parents.module.classes.adapter.PictureAdapter;
-import com.guokrspace.cloudschoolbus.parents.module.classes.photo.SelectStudentActivity;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
-import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
-import com.toaker.common.tlog.TLog;
 
-import net.soulwolf.image.picturelib.PictureFrom;
-import net.soulwolf.image.picturelib.PictureProcess;
-import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
 import net.soulwolf.image.picturelib.model.Picture;
 
 import org.askerov.dynamicgrid.BaseDynamicGridAdapter;
@@ -90,7 +80,6 @@ public class ClassFragment extends BaseFragment {
         View root = inflater.inflate(R.layout.activity_class_grid, container, false);
 
         ((MainActivity) mParentContext).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((MainActivity) mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         ((MainActivity) mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.module_class));
 
         mTeacherAvatar = (ImageView)root.findViewById(R.id.teacher_avatar);
@@ -102,6 +91,9 @@ public class ClassFragment extends BaseFragment {
         mSchoolName.setText(mApplication.mSchoolsT.get(0).getName());
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
+//        gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(),
+//                new ArrayList<>(Arrays.asList(ClassifyComponent.classifyModules)),
+//                getResources().getInteger(R.integer.column_count)));
         gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(),
                 new ArrayList<>(Arrays.asList(ClassifyComponent.classifyModules)),
                 getResources().getInteger(R.integer.column_count)));
@@ -139,11 +131,14 @@ public class ClassFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ClassifyDynamicAdapter.ClassifyModule classifyModule = (ClassifyDynamicAdapter.ClassifyModule) parent.getAdapter().getItem(position);
-                WebviewFragment fragment = WebviewFragment.newInstance(classifyModule.getUrl());
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_class_layout, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+
+                if(classifyModule.getUrl()!="") {
+                    WebviewFragment fragment = WebviewFragment.newInstance(classifyModule.getUrl());
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.activity_class_layout, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             }
         });
 
@@ -166,7 +161,9 @@ public class ClassFragment extends BaseFragment {
                 new ClassifyDynamicAdapter.ClassifyModule("视频公开课", R.drawable.ic_streaming,url),
                 new ClassifyDynamicAdapter.ClassifyModule("课程表", R.drawable.ic_schedule, url),
                 new ClassifyDynamicAdapter.ClassifyModule("食谱", R.drawable.ic_food, url),
-                new ClassifyDynamicAdapter.ClassifyModule("相册", R.drawable.ic_picture, url)
+                new ClassifyDynamicAdapter.ClassifyModule("相册", R.drawable.ic_picture, url),
+                new ClassifyDynamicAdapter.ClassifyModule("", 0, null),
+                new ClassifyDynamicAdapter.ClassifyModule("", 0, null)
         };
     }
 
@@ -203,7 +200,8 @@ public class ClassFragment extends BaseFragment {
 
             void build(String title, int imageRes) {
                 titleText.setText(title);
-                image.setImageResource(imageRes);
+                if(imageRes!=0)
+                    image.setImageResource(imageRes);
             }
         }
 

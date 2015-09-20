@@ -1,4 +1,4 @@
-package com.guokrspace.cloudschoolbus.parents.module.classes.photo.model;
+package com.guokrspace.cloudschoolbus.parents.module.photo.model;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -11,7 +11,7 @@ import com.android.support.handlerui.HandlerToastUI;
 import com.android.support.utils.SDCardToolUtil;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadingPhotoEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadingPhotoEntityDao;
-import com.guokrspace.cloudschoolbus.parents.module.classes.photo.service.PhotoOperation;
+import com.guokrspace.cloudschoolbus.parents.module.photo.service.PhotoOperation;
 
 import java.io.File;
 import java.util.ArrayList;

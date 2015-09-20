@@ -1,74 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_class_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/activity_class_layout"
+             android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:background="@drawable/class_head_background"
-        android:layout_weight="25">
-
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
-            android:src="@drawable/ic_image_default"
-            android:id="@+id/teacher_avatar"
-            app:border_color="#FF000000"
-            app:border_width="1px" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/big_padding">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="25"
+            android:background="@drawable/class_head_background"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/class_name"
-                style="@style/CardTitle"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center_vertical"
-                android:padding="@dimen/small_padding"
-                android:text="小花老师"
-                android:textColor="@color/primary_white"
-                android:textSize="@dimen/title_size" />
+            <de.hdodenhof.circleimageview.CircleImageView android:id="@+id/teacher_avatar"
+                                                          xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                          android:layout_width="48dp"
+                                                          android:layout_height="48dp"
+                                                          android:layout_gravity="center_vertical"
+                                                          android:layout_marginLeft="20dp"
+                                                          android:src="@drawable/ic_image_default"
+                                                          app:border_color="#FF000000"
+                                                          app:border_width="1px"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/shape_transparent_dark_backgroud"
-                android:padding="@dimen/small_padding">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_house" />
+                android:orientation="vertical"
+                android:padding="@dimen/big_padding">
 
                 <TextView
-                    android:id="@+id/kindergarten_name"
+                    android:id="@+id/class_name"
+                    style="@style/CardTitle"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/small_padding"
+                    android:text="小花老师"
+                    android:textColor="@color/primary_white"
+                    android:textSize="@dimen/title_size"/>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/primary_white"
-                    android:textSize="@dimen/subtitle_size"
-                    tools:text="2小时前"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="10dp" />
+                    android:background="@drawable/shape_transparent_dark_backgroud"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/small_padding">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_house"/>
+
+                    <TextView
+                        android:id="@+id/kindergarten_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/primary_white"
+                        android:textSize="@dimen/subtitle_size"
+                        tools:text="2小时前"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
+        <org.askerov.dynamicgrid.DynamicGridView
+            android:id="@+id/dynamic_grid"
+            android:background="@color/background_window"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="75"
+            android:numColumns="@integer/column_count"/>
     </LinearLayout>
-
-    <org.askerov.dynamicgrid.DynamicGridView
-        android:id="@+id/dynamic_grid"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:numColumns="@integer/column_count"
-        android:layout_weight="75" />
-
-</LinearLayout>
+</FrameLayout>

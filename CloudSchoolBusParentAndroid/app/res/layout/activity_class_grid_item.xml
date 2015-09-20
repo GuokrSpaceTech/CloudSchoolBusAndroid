@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<net.soulwolf.image.picturelib.view.SquareLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="wrap_content"
-        android:minHeight="96dp"
+        android:background="@drawable/grid_item_selector"
         android:gravity="center"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
     <ImageView
             android:id="@+id/item_img"
-            android:layout_height="48dp"
-            android:layout_width="48dp"
-            android:padding="@dimen/small_padding"
-            android:layout_gravity="center_horizontal"
-            />
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
 
     <TextView
             android:id="@+id/item_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:singleLine="true"
             android:ellipsize="end"
-            android:padding="5dp"
-            android:textSize="20dp"
+            android:textSize="12sp"
             android:gravity="center"
-            android:textColor="@color/primary_dark"/>
+            android:textColor="@color/primary_dark"
+            android:text="asfasdfadsfasfadsf"/>
+    </LinearLayout>
 
-</LinearLayout>
+</net.soulwolf.image.picturelib.view.SquareLayout>
