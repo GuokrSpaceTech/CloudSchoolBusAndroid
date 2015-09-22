@@ -1,15 +1,15 @@
 package com.guokrspace.cloudschoolbus.parents.event;
 
-import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
 
 /**
  * Created by macbook on 15/9/13.
  */
 public class FileUploadedEvent {
-    private UploadFile mUploadFile;
+    private UploadArticleFileEntity mUploadFile;
     private boolean isSuccess;
 
-    public FileUploadedEvent(UploadFile uploadFile) {
+    public FileUploadedEvent(UploadArticleFileEntity uploadFile) {
         this.mUploadFile = uploadFile;
     }
 
@@ -21,11 +21,11 @@ public class FileUploadedEvent {
         this.isSuccess = isSuccess;
     }
 
-    public UploadFile getmUploadFile() {
+    public UploadArticleFileEntity getmUploadFile() {
         return mUploadFile;
     }
 
-    public void setmUploadFile(UploadFile mUploadFile) {
+    public void setmUploadFile(UploadArticleFileEntity mUploadFile) {
         this.mUploadFile = mUploadFile;
     }
 }

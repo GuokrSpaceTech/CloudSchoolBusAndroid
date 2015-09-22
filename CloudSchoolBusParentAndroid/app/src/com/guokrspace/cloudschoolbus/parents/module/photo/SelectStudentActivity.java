@@ -16,7 +16,8 @@ import com.avast.android.dialogs.iface.ISimpleDialogListener;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
-import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
 import com.guokrspace.cloudschoolbus.parents.module.photo.view.EditCommentView;
 import com.guokrspace.cloudschoolbus.parents.module.photo.view.SelectedStuView;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 
 public class SelectStudentActivity extends BaseActivity implements ISimpleDialogListener{
 
-    private ArrayList<UploadFile> mUploadFiles = new ArrayList<>();
+
     private ArrayList<Picture> mPictures = new ArrayList<>();
     private EditCommentView mCommentView;
     private SelectedStuView mStudentView;
@@ -55,26 +56,14 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         ArrayList<?> data = (ArrayList<?>)intent.getSerializableExtra("pictures");
 
         for (int i = 0; i < data.size(); i++) {
-            UploadFile uploadFile = new UploadFile();
             Picture picture = new Picture();
-
             if(data.get(i) instanceof String) {
-                uploadFile.picPathString = (String) data.get(i);
                 picture.setPicturePath((String) data.get(i));
             }
             else if (data.get(i) instanceof Picture) {
                 picture = (Picture)data.get(i);
             }
             mPictures.add(i, picture);
-            uploadFile.picPathString = mPictures.get(i).getPicturePath();
-            uploadFile.picSizeString = getPicSize(uploadFile.picPathString) + "";
-            uploadFile.picFileString = getPicName(uploadFile.picPathString);
-            uploadFile.studentIdList = "";
-            uploadFile.classuid = "";
-            uploadFile.intro = null;
-            uploadFile.photoTag = null;
-            uploadFile.teacherid = mApplication.mConfig.getUserid();
-            mUploadFiles.add(uploadFile);
         }
         mThumbNailClickListener = new CommonRecyclerItemClickListener(mContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
             @Override
@@ -147,9 +136,10 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             mTagListStr = mCommentView.getTagListString();
             mStudentListStr = mStudentView.getSelectionString();
 
-            updateUploadList();
-            UploadFileHelper.getUploadUtils().setContext(mContext);
-            UploadFileHelper.getUploadUtils().setUploadFileDB(mUploadFiles);
+
+            UploadFileHelper.getInstance().setContext(mContext);
+            UploadFileHelper.getInstance().addUploadQueue(mPictures, mCommentStr, mTagListStr, mStudentListStr);
+//            UploadFileHelper.getInstance().setUploadFileDB(mUploadFiles);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.mainFrameLayout, new UploadListFragment(), "uploadlist");
             transaction.addToBackStack("uploadlist");
@@ -206,24 +196,6 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             e.printStackTrace();
         }
         return size;
-    }
-
-    private void updateUploadList()
-    {
-        mUploadFiles.clear();
-        for (int i = 0; i < mPictures.size(); i++) {
-            UploadFile uploadFile = new UploadFile();
-            uploadFile.picPathString = mPictures.get(i).getPicturePath();
-            uploadFile.picSizeString = getPicSize(uploadFile.picPathString)
-                    + "";
-            uploadFile.picFileString = getPicName(uploadFile.picPathString);
-            uploadFile.studentIdList = mStudentListStr;
-            uploadFile.classuid = "";
-            uploadFile.intro = mCommentStr;
-            uploadFile.photoTag = mTagListStr;
-            uploadFile.teacherid = mApplication.mConfig.getUserid();
-            mUploadFiles.add(uploadFile);
-        }
     }
 
     // ISimpleDialogListener

@@ -227,6 +227,7 @@ public class MainActivity extends BaseActivity implements
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
 //                    setActionBarTitle(getResources().getString(string.module_explore),"");
+                    if(!Version.PARENT)
                     getSupportActionBar().setSelectedNavigationItem(0); //Select all
                     theFragment.filterCards("All");
                 }
@@ -694,13 +695,15 @@ public class MainActivity extends BaseActivity implements
 
             // Check if this is the page you want.
             if (mFragments[position] instanceof ExploreFragment) {
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
                 if(Version.PARENT)
                     setActionBarTitle(getResources().getString(string.module_explore),"");
-                else
+                else {
+                    getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
                     getSupportActionBar().setTitle("");
+                }
             } else if (mFragments[position] instanceof UserListFragment) {
-                setActionBarTitle(getResources().getString(string.module_teacher),"");
+                setActionBarTitle(getResources().getString(string.module_teacher), "");
+                if(!Version.PARENT)
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             } else if (mFragments[position] instanceof HobbyFragment) {
                 setActionBarTitle(getResources().getString(string.module_hobby),"");

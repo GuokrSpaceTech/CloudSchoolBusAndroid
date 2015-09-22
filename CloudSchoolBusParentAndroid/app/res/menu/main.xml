@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MyActivity">
-    <item
-        android:id="@+id/action_take_photo"
-        android:icon="@drawable/rc_ic_camera"
-        android:title="@string/noticetype"
-        app:showAsAction="always" />
+    <!--<item-->
+        <!--android:id="@+id/action_take_photo"-->
+        <!--android:icon="@drawable/rc_ic_camera"-->
+        <!--android:title="@string/noticetype"-->
+        <!--app:showAsAction="always" />-->
     <item
         android:id="@+id/action_notice"
         android:icon="@drawable/ic_notice"

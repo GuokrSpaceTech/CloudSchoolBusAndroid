@@ -14,7 +14,7 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.BaseLinearLayout;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
-import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
+import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.StuSelectAdapter;
 
 import net.soulwolf.image.picturelib.model.Picture;

@@ -165,7 +165,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                 activity.setActionBarTitle(getResources().getString(R.string.usersetting), getResources().getString(R.string.module_aboutme));
                 UserSettingFragment fragment=null;
                 if(Version.PARENT)
-                    fragment = new UserSettingFragment().newInstance(mApplication.mSchools.get(mApplication.mConfig.getCurrentChild()));
+                    fragment = new UserSettingFragment().newInstance(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()));
                 else
                     fragment = new UserSettingFragment().newInstance(getMyself());
 

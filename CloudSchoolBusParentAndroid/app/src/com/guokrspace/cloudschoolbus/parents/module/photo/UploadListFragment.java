@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,13 @@ import android.widget.ListView;
 import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadingPhotoEntity;
-import com.guokrspace.cloudschoolbus.parents.entity.UploadFile;
+import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadArticleFile;
+import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.UploadQueueAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
@@ -41,7 +47,7 @@ public class UploadListFragment extends BaseFragment {
     public ListView mListView;
 	public UploadQueueAdapter mUploadFileAdapter;
 
-	private List<UploadFile> mUploadFiles = new ArrayList<UploadFile>();
+	private List<UploadArticleFileEntity> mUploadQ = new ArrayList<>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,25 +65,25 @@ public class UploadListFragment extends BaseFragment {
 		mListView = (ListView) view
 				.findViewById(R.id.listView);
 
-		UploadFileHelper.getUploadUtils().setContext(mParentContext);
-		UploadFileHelper.getUploadUtils().setFragment(mFragment);
+		UploadFileHelper.getInstance().setContext(mParentContext);
+		UploadFileHelper.getInstance().setFragment(mFragment);
+		mUploadQ = UploadFileHelper.getInstance().readUploadFileQ();
 
-		List<UploadFile> uploadFiles = UploadFileHelper.getUploadUtils().getUploadFiles();
-		mUploadFiles.clear();
-		mUploadFiles.addAll(uploadFiles);
-
-		if (mUploadFiles.size() > 0) {
+		if (mUploadQ.size() > 0) {
 			haveResult();
 		} else {
 			noResult();
 		}
-		mUploadFileAdapter = new UploadQueueAdapter(mParentContext, mUploadFiles);
+		mUploadFileAdapter = new UploadQueueAdapter(mParentContext, mUploadQ);
 		mListView.setAdapter(mUploadFileAdapter);
         registerForContextMenu(mListView);
 
-		UploadFileHelper.getUploadUtils().uploadFileService();
+        //Kickoff the upload process
+		UploadFileHelper.getInstance().uploadFileService();
 
 		setListener(view);
+
+        setHasOptionsMenu(true);
 	}
 
 	private void noResult() {
@@ -98,60 +104,11 @@ public class UploadListFragment extends BaseFragment {
             default:
         }
 
-        return super.onOptionsItemSelected(item); //
+        return super.onOptionsItemSelected(item); // Let the parenting activity handles
     }
 
 	protected void setListener(View view) {
-		mListView
-				.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View arg1,
-											int arg2, long arg3) {
-						if (mUploadFileAdapter.getDeleteUploadFile()) {
-							// 删除
-							ImageView checkImageView = (ImageView) arg1
-									.findViewById(R.id.checkImageView);
-							checkImageView.setSelected(!checkImageView
-									.isSelected());
-							UploadFile uploadFile = mUploadFiles.get(arg2);
-							uploadFile.isSelected =
-									checkImageView.isSelected();
-						} else {
-							UploadFile uploadFile = mUploadFiles.get(arg2);
-						}
-					}
-				});
-	}
-
-
-	private BroadcastReceiver mUpdateBroadcastReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (ACTION_UPDATE_UPLOAD_LIST.equals(intent.getAction())) {
-				mUploadFiles.clear();
-
-//				UploadUtils.getUploadUtils().setContext(context);
-//				List<UploadFile> uploadFiles = UploadUtils.getUploadUtils()
-//						.getUploadFiles();
-				UploadFileHelper.getUploadUtils().setContext(context);
-				List<UploadFile> uploadFiles = UploadFileHelper.getUploadUtils()
-						.getUploadFiles();
-
-				mUploadFiles.addAll(uploadFiles);
-				mUploadFileAdapter.notifyDataSetChanged();
-				
-
-				if (mUploadFiles.size() > 0) {
-					haveResult();
-				} else {
-					noResult();
-				}
-			}
-		}
-	};
-
+    }
 
 	
 	/**
@@ -162,9 +119,9 @@ public class UploadListFragment extends BaseFragment {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-				UploadFileHelper.getUploadUtils().setContext(mParentContext);
-				UploadFileHelper.getUploadUtils().setFragment(mFragment);
-				UploadFileHelper.getUploadUtils().uploadFileService();
+				UploadFileHelper.getInstance().setContext(mParentContext);
+				UploadFileHelper.getInstance().setFragment(mFragment);
+				UploadFileHelper.getInstance().uploadFileService();
 			}
 		}
 	};
@@ -172,9 +129,9 @@ public class UploadListFragment extends BaseFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		// 注册广播
-		IntentFilter intentFilter = new IntentFilter(ACTION_UPDATE_UPLOAD_LIST);
-		mParentContext.registerReceiver(mUpdateBroadcastReceiver, intentFilter);
+//		// 注册广播
+//		IntentFilter intentFilter = new IntentFilter(ACTION_UPDATE_UPLOAD_LIST);
+//		mParentContext.registerReceiver(mUpdateBroadcastReceiver, intentFilter);
 		
 		DebugLog.logI("UploadListFragment onResume");
 		
@@ -185,7 +142,7 @@ public class UploadListFragment extends BaseFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		mParentContext.unregisterReceiver(mUpdateBroadcastReceiver);
+//		mParentContext.unregisterReceiver(mUpdateBroadcastReceiver);
 		
 		mParentContext.unregisterReceiver(mNetConnectBroadcastReceiver);
 		
@@ -213,79 +170,38 @@ public class UploadListFragment extends BaseFragment {
                 Log.d("", "removing item pos=" + info.position);
 
                 // 删除线程，和网络请求
+                UploadArticleFileEntity uploadFile = (UploadArticleFileEntity)mUploadFileAdapter.getItem(info.position);
+//                if (null != uploadFile.requestHandle) {
+//                    DebugLog.logI("uploadFile.requestHandle.cancel(true);");
+//                    uploadFile.requestHandle.cancel(true);
+//                }
 
-                UploadFile uploadFile = (UploadFile)mUploadFileAdapter.getItem(info.position);
-                if (null != uploadFile.requestHandle) {
-                    DebugLog.logI("uploadFile.requestHandle.cancel(true);");
-                    uploadFile.requestHandle.cancel(true);
-                }
+                //Remove the DB Queue
+                UploadFileHelper.getInstance().removeUplodFile(uploadFile);
 
-                // 删除数据库
-                List<UploadFile> tempUploadFiles = new ArrayList<UploadFile>();
 
-                tempUploadFiles.add(uploadFile);
-                mApplication.mDaoSession.getUploadingPhotoEntityDao().delete(objToDbEntity(uploadFile));
+                //Notify the Fragement/Activity to update its ListView
+                FileUploadedEvent event = new FileUploadedEvent(uploadFile);
+                event.setIsSuccess(true);
+                BusProvider.getInstance().post(event);
 
-                // 删除内存缓存
-                UploadFileHelper.getUploadUtils().remove(uploadFile);
-
-                // 删除列表
-                mUploadFiles.removeAll(tempUploadFiles);
-
-                if (0 == mUploadFiles.size()) {
-
-                    mUploadFileAdapter.setDeleteUploadFile(false);
-                    noResult();
-                }
-                mUploadFileAdapter.notifyDataSetChanged();
-
-                UploadFileHelper.getUploadUtils().uploadFileService();
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
     }
-	private UploadingPhotoEntity objToDbEntity(UploadFile obj)
-	{
-		UploadingPhotoEntity entity = new UploadingPhotoEntity();
-		entity.setClassuid(obj.classuid);
-		entity.setIntro(obj.intro);
-		entity.setPhotoTag(obj.photoTag);
-		entity.setPicFileString(obj.picFileString);
-		entity.setPicPathString(obj.picPathString);
-		entity.setStudentId(obj.studentIdList);
-		entity.setPicSizeString(obj.picSizeString);
-		entity.setTeacherid(obj.teacherid);
-        entity.setKey(obj.generateKey());
-		return entity;
-	}
 
 
     @Subscribe public void onReceiveFileUploadEvent(FileUploadedEvent event)
     {
-        UploadFile uploadFile = event.getmUploadFile();
-        // 删除数据库
-        List<UploadFile> tempUploadFiles = new ArrayList<UploadFile>();
-
-        tempUploadFiles.add(uploadFile);
-        mApplication.mDaoSession.getUploadingPhotoEntityDao().delete(objToDbEntity(uploadFile));
-
-        // 删除内存缓存
-        UploadFileHelper.getUploadUtils().remove(uploadFile);
-
-        // 删除列表
-        mUploadFiles.removeAll(tempUploadFiles);
-
-        if (0 == mUploadFiles.size()) {
-
-            mUploadFileAdapter.setDeleteUploadFile(false);
-            noResult();
-        }
+        mUploadQ.remove(event.getmUploadFile());
         mUploadFileAdapter.notifyDataSetChanged();
-
-        UploadFileHelper.getUploadUtils().uploadFileService();
 
     }
 
-
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 }

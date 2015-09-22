@@ -331,15 +331,23 @@ public class DAODBGenerator {
 
     private static void addUploadingPhotos(Schema schema)
     {
-        Entity uploading = schema.addEntity("UploadingPhotoEntity");
-        uploading.addStringProperty("key").primaryKey().notNull();
-        uploading.addStringProperty("picPathString");
-        uploading.addStringProperty("picFileString");
-        uploading.addStringProperty("picSizeString");
-        uploading.addStringProperty("studentId");
-        uploading.addStringProperty("classuid");
-        uploading.addStringProperty("intro");
-        uploading.addStringProperty("photoTag");
-        uploading.addStringProperty("teacherid");
+        Entity article = schema.addEntity("UploadArticleEntity");
+        article.addStringProperty("pickey").primaryKey().notNull();
+        article.addStringProperty("pictype");
+        article.addStringProperty("classid");
+        article.addStringProperty("teacherid");
+        article.addStringProperty("studentids");
+        article.addStringProperty("tagids");
+        article.addStringProperty("content");
+
+        Entity singlefile = schema.addEntity("UploadArticleFileEntity");
+        singlefile.addIdProperty().primaryKey().autoincrement();
+        singlefile.addByteArrayProperty("fbody");
+        singlefile.addStringProperty("fname");
+        singlefile.addStringProperty("ftime");
+        singlefile.addStringProperty("pictype");
+        Property pickey = singlefile.addStringProperty("pickey").notNull().getProperty();
+
+        ToMany articleToFiles = article.addToMany(singlefile, pickey);
     }
 }

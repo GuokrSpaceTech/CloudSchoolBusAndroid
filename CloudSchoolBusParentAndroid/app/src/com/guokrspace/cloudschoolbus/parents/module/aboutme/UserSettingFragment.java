@@ -157,6 +157,7 @@ public class UserSettingFragment extends BaseFragment implements IListDialogList
         } else if(mUser instanceof TeacherEntityT) {
             avatar = ((TeacherEntityT)mUser).getAvatar();
         }
+        if(!avatar.equals(""))
         Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
 
         setListeners();

@@ -48,7 +48,8 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig letterEntityDaoConfig;
     private final DaoConfig reportEntityDaoConfig;
     private final DaoConfig reportItemEntityDaoConfig;
-    private final DaoConfig uploadingPhotoEntityDaoConfig;
+    private final DaoConfig uploadArticleEntityDaoConfig;
+    private final DaoConfig uploadArticleFileEntityDaoConfig;
 
     private final ConfigEntityDao configEntityDao;
     private final StudentEntityDao studentEntityDao;
@@ -80,7 +81,8 @@ public class DaoSession extends AbstractDaoSession {
     private final LetterEntityDao letterEntityDao;
     private final ReportEntityDao reportEntityDao;
     private final ReportItemEntityDao reportItemEntityDao;
-    private final UploadingPhotoEntityDao uploadingPhotoEntityDao;
+    private final UploadArticleEntityDao uploadArticleEntityDao;
+    private final UploadArticleFileEntityDao uploadArticleFileEntityDao;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -176,8 +178,11 @@ public class DaoSession extends AbstractDaoSession {
         reportItemEntityDaoConfig = daoConfigMap.get(ReportItemEntityDao.class).clone();
         reportItemEntityDaoConfig.initIdentityScope(type);
 
-        uploadingPhotoEntityDaoConfig = daoConfigMap.get(UploadingPhotoEntityDao.class).clone();
-        uploadingPhotoEntityDaoConfig.initIdentityScope(type);
+        uploadArticleEntityDaoConfig = daoConfigMap.get(UploadArticleEntityDao.class).clone();
+        uploadArticleEntityDaoConfig.initIdentityScope(type);
+
+        uploadArticleFileEntityDaoConfig = daoConfigMap.get(UploadArticleFileEntityDao.class).clone();
+        uploadArticleFileEntityDaoConfig.initIdentityScope(type);
 
         configEntityDao = new ConfigEntityDao(configEntityDaoConfig, this);
         studentEntityDao = new StudentEntityDao(studentEntityDaoConfig, this);
@@ -209,7 +214,8 @@ public class DaoSession extends AbstractDaoSession {
         letterEntityDao = new LetterEntityDao(letterEntityDaoConfig, this);
         reportEntityDao = new ReportEntityDao(reportEntityDaoConfig, this);
         reportItemEntityDao = new ReportItemEntityDao(reportItemEntityDaoConfig, this);
-        uploadingPhotoEntityDao = new UploadingPhotoEntityDao(uploadingPhotoEntityDaoConfig, this);
+        uploadArticleEntityDao = new UploadArticleEntityDao(uploadArticleEntityDaoConfig, this);
+        uploadArticleFileEntityDao = new UploadArticleFileEntityDao(uploadArticleFileEntityDaoConfig, this);
 
         registerDao(ConfigEntity.class, configEntityDao);
         registerDao(StudentEntity.class, studentEntityDao);
@@ -241,7 +247,8 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(LetterEntity.class, letterEntityDao);
         registerDao(ReportEntity.class, reportEntityDao);
         registerDao(ReportItemEntity.class, reportItemEntityDao);
-        registerDao(UploadingPhotoEntity.class, uploadingPhotoEntityDao);
+        registerDao(UploadArticleEntity.class, uploadArticleEntityDao);
+        registerDao(UploadArticleFileEntity.class, uploadArticleFileEntityDao);
     }
     
     public void clear() {
@@ -275,7 +282,8 @@ public class DaoSession extends AbstractDaoSession {
         letterEntityDaoConfig.getIdentityScope().clear();
         reportEntityDaoConfig.getIdentityScope().clear();
         reportItemEntityDaoConfig.getIdentityScope().clear();
-        uploadingPhotoEntityDaoConfig.getIdentityScope().clear();
+        uploadArticleEntityDaoConfig.getIdentityScope().clear();
+        uploadArticleFileEntityDaoConfig.getIdentityScope().clear();
     }
 
     public ConfigEntityDao getConfigEntityDao() {
@@ -398,8 +406,12 @@ public class DaoSession extends AbstractDaoSession {
         return reportItemEntityDao;
     }
 
-    public UploadingPhotoEntityDao getUploadingPhotoEntityDao() {
-        return uploadingPhotoEntityDao;
+    public UploadArticleEntityDao getUploadArticleEntityDao() {
+        return uploadArticleEntityDao;
+    }
+
+    public UploadArticleFileEntityDao getUploadArticleFileEntityDao() {
+        return uploadArticleFileEntityDao;
     }
 
 }
