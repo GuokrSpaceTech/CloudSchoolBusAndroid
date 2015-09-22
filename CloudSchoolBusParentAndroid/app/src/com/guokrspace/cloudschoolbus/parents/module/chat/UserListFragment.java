@@ -28,7 +28,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
-import com.guokrspace.cloudschoolbus.parents.widget.TeacherListCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ContactListCard;
 
 import java.util.List;
 
@@ -147,9 +147,9 @@ public class UserListFragment extends BaseFragment {
             /*
              * Init the card
              */
-                TeacherListCard card = new TeacherListCard(mParentContext);
-                card.setTeacherAvatarUrl(userInbox.getTeacherEntity().getAvatar()); //Avatar
-                card.setTeacherName(userInbox.getTeacherEntity().getName()); //Name
+                ContactListCard card = new ContactListCard(mParentContext);
+                card.setContactAvatarUrl(userInbox.getTeacherEntity().getAvatar()); //Avatar
+                card.setContactName(userInbox.getTeacherEntity().getName()); //Name
                 //Classname
                 QueryBuilder queryBuilder = mApplication.mDaoSession.getClassEntityDao().queryBuilder();
                 List<ClassEntity> results = queryBuilder.where(ClassEntityDao.Properties.Classid.eq(userInbox.getTeacherEntity().getClassid())).list();
@@ -242,9 +242,9 @@ public class UserListFragment extends BaseFragment {
             List<ParentEntityT> parents = findParentsinClass(classid);
 
             for (ParentEntityT parent : parents) {
-                TeacherListCard card = new TeacherListCard(mParentContext); //This card can be teacher or parents
-                card.setTeacherAvatarUrl(parent.getAvatar()); //Avatar
-                card.setTeacherName(parent.getNikename()); //Name
+                ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
+                card.setContactAvatarUrl(parent.getAvatar()); //Avatar
+                card.setContactName(parent.getNikename()); //Name
 
                 //Find the kids
                 listview.add(card);
@@ -254,9 +254,9 @@ public class UserListFragment extends BaseFragment {
             listview.clear();
             List<TeacherEntityT> teacherList = findTeachersinClass(classid);
             for (TeacherEntityT teacher : teacherList) {
-                TeacherListCard card = new TeacherListCard(mParentContext); //This card can be teacher or parents
-                card.setTeacherAvatarUrl(teacher.getAvatar()); //Avatar
-                card.setTeacherName(teacher.getRealname()); //Name
+                ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
+                card.setContactAvatarUrl(teacher.getAvatar()); //Avatar
+                card.setContactName(teacher.getRealname()); //Name
 
                 //Find the kids
                 listview.add(card);

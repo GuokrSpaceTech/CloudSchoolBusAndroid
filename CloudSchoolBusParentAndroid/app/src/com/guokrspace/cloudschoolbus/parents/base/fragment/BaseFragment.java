@@ -204,16 +204,23 @@ public class BaseFragment extends Fragment {
 	public void GetMessagesFromCache()
 	{
         if(Version.PARENT) {
-            String currentstudentid = mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid();
-            mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-                    .orderDesc(MessageEntityDao.Properties.Messageid)
-                    .where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
-                    .list();
+            int current = mApplication.mConfig.getCurrentChild();
+            String currentstudentid = null;
+            if(mApplication.mStudents.size()>(current)) {
+                currentstudentid = mApplication.mStudents.get(current).getStudentid();
+            }
+
+            if(currentstudentid!=null) {
+                mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+                        .orderDesc(MessageEntityDao.Properties.Messageid)
+                        .where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
+                        .list();
+            }
         } else {
             mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
+                    .orderDesc(MessageEntityDao.Properties.Messageid)
+                    .list();
         }
-
 	}
 
 	//Get all articles from newest in Cache to newest in Server
@@ -295,13 +302,6 @@ public class BaseFragment extends Fragment {
 					messageEntityDao.insertOrReplace(messageEntity);
 					SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
 					senderEntityDao.insertOrReplace(senderEntity);
-
-//					List<Tag> tags = message.getTag();
-//					for (int j = 0; j < tags.size(); tags.size()) {
-//						Tag tag = tags.get(j);
-//						TagEntity tagEntity = new TagEntity(tag.getTagid(), tag.getTagName(), tag.getTagnamedesc(), tag.getTagname_en(), tag.getTagnamedesc_en(), message.getMessageid());
-//						tagEntityDao.insertOrReplace(tagEntity);
-//					}
 				}
 
 				//Refresh mMessageEntities
@@ -360,7 +360,6 @@ public class BaseFragment extends Fragment {
 		}
 
 //		showWaitDialog("", null);
-
 		RequestParams params = new RequestParams();
 
 		if(studentid!=null) params.put("studentid", studentid);

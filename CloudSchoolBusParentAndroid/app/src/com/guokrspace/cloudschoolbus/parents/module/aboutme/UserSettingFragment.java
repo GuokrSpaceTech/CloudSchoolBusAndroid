@@ -158,7 +158,7 @@ public class UserSettingFragment extends BaseFragment implements IListDialogList
             avatar = ((TeacherEntityT)mUser).getAvatar();
         }
         if(!avatar.equals(""))
-        Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
+            Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
 
         setListeners();
 
@@ -292,13 +292,14 @@ public class UserSettingFragment extends BaseFragment implements IListDialogList
                 break;
         }
 
-        if(!bitmapFilePath.equals(""))
-        {
-            if(Version.PARENT)
-                changeAvatarStudent(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(),bitmapFilePath, mHandler);
-            else
-                changeAvatarStudent(getMyself().getTeacherid(),bitmapFilePath, mHandler);
-        }
+        if(bitmapFilePath!=null)
+            if(!bitmapFilePath.equals(""))
+            {
+                if(Version.PARENT)
+                    changeAvatarStudent(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(),bitmapFilePath, mHandler);
+                else
+                    changeAvatarStudent(getMyself().getTeacherid(),bitmapFilePath, mHandler);
+            }
     }
 
     private void showSwithUserDialog()

@@ -170,9 +170,6 @@ public class ExploreFragment extends BaseFragment {
         mLayoutManager = (LinearLayoutManager) mMaterialListView.getLayoutManager();
 
         ((MainActivity) mParentContext).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//        ((MainActivity) mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-//        setActionBarTitle(getResources().getString(R.string.module_explore),"");
-//        ((MainActivity) mParentContext).getSupportActionBar().setTitle("");
 
         if (Version.DEBUG) {
             ClearCache();
@@ -512,7 +509,7 @@ public class ExploreFragment extends BaseFragment {
     private void initMessageTypes()
     {
         String[]  messageTypes = {"All","Article", "Notice", "Event", "Punch", "Report", "OpenClass", "Food", "Schedule"};
-        Integer[] resIcon = {R.drawable.ic_picture, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_notice, R.drawable.ic_attendance,
+        Integer[] resIcon = {0, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_event, R.drawable.ic_attendance,
                 R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
         Integer[]  descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.activity, R.string.attendancetype,
                 R.string.report, R.string.openclass, R.string.food, R.string.schedule};

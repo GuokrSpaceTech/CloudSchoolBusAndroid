@@ -45,7 +45,7 @@
         app:showAsAction="collapseActionView|withText" />
     <item
         android:id="@+id/action_activity"
-        android:icon="@drawable/ic_picture"
+        android:icon="@drawable/ic_event"
         android:title="@string/activity"
         app:showAsAction="collapseActionView|withText" />
 </menu>

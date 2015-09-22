@@ -58,7 +58,12 @@ public class MenuSpinnerAdapter extends BaseAdapter {
         TextView title = (TextView)dropDownView.findViewById(R.id.textViewDesc);
         ImageView icon = (ImageView)dropDownView.findViewById(R.id.imageViewIcon);
         title.setText(mDataSet.get(position).description);
-        icon.setBackgroundResource(mDataSet.get(position).iconRes);
+        if(position==0) {
+            //workaround to hide the "All" from the dropdown list
+            icon.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
+        }else{
+            icon.setBackgroundResource(mDataSet.get(position).iconRes);
+        }
 
         return dropDownView;
     }

@@ -118,7 +118,7 @@ public class StuSelectAdapter extends BaseAdapter {
                 if (!avatarpath.equals(""))
                     Picasso.with(mContext).load(avatarpath).fit().centerCrop().into(holder.avatarImageView);
             }
-            holder.nameTextView.setText(student.getNikename());
+            holder.nameTextView.setText(student.getCnname());
 
             if (mSelections.containsKey(position)) {
                 holder.selectIcon.setVisibility(View.VISIBLE);

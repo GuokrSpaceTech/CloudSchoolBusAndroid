@@ -9,34 +9,34 @@ import com.guokrspace.cloudschoolbus.parents.R;
 /**
  * Created by Yang Kai on 15/7/14.
  */
-public class TeacherListCard extends SimpleCard {
+public class ContactListCard extends SimpleCard {
 
-    private String teacherAvatarUrl;
-    private String teacherName;
+    private String contactAvatarUrl;
+    private String contactName;
     private String classname;
     private String timestamp;
     private Context context;
     private View.OnClickListener onClickListener;
 
-    public TeacherListCard(Context context) {
+    public ContactListCard(Context context) {
         super(context);
         context = context;
     }
 
-    public String getTeacherAvatarUrl() {
-        return teacherAvatarUrl;
+    public String getContactAvatarUrl() {
+        return contactAvatarUrl;
     }
 
-    public void setTeacherAvatarUrl(String teacherAvatarUrl) {
-        this.teacherAvatarUrl = teacherAvatarUrl;
+    public void setContactAvatarUrl(String contactAvatarUrl) {
+        this.contactAvatarUrl = contactAvatarUrl;
     }
 
-    public String getTeacherName() {
-        return teacherName;
+    public String getContactName() {
+        return contactName;
     }
 
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
     public String getClassname() {

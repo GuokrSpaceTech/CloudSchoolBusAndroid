@@ -151,6 +151,13 @@ public class LoginActivity extends BaseActivity {
                                 .setMessage(getResources().getString(R.string.invalid_verify_code))
                                 .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                         break;
+                    case HandlerConstant.MSG_REG_SMS:
+                        showProgress(false);
+                        threadStopFlag = true;
+                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+                                .setMessage(getResources().getString(R.string.SMS_oversend))
+                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        break;
                     //Get the base info
                     case HandlerConstant.MSG_BASEINFO_OK:
                         BusProvider.getInstance().post(new LoginResultEvent(true));
@@ -669,6 +676,8 @@ public class LoginActivity extends BaseActivity {
                 if(retCode.equals("-1117"))
                 {
                     handler.sendEmptyMessage(HandlerConstant.MSG_REG_FAIL);
+                } else if(retCode.equals("-1120")) {
+                    handler.sendEmptyMessage(HandlerConstant.MSG_REG_SMS);
                 }
             }
 

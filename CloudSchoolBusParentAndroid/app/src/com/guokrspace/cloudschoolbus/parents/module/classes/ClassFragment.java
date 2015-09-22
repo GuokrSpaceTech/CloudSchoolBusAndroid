@@ -162,7 +162,7 @@ public class ClassFragment extends BaseFragment {
                 new ClassifyDynamicAdapter.ClassifyModule("课程表", R.drawable.ic_schedule, url),
                 new ClassifyDynamicAdapter.ClassifyModule("食谱", R.drawable.ic_food, url),
                 new ClassifyDynamicAdapter.ClassifyModule("相册", R.drawable.ic_picture, url),
-                new ClassifyDynamicAdapter.ClassifyModule("", 0, null),
+                new ClassifyDynamicAdapter.ClassifyModule("活动", R.drawable.ic_event, url),
                 new ClassifyDynamicAdapter.ClassifyModule("", 0, null)
         };
     }

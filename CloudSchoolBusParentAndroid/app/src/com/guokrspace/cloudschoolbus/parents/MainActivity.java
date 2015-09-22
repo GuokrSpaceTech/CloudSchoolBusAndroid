@@ -200,7 +200,6 @@ public class MainActivity extends BaseActivity implements
             badgeView.setTargetView(tabs.getTabsContainer().getChildAt(i));
             badgeView.setBadgeMargin(6);
             badgeViews.add(badgeView);
-//            clearBadge(i);
         }
 
         //Customise the Action Bar
@@ -254,11 +253,6 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        return super.onCreateOptionsMenu(menu);
-//    }
 
     @Override
     public boolean onMenuOpened(int featureId, Menu menu)
@@ -421,8 +415,7 @@ public class MainActivity extends BaseActivity implements
             implements PagerSlidingTabStrip.IconTabProvider {
 
         private final String[] TITLES = {"Discover", "Class", "Hobby", "Me"};
-        private final int[] ICONS = {R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
-                R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
+        private int[] ICONS;
         private Fragment[] mFragments = {};
         private Context mContext;
 
@@ -445,16 +438,16 @@ public class MainActivity extends BaseActivity implements
         @Override
         public Fragment getItem(int position) {
 
+            if(Version.PARENT) {
+                ICONS =  new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
+                        R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
+            } else {
+                ICONS =  new int[]{R.drawable.selector_ic_tab_explore,R.drawable.selector_ic_tab_hobby,
+                        R.drawable.selector_ic_tab_teacher, R.drawable.selector_ic_tab_aboutme};
+            }
+
             return mFragments[position];
         }
-
-//        @Override
-//        public Object instantiateItem(ViewGroup container, int position) {
-//            Fragment fragment = (Fragment)super.instantiateItem(container, position);
-////            mFragementTags.add(position,fragment.getTag());
-//            return fragment;
-//        }
-
 
         @Override
         public int getPageIconResId(int position) {

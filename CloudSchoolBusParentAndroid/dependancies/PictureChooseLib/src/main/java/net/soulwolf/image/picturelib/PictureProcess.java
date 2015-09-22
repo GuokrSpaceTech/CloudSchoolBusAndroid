@@ -62,7 +62,7 @@ public class PictureProcess {
 
     static final String TEMP_FILE_SUFFIX = ".temp";
 
-    protected int mTitleBarBackground = 0xFF16C2DD;
+    protected int mTitleBarBackground = 0xFFF4982E;
 
     protected Activity mContext;
 
