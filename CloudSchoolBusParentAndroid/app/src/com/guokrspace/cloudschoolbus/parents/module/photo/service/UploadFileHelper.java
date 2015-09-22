@@ -88,13 +88,18 @@ public class UploadFileHelper {
             if(uploadFiles.size()>0) {
                 UploadArticleFileEntity uploadFile = uploadFiles.get(0);
                 uploadFile(uploadFile);
+            } else {
+               //Should not come here
+                setArticleParameters(uploadArticle);
+                mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
+                mApplication.mDaoSession.clear();
             }
         }
     }
 
 	private synchronized void uploadFile(final UploadArticleFileEntity uploadFile) {
 
-		DebugLog.logI("uploadFile11111111111111111111111111111111111");
+		DebugLog.logI("uploadFile");
 		RequestParams params = new RequestParams();
         params.put("fname", uploadFile.getFname());
         params.put("fbody", new ByteArrayInputStream(uploadFile.getFbody()));
@@ -102,8 +107,8 @@ public class UploadFileHelper {
         params.put("pictype", uploadFile.getPictype());
         params.put("ftime", uploadFile.getFtime());
 
-		DebugLog.logI("mMethod : " + ProtocolDef.METHOD_Source + " RequestParams : " + params.toString());
-		CloudSchoolBusRestClient.upload(ProtocolDef.METHOD_Source, params, new AsyncHttpResponseHandler() {
+		DebugLog.logI("mMethod : " + ProtocolDef.METHOD_upload + " RequestParams : " + params.toString());
+		CloudSchoolBusRestClient.upload(ProtocolDef.METHOD_upload, params, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 				//Remove the upload Q in DB
@@ -250,6 +255,8 @@ public class UploadFileHelper {
     {
         //Remove the uploadfile
         mApplication.mDaoSession.getUploadArticleFileEntityDao().delete(uploadfile);
+        mApplication.mDaoSession.clear();
+
 
         //Find its parental article
         String pickey = uploadfile.getPickey();
@@ -259,6 +266,7 @@ public class UploadFileHelper {
                 .where(UploadArticleEntityDao.Properties.Pickey.eq(pickey))
                 .list();
 
+
         if(articles.size()==1)
         {
             //If all files in that article have been uploaded or removed
@@ -266,7 +274,6 @@ public class UploadFileHelper {
             {
                 //Send the "Over" request to Server, when it success, remove the aritice from the queue
                 setArticleParameters(articles.get(0));
-
             }
         } else {
             DebugLog.logI("UploadQ out of sync");
@@ -276,5 +283,6 @@ public class UploadFileHelper {
     private void removeUploadAriticle(UploadArticleEntity uploadArticle)
     {
         mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
+        mApplication.mDaoSession.clear();
     }
 }

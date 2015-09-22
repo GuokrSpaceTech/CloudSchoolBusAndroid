@@ -876,6 +876,28 @@ public class BaseFragment extends Fragment {
         return retParents;
     }
 
+
+    public ArrayList<StudentEntityT> findStudentsinClass(String classid)
+    {
+        ArrayList<StudentEntityT> retStudents = new ArrayList<>();
+        for(StudentEntityT student:mApplication.mStudentsT)
+        {
+            for(StudentClassRelationEntity relation:mApplication.mStudentClasses) {
+                if(relation.getClassid().equals(classid)) {
+                    if (student.getStudentid().equals(relation.getStudentid()))
+                    {
+                        //Found the student, then find the parents
+                        retStudents.add(student);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return retStudents;
+    }
+
+
     public ArrayList<TeacherEntityT> findTeachersinClass(String classid)
     {
         ArrayList<TeacherEntityT> retTeachers = new ArrayList<>();

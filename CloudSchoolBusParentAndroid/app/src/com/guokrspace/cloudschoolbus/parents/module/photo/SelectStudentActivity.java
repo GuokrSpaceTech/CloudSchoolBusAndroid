@@ -16,6 +16,10 @@ import com.avast.android.dialogs.iface.ISimpleDialogListener;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentClassRelationEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
@@ -80,20 +84,10 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             }
         });
 
-
         mCommentView = new EditCommentView(this, mPictures);
         mCommentView.setmThumbNailClickListener(mThumbNailClickListener);
-        mStudentView = new SelectedStuView(this, mPictures ,mApplication.mStudents);
-        mStudentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!mStudentView.getSelectionString().equals(""))
-                {
-                    mUploadAction.setEnabled(false);
-                } else
-                    mUploadAction.setEnabled(true);
-            }
-        });
+
+        mStudentView = new SelectedStuView(this , findStudentsinClass(findCurrentClass().getClassid()));
         RelativeLayout container = (RelativeLayout)findViewById(R.id.mainLayout);
         container.addView(mCommentView);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -245,5 +239,60 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+
+
+
+    public ArrayList<StudentEntityT> findStudentsinClass(String classid)
+    {
+        ArrayList<StudentEntityT> retStudents = new ArrayList<>();
+        for(StudentEntityT student:mApplication.mStudentsT)
+        {
+            for(StudentClassRelationEntity relation:mApplication.mStudentClasses) {
+                if(relation.getClassid().equals(classid)) {
+                    if (student.getStudentid().equals(relation.getStudentid()))
+                    {
+                        //Found the student, then find the parents
+                        retStudents.add(student);
+                        break;
+                    }
+                }
+            }
+        }
+        return retStudents;
+    }
+
+    public ArrayList<ClassEntityT> findMyClass()
+    {
+        ArrayList<ClassEntityT> retEntity= new ArrayList<ClassEntityT>();
+
+        for(ClassEntityT theClass: mApplication.mClassesT)
+        {
+            for(TeacherDutyClassRelationEntity relation:mApplication.mTeacherClassDutys) {
+                if (theClass.getClassid().equals(relation.getClassid())) {
+                    retEntity.add(theClass);
+                }
+            }
+        }
+
+        return retEntity;
+    }
+
+    public ClassEntityT findCurrentClass()
+    {
+        ClassEntityT retEntity=null;
+
+        int current = mApplication.mConfig.getCurrentChild();
+        String classid = mApplication.mTeacherClassDutys.get(current).getClassid();
+
+        for(ClassEntityT theClass: findMyClass())
+        {
+            if(theClass.getClassid().equals(classid))
+            {
+                retEntity = theClass; break;
+            }
+        }
+        return retEntity;
     }
 }

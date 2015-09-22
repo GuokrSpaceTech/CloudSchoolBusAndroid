@@ -69,7 +69,7 @@
     <string name="picture">相册</string>
     <string name="attendancetime">考勤时间: </string>
     <string name="classify">分类</string>
-    <string name="all">全选</string>
+    <string name="all">全部</string>
     <string name="slogan">云中校车，以爱为名</string>
     <string name="title_activity_startup">StartupActivity</string>
 

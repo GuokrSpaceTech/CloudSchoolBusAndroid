@@ -1,11 +1,7 @@
 package com.guokrspace.cloudschoolbus.parents.module.photo.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.ThumbnailUtils;
-import android.provider.MediaStore.Video.Thumbnails;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +11,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-import com.android.support.utils.DateUtils;
 import com.android.support.utils.ImageFormatUtils;
-import com.android.support.utils.ImageUtil;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
-import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadArticle;
-import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadArticleFile;
-import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -211,4 +198,8 @@ public class UploadQueueAdapter extends BaseAdapter {
 //		}
 //	}
 
+
+    public void setmUploadFiles(List<UploadArticleFileEntity> mUploadFiles) {
+        this.mUploadFiles = mUploadFiles;
+    }
 }

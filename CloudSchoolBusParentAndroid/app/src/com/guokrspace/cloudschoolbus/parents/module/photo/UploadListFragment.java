@@ -15,21 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 
 import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadingPhotoEntity;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
-import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadArticleFile;
-import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.UploadQueueAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
@@ -121,7 +114,7 @@ public class UploadListFragment extends BaseFragment {
 			if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
 				UploadFileHelper.getInstance().setContext(mParentContext);
 				UploadFileHelper.getInstance().setFragment(mFragment);
-				UploadFileHelper.getInstance().uploadFileService();
+//				UploadFileHelper.getInstance().uploadFileService();
 			}
 		}
 	};
@@ -194,7 +187,10 @@ public class UploadListFragment extends BaseFragment {
 
     @Subscribe public void onReceiveFileUploadEvent(FileUploadedEvent event)
     {
-        mUploadQ.remove(event.getmUploadFile());
+        mUploadQ = UploadFileHelper.getInstance().readUploadFileQ();
+
+        mUploadFileAdapter.setmUploadFiles(mUploadQ);
+
         mUploadFileAdapter.notifyDataSetChanged();
 
     }
