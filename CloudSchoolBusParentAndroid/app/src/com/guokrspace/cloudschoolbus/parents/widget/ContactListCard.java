@@ -16,6 +16,7 @@ public class ContactListCard extends SimpleCard {
     private String classname;
     private String timestamp;
     private Context context;
+    private int     badgeCount;
     private View.OnClickListener onClickListener;
 
     public ContactListCard(Context context) {
@@ -69,6 +70,14 @@ public class ContactListCard extends SimpleCard {
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+    }
+
+    public int getBadgeCount() {
+        return badgeCount;
+    }
+
+    public void setBadgeCount(int badgeCount) {
+        this.badgeCount = badgeCount;
     }
 
     @Override

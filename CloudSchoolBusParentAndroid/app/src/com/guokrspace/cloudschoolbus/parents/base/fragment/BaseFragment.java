@@ -821,6 +821,25 @@ public class BaseFragment extends Fragment {
         return retEntity;
     }
 
+    public ClassEntityT findCurrentClass()
+    {
+        ClassEntityT retEntity=null;
+
+        int current = mApplication.mConfig.getCurrentChild();
+
+        String classid = mApplication.mTeacherClassDutys.get(current).getClassid();
+
+        for(ClassEntityT theClass: mApplication.mClassesT)
+        {
+            if(theClass.getClassid().equals(classid))
+            {
+                retEntity = theClass; break;
+            }
+        }
+
+        return retEntity;
+    }
+
     public ArrayList<ClassEntityT> findMyClass()
     {
         ArrayList<ClassEntityT> retEntity= new ArrayList<ClassEntityT>();

@@ -56,6 +56,7 @@ import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
@@ -656,13 +657,21 @@ public class MainActivity extends BaseActivity implements
         public boolean onReceived(io.rong.imlib.model.Message message, int left) {
             for( int j=0; j < mApplication.mTeachers.size(); j++)
             {
-                TeacherEntity teacherEntity = mApplication.mTeachers.get(j);
-                if(teacherEntity.getId().equals(message.getSenderUserId()))
+                String teacherid;
+                if(Version.PARENT) {
+                    TeacherEntity teacher = mApplication.mTeachers.get(j);
+                    teacherid = teacher.getId();
+                } else {
+                    TeacherEntityT teacherT = mApplication.mTeachersT.get(j);
+                    teacherid = teacherT.getTeacherid();
+                }
+
+                if(teacherid.equals(message.getSenderUserId()))
                 {
                     String hasUnread = "0";
                     if(left>0)  hasUnread= "1";
                     Long timestamp = message.getSentTime();
-                    LastIMMessageEntity lastIMMessageEntity = new LastIMMessageEntity(teacherEntity.getId(), Long.toString(timestamp/1000), hasUnread);
+                    LastIMMessageEntity lastIMMessageEntity = new LastIMMessageEntity(teacherid, Long.toString(timestamp/1000), hasUnread);
                     mApplication.mDaoSession.getLastIMMessageEntityDao().insertOrReplace(lastIMMessageEntity);
                 }
             }

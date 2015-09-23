@@ -1,7 +1,9 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
+import android.media.Image;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +63,15 @@ public class ContactListCardItemView extends CardItemView<ContactListCard> {
         timstampTextView.setText(card.getTimestamp());
         if (card.getDescriptionColor() != -1) {
             timstampTextView.setTextColor(card.getDescriptionColor());
+        }
+
+        //Badge
+        if(card.getBadgeCount() != 0)
+        {
+            BadgeView badgeView = new BadgeView(card.getContext());
+            badgeView.setBadgeCount(card.getBadgeCount());
+            badgeView.setGravity(Gravity.TOP | Gravity.RIGHT);
+            badgeView.setTargetView(ContactHead);
         }
     }
 }
