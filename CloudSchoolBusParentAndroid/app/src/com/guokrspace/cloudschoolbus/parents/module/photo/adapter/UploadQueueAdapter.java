@@ -1,6 +1,8 @@
 package com.guokrspace.cloudschoolbus.parents.module.photo.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +14,14 @@ import android.widget.TextView;
 
 
 import com.android.support.utils.ImageFormatUtils;
+import com.android.support.utils.ThumbnailUtils;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -82,9 +88,13 @@ public class UploadQueueAdapter extends BaseAdapter {
 
         ImageView leftImageView = (ImageView) arg1.findViewById(R.id.leftImageView);
 
-        Drawable drawable = ImageFormatUtils.getInstance().Bytes2Drawable(uploadFile.getFbody());
 
-        leftImageView.setImageDrawable(drawable);
+        //http://stackoverflow.com/questions/477572/strange-out-of-memory-issue-while-loading-an-image-to-a-bitmap-object/823966#823966
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        InputStream is = new ByteArrayInputStream(uploadFile.getFbody());
+        opts.inSampleSize = 32;
+        Bitmap preview_bitmap = BitmapFactory.decodeStream(is, null, opts);
+        leftImageView.setImageBitmap(preview_bitmap);
 
         TextView fileNameTextView = (TextView) arg1.findViewById(R.id.fileNameTextView);
 

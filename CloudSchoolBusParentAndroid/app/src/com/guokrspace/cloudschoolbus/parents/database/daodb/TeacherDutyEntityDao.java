@@ -17,7 +17,7 @@ import de.greenrobot.dao.query.QueryBuilder;
 /**
  * DAO for table TEACHER_DUTY_ENTITY.
 */
-public class TeacherDutyEntityDao extends AbstractDao<TeacherDutyEntity, String> {
+public class TeacherDutyEntityDao extends AbstractDao<TeacherDutyEntity, Void> {
 
     public static final String TABLENAME = "TEACHER_DUTY_ENTITY";
 
@@ -26,7 +26,7 @@ public class TeacherDutyEntityDao extends AbstractDao<TeacherDutyEntity, String>
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, String.class, "id", true, "ID");
+        public final static Property Id = new Property(0, String.class, "id", false, "ID");
         public final static Property Duty = new Property(1, String.class, "duty", false, "DUTY");
         public final static Property Schoolid = new Property(2, String.class, "schoolid", false, "SCHOOLID");
     };
@@ -45,7 +45,7 @@ public class TeacherDutyEntityDao extends AbstractDao<TeacherDutyEntity, String>
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'TEACHER_DUTY_ENTITY' (" + //
-                "'ID' TEXT PRIMARY KEY NOT NULL ," + // 0: id
+                "'ID' TEXT NOT NULL ," + // 0: id
                 "'DUTY' TEXT," + // 1: duty
                 "'SCHOOLID' TEXT NOT NULL );"); // 2: schoolid
     }
@@ -71,8 +71,8 @@ public class TeacherDutyEntityDao extends AbstractDao<TeacherDutyEntity, String>
 
     /** @inheritdoc */
     @Override
-    public String readKey(Cursor cursor, int offset) {
-        return cursor.getString(offset + 0);
+    public Void readKey(Cursor cursor, int offset) {
+        return null;
     }    
 
     /** @inheritdoc */
@@ -96,18 +96,15 @@ public class TeacherDutyEntityDao extends AbstractDao<TeacherDutyEntity, String>
     
     /** @inheritdoc */
     @Override
-    protected String updateKeyAfterInsert(TeacherDutyEntity entity, long rowId) {
-        return entity.getId();
+    protected Void updateKeyAfterInsert(TeacherDutyEntity entity, long rowId) {
+        // Unsupported or missing PK type
+        return null;
     }
     
     /** @inheritdoc */
     @Override
-    public String getKey(TeacherDutyEntity entity) {
-        if(entity != null) {
-            return entity.getId();
-        } else {
-            return null;
-        }
+    public Void getKey(TeacherDutyEntity entity) {
+        return null;
     }
 
     /** @inheritdoc */

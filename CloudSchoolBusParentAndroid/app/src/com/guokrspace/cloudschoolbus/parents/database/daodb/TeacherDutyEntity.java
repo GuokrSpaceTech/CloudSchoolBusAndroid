@@ -15,10 +15,6 @@ public class TeacherDutyEntity {
     public TeacherDutyEntity() {
     }
 
-    public TeacherDutyEntity(String id) {
-        this.id = id;
-    }
-
     public TeacherDutyEntity(String id, String duty, String schoolid) {
         this.id = id;
         this.duty = duty;

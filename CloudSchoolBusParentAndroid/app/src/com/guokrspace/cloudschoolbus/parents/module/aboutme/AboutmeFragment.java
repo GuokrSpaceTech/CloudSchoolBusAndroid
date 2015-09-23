@@ -208,7 +208,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             public void onClick(View view) {
                 WebviewFragment fragment = WebviewFragment.newInstance(getResources().getString(R.string.aboutmeurl), getResources().getString(R.string.companyweb));
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.add(R.id.fragment_container, fragment);
+                transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -219,7 +219,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             @Override
             public void onClick(View view) {
                 mApplication.clearData();
-                textViewCache.setText("0");
+                textViewCache.setText("0M");
             }
         });
     }
@@ -341,6 +341,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        ((MainActivity)mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.module_aboutme));
         super.onPrepareOptionsMenu(menu);
         menu.clear();
     }
@@ -423,19 +424,19 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                 textViewUserName.setText(studentEntity.getCnname());
             else
                 textViewUserName.setText(studentEntity.getNikename());
+
         } else {
             TeacherEntityT user = null;
-            for(TeacherEntityT teacher:mApplication.mTeachersT)
-            {
-                if(teacher.getTeacherid().equals(mApplication.mConfig.getUserid()))
+            for(TeacherEntityT teacher:mApplication.mTeachersT) {
+                if (teacher.getTeacherid().equals(mApplication.mConfig.getUserid())) {
                     user = teacher;
                     break;
+                }
             }
 
             if(user!=null) {
                 Picasso.with(mParentContext).load(user.getAvatar()).into(imageViewAvatar);
                 textViewUserName.setText(user.getRealname());
-
             }
         }
     }
@@ -448,8 +449,9 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         double fileSize = mParentContext.getDatabasePath(dbName).length();;
         String fileSizeString = "0";
         try {
-            fileSize = fileSize / 1024 / 1024;
-            DecimalFormat df = new DecimalFormat("0.000");
+            //Baseinfo size
+            fileSize = fileSize / 1024 / 1024 - 0.2;
+            DecimalFormat df = new DecimalFormat("0.00");
             fileSizeString = df.format(fileSize) + "M";
         } catch (Exception e) {
         }

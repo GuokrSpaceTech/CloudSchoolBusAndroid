@@ -149,7 +149,7 @@ public class DAODBGenerator {
         Property schoolidclassmodule = classmodule.addStringProperty("schoolid").notNull().getProperty();
 
         Entity teacherDuty = schema.addEntity("TeacherDutyEntity");
-        teacherDuty.addStringProperty("id").primaryKey().notNull();
+        teacherDuty.addStringProperty("id").notNull();
         teacherDuty.addStringProperty("duty");
         Property schoolidteacherduty = teacherDuty.addStringProperty("schoolid").notNull().getProperty();
 

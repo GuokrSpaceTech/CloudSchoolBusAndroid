@@ -34,6 +34,9 @@ import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassModuleEntity;
 import com.guokrspace.cloudschoolbus.parents.module.classes.adapter.PictureAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -92,14 +95,14 @@ public class ClassFragment extends BaseFragment {
         mSchoolName.setText(mApplication.mSchoolsT.get(0).getName());
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
+
 //        gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(),
 //                new ArrayList<>(Arrays.asList(ClassifyComponent.classifyModules)),
 //                getResources().getInteger(R.integer.column_count)));
-        gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(),
-                new ArrayList<>(Arrays.asList(ClassifyComponent.classifyModules)),
+
+        gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(), mApplication.mClassModules,
                 getResources().getInteger(R.integer.column_count)));
 
-        //add callback to stop edit mode if needed
         //add callback to stop edit mode if needed
         gridView.setOnDropListener(new DynamicGridView.OnDropListener() {
             @Override
@@ -131,10 +134,11 @@ public class ClassFragment extends BaseFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ClassifyDynamicAdapter.ClassifyModule classifyModule = (ClassifyDynamicAdapter.ClassifyModule) parent.getAdapter().getItem(position);
+//                ClassifyDynamicAdapter.ClassifyModule classifyModule = (ClassifyDynamicAdapter.ClassifyModule) parent.getAdapter().getItem(position);
 
-                if(classifyModule.getUrl()!="") {
-                    WebviewFragment fragment = WebviewFragment.newInstance(classifyModule.getUrl(), classifyModule.getTitle());
+                ClassModuleEntity classModule = (ClassModuleEntity) parent.getAdapter().getItem(position);
+                if(classModule.getUrl()!="") {
+                    WebviewFragment fragment = WebviewFragment.newInstance(classModule.getUrl(), classModule.getTitle());
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.activity_class_layout, fragment);
                     transaction.addToBackStack(null);
@@ -169,8 +173,13 @@ public class ClassFragment extends BaseFragment {
     }
 
     public static class ClassifyDynamicAdapter extends BaseDynamicGridAdapter {
+        Context mContext;
+        List<ClassModuleEntity> mDataset;
+
         public ClassifyDynamicAdapter(Context context, List<?> items, int columnCount) {
             super(context, items, columnCount);
+            mContext = context;
+            mDataset = (List<ClassModuleEntity>)items;
         }
 
         @Override
@@ -184,9 +193,11 @@ public class ClassFragment extends BaseFragment {
                 holder = (ClassViewHolder) convertView.getTag();
             }
 
-            ClassifyModule classifyModule = (ClassifyModule) getItem(position);
+//            ClassifyModule classifyModule = (ClassifyModule) getItem(position);
+            ClassModuleEntity classifyModule = (ClassModuleEntity) getItem(position);
 
-            holder.build(classifyModule.getTitle(), classifyModule.getImageRes());
+
+            holder.build(classifyModule.getTitle(), classifyModule.getIcon());
             return convertView;
         }
 
@@ -199,10 +210,9 @@ public class ClassFragment extends BaseFragment {
                 image = (ImageView) view.findViewById(R.id.item_img);
             }
 
-            void build(String title, int imageRes) {
+            void build(String title, String icon) {
                 titleText.setText(title);
-                if(imageRes!=0)
-                    image.setImageResource(imageRes);
+                Picasso.with(mContext).load(icon).centerCrop().fit().into(image);
             }
         }
 
