@@ -11,6 +11,7 @@ public class UploadArticleFileEntity {
     private String fname;
     private String ftime;
     private String pictype;
+    private Boolean isSuccess;
     /** Not-null value. */
     private String pickey;
 
@@ -21,12 +22,13 @@ public class UploadArticleFileEntity {
         this.id = id;
     }
 
-    public UploadArticleFileEntity(Long id, byte[] fbody, String fname, String ftime, String pictype, String pickey) {
+    public UploadArticleFileEntity(Long id, byte[] fbody, String fname, String ftime, String pictype, Boolean isSuccess, String pickey) {
         this.id = id;
         this.fbody = fbody;
         this.fname = fname;
         this.ftime = ftime;
         this.pictype = pictype;
+        this.isSuccess = isSuccess;
         this.pickey = pickey;
     }
 
@@ -68,6 +70,14 @@ public class UploadArticleFileEntity {
 
     public void setPictype(String pictype) {
         this.pictype = pictype;
+    }
+
+    public Boolean getIsSuccess() {
+        return isSuccess;
+    }
+
+    public void setIsSuccess(Boolean isSuccess) {
+        this.isSuccess = isSuccess;
     }
 
     /** Not-null value. */

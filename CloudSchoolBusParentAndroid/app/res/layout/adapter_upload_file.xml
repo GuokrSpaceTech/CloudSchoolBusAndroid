@@ -34,13 +34,11 @@
                 android:textSize="16sp" />
 
             <ImageView
-                android:id="@+id/checkImageView"
+                android:id="@+id/retryImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/btn_check"
-                android:visibility="gone" />
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_replay_black_24dp" />
 
             <TextView
                 android:layout_centerInParent="true"

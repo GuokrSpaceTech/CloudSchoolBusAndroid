@@ -25,6 +25,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEnt
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.UploadQueueAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
 import com.squareup.otto.Subscribe;
 
@@ -68,6 +69,19 @@ public class UploadListFragment extends BaseFragment {
 			noResult();
 		}
 		mUploadFileAdapter = new UploadQueueAdapter(mParentContext, mUploadQ);
+        mUploadFileAdapter.setmRetryClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UploadArticleFileEntity uploadFile = (UploadArticleFileEntity)view.getTag();
+                uploadFile.setIsSuccess(null);
+                mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadFile);
+                mUploadQ = UploadFileHelper.getInstance().readUploadFileQ();
+                mUploadFileAdapter.setmUploadFiles(mUploadQ);
+                mUploadFileAdapter.notifyDataSetChanged();
+                UploadFileHelper.getInstance().getInstance().retryFailedFile(uploadFile);
+
+            }
+        });
 		mListView.setAdapter(mUploadFileAdapter);
         registerForContextMenu(mListView);
 

@@ -416,7 +416,8 @@ public class MainActivity extends BaseActivity implements
             implements PagerSlidingTabStrip.IconTabProvider {
 
         private final String[] TITLES = {"Discover", "Class", "Hobby", "Me"};
-        private int[] ICONS;
+        private int[] ICONS = {R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
+                R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
         private Fragment[] mFragments = {};
         private Context mContext;
 

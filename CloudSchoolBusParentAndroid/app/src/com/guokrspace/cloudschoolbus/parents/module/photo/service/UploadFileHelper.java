@@ -17,6 +17,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEnt
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.UploadListFragment;
+import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -76,25 +77,29 @@ public class UploadFileHelper {
 					"no call method setContext(Context context)");
 		}
 		
-		uploadFirstFile();
+		uploadNextFile();
 	}
 
-	private void uploadFirstFile() {
+    private void uploadNextFile() {
+        int numFiles = 0 ;
+
+        //Check uploadable files
         List<UploadArticleEntity> uploadArticles = mApplication.mDaoSession.getUploadArticleEntityDao().queryBuilder().list();
-        if(uploadArticles.size()>0)
-        {
-            UploadArticleEntity uploadArticle = uploadArticles.get(0);
+        for (UploadArticleEntity uploadArticle : uploadArticles) {
             List<UploadArticleFileEntity> uploadFiles = uploadArticle.getUploadArticleFileEntityList();
-            if(uploadFiles.size()>0) {
-                UploadArticleFileEntity uploadFile = uploadFiles.get(0);
-                uploadFile(uploadFile);
-            } else {
-               //Should not come here
-                setArticleParameters(uploadArticle);
-                mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
-                mApplication.mDaoSession.clear();
+            for (UploadArticleFileEntity uploadFile : uploadFiles) {
+                if (uploadFile.getIsSuccess() == null || (uploadFile.getIsSuccess() != null && uploadFile.getIsSuccess() == true)) {
+                    uploadFile(uploadFile);
+                    numFiles++;
+                    break;
+                }
             }
         }
+    }
+
+    public void retryFailedFile(UploadArticleFileEntity uploadFile)
+    {
+        uploadFile(uploadFile);
     }
 
 	private synchronized void uploadFile(final UploadArticleFileEntity uploadFile) {
@@ -120,24 +125,25 @@ public class UploadFileHelper {
 				BusProvider.getInstance().post(event);
 
                 //Kick off next load
-				uploadFirstFile();
+				uploadNextFile();
 			}
 
 			@Override
 			public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                DebugLog.logI(String.valueOf(responseBody));
 
                 //Todo: needs to handle the failure scenario
                 //Remove the upload Q in DB
-                removeUplodFile(uploadFile);
+                markUploadFailure(uploadFile);
 
                 //Notify the fragment or activity to update list view
                 FileUploadedEvent event = new FileUploadedEvent(uploadFile);
-                event.setIsSuccess(true);
+                mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadFile);
+
+                event.setIsSuccess(false);
                 BusProvider.getInstance().post(event);
 
                 //Kick off next load
-                uploadFirstFile();
+                uploadNextFile();
 			}
 
 			@Override
@@ -178,14 +184,13 @@ public class UploadFileHelper {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 // 上传成功，更新上传列表
-                String retString = new String(responseBody);
                 removeUploadAriticle(uploadArticle);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 //Todo: handle failure scenario
-                DebugLog.logI(new String(responseBody));
+                removeUploadAriticle(uploadArticle);
             }
         });
     }
@@ -279,6 +284,13 @@ public class UploadFileHelper {
             DebugLog.logI("UploadQ out of sync");
         }
     }
+
+    public void markUploadFailure(UploadArticleFileEntity uploadfile)
+    {
+        uploadfile.setIsSuccess(false);
+        mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadfile);
+    }
+
 
     private void removeUploadAriticle(UploadArticleEntity uploadArticle)
     {

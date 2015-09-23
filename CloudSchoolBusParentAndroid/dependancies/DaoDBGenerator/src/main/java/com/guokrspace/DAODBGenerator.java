@@ -346,6 +346,7 @@ public class DAODBGenerator {
         singlefile.addStringProperty("fname");
         singlefile.addStringProperty("ftime");
         singlefile.addStringProperty("pictype");
+        singlefile.addBooleanProperty("isSuccess");
         Property pickey = singlefile.addStringProperty("pickey").notNull().getProperty();
 
         ToMany articleToFiles = article.addToMany(singlefile, pickey);
