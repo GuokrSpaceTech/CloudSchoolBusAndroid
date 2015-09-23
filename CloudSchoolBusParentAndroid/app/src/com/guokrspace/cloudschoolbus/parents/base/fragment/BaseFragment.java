@@ -2,6 +2,7 @@ package com.guokrspace.cloudschoolbus.parents.base.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -80,8 +81,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -253,107 +258,107 @@ public class BaseFragment extends Fragment {
 		    params.put("oldid", messageid);
 
 		CloudSchoolBusRestClient.get(ProtocolDef.METHOD_timeline, params, new JsonHttpResponseHandler() {
-			MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
-			SenderEntityDao senderEntityDao = mApplication.mDaoSession.getSenderEntityDao();
-			TagEntityDao tagEntityDao = mApplication.mDaoSession.getTagEntityDao();
+            MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+            SenderEntityDao senderEntityDao = mApplication.mDaoSession.getSenderEntityDao();
+            TagEntityDao tagEntityDao = mApplication.mDaoSession.getTagEntityDao();
 
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				super.onSuccess(statusCode, headers, response);
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
 
-				String retCode = "";
-				for (int i = 0; i < headers.length; i++) {
-					Header header = headers[i];
-					if ("code".equalsIgnoreCase(header.getName())) {
-						retCode = header.getValue();
-						break;
-					}
-				}
-				if (retCode.equals("-1")) //Session Expire
-				{
-					BusProvider.getInstance().post(new SidExpireEvent(mApplication.mConfig.getSid()));
-				}
-			}
+                String retCode = "";
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+                if (retCode.equals("-1")) //Session Expire
+                {
+                    BusProvider.getInstance().post(new SidExpireEvent(mApplication.mConfig.getSid()));
+                }
+            }
 
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-				String retCode = "";
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                String retCode = "";
 
-				for (int i = 0; i < headers.length; i++) {
-					Header header = headers[i];
-					if ("code".equalsIgnoreCase(header.getName())) {
-						retCode = header.getValue();
-						break;
-					}
-				}
-				if (!retCode.equals("1")) {
-					Message msg = handler.obtainMessage();
-					msg.what = HandlerConstant.MSG_SERVER_ERROR;
-					msg.obj = response;
-					handler.sendMessage(msg);
-					return;
-				}
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+                if (!retCode.equals("1")) {
+                    Message msg = handler.obtainMessage();
+                    msg.what = HandlerConstant.MSG_SERVER_ERROR;
+                    msg.obj = response;
+                    handler.sendMessage(msg);
+                    return;
+                }
 
-				List<Timeline> timelines = FastJsonTools.getListObject(response.toString(), Timeline.class);
-				for (int i = 0; i < timelines.size(); i++) {
-					Timeline message = timelines.get(i);
-					Timeline.Sender sender = message.getSender();
-					MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(), message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(), message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
-					messageEntityDao.insertOrReplace(messageEntity);
-					SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
-					senderEntityDao.insertOrReplace(senderEntity);
-				}
+                List<Timeline> timelines = FastJsonTools.getListObject(response.toString(), Timeline.class);
+                for (int i = 0; i < timelines.size(); i++) {
+                    Timeline message = timelines.get(i);
+                    Timeline.Sender sender = message.getSender();
+                    MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(), message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(), message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
+                    messageEntityDao.insertOrReplace(messageEntity);
+                    SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
+                    senderEntityDao.insertOrReplace(senderEntity);
+                }
 
-				//Refresh mMessageEntities
-				GetMessagesFromCache();
+                //Refresh mMessageEntities
+                GetMessagesFromCache();
 
-				handler.sendEmptyMessage(HandlerConstant.MSG_ONREFRESH);
-			}
+                handler.sendEmptyMessage(HandlerConstant.MSG_ONREFRESH);
+            }
 
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, String responseString) {
-				super.onSuccess(statusCode, headers, responseString);
-			}
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				Message msg = handler.obtainMessage();
-				msg.what = HandlerConstant.MSG_SERVER_ERROR;
-				msg.obj = throwable;
-				handler.sendMessage(msg);
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-			}
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Message msg = handler.obtainMessage();
+                msg.what = HandlerConstant.MSG_SERVER_ERROR;
+                msg.obj = throwable;
+                handler.sendMessage(msg);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-			}
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-				super.onFailure(statusCode, headers, responseString, throwable);
-				String retCode = "";
-				for (int i = 0; i < headers.length; i++) {
-					Header header = headers[i];
-					if ("code".equalsIgnoreCase(header.getName())) {
-						retCode = header.getValue();
-						break;
-					}
-				}
-				if (retCode.equals("1")) {
-					// No New Records are found
-					handler.sendEmptyMessage(HandlerConstant.MSG_NOCHANGE);
-				} else {
-					Message msg = handler.obtainMessage();
-					msg.what = HandlerConstant.MSG_SERVER_ERROR;
-					msg.obj = throwable;
-					handler.sendMessage(msg);
-				}
-			}
-		});
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                String retCode = "";
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+                if (retCode.equals("1")) {
+                    // No New Records are found
+                    handler.sendEmptyMessage(HandlerConstant.MSG_NOCHANGE);
+                } else {
+                    Message msg = handler.obtainMessage();
+                    msg.what = HandlerConstant.MSG_SERVER_ERROR;
+                    msg.obj = throwable;
+                    handler.sendMessage(msg);
+                }
+            }
+        });
 	}
 
-	public void changeAvatarStudent(String studentid, String imageFilePath, final android.os.Handler handler){
+	public void changeAvatarUser(String studentid, Object image, final android.os.Handler handler){
 		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
@@ -363,15 +368,23 @@ public class BaseFragment extends Fragment {
 		RequestParams params = new RequestParams();
 
 		if(studentid!=null) params.put("studentid", studentid);
-		if(imageFilePath!=null) {
+
+        if (image instanceof String) {
+            if (image != null) {
 //			params.put("fbody", ImageUtil.getPicString(imageFilePath, 512));
-			File file = new File(imageFilePath);
-			try {
-				params.put("fbody",file);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+                File file = new File((String)image);
+                try {
+                    params.put("fbody", file);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (image instanceof Bitmap)
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ((Bitmap)image).compress(Bitmap.CompressFormat.JPEG, 80, bos);
+            params.put("fbody", new ByteArrayInputStream(bos.toByteArray()));
+        }
 
 		CloudSchoolBusRestClient.post(ProtocolDef.METHOD_changeAvartarStudent, params, new JsonHttpResponseHandler() {
 			@Override

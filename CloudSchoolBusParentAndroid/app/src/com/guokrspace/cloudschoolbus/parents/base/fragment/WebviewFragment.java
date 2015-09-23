@@ -1,14 +1,16 @@
-package com.guokrspace.cloudschoolbus.parents.module.classes;
+package com.guokrspace.cloudschoolbus.parents.base.fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 
 import im.delight.android.webview.AdvancedWebView;
 
@@ -19,11 +21,13 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
 
     private AdvancedWebView mWebView;
     private String mUrl = null;
+    private String mTitle = "";
 
-    public static WebviewFragment newInstance(String url) {
+    public static WebviewFragment newInstance(String url, String title) {
         WebviewFragment fragment = new WebviewFragment();
         Bundle args = new Bundle();
         args.putString("url", url);
+        args.putString("title", title);
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,6 +35,7 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mUrl        = (String)getArguments().getSerializable("url");
+        mTitle      = (String)getArguments().getSerializable("title");
         super.onCreate(savedInstanceState);
     }
 
@@ -39,6 +44,7 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
         View root = inflater.inflate(R.layout.activity_webview, container, false);
         mWebView = (AdvancedWebView) root.findViewById(R.id.webView);
         mWebView.loadUrl(mUrl);
+        setHasOptionsMenu(true);
         return root;
     }
 
@@ -90,4 +96,9 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     @Override
     public void onExternalPageRequest(String url) { }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        ((MainActivity)mParentContext).getSupportActionBar().setTitle(mTitle);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 }

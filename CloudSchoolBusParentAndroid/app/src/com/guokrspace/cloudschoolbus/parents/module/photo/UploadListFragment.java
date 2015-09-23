@@ -25,7 +25,6 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEnt
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.UploadQueueAdapter;
-import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
 import com.squareup.otto.Subscribe;
 

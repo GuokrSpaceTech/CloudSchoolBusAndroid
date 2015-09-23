@@ -86,17 +86,6 @@ public class SelectUserDialogFragment extends DialogFragment {
         if(Version.PARENT) getDialog().setTitle(getResources().getString(R.string.switch_child));
         else getDialog().setTitle(getResources().getString(R.string.switch_class));
 
-        getDialog().setCancelable(true);
-
-        cancelButton = (Button)root.findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
-
-
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
 
         if(mChildren!=null)
@@ -137,7 +126,7 @@ public class SelectUserDialogFragment extends DialogFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switchChildren(position);
+                switchUser(position);
             }
         });
         return root;
@@ -194,10 +183,10 @@ public class SelectUserDialogFragment extends DialogFragment {
         }
     }
 
-    public void switchChildren(int current)
+    public void switchUser(int current)
     {
-        CloudSchoolBusParentsApplication theApplication = (CloudSchoolBusParentsApplication) getActivity()
-                .getApplicationContext();
+        CloudSchoolBusParentsApplication theApplication =
+                (CloudSchoolBusParentsApplication) getActivity().getApplicationContext();
         ConfigEntityDao configEntityDao = theApplication.mDaoSession.getConfigEntityDao();
         ConfigEntity oldConfigEntity = configEntityDao.queryBuilder().limit(1).list().get(0);
         oldConfigEntity.setCurrentChild(currentChild);
@@ -207,5 +196,6 @@ public class SelectUserDialogFragment extends DialogFragment {
 
         BusProvider.getInstance().post(new InfoSwitchedEvent(current));
 
+        dismiss();
     }
 }

@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.adapter.PictureAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -133,7 +134,7 @@ public class ClassFragment extends BaseFragment {
                 ClassifyDynamicAdapter.ClassifyModule classifyModule = (ClassifyDynamicAdapter.ClassifyModule) parent.getAdapter().getItem(position);
 
                 if(classifyModule.getUrl()!="") {
-                    WebviewFragment fragment = WebviewFragment.newInstance(classifyModule.getUrl());
+                    WebviewFragment fragment = WebviewFragment.newInstance(classifyModule.getUrl(), classifyModule.getTitle());
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.activity_class_layout, fragment);
                     transaction.addToBackStack(null);

@@ -35,4 +35,10 @@
         <item name="android:textColor">@color/primary_white</item>
         <!-- The textColor property is backward compatible with the Support Library -->
     </style>
+
+    <style name="MyFragmentDialogStyle" parent="android:Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@color/whitegrey</item>
+        <item name="android:textColor">@color/primary_dark</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>
