@@ -9,7 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
+import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 
 import java.util.List;
 
@@ -70,29 +72,11 @@ public class TagsAdapter extends BaseAdapter {
 			mSeletions[i]=false;
 	}
 
-    /**
-     * 返回当前选中的index
-     *
-     * @return
-     */
-    public String getSelection() {
-        String tagList = "";
-        for (int i = 0; i < mPhotoTagList.size(); i++) {
-            if (mSeletions[i]) {
-                tagList += mPhotoTagList.get(i).getTagid() + ",";
-            }
-        }
-
-        if(!tagList.equals(""))
-        {
-            int lastPos = tagList.lastIndexOf(",");
-            tagList = tagList.substring(0,lastPos);
-        }
-
-        return tagList;
+    public boolean[] getmSeletions() {
+        return mSeletions;
     }
 
-	/**
+    /**
 	 *
 	 * @param index
 	 * @return 返回表示当前item是否选中

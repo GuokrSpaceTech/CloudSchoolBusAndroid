@@ -37,6 +37,8 @@ public class DaoMaster extends AbstractDaoMaster {
         TeacherDutyClassRelationEntityDao.createTable(db, ifNotExists);
         StudentClassRelationEntityDao.createTable(db, ifNotExists);
         StudentParentRelationEntityDao.createTable(db, ifNotExists);
+        UploadArticleEntityDao.createTable(db, ifNotExists);
+        UploadArticleFileEntityDao.createTable(db, ifNotExists);
         SenderEntityDao.createTable(db, ifNotExists);
         TagEntityDao.createTable(db, ifNotExists);
         MessageEntityDao.createTable(db, ifNotExists);
@@ -49,8 +51,6 @@ public class DaoMaster extends AbstractDaoMaster {
         LetterEntityDao.createTable(db, ifNotExists);
         ReportEntityDao.createTable(db, ifNotExists);
         ReportItemEntityDao.createTable(db, ifNotExists);
-        UploadArticleEntityDao.createTable(db, ifNotExists);
-        UploadArticleFileEntityDao.createTable(db, ifNotExists);
     }
     
     /** Drops underlying database table using DAOs. */
@@ -73,6 +73,8 @@ public class DaoMaster extends AbstractDaoMaster {
         TeacherDutyClassRelationEntityDao.dropTable(db, ifExists);
         StudentClassRelationEntityDao.dropTable(db, ifExists);
         StudentParentRelationEntityDao.dropTable(db, ifExists);
+        UploadArticleEntityDao.dropTable(db, ifExists);
+        UploadArticleFileEntityDao.dropTable(db, ifExists);
         SenderEntityDao.dropTable(db, ifExists);
         TagEntityDao.dropTable(db, ifExists);
         MessageEntityDao.dropTable(db, ifExists);
@@ -85,8 +87,6 @@ public class DaoMaster extends AbstractDaoMaster {
         LetterEntityDao.dropTable(db, ifExists);
         ReportEntityDao.dropTable(db, ifExists);
         ReportItemEntityDao.dropTable(db, ifExists);
-        UploadArticleEntityDao.dropTable(db, ifExists);
-        UploadArticleFileEntityDao.dropTable(db, ifExists);
     }
     
     public static abstract class OpenHelper extends SQLiteOpenHelper {
@@ -136,6 +136,8 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(TeacherDutyClassRelationEntityDao.class);
         registerDaoClass(StudentClassRelationEntityDao.class);
         registerDaoClass(StudentParentRelationEntityDao.class);
+        registerDaoClass(UploadArticleEntityDao.class);
+        registerDaoClass(UploadArticleFileEntityDao.class);
         registerDaoClass(SenderEntityDao.class);
         registerDaoClass(TagEntityDao.class);
         registerDaoClass(MessageEntityDao.class);
@@ -148,8 +150,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(LetterEntityDao.class);
         registerDaoClass(ReportEntityDao.class);
         registerDaoClass(ReportItemEntityDao.class);
-        registerDaoClass(UploadArticleEntityDao.class);
-        registerDaoClass(UploadArticleFileEntityDao.class);
     }
     
     public DaoSession newSession() {

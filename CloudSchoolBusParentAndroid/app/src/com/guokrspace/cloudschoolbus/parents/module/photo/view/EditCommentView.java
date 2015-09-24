@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.android.support.utils.InputMethodUtils;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.BaseLinearLayout;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
+import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.TagsAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.ImageThumbRecycleViewAdapter;
 
@@ -136,10 +138,6 @@ public class EditCommentView extends BaseLinearLayout {
 		return mCommentEditText.getText().toString();
 	}
 
-	public String getTagListString()
-	{
-		return mTagsAdapter.getSelection();
-	}
 
     public RecyclerView.OnItemTouchListener getmThumbNailClickListener() {
         return mThumbNailClickListener;
@@ -169,4 +167,19 @@ public class EditCommentView extends BaseLinearLayout {
 				outRect.top = space;
 		}
 	}
+
+    /**
+     * 返回当前选中的index
+     *
+     * @return
+     */
+    public void updateTagSelectedDb(String pickey) {
+        for (int i = 0; i < mApplication.mTagsT.size(); i++) {
+            if ( mTagsAdapter.getmSeletions()[i]) {
+                DaoSession db = ((SelectStudentActivity) mContext).mApplication.mDaoSession;
+                mApplication.mTagsT.get(i).setPickey(pickey);
+                db.getTagsEntityTDao().update(mApplication.mTagsT.get(i));
+            }
+        }
+    }
 }

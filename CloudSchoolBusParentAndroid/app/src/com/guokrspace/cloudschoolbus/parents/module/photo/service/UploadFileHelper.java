@@ -9,8 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.support.debug.DebugLog;
+import com.android.support.utils.FileUtils;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
@@ -30,6 +33,8 @@ import org.apache.http.Header;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,32 +109,35 @@ public class UploadFileHelper {
 
 	private synchronized void uploadFile(final UploadArticleFileEntity uploadFile) {
 
-		DebugLog.logI("uploadFile");
 		RequestParams params = new RequestParams();
         params.put("fname", uploadFile.getFname());
-        params.put("fbody", new ByteArrayInputStream(uploadFile.getFbody()));
-        params.put("pickey",uploadFile.getPickey());
+        try {
+            params.put("fbody", new File(uploadFile.getFbody()));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        params.put("pickey", uploadFile.getPickey());
         params.put("pictype", uploadFile.getPictype());
         params.put("ftime", uploadFile.getFtime());
 
-		DebugLog.logI("mMethod : " + ProtocolDef.METHOD_upload + " RequestParams : " + params.toString());
+//		DebugLog.logI("mMethod : " + ProtocolDef.METHOD_upload + " RequestParams : " + params.toString());
 		CloudSchoolBusRestClient.upload(ProtocolDef.METHOD_upload, params, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-				//Remove the upload Q in DB
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                //Remove the upload Q in DB
                 removeUplodFile(uploadFile);
 
                 //Notify the fragment or activity to update list view
-				FileUploadedEvent event = new FileUploadedEvent(uploadFile);
-				event.setIsSuccess(true);
-				BusProvider.getInstance().post(event);
+                FileUploadedEvent event = new FileUploadedEvent(uploadFile);
+                event.setIsSuccess(true);
+                BusProvider.getInstance().post(event);
 
                 //Kick off next load
-				uploadNextFile();
-			}
+                uploadNextFile();
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
 
                 //Todo: needs to handle the failure scenario
                 //Remove the upload Q in DB
@@ -144,23 +152,23 @@ public class UploadFileHelper {
 
                 //Kick off next load
                 uploadNextFile();
-			}
+            }
 
-			@Override
-			public void onProgress(long bytesWritten, long totalSize) {
-				super.onProgress(bytesWritten, totalSize);
-				int progress = (int) (((double) bytesWritten / (double) totalSize) * 100);
-				UploadListFragment fragment = (UploadListFragment) mFragment;
-				View view = fragment.mUploadFileAdapter
-						.getFirstView();
-				if (null != view) {
-					TextView progressTextView = (TextView) view
-							.findViewById(R.id.progressTextView);
-					progressTextView
-							.setText(progress + "%");
-				}
-			}
-		});
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                int progress = (int) (((double) bytesWritten / (double) totalSize) * 100);
+                UploadListFragment fragment = (UploadListFragment) mFragment;
+                View view = fragment.mUploadFileAdapter
+                        .getFirstView();
+                if (null != view) {
+                    TextView progressTextView = (TextView) view
+                            .findViewById(R.id.progressTextView);
+                    progressTextView
+                            .setText(progress + "%");
+                }
+            }
+        });
 	}
 
 
@@ -173,10 +181,9 @@ public class UploadFileHelper {
         params.put("pictype", uploadArticle.getPictype());
         params.put("classid", uploadArticle.getClassid());
         params.put("teacherid", uploadArticle.getTeacherid());
-        params.put("studentids", uploadArticle.getStudentids());
-        params.put("tagids", uploadArticle.getTagids());
+        params.put("studentids", generateStudentidstring(uploadArticle));
+        params.put("tagids", generateTagidString(uploadArticle));
         params.put("content", uploadArticle.getContent());
-
 
         DebugLog.logI("mMethod : " + ProtocolDef.METHOD_over + " RequestParams : " + params.toString());
         CloudSchoolBusRestClient.upload(ProtocolDef.METHOD_over, params, new AsyncHttpResponseHandler() {
@@ -196,9 +203,8 @@ public class UploadFileHelper {
     }
 
 
-    public void addUploadQueue( ArrayList<Picture> pictureList, String content, String tagids, String studentids)
+    public void addUploadQueue( ArrayList<Picture> pictureList, String content, String pickey)
     {
-        String pickey = System.currentTimeMillis() + mApplication.mConfig.getUserid();
         int currentclass = mApplication.mConfig.getCurrentChild();
         String classid = mApplication.mTeacherClassDutys.get(currentclass).getClassid();
 
@@ -208,8 +214,6 @@ public class UploadFileHelper {
         uploadArticle.setPictype("article");
         uploadArticle.setClassid(classid);
         uploadArticle.setContent(content);
-        uploadArticle.setStudentids(studentids);
-        uploadArticle.setTagids(tagids);
 
         mApplication.mDaoSession.getUploadArticleEntityDao().insert(uploadArticle);
 
@@ -225,18 +229,10 @@ public class UploadFileHelper {
                 ftime = (file.lastModified()/1000) + "";
                 fname = picPathString.substring(picPathString.lastIndexOf("/") + 1);
             }
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.inDither = false;                     //Disable Dithering mode
-            opts.inPurgeable = true;                   //Tell to gc that whether it needs free memory, the Bitmap can be cleared
-            opts.inInputShareable = true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
-            opts.inTempStorage = new byte[32 * 1024];
-            Bitmap bmp = BitmapFactory.decodeFile(picPathString);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 70, bos);
 
             uploadFile.setFname(fname);
             uploadFile.setFtime(ftime);
-            uploadFile.setFbody(bos.toByteArray());
+            uploadFile.setFbody(picPathString);
             uploadFile.setPictype("article");
             uploadFile.setPickey(pickey);
 
@@ -296,5 +292,51 @@ public class UploadFileHelper {
     {
         mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
         mApplication.mDaoSession.clear();
+    }
+
+    public String generateStudentidstring(UploadArticleEntity article)
+    {
+        String retStr = "";
+        for(StudentEntityT student : article.getStudentEntityTList())
+        {
+            retStr += student.getStudentid() + ",";
+        }
+
+        if(!retStr.equals("")) {
+            int end = retStr.lastIndexOf(',');
+            retStr = retStr.substring(0, end);
+        }
+
+        return retStr;
+    }
+
+    public String generateTagidString(UploadArticleEntity article)
+    {
+        String retStr = "";
+        for(TagsEntityT tag : article.getTagsEntityTList())
+        {
+            retStr += tag.getTagid() + ",";
+        }
+
+        if(!retStr.equals("")) {
+            int end = retStr.lastIndexOf(',');
+            retStr = retStr.substring(0, end);
+        }
+
+        return retStr;
+    }
+
+    public ByteArrayOutputStream generateUplodinputString(UploadArticleFileEntity fileEntity)
+    {
+
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inDither = false;                     //Disable Dithering mode
+        opts.inPurgeable = true;                   //Tell to gc that whether it needs free memory, the Bitmap can be cleared
+        opts.inInputShareable = true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
+        opts.inTempStorage = new byte[32 * 1024];
+        Bitmap bmp = BitmapFactory.decodeFile(fileEntity.getFbody(),opts);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 70, bos);
+        return bos;
     }
 }

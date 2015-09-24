@@ -7,7 +7,7 @@ package com.guokrspace.cloudschoolbus.parents.database.daodb;
 public class UploadArticleFileEntity {
 
     private Long id;
-    private byte[] fbody;
+    private String fbody;
     private String fname;
     private String ftime;
     private String pictype;
@@ -22,7 +22,7 @@ public class UploadArticleFileEntity {
         this.id = id;
     }
 
-    public UploadArticleFileEntity(Long id, byte[] fbody, String fname, String ftime, String pictype, Boolean isSuccess, String pickey) {
+    public UploadArticleFileEntity(Long id, String fbody, String fname, String ftime, String pictype, Boolean isSuccess, String pickey) {
         this.id = id;
         this.fbody = fbody;
         this.fname = fname;
@@ -40,11 +40,11 @@ public class UploadArticleFileEntity {
         this.id = id;
     }
 
-    public byte[] getFbody() {
+    public String getFbody() {
         return fbody;
     }
 
-    public void setFbody(byte[] fbody) {
+    public void setFbody(String fbody) {
         this.fbody = fbody;
     }
 

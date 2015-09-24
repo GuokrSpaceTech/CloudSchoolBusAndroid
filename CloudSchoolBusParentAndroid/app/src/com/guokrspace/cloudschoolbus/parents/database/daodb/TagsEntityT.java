@@ -13,6 +13,7 @@ public class TagsEntityT {
     private String tagnamedesc_en;
     /** Not-null value. */
     private String schoolid;
+    private String pickey;
 
     public TagsEntityT() {
     }
@@ -21,13 +22,14 @@ public class TagsEntityT {
         this.tagid = tagid;
     }
 
-    public TagsEntityT(String tagid, String tagname, String tagname_en, String tagnamedesc, String tagnamedesc_en, String schoolid) {
+    public TagsEntityT(String tagid, String tagname, String tagname_en, String tagnamedesc, String tagnamedesc_en, String schoolid, String pickey) {
         this.tagid = tagid;
         this.tagname = tagname;
         this.tagname_en = tagname_en;
         this.tagnamedesc = tagnamedesc;
         this.tagnamedesc_en = tagnamedesc_en;
         this.schoolid = schoolid;
+        this.pickey = pickey;
     }
 
     public String getTagid() {
@@ -78,6 +80,14 @@ public class TagsEntityT {
     /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setSchoolid(String schoolid) {
         this.schoolid = schoolid;
+    }
+
+    public String getPickey() {
+        return pickey;
+    }
+
+    public void setPickey(String pickey) {
+        this.pickey = pickey;
     }
 
 }

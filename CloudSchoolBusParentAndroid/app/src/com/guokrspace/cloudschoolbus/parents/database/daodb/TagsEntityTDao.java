@@ -32,9 +32,11 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
         public final static Property Tagnamedesc = new Property(3, String.class, "tagnamedesc", false, "TAGNAMEDESC");
         public final static Property Tagnamedesc_en = new Property(4, String.class, "tagnamedesc_en", false, "TAGNAMEDESC_EN");
         public final static Property Schoolid = new Property(5, String.class, "schoolid", false, "SCHOOLID");
+        public final static Property Pickey = new Property(6, String.class, "pickey", false, "PICKEY");
     };
 
     private Query<TagsEntityT> schoolEntityT_TagsEntityTListQuery;
+    private Query<TagsEntityT> uploadArticleEntity_TagsEntityTListQuery;
 
     public TagsEntityTDao(DaoConfig config) {
         super(config);
@@ -53,7 +55,8 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
                 "'TAGNAME_EN' TEXT," + // 2: tagname_en
                 "'TAGNAMEDESC' TEXT," + // 3: tagnamedesc
                 "'TAGNAMEDESC_EN' TEXT," + // 4: tagnamedesc_en
-                "'SCHOOLID' TEXT NOT NULL );"); // 5: schoolid
+                "'SCHOOLID' TEXT NOT NULL ," + // 5: schoolid
+                "'PICKEY' TEXT);"); // 6: pickey
     }
 
     /** Drops the underlying database table. */
@@ -92,6 +95,11 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
             stmt.bindString(5, tagnamedesc_en);
         }
         stmt.bindString(6, entity.getSchoolid());
+ 
+        String pickey = entity.getPickey();
+        if (pickey != null) {
+            stmt.bindString(7, pickey);
+        }
     }
 
     /** @inheritdoc */
@@ -109,7 +117,8 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tagname_en
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // tagnamedesc
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // tagnamedesc_en
-            cursor.getString(offset + 5) // schoolid
+            cursor.getString(offset + 5), // schoolid
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // pickey
         );
         return entity;
     }
@@ -123,6 +132,7 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
         entity.setTagnamedesc(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setTagnamedesc_en(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setSchoolid(cursor.getString(offset + 5));
+        entity.setPickey(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     /** @inheritdoc */
@@ -158,6 +168,20 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
         }
         Query<TagsEntityT> query = schoolEntityT_TagsEntityTListQuery.forCurrentThread();
         query.setParameter(0, schoolid);
+        return query.list();
+    }
+
+    /** Internal query to resolve the "tagsEntityTList" to-many relationship of UploadArticleEntity. */
+    public List<TagsEntityT> _queryUploadArticleEntity_TagsEntityTList(String pickey) {
+        synchronized (this) {
+            if (uploadArticleEntity_TagsEntityTListQuery == null) {
+                QueryBuilder<TagsEntityT> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.Pickey.eq(null));
+                uploadArticleEntity_TagsEntityTListQuery = queryBuilder.build();
+            }
+        }
+        Query<TagsEntityT> query = uploadArticleEntity_TagsEntityTListQuery.forCurrentThread();
+        query.setParameter(0, pickey);
         return query.list();
     }
 

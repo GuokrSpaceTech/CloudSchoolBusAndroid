@@ -27,7 +27,7 @@ public class UploadArticleFileEntityDao extends AbstractDao<UploadArticleFileEnt
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Fbody = new Property(1, byte[].class, "fbody", false, "FBODY");
+        public final static Property Fbody = new Property(1, String.class, "fbody", false, "FBODY");
         public final static Property Fname = new Property(2, String.class, "fname", false, "FNAME");
         public final static Property Ftime = new Property(3, String.class, "ftime", false, "FTIME");
         public final static Property Pictype = new Property(4, String.class, "pictype", false, "PICTYPE");
@@ -50,7 +50,7 @@ public class UploadArticleFileEntityDao extends AbstractDao<UploadArticleFileEnt
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'UPLOAD_ARTICLE_FILE_ENTITY' (" + //
                 "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "'FBODY' BLOB," + // 1: fbody
+                "'FBODY' TEXT," + // 1: fbody
                 "'FNAME' TEXT," + // 2: fname
                 "'FTIME' TEXT," + // 3: ftime
                 "'PICTYPE' TEXT," + // 4: pictype
@@ -74,9 +74,9 @@ public class UploadArticleFileEntityDao extends AbstractDao<UploadArticleFileEnt
             stmt.bindLong(1, id);
         }
  
-        byte[] fbody = entity.getFbody();
+        String fbody = entity.getFbody();
         if (fbody != null) {
-            stmt.bindBlob(2, fbody);
+            stmt.bindString(2, fbody);
         }
  
         String fname = entity.getFname();
@@ -112,7 +112,7 @@ public class UploadArticleFileEntityDao extends AbstractDao<UploadArticleFileEnt
     public UploadArticleFileEntity readEntity(Cursor cursor, int offset) {
         UploadArticleFileEntity entity = new UploadArticleFileEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getBlob(offset + 1), // fbody
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // fbody
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // fname
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // ftime
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // pictype
@@ -126,7 +126,7 @@ public class UploadArticleFileEntityDao extends AbstractDao<UploadArticleFileEnt
     @Override
     public void readEntity(Cursor cursor, UploadArticleFileEntity entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setFbody(cursor.isNull(offset + 1) ? null : cursor.getBlob(offset + 1));
+        entity.setFbody(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setFname(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setFtime(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setPictype(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));

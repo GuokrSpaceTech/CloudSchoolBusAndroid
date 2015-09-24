@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.BaseLinearLayout;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
+import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.StuSelectAdapter;
 
@@ -79,8 +81,8 @@ public class SelectedStuView extends BaseLinearLayout {
 		mGridView.setOnItemClickListener(mItemClickListener);
 	}
 
-	public String getSelectionString() {
-        String retStr="";
+	public void updateStudentSelectedDb(String pickey) {
+        DaoSession db = ((SelectStudentActivity)mContext).mApplication.mDaoSession;
         HashMap map = mStuSelectAdapter.getmSelections();
         Iterator it = map.entrySet().iterator();
         while (it.hasNext()) {
@@ -88,12 +90,22 @@ public class SelectedStuView extends BaseLinearLayout {
 
             if(pair.getKey() == 0) //Select all students
             {
-                //Todo: didn't differnetial parent and teacher app
+                for(StudentEntityT student:mStudents)
+                {
+                    student.setPickey(pickey);
+                    db.getStudentEntityTDao().update(student);
+                }
+
             } else {
-                retStr += ((StudentEntityT)pair.getValue()).getStudentid() + ",";
+                StudentEntityT student = (StudentEntityT)pair.getValue();
+                student.setPickey(pickey);
+                db.getStudentEntityTDao().update(student);
             }
         }
+    }
 
-        return retStr.substring(0, retStr.lastIndexOf(',') - 1);
+    public boolean hasSelection()
+    {
+        return (mStuSelectAdapter.getmSelections().isEmpty());
     }
 }

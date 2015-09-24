@@ -21,6 +21,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEnt
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -90,11 +91,12 @@ public class UploadQueueAdapter extends BaseAdapter {
 
 
         //http://stackoverflow.com/questions/477572/strange-out-of-memory-issue-while-loading-an-image-to-a-bitmap-object/823966#823966
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        InputStream is = new ByteArrayInputStream(uploadFile.getFbody());
-        opts.inSampleSize = 32;
-        Bitmap preview_bitmap = BitmapFactory.decodeStream(is, null, opts);
-        leftImageView.setImageBitmap(preview_bitmap);
+//        BitmapFactory.Options opts = new BitmapFactory.Options();
+//        InputStream is = new ByteArrayInputStream(uploadFile.getFbody());
+//        opts.inSampleSize = 32;
+//        Bitmap preview_bitmap = BitmapFactory.decodeStream(is, null, opts);
+//        leftImageView.setImageBitmap(preview_bitmap);
+//        Picasso.with(mContext).load(uploadFile.getFbody()).centerCrop().fit().into(leftImageView);
 
         TextView fileNameTextView = (TextView) arg1.findViewById(R.id.fileNameTextView);
 
@@ -104,7 +106,8 @@ public class UploadQueueAdapter extends BaseAdapter {
         double fileSize = 0D;
         String fileSizeString = "0";
         try {
-            fileSize = uploadFile.getFbody().length;
+            File file = new File(uploadFile.getFbody());
+            fileSize = file.length();
             fileSize = fileSize / 1024 / 1024;
             DecimalFormat df = new DecimalFormat("0.000");
             fileSizeString = df.format(fileSize);

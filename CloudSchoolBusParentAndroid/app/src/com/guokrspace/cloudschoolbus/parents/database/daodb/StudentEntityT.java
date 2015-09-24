@@ -13,6 +13,7 @@ public class StudentEntityT {
     private String sex;
     private String birthday;
     private String avatar;
+    private String pickey;
 
     public StudentEntityT() {
     }
@@ -21,13 +22,14 @@ public class StudentEntityT {
         this.studentid = studentid;
     }
 
-    public StudentEntityT(String studentid, String nikename, String cnname, String sex, String birthday, String avatar) {
+    public StudentEntityT(String studentid, String nikename, String cnname, String sex, String birthday, String avatar, String pickey) {
         this.studentid = studentid;
         this.nikename = nikename;
         this.cnname = cnname;
         this.sex = sex;
         this.birthday = birthday;
         this.avatar = avatar;
+        this.pickey = pickey;
     }
 
     /** Not-null value. */
@@ -78,6 +80,14 @@ public class StudentEntityT {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getPickey() {
+        return pickey;
+    }
+
+    public void setPickey(String pickey) {
+        this.pickey = pickey;
     }
 
 }

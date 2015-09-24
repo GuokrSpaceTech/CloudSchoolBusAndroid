@@ -97,7 +97,7 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         mStudentClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(!mStudentView.getSelectionString().equals(""))
+                if(!mStudentView.hasSelection())
                 {
                     mUploadAction.setEnabled(false);
                 } else
@@ -126,13 +126,13 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         int id = item.getItemId();
 
         if (id == R.id.action_upload) {
+            String pickey = System.currentTimeMillis() + mApplication.mConfig.getUserid();
+
             mCommentStr = mCommentView.getCommentText();
-            mTagListStr = mCommentView.getTagListString();
-            mStudentListStr = mStudentView.getSelectionString();
-
-
+            mCommentView.updateTagSelectedDb(pickey);
+            mStudentView.updateStudentSelectedDb(pickey);
             UploadFileHelper.getInstance().setContext(mContext);
-            UploadFileHelper.getInstance().addUploadQueue(mPictures, mCommentStr, mTagListStr, mStudentListStr);
+            UploadFileHelper.getInstance().addUploadQueue(mPictures, mCommentStr, pickey);
 //            UploadFileHelper.getInstance().setUploadFileDB(mUploadFiles);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.mainFrameLayout, new UploadListFragment(), "uploadlist");

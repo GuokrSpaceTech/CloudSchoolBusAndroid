@@ -44,7 +44,7 @@ public class DAODBGenerator {
         note.addStringProperty("mobile");
         note.addStringProperty("userid");
         note.addStringProperty("imToken");
-        note.addIntProperty("currentChild");
+        note.addIntProperty("currentuser");
     }
 
     private static void addBaseInfo(Schema schema) {
@@ -109,6 +109,7 @@ public class DAODBGenerator {
         student.addStringProperty("sex");
         student.addStringProperty("birthday");
         student.addStringProperty("avatar");
+        Property uploadArticleIdStudent = student.addStringProperty("pickey").getProperty();
 
         Entity parent = schema.addEntity("ParentEntityT");
         Property parentId = parent.addStringProperty("parentid").notNull().primaryKey().getProperty();
@@ -135,6 +136,7 @@ public class DAODBGenerator {
         tags.addStringProperty("tagnamedesc");
         tags.addStringProperty("tagnamedesc_en");
         Property schoolidtags = tags.addStringProperty("schoolid").notNull().getProperty();
+        Property uploadArticleIdTags = tags.addStringProperty("pickey").getProperty();
 
         Entity messagetype = schema.addEntity("MessageTypeEntity");
         Property messgetypeid = messagetype.addStringProperty("id").notNull().primaryKey().getProperty();
@@ -173,6 +175,26 @@ public class DAODBGenerator {
         ToMany schoolToclassmodule = school.addToMany(classmodule, schoolidclassmodule);
         ToMany schoolToduty = school.addToMany(teacherDuty, schoolidteacherduty);
         ToMany schoolToTeacher = school.addToMany(teacher,schoolidteacher);
+
+        Entity article = schema.addEntity("UploadArticleEntity");
+        article.addStringProperty("pickey").primaryKey().notNull();
+        article.addStringProperty("pictype");
+        article.addStringProperty("classid");
+        article.addStringProperty("teacherid");
+        article.addStringProperty("content");
+
+        Entity singlefile = schema.addEntity("UploadArticleFileEntity");
+        singlefile.addIdProperty().primaryKey().autoincrement();
+        singlefile.addStringProperty("fbody");
+        singlefile.addStringProperty("fname");
+        singlefile.addStringProperty("ftime");
+        singlefile.addStringProperty("pictype");
+        singlefile.addBooleanProperty("isSuccess");
+        Property pickey = singlefile.addStringProperty("pickey").notNull().getProperty();
+
+        ToMany articleToFiles = article.addToMany(singlefile, pickey);
+        ToMany articleToTags  = article.addToMany(tags, uploadArticleIdTags);
+        ToMany articleToStudents = article.addToMany(student,uploadArticleIdStudent);
     }
 
     private static void addTimeline(Schema schema)
@@ -331,24 +353,6 @@ public class DAODBGenerator {
 
     private static void addUploadingPhotos(Schema schema)
     {
-        Entity article = schema.addEntity("UploadArticleEntity");
-        article.addStringProperty("pickey").primaryKey().notNull();
-        article.addStringProperty("pictype");
-        article.addStringProperty("classid");
-        article.addStringProperty("teacherid");
-        article.addStringProperty("studentids");
-        article.addStringProperty("tagids");
-        article.addStringProperty("content");
 
-        Entity singlefile = schema.addEntity("UploadArticleFileEntity");
-        singlefile.addIdProperty().primaryKey().autoincrement();
-        singlefile.addByteArrayProperty("fbody");
-        singlefile.addStringProperty("fname");
-        singlefile.addStringProperty("ftime");
-        singlefile.addStringProperty("pictype");
-        singlefile.addBooleanProperty("isSuccess");
-        Property pickey = singlefile.addStringProperty("pickey").notNull().getProperty();
-
-        ToMany articleToFiles = article.addToMany(singlefile, pickey);
     }
 }
