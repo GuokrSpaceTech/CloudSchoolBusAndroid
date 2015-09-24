@@ -570,6 +570,7 @@ public class BaseFragment extends Fragment {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+        if(pictureUrls!=null)
 		card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls));
 		final List<TagEntity> tagEntities = message.getTagEntityList();
 		TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);

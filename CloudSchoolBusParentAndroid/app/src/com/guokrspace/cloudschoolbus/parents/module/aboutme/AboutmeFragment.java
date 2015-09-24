@@ -349,11 +349,11 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
     private void showSwithUserDialog()
     {
-        ArrayList<ClassEntityT> classes = findMyClass();
         SelectUserDialogFragment theDialogFragment = null;
         if (Version.PARENT) {
             theDialogFragment  = SelectUserDialogFragment.newInstance((ArrayList) mApplication.mStudents, "student");
         } else {
+            ArrayList<ClassEntityT> classes = findMyClass();
             theDialogFragment = SelectUserDialogFragment.newInstance(classes, "class");
         }
 

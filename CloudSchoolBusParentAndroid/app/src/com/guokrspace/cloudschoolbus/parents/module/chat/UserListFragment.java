@@ -330,6 +330,7 @@ public class UserListFragment extends BaseFragment {
         @Override
         public void onMessageIncreased(int count) {
             Log.i("", "" + count);
+            if(!Version.PARENT)
             selectContacts(mCurrentClassid, mIsParent);
         }
     }

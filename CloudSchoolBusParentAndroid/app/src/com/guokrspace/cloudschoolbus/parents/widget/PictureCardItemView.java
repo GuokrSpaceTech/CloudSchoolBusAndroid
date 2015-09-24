@@ -96,15 +96,21 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
 
         //ImageGrid
         GridView gridView = (GridView) findViewById(R.id.dynamic_grid);
-        if(card.getImageAdapter().getCount()== 4){
-            gridView.setNumColumns(2);
-            ViewGroup.LayoutParams layoutParams = gridView.getLayoutParams();
-            layoutParams.width = getResources().getDimensionPixelSize(R.dimen.timeline_thumb_pic_width) *2 + getResources().getDimensionPixelSize(R.dimen.timeline_thumb_pic_spacing);
-            gridView.setLayoutParams(layoutParams);
+        if(card.getImageAdapter()!=null) {
+            if (card.getImageAdapter().getCount() == 4) {
+                gridView.setNumColumns(2);
+                ViewGroup.LayoutParams layoutParams = gridView.getLayoutParams();
+                layoutParams.width = getResources().getDimensionPixelSize(R.dimen.timeline_thumb_pic_width) * 2 + getResources().getDimensionPixelSize(R.dimen.timeline_thumb_pic_spacing);
+                gridView.setLayoutParams(layoutParams);
+            } else if(card.getImageAdapter().getCount() > 1){
+                gridView.setNumColumns(3);
+                ViewGroup.LayoutParams layoutParams = gridView.getLayoutParams();
+                layoutParams.width = getResources().getDimensionPixelSize(R.dimen.timeline_thumb_pic_width) * 3 + getResources().getDimensionPixelSize(R.dimen.timeline_thumb_pic_spacing);
+                gridView.setLayoutParams(layoutParams);
+            }
+
+            gridView.setAdapter(card.getImageAdapter());
         }
-
-        gridView.setAdapter(card.getImageAdapter());
-
         /*
          * Card Bottom
          */

@@ -67,7 +67,13 @@ public class ImageAdapter extends BaseAdapter {
 
         String url = mPicUrls.get(position);
 
-        Picasso.with(mContext).load(url).into(imageView);
+        if( url.contains("orig") )
+        {
+            url = url.replace("orig","thumbs");
+            url = url + ".tiny.jpg";
+        }
+
+        Picasso.with(mContext).load(url).centerCrop().fit().into(imageView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
