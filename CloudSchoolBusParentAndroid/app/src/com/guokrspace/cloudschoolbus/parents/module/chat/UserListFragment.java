@@ -139,13 +139,15 @@ public class UserListFragment extends BaseFragment {
                         mTargetID = findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
                         userName = findTeachersinClass(mCurrentClassid).get(position).getNickname();
                     }
+
+                    setUpChattingPageActionbar();
+
                 } else {
                     activity.setActionBarTitle(userName, getResources().getString(R.string.module_teacher));
                     userName = mApplication.mTeachers.get(position).getName();
                     mTargetID = mApplication.mTeachers.get(position).getId();
                 }
 
-                setUpChattingPageActionbar();
 
                 ConversationFragment fragment = new ConversationFragment();
                 Uri uri = Uri.parse("rong://" + getActivity().getApplicationInfo().packageName).buildUpon()
@@ -314,9 +316,13 @@ public class UserListFragment extends BaseFragment {
 
     private void setUpChattingPageActionbar()
     {
-        mMenu.clear();
-        mainActivity.getSupportActionBar().setTitle(userName);
-        mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        if(!Version.PARENT) {
+            mMenu.clear();
+            mainActivity.getSupportActionBar().setTitle(userName);
+            mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        } else {
+            mainActivity.getSupportActionBar().setTitle(userName);
+        }
     }
 
     /**

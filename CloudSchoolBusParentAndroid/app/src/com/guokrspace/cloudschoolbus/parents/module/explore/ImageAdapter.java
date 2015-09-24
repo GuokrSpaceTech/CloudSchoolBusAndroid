@@ -70,8 +70,8 @@ public class ImageAdapter extends BaseAdapter {
         if( url.contains("orig") )
         {
             url = url.replace("orig","thumbs");
-            url = url + ".tiny.jpg";
         }
+        url = url + ".tiny.jpg";
 
         Picasso.with(mContext).load(url).centerCrop().fit().into(imageView);
 
