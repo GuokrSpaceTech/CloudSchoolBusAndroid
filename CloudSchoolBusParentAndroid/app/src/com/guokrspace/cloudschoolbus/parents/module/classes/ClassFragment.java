@@ -55,7 +55,6 @@ public class ClassFragment extends BaseFragment {
     private static final String TAG = ClassFragment.class.getName();
     private OnCompleteListener mListener;
     List<Picture> mPictureList = new ArrayList<>();
-    PictureAdapter mPictureAdapter;
     private ImageView mTeacherAvatar;
     private TextView  mClassName;
     private TextView  mSchoolName;

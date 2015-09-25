@@ -1,43 +1,38 @@
 package com.guokrspace.cloudschoolbus.parents.module.photo.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.module.photo.view.SquareImageView;
-import com.squareup.picasso.Picasso;
-
-import net.soulwolf.image.picturelib.model.Picture;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
 
 import java.util.List;
 
 /**
  * Created by kai on 7/16/15.
  */
-public class ImageThumbRecycleViewAdapter extends RecyclerView.Adapter<ImageThumbRecycleViewAdapter.ViewHolder> {
-    private List<Picture> mDataset;
-    private Context mContext;
+public class TagRecycleViewAdapter extends RecyclerView.Adapter<TagRecycleViewAdapter.ViewHolder> {
+    private List<TagsEntityT> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public ImageView mThumbnail;
-        public ViewHolder(View v) {
+        public Button mTagButton;
+        public ViewHolder(Button v) {
             super(v);
-            mThumbnail = (SquareImageView)(v);
+            mTagButton = v;
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ImageThumbRecycleViewAdapter(Context context, List<Picture> myDataset) {
+    public TagRecycleViewAdapter(List<TagsEntityT> myDataset) {
         mDataset = myDataset;
-        mContext = context;
     }
 
     // Create new views (invoked by the layout manager)
@@ -45,9 +40,10 @@ public class ImageThumbRecycleViewAdapter extends RecyclerView.Adapter<ImageThum
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.thumb_image, parent, false);
+                .inflate(R.layout.tag_button, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(v);
+
+        ViewHolder vh = new ViewHolder((Button)v);
         return vh;
     }
 
@@ -56,7 +52,7 @@ public class ImageThumbRecycleViewAdapter extends RecyclerView.Adapter<ImageThum
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Picasso.with(mContext).load(mDataset.get(position).getPicturePath()).centerCrop().fit().into(holder.mThumbnail);
+        holder.mTagButton.setText(mDataset.get(position).getTagname());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

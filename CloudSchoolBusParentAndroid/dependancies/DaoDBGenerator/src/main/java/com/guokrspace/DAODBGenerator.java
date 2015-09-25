@@ -31,7 +31,6 @@ public class DAODBGenerator {
         addSchedule(schema);
         addLetter(schema);
         addReport(schema);
-        addUploadingPhotos(schema);
 
         new DaoGenerator().generateAll(schema, "src-gen");
     }
@@ -182,6 +181,7 @@ public class DAODBGenerator {
         article.addStringProperty("classid");
         article.addStringProperty("teacherid");
         article.addStringProperty("content");
+        article.addStringProperty("sendtime");
 
         Entity singlefile = schema.addEntity("UploadArticleFileEntity");
         singlefile.addIdProperty().primaryKey().autoincrement();
@@ -349,10 +349,5 @@ public class DAODBGenerator {
         letters.addStringProperty("addtime");
         letters.addStringProperty("content");
         letters.addBooleanProperty("isShowDate");
-    }
-
-    private static void addUploadingPhotos(Schema schema)
-    {
-
     }
 }

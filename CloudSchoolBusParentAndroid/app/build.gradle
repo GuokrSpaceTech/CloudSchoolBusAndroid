@@ -22,7 +22,10 @@ dependencies {
     compile project(':AndroidTouchGallery')
     compile project(':PictureChooseLib')
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
-//    compile 'com.github.elevenetc:badgeview:v1.0.0'
+    compile 'jp.wasabeef:picasso-transformations:1.2.1'
+    // If you want to use the GPU Filters
+//    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.3.0'
+    // If you want to use the GPU Filters
 }
 
 android {
@@ -35,6 +38,9 @@ android {
 
         versionName project.SAMPLE_VERSION_NAME
         versionCode Integer.parseInt(project.SAMPLE_VERSION_CODE)
+
+        renderscriptTargetApi 23
+        renderscriptSupportModeEnabled true
     }
 
     signingConfigs { release }

@@ -27,6 +27,7 @@ public class UploadArticleEntityDao extends AbstractDao<UploadArticleEntity, Str
         public final static Property Classid = new Property(2, String.class, "classid", false, "CLASSID");
         public final static Property Teacherid = new Property(3, String.class, "teacherid", false, "TEACHERID");
         public final static Property Content = new Property(4, String.class, "content", false, "CONTENT");
+        public final static Property Sendtime = new Property(5, String.class, "sendtime", false, "SENDTIME");
     };
 
     private DaoSession daoSession;
@@ -49,7 +50,8 @@ public class UploadArticleEntityDao extends AbstractDao<UploadArticleEntity, Str
                 "'PICTYPE' TEXT," + // 1: pictype
                 "'CLASSID' TEXT," + // 2: classid
                 "'TEACHERID' TEXT," + // 3: teacherid
-                "'CONTENT' TEXT);"); // 4: content
+                "'CONTENT' TEXT," + // 4: content
+                "'SENDTIME' TEXT);"); // 5: sendtime
     }
 
     /** Drops the underlying database table. */
@@ -83,6 +85,11 @@ public class UploadArticleEntityDao extends AbstractDao<UploadArticleEntity, Str
         if (content != null) {
             stmt.bindString(5, content);
         }
+ 
+        String sendtime = entity.getSendtime();
+        if (sendtime != null) {
+            stmt.bindString(6, sendtime);
+        }
     }
 
     @Override
@@ -105,7 +112,8 @@ public class UploadArticleEntityDao extends AbstractDao<UploadArticleEntity, Str
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // pictype
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // classid
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // teacherid
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // content
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // content
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // sendtime
         );
         return entity;
     }
@@ -118,6 +126,7 @@ public class UploadArticleEntityDao extends AbstractDao<UploadArticleEntity, Str
         entity.setClassid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setTeacherid(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setContent(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setSendtime(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     
     /** @inheritdoc */

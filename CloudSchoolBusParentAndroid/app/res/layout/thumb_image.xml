@@ -1,7 +1,9 @@
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-     android:id="@+id/imageView"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_centerInParent="true"
-        android:scaleType="centerCrop">
-</ImageView>
+<?xml version="1.0" encoding="utf-8"?>
+<com.guokrspace.cloudschoolbus.parents.module.photo.view.SquareImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="50dp"
+    android:layout_height="fill_parent"
+    android:id="@+id/imagethumb"
+    android:scaleType="centerCrop"
+    android:src="@drawable/pd_empty_picture"
+    android:layout_centerInParent="true" />

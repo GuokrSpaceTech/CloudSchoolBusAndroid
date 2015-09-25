@@ -133,10 +133,11 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             mStudentView.updateStudentSelectedDb(pickey);
             UploadFileHelper.getInstance().setContext(mContext);
             UploadFileHelper.getInstance().addUploadQueue(mPictures, mCommentStr, pickey);
-//            UploadFileHelper.getInstance().setUploadFileDB(mUploadFiles);
+            UploadFileHelper.getInstance().uploadFileService();
+
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.mainFrameLayout, new UploadListFragment(), "uploadlist");
-            transaction.addToBackStack("uploadlist");
+            transaction.replace(R.id.mainFrameLayout, new SentRecordFragment(), "sentrecord");
+            transaction.addToBackStack("sentrecord");
             transaction.commit();
             return true;
         }

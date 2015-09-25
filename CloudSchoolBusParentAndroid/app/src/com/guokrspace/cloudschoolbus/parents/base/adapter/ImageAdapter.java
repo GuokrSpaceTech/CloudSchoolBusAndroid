@@ -1,7 +1,10 @@
-package com.guokrspace.cloudschoolbus.parents.module.explore;
+package com.guokrspace.cloudschoolbus.parents.base.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,13 +70,17 @@ public class ImageAdapter extends BaseAdapter {
 
         String url = mPicUrls.get(position);
 
-        if( url.contains("orig") )
-        {
-            url = url.replace("orig","thumbs");
+        if(url.contains("http://") || url.contains("file://")) {
+            if (url.contains("orig")) { url = url.replace("orig", "thumbs"); }
+            url = url + ".tiny.jpg";
+            Picasso.with(mContext).load(url).centerCrop().fit().into(imageView);
+        } else {
+            Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(url), 60, 60);
+            imageView.setImageBitmap(ThumbImage);
+            url = "file://" + url;
+            mPicUrls.set(position, url);
+//            Picasso.with(mContext).load(url).centerCrop().fit().into(imageView);
         }
-        url = url + ".tiny.jpg";
-
-        Picasso.with(mContext).load(url).centerCrop().fit().into(imageView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,4 +97,3 @@ public class ImageAdapter extends BaseAdapter {
         return imageView;
     }
 }
-

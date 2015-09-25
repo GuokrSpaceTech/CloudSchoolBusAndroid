@@ -17,6 +17,7 @@ public class UploadArticleEntity {
     private String classid;
     private String teacherid;
     private String content;
+    private String sendtime;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -35,12 +36,13 @@ public class UploadArticleEntity {
         this.pickey = pickey;
     }
 
-    public UploadArticleEntity(String pickey, String pictype, String classid, String teacherid, String content) {
+    public UploadArticleEntity(String pickey, String pictype, String classid, String teacherid, String content, String sendtime) {
         this.pickey = pickey;
         this.pictype = pictype;
         this.classid = classid;
         this.teacherid = teacherid;
         this.content = content;
+        this.sendtime = sendtime;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -89,6 +91,14 @@ public class UploadArticleEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getSendtime() {
+        return sendtime;
+    }
+
+    public void setSendtime(String sendtime) {
+        this.sendtime = sendtime;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

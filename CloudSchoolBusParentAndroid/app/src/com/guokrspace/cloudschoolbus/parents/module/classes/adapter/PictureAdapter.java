@@ -65,7 +65,7 @@ public class PictureAdapter extends BaseAdapter {
         if(convertView == null){
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.listview_picture_item,null);
-            holder.mPictureView = (ImageView) convertView.findViewById(R.id.pi_picture_item_image);
+            holder.mPictureView = (ImageView) convertView.findViewById(R.id.picture_item_image);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();

@@ -15,38 +15,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 
 import com.android.support.debug.DebugLog;
+import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
-import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
-import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.UploadQueueAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.SentPictureAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.TagRecycleViewAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
+import com.guokrspace.cloudschoolbus.parents.widget.PictureSentCard;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UploadListFragment extends BaseFragment {
+public class SentRecordFragment extends BaseFragment {
 
 	/** 更新上传列表 */
-	public static final String ACTION_UPDATE_UPLOAD_LIST = "action_update_upload_list";
     private static final int MENU_CONTEXT_DELETE_ID = 0xF;
 
-    public ListView mListView;
-	public UploadQueueAdapter mUploadFileAdapter;
-
-	private List<UploadArticleFileEntity> mUploadQ = new ArrayList<>();
+    public MaterialListView mListView;
+	private List<UploadArticleEntity> mUploadQ = new ArrayList<>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.fragment_upload_list, null);
+		View view = inflater.inflate(R.layout.activity_timeline, null);
 		setViewData(view);
         setHasOptionsMenu(true);
 		return view;
@@ -55,37 +54,16 @@ public class UploadListFragment extends BaseFragment {
 	@Override
 	protected void setViewData(View view) {
 
-		mListView = (ListView) view
-				.findViewById(R.id.listView);
-
+		mListView = (MaterialListView) view.findViewById(R.id.material_listview);
 		UploadFileHelper.getInstance().setContext(mParentContext);
 		UploadFileHelper.getInstance().setFragment(mFragment);
-		mUploadQ = UploadFileHelper.getInstance().readUploadFileQ();
-
-		if (mUploadQ.size() > 0) {
-			haveResult();
-		} else {
-			noResult();
-		}
-		mUploadFileAdapter = new UploadQueueAdapter(mParentContext, mUploadQ);
-        mUploadFileAdapter.setmRetryClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UploadArticleFileEntity uploadFile = (UploadArticleFileEntity)view.getTag();
-                uploadFile.setIsSuccess(null);
-                mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadFile);
-                mUploadQ = UploadFileHelper.getInstance().readUploadFileQ();
-                mUploadFileAdapter.setmUploadFiles(mUploadQ);
-                mUploadFileAdapter.notifyDataSetChanged();
-                UploadFileHelper.getInstance().getInstance().retryFailedFile(uploadFile);
-
-            }
-        });
-		mListView.setAdapter(mUploadFileAdapter);
+		mUploadQ = UploadFileHelper.getInstance().readUploadArticleQ();
         registerForContextMenu(mListView);
 
-        //Kickoff the upload process
-		UploadFileHelper.getInstance().uploadFileService();
+        for(UploadArticleEntity article:mUploadQ) {
+            PictureSentCard card = buildSentRecordCard(article);
+            mListView.add(card);
+        }
 
 		setListener(view);
 
@@ -106,7 +84,6 @@ public class UploadListFragment extends BaseFragment {
         switch (item.getItemId())
         {
             case android.R.id.home:
-//                getFragmentManager().popBackStack(); //Do not break, let the activity to finish itself.
             default:
         }
 
@@ -175,22 +152,6 @@ public class UploadListFragment extends BaseFragment {
                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 Log.d("", "removing item pos=" + info.position);
 
-                // 删除线程，和网络请求
-                UploadArticleFileEntity uploadFile = (UploadArticleFileEntity)mUploadFileAdapter.getItem(info.position);
-//                if (null != uploadFile.requestHandle) {
-//                    DebugLog.logI("uploadFile.requestHandle.cancel(true);");
-//                    uploadFile.requestHandle.cancel(true);
-//                }
-
-                //Remove the DB Queue
-                UploadFileHelper.getInstance().MarkUplodSuccess(uploadFile);
-
-
-                //Notify the Fragement/Activity to update its ListView
-                FileUploadedEvent event = new FileUploadedEvent(uploadFile);
-                event.setIsSuccess(true);
-                BusProvider.getInstance().post(event);
-
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -200,12 +161,12 @@ public class UploadListFragment extends BaseFragment {
 
     @Subscribe public void onReceiveFileUploadEvent(FileUploadedEvent event)
     {
-        mUploadQ = UploadFileHelper.getInstance().readUploadFileQ();
-
-        mUploadFileAdapter.setmUploadFiles(mUploadQ);
-
-        mUploadFileAdapter.notifyDataSetChanged();
-
+        mUploadQ = UploadFileHelper.getInstance().readUploadArticleQ();
+        mListView.clear();
+        for(UploadArticleEntity article:mUploadQ) {
+            PictureSentCard card = buildSentRecordCard(article);
+            mListView.add(card);
+        }
     }
 
     @Override
@@ -213,4 +174,25 @@ public class UploadListFragment extends BaseFragment {
         menu.clear();
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    private PictureSentCard buildSentRecordCard(UploadArticleEntity article)
+    {
+        PictureSentCard card = new PictureSentCard(mParentContext);
+        card.setDescription(article.getContent());
+        card.setSentTime(article.getSendtime());
+
+        List<String> pictures = new ArrayList<>();
+        for(UploadArticleFileEntity uploadFile:article.getUploadArticleFileEntityList())
+        {
+            pictures.add(uploadFile.getFbody());
+        }
+        SentPictureAdapter imageAdapter = new SentPictureAdapter(mParentContext,article.getUploadArticleFileEntityList());
+        TagRecycleViewAdapter tagsAdapter = new TagRecycleViewAdapter(article.getTagsEntityTList());
+
+        card.setImageAdapter(imageAdapter);
+        card.setTagAdapter(tagsAdapter);
+
+        return card;
+    }
+
 }

@@ -5,13 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.TextView;
 
 import com.android.support.debug.DebugLog;
-import com.android.support.utils.FileUtils;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
-import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
@@ -19,8 +15,6 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntityD
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
-import com.guokrspace.cloudschoolbus.parents.module.photo.UploadListFragment;
-import com.guokrspace.cloudschoolbus.parents.module.photo.model.UploadFile;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -30,10 +24,8 @@ import net.soulwolf.image.picturelib.model.Picture;
 
 import org.apache.http.Header;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,16 +78,13 @@ public class UploadFileHelper {
 	}
 
     private void uploadNextFile() {
-        int numFiles = 0 ;
-
         //Check uploadable files
         List<UploadArticleEntity> uploadArticles = mApplication.mDaoSession.getUploadArticleEntityDao().queryBuilder().list();
         for (UploadArticleEntity uploadArticle : uploadArticles) {
             List<UploadArticleFileEntity> uploadFiles = uploadArticle.getUploadArticleFileEntityList();
             for (UploadArticleFileEntity uploadFile : uploadFiles) {
-                if (uploadFile.getIsSuccess() == null || (uploadFile.getIsSuccess() != null && uploadFile.getIsSuccess() == true)) {
+                if (uploadFile.getIsSuccess() == null) {
                     uploadFile(uploadFile);
-                    numFiles++;
                     break;
                 }
             }
@@ -125,7 +114,7 @@ public class UploadFileHelper {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 //Remove the upload Q in DB
-                removeUplodFile(uploadFile);
+                MarkUplodSuccess(uploadFile);
 
                 //Notify the fragment or activity to update list view
                 FileUploadedEvent event = new FileUploadedEvent(uploadFile);
@@ -158,15 +147,14 @@ public class UploadFileHelper {
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
                 int progress = (int) (((double) bytesWritten / (double) totalSize) * 100);
-                UploadListFragment fragment = (UploadListFragment) mFragment;
-                View view = fragment.mUploadFileAdapter
-                        .getFirstView();
-                if (null != view) {
-                    TextView progressTextView = (TextView) view
-                            .findViewById(R.id.progressTextView);
-                    progressTextView
-                            .setText(progress + "%");
-                }
+//                SentRecordFragment fragment = (SentRecordFragment) mFragment;
+//                View view = fragment.mUploadFileAdapter.getFirstView();
+//                if (null != view) {
+//                    TextView progressTextView = (TextView) view
+//                            .findViewById(R.id.progressTextView);
+//                    progressTextView
+//                            .setText(progress + "%");
+//                }
             }
         });
 	}
@@ -214,6 +202,7 @@ public class UploadFileHelper {
         uploadArticle.setPictype("article");
         uploadArticle.setClassid(classid);
         uploadArticle.setContent(content);
+        uploadArticle.setSendtime(System.currentTimeMillis()/1000+"");
 
         mApplication.mDaoSession.getUploadArticleEntityDao().insert(uploadArticle);
 
@@ -249,15 +238,21 @@ public class UploadFileHelper {
     public List<UploadArticleFileEntity> readUploadFileQ ()
     {
         return mApplication.mDaoSession.getUploadArticleFileEntityDao().queryBuilder().list();
-
     }
 
-    public void removeUplodFile(UploadArticleFileEntity uploadfile)
+    //Get the articles sent including being sent
+    public List<UploadArticleEntity> readUploadArticleQ ()
     {
-        //Remove the uploadfile
-        mApplication.mDaoSession.getUploadArticleFileEntityDao().delete(uploadfile);
-        mApplication.mDaoSession.clear();
+        return mApplication.mDaoSession.getUploadArticleEntityDao().queryBuilder().list();
+    }
 
+    public void MarkUplodSuccess(UploadArticleFileEntity uploadfile)
+    {
+        // the uploadfile
+//        mApplication.mDaoSession.getUploadArticleFileEntityDao().delete(uploadfile);
+//        mApplication.mDaoSession.clear();
+        uploadfile.setIsSuccess(true);
+        mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadfile);
 
         //Find its parental article
         String pickey = uploadfile.getPickey();
@@ -267,11 +262,19 @@ public class UploadFileHelper {
                 .where(UploadArticleEntityDao.Properties.Pickey.eq(pickey))
                 .list();
 
-
         if(articles.size()==1)
         {
-            //If all files in that article have been uploaded or removed
-            if( articles.get(0).getUploadArticleFileEntityList().size()==0 )
+            //If all files in that article have been uploaded
+            boolean isAllUploaded = true;
+            for(UploadArticleFileEntity file : articles.get(0).getUploadArticleFileEntityList() )
+            {
+                //Check if all files in the article have been uploaded
+                if(file.getIsSuccess() == null || !file.getIsSuccess()) {
+                    isAllUploaded = false;
+                }
+            }
+
+            if(isAllUploaded)
             {
                 //Send the "Over" request to Server, when it success, remove the aritice from the queue
                 setArticleParameters(articles.get(0));
@@ -290,8 +293,8 @@ public class UploadFileHelper {
 
     private void removeUploadAriticle(UploadArticleEntity uploadArticle)
     {
-        mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
-        mApplication.mDaoSession.clear();
+//        mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
+//        mApplication.mDaoSession.clear();
     }
 
     public String generateStudentidstring(UploadArticleEntity article)

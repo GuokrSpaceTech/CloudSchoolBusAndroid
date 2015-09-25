@@ -7,8 +7,7 @@ import android.view.View;
 import com.dexafree.materialList.cards.SimpleCard;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.ImageAdapter;
+import com.guokrspace.cloudschoolbus.parents.base.adapter.ImageAdapter;
 
 /**
  * Created by Yang Kai on 15/7/14.
