@@ -37,7 +37,7 @@ public class GalleryActivityUrl extends BaseActivity{
             @Override
             public void onItemChange(int currentPosition)
             {
-                getSupportActionBar().setTitle(title(currentPosition, finalItems.size()));
+                getSupportActionBar().setTitle(title(currentPosition + 1, finalItems.size()));
             }
         });
 

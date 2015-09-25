@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 
 import com.android.support.debug.DebugLog;
 import com.dexafree.materialList.view.MaterialListView;
+import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
@@ -45,7 +46,7 @@ public class SentRecordFragment extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.activity_timeline, null);
+		View view = inflater.inflate(R.layout.fragment_sent_record, null);
 		setViewData(view);
         setHasOptionsMenu(true);
 		return view;
@@ -172,6 +173,7 @@ public class SentRecordFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
+        ((MainActivity)mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.upload_record));
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -5,7 +5,6 @@ dependencies {
     compile fileTree(dir: '../dependancies', include: ['*.jar'])
     compile fileTree(dir: './libs', include: ['*.jar'])
     compile project(':AndroidSupport')
-    //    compile 'com.avast.android-styled-dialogs:2.2.0'
     compile project(':android-styled-dialogs')
     compile project(':dynamicgrid')
     compile 'com.loopj.android:android-async-http:1.4.8'
@@ -13,16 +12,16 @@ dependencies {
     compile 'de.greenrobot:greendao:1.3.7'
     compile 'de.greenrobot:greendao-generator:1.3.1'
     compile 'com.squareup:otto:1.3.5'
-    //    compile 'com.github.alamkanak:android-week-view:1.2.3'
     compile project(':materialList')
     compile 'de.hdodenhof:circleimageview:1.3.0'
-    compile project(':android-week-view')
+//    compile project(':android-week-view')
     compile project(':Android-AdvancedWebView-master')
     compile project(':IMKit')
     compile project(':AndroidTouchGallery')
     compile project(':PictureChooseLib')
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
     compile 'jp.wasabeef:picasso-transformations:1.2.1'
+    compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     // If you want to use the GPU Filters
 //    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.3.0'
     // If you want to use the GPU Filters

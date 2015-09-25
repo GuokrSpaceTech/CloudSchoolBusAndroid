@@ -2,23 +2,18 @@ package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.support.utils.DateUtils;
+import org.solovyev.android.views.llm.DividerItemDecoration;
+import org.solovyev.android.views.llm.LinearLayoutManager;
+
 import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.WrappableGridLayoutManager;
-import com.squareup.picasso.Picasso;
-
-import java.text.SimpleDateFormat;
 
 /**
  * Created by Yang Kai on 15/7/14.
@@ -80,6 +75,7 @@ public class PictureSentCardItemView extends CardItemView<PictureSentCard> {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.tags_recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(card.getContext());
+        recyclerView.addItemDecoration(new SpacesItemDecoration(2));
         linearLayoutManager.setOrientation(HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(card.getTagAdapter());
@@ -100,8 +96,8 @@ public class PictureSentCardItemView extends CardItemView<PictureSentCard> {
             outRect.bottom = space;
 
             // Add top margin only for the first item to avoid double space between items
-            if(parent.getChildPosition(view) == 0)
-                outRect.top = space;
+//            if(parent.getChildPosition(view) == 0)
+//                outRect.top = space;
         }
     }
 }

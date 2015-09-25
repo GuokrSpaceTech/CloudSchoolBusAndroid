@@ -22,6 +22,8 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
+import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
 import com.guokrspace.cloudschoolbus.parents.module.photo.view.EditCommentView;
 import com.guokrspace.cloudschoolbus.parents.module.photo.view.SelectedStuView;
@@ -129,16 +131,18 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             String pickey = System.currentTimeMillis() + mApplication.mConfig.getUserid();
 
             mCommentStr = mCommentView.getCommentText();
+
             mCommentView.updateTagSelectedDb(pickey);
             mStudentView.updateStudentSelectedDb(pickey);
+
             UploadFileHelper.getInstance().setContext(mContext);
             UploadFileHelper.getInstance().addUploadQueue(mPictures, mCommentStr, pickey);
             UploadFileHelper.getInstance().uploadFileService();
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.mainFrameLayout, new SentRecordFragment(), "sentrecord");
-            transaction.addToBackStack("sentrecord");
-            transaction.commit();
+            BusProvider.getInstance().post(new IsUploadingEvent());
+
+            finish();
+
             return true;
         }
         else if (id == android.R.id.home) {

@@ -157,6 +157,54 @@
                     android:background="@color/primary_dark"/>
 
                 <LinearLayout
+                    android:id="@+id/linearLayoutUploadRecord"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFFFF"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/dot"
+                        android:id="@+id/red_dot"
+                        android:visibility="visible"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_systemsetting"
+                        android:scaleType="fitCenter"
+                        android:id="@+id/upload_record_icon"/>
+                    </RelativeLayout>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="70"
+                        android:padding="@dimen/big_padding"
+                        android:text="@string/upload_record"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="16dp"/>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_weight="15"
+                        android:src="@drawable/ic_next"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginLeft="32dp"
+                    android:background="@color/primary_dark"/>
+
+                <LinearLayout
                     android:id="@+id/linearLayoutHelp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

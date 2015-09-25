@@ -53,6 +53,7 @@
     <string name="switch_child">切换孩子</string>
     <string name="switch_class">切换班级</string>
     <string name="clear_cache">清除缓存</string>
+    <string name="upload_record">我的相册</string>
     <string name="aboutus">关于我们</string>
     <string name="usersetting">用户设置</string>
     <string name="systemsetting">系统设置</string>

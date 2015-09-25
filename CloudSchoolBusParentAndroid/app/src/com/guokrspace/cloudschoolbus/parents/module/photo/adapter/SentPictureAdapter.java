@@ -17,22 +17,29 @@
 package com.guokrspace.cloudschoolbus.parents.module.photo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import android.graphics.BlurMaskFilter;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.activity.GalleryActivityUrl;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
+import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
@@ -70,57 +77,78 @@ public class SentPictureAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             holder = new ViewHolder();
             convertView =  LayoutInflater.from(mContext).inflate(R.layout.listview_picture_item, null);
             holder.mPictureView = (ImageView)convertView.findViewById(R.id.picture_item_image);
             holder.mRetryIcon   = (ImageView)convertView.findViewById(R.id.retry_icon);
+//            holder.mProgressBar = (ProgressBar)convertView.findViewById(R.id.progressBar);
+//            // Get the Drawable custom_progressbar
+//            Drawable draw=mContext.getResources().getDrawable(R.drawable.customize_progress_bar);
+//            holder.mProgressBar.setProgressDrawable(draw);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder)convertView.getTag();
         }
         String url = getItem(position).getFbody();
-//        url = "file://" + url;
+
         Bitmap bm = decodeSampledBitmapFromUri(url, 220, 220);
 
-//        Picasso.with(mContext).load(url).transform(new BlurTransformation(mContext, 25, 1)).centerCrop().fit().into(imageView);
-
+        //Upload is in progress
         if(getItem(position).getIsSuccess() == null) {
             BlurTransformation transformation = new BlurTransformation(mContext, 25, 1);
             bm = transformation.transform(bm);
             holder.mPictureView.setImageBitmap(bm);
+            holder.mPictureView.setOnClickListener(null);
+            holder.mRetryIcon.setVisibility(View.INVISIBLE);
+
+        // Upload failed
         } else if(!getItem(position).getIsSuccess()){
-//            holder.mPictureView.setImageBitmap(bm);
+            BlurTransformation transformation = new BlurTransformation(mContext, 25, 1);
+            bm = transformation.transform(bm);
+            holder.mPictureView.setImageBitmap(bm);
+            holder.mPictureView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.mRetryIcon.setVisibility(View.VISIBLE);
+                    UploadFileHelper.getInstance().retryFailedFile(mPictureList.get(position));
+                }
+            });
+            holder.mRetryIcon.setVisibility(View.VISIBLE);
+        // Upload Success
         } else {
             holder.mPictureView.setImageBitmap(bm);
+            final List<String> mFilePaths = new ArrayList<>();
+            for (UploadArticleFileEntity file : mPictureList) {
+                String filepath = file.getFbody();
+                mFilePaths.add("file://" + filepath);
+            }
+            holder.mPictureView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(mContext, GalleryActivityUrl.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("fileUrls", (ArrayList<String>) mFilePaths);
+                    bundle.putInt("currentFile", position);
+                    intent.putExtras(bundle);
+                    mContext.startActivity(intent);
+                }
+            });
+            holder.mRetryIcon.setVisibility(View.INVISIBLE);
         }
 
+
+
         return convertView;
-//        // load image
-//        String url = getItem(position);
-//
-//        if(url.contains("http://") || url.contains("file://")) {
-//            if (url.contains("orig")) { url = url.replace("orig", "thumbs"); }
-//            url = url + ".tiny.jpg";
-//            Picasso.with(mContext).load(url).centerCrop().fit().into(holder.mPictureView);
-//        } else {
-//            Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(url), 60, 60);
-//            holder.mPictureView.setImageBitmap(ThumbImage);
-//            url = "file://" + url;
-//            mPictureList.set(position, url);
-////            Picasso.with(mContext).load(url).centerCrop().fit().into(imageView);
-//
-////            Picasso.with(mContext)
-////                    .load(new File(url)).centerCrop().fit().error(R.drawable.pd_empty_picture)
-////                    .into(holder.mPictureView);
-//        }
-//        return convertView;
     }
 
     static class ViewHolder{
         public ImageView mPictureView;
         public ImageView mRetryIcon;
+//        public ProgressBar mProgressBar;
     }
 
     public Bitmap decodeSampledBitmapFromUri(String path, int reqWidth, int reqHeight) {
@@ -160,9 +188,6 @@ public class SentPictureAdapter extends BaseAdapter {
         return inSampleSize;
     }
 
-    public void setUploadFileSuccess(int position)
-    {
 
-    }
 
 }

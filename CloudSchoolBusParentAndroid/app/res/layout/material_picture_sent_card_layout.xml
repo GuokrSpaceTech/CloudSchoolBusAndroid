@@ -19,11 +19,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="@dimen/small_padding"
-                android:layout_weight="25">
+                android:layout_weight="20">
 
                 <TextView
                     android:id="@+id/timestamp"
-                    style="@style/CardTitle"
+                    style="@style/CardBigTitle"
                     android:layout_gravity="center_vertical"
                     android:padding="@dimen/small_padding"
                     tools:text="小花老师"
@@ -35,8 +35,9 @@
                 android:id="@+id/card_body"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="75"
-                android:orientation="vertical">
+                android:layout_weight="80"
+                android:orientation="vertical"
+                android:padding="@dimen/small_padding">
 
                 <com.android.support.customview.CustomGridView
                     android:id="@+id/image_grid"
@@ -49,12 +50,14 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/tags_recycler_view"
                     android:layout_width="fill_parent"
-                    android:layout_height="40dp"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"/>
 
                 <TextView
                     android:id="@+id/text_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
                     android:textColor="@color/description_color"
                     android:textSize="@dimen/description_size" />
             </LinearLayout>

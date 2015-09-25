@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <net.soulwolf.image.picturelib.view.SquareLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="60dp"
-    android:layout_height="60dp"
-    android:padding="1dp"
+    android:layout_width="55dp"
+    android:layout_height="55dp"
+    android:padding="1sp"
     android:background="@color/pc_black_t"
     android:focusable="false">
 
@@ -20,6 +20,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/retry_icon"
         android:layout_centerInParent="true"
-        android:background="@drawable/ic_replay_black_24dp"/>
+        android:background="@drawable/ic_reload"/>
+
+    <!--<ProgressBar-->
+        <!--android:id="@+id/progressBar"-->
+        <!--style="?android:attr/progressBarStyleHorizontal"-->
+        <!--android:progressDrawable="@drawable/customize_progress_bar"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:indeterminate="false"/>-->
 
 </net.soulwolf.image.picturelib.view.SquareLayout>

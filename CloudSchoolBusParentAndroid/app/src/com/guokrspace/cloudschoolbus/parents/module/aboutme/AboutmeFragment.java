@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -44,6 +47,9 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
+import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
+import com.guokrspace.cloudschoolbus.parents.module.photo.SentRecordFragment;
+import com.guokrspace.cloudschoolbus.parents.widget.BadgeView;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -77,10 +83,14 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     private LinearLayout layoutSwitch;
     private TextView textViewCache;
     private LinearLayout layoutClearCache;
+    private LinearLayout layoutUploadRecord;
     private LinearLayout layoutHelpFeedback;
+    private ImageView uploadRecordIcon;
+    private ImageView redDotIcon;
     private Button logoutButton;
     private int currentChild;
     private TextView textViewSwitch;
+    private boolean isUploading = false;
 
     // 上传图片
     private Bitmap bitMap;
@@ -145,12 +155,19 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         View root = inflater.inflate(R.layout.activity_aboutme, container, false);
         layoutSwitch = (LinearLayout)root.findViewById(R.id.linearLayoutSwitchuser);
         layoutClearCache = (LinearLayout)root.findViewById(R.id.linearLayoutClearcache);
+        layoutUploadRecord = (LinearLayout)root.findViewById(R.id.linearLayoutUploadRecord);
         layoutHelpFeedback = (LinearLayout)root.findViewById(R.id.linearLayoutHelp);
         logoutButton = (Button)root.findViewById(R.id.logoutButton);
         imageViewAvatar = (ImageView)root.findViewById(R.id.child_avatar);
         textViewUserName = (TextView)root.findViewById(R.id.child_name);
         textViewCache = (TextView)root.findViewById(R.id.textViewCacheSize);
         buttonKindergarten = (Button)root.findViewById(R.id.kindergarten_name);
+        uploadRecordIcon = (ImageView)root.findViewById(R.id.upload_record_icon);
+        redDotIcon = (ImageView)root.findViewById(R.id.red_dot);
+        if(isUploading == false)
+            redDotIcon.setVisibility(View.INVISIBLE);
+        else
+            redDotIcon.setVisibility(View.VISIBLE);
 
         if(Version.PARENT)
             currentChild = mApplication.mConfig.getCurrentChild();
@@ -214,6 +231,17 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             }
         });
 
+        layoutUploadRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, new SentRecordFragment(), "sentrecord");
+                transaction.addToBackStack("sentrecord");
+                transaction.commit();
+                isUploading = false;
+                redDotIcon.setVisibility(View.INVISIBLE);
+            }
+        });
 
         layoutClearCache.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -409,6 +437,12 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         updateUserInformation();
     }
 
+    @Subscribe public void onUserIsUploadingEvent(IsUploadingEvent event)
+    {
+        //Just set a red dot
+        isUploading = true;
+    }
+
     private void updateUserInformation()
     {
         /* Get the current child's avatar */
@@ -457,6 +491,13 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         }
 
         return fileSizeString;
+    }
+
+    /*
+ * converts dip to px
+ */
+    private int dip2Px(float dip) {
+        return (int) (dip * mParentContext.getResources().getDisplayMetrics().density + 0.5f);
     }
 
 }

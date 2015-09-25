@@ -58,6 +58,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
+import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.event.NewMessageEvent;
@@ -486,6 +487,12 @@ public class MainActivity extends BaseActivity implements
         ShortcutBadger.with(mContext).remove();
     }
 
+    @Subscribe public void onUserIsUploadingEvent(IsUploadingEvent event)
+    {
+        //Just set a red dot
+        setBadge(3,0);
+    }
+
 
     /**
      *
@@ -796,7 +803,7 @@ public class MainActivity extends BaseActivity implements
         getSupportActionBar().show();
     }
 
-    private void setBadge(int position, int badge)
+    public void setBadge(int position, int badge)
     {
         if(badge==0)
         {

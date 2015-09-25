@@ -117,4 +117,16 @@ public class DateUtils {
         return retString;
     }
 
+    public static String articleDate(String timestamp, Context context) {
+        String retString = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
+
+        if (timestamp != null) {
+            long foo = Long.parseLong(timestamp) * 1000;
+            retString = sdf.format(new Date(foo));
+        }
+
+        return retString;
+    }
+
 }

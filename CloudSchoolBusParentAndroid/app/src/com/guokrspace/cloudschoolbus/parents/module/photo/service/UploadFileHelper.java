@@ -179,13 +179,13 @@ public class UploadFileHelper {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 // 上传成功，更新上传列表
-                removeUploadAriticle(uploadArticle);
+                markUploadAriticleSuccess(uploadArticle);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 //Todo: handle failure scenario
-                removeUploadAriticle(uploadArticle);
+                markUploadAriticleSuccess(uploadArticle);
             }
         });
     }
@@ -243,14 +243,14 @@ public class UploadFileHelper {
     //Get the articles sent including being sent
     public List<UploadArticleEntity> readUploadArticleQ ()
     {
-        return mApplication.mDaoSession.getUploadArticleEntityDao().queryBuilder().list();
+        return mApplication.mDaoSession.getUploadArticleEntityDao().queryBuilder()
+                .orderDesc(UploadArticleEntityDao.Properties.Sendtime)
+                .list();
     }
 
     public void MarkUplodSuccess(UploadArticleFileEntity uploadfile)
     {
-        // the uploadfile
-//        mApplication.mDaoSession.getUploadArticleFileEntityDao().delete(uploadfile);
-//        mApplication.mDaoSession.clear();
+        // the uploadfile;
         uploadfile.setIsSuccess(true);
         mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadfile);
 
@@ -291,7 +291,7 @@ public class UploadFileHelper {
     }
 
 
-    private void removeUploadAriticle(UploadArticleEntity uploadArticle)
+    private void markUploadAriticleSuccess(UploadArticleEntity uploadArticle)
     {
 //        mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
 //        mApplication.mDaoSession.clear();
