@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,9 +15,10 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -49,7 +48,6 @@ import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.SentRecordFragment;
-import com.guokrspace.cloudschoolbus.parents.widget.BadgeView;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -152,7 +150,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.activity_aboutme, container, false);
+        View root = inflater.inflate(R.layout.fragment_aboutme, container, false);
         layoutSwitch = (LinearLayout)root.findViewById(R.id.linearLayoutSwitchuser);
         layoutClearCache = (LinearLayout)root.findViewById(R.id.linearLayoutClearcache);
         layoutUploadRecord = (LinearLayout)root.findViewById(R.id.linearLayoutUploadRecord);
@@ -223,9 +221,10 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         layoutHelpFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((MainActivity)mParentContext).pager.lock();
                 WebviewFragment fragment = WebviewFragment.newInstance(getResources().getString(R.string.aboutmeurl), getResources().getString(R.string.companyweb));
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, fragment);
+                transaction.replace(R.id.fragment_aboutme_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -234,8 +233,9 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         layoutUploadRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((MainActivity)mParentContext).pager.lock();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new SentRecordFragment(), "sentrecord");
+                transaction.replace(R.id.fragment_aboutme_container, new SentRecordFragment(), "sentrecord");
                 transaction.addToBackStack("sentrecord");
                 transaction.commit();
                 isUploading = false;
@@ -368,12 +368,23 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         ((MainActivity)mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.module_aboutme));
-        super.onPrepareOptionsMenu(menu);
         menu.clear();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+            ((MainActivity)mParentContext).pager.unlock();
+                break;
+                default:break;
+        }
+//        return super.onOptionsItemSelected(item);
+        return false;
+    }
 
     private void showSwithUserDialog()
     {

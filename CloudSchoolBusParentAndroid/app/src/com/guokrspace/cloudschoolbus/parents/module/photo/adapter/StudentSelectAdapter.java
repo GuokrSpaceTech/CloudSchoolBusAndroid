@@ -28,12 +28,12 @@ import java.util.List;
  *
  * @author lenovo
  */
-public class StuSelectAdapter extends BaseAdapter {
+public class StudentSelectAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<StudentEntityT> mStudents = new ArrayList<>();
     private HashMap<Integer, StudentEntityT> mSelections = new HashMap<>();
 
-    public StuSelectAdapter(Context context, List<StudentEntityT> students) {
+    public StudentSelectAdapter(Context context, List<StudentEntityT> students) {
         mContext = context;
         mStudents = (ArrayList) students;
     }

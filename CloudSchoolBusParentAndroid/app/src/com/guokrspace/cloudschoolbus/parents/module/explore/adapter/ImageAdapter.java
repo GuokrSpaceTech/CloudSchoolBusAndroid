@@ -1,4 +1,4 @@
-package com.guokrspace.cloudschoolbus.parents.base.adapter;
+package com.guokrspace.cloudschoolbus.parents.module.explore.adapter;
 
 import android.content.Context;
 import android.content.Intent;

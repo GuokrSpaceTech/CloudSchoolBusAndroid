@@ -19,10 +19,9 @@ import android.widget.TextView;
 
 import com.android.support.utils.InputMethodUtils;
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.BaseLinearLayout;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
 import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
-import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.TagsAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.TagSelectAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.ImageThumbRecycleViewAdapter;
 
 import net.soulwolf.image.picturelib.model.Picture;
@@ -40,7 +39,7 @@ public class EditCommentView extends BaseLinearLayout {
 	private EditText mCommentEditText;
 	private TextView mNumberTextView;
 	private GridView mGridView;
-	private TagsAdapter mTagsAdapter;
+	private TagSelectAdapter mTagSelectAdapter;
 	private ImageThumbRecycleViewAdapter mPictureThumbnailsAdapter;
 	private ArrayList<Picture> mPictures;
     private RecyclerView.OnItemTouchListener  mThumbNailClickListener;
@@ -73,9 +72,9 @@ public class EditCommentView extends BaseLinearLayout {
 
 		mGridView = (GridView) findViewById(R.id.gridView);
 
-		mTagsAdapter = new TagsAdapter(mContext, mApplication.mTagsT);
-		mTagsAdapter.clearSelected();
-		mGridView.setAdapter(mTagsAdapter);
+		mTagSelectAdapter = new TagSelectAdapter(mContext, mApplication.mTagsT);
+		mTagSelectAdapter.clearSelected();
+		mGridView.setAdapter(mTagSelectAdapter);
 
 		mCommentEditText = (EditText) findViewById(R.id.contentEditText);
 		mNumberTextView = (TextView) findViewById(R.id.numberTextView);
@@ -175,7 +174,7 @@ public class EditCommentView extends BaseLinearLayout {
      */
     public void updateTagSelectedDb(String pickey) {
         for (int i = 0; i < mApplication.mTagsT.size(); i++) {
-            if ( mTagsAdapter.getmSeletions()[i]) {
+            if ( mTagSelectAdapter.getmSeletions()[i]) {
                 DaoSession db = ((SelectStudentActivity) mContext).mApplication.mDaoSession;
                 mApplication.mTagsT.get(i).setPickey(pickey);
                 db.getTagsEntityTDao().update(mApplication.mTagsT.get(i));

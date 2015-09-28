@@ -3,7 +3,6 @@ package com.guokrspace.cloudschoolbus.parents.module.hobby;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +84,7 @@ public class HobbyFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.activity_aboutme, container, false);
+        View root = inflater.inflate(R.layout.fragment_aboutme, container, false);
 //        layoutChildSetting = (LinearLayout)root.findViewById(R.id.linearLayoutChildSetting);
 //        layoutSystemSetting = (LinearLayout)root.findViewById(R.id.linearLayoutSystemSetting);
         layoutHelpFeedback = (LinearLayout)root.findViewById(R.id.linearLayoutHelp);

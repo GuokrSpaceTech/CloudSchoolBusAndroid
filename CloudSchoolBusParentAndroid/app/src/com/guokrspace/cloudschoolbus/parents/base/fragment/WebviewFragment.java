@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -43,10 +44,19 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_webview, container, false);
         mWebView = (AdvancedWebView) root.findViewById(R.id.webView);
+        mWebView.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View p_v, MotionEvent p_event) {
+                // this will disallow the touch request for parent scroll on touch of child view
+                p_v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
         mWebView.loadUrl(mUrl);
         setHasOptionsMenu(true);
         return root;
     }
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

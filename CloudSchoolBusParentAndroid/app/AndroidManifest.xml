@@ -53,7 +53,8 @@
         </activity>
         <activity
             android:name=".module.photo.SelectStudentActivity"
-            android:label="@string/title_activity_select_student" >
+            android:label="@string/title_activity_select_student"
+            android:theme="@style/ShrinkAnimationTheme">
         </activity>
 
         <!-- push应用定义消息receiver声明 -->

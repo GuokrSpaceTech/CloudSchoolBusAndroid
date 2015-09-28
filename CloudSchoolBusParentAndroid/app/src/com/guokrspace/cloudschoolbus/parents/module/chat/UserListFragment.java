@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.SpinnerAdapter;
 
 import com.android.support.utils.DateUtils;
@@ -49,7 +51,6 @@ public class UserListFragment extends BaseFragment {
     private boolean mIsParent;
     private Menu mMenu;
 
-
     public static UserListFragment newInstance() {
         UserListFragment f = new UserListFragment();
         return f;
@@ -70,7 +71,7 @@ public class UserListFragment extends BaseFragment {
         View root = inflater.inflate(R.layout.activity_teacher_list, container, false);
         listview = (MaterialListView) root.findViewById(R.id.material_listview);
 
-        initView();
+        initView(root);
 
         setListener();
 
@@ -79,10 +80,10 @@ public class UserListFragment extends BaseFragment {
         return root;
     }
 
-    private void initView() {
+    private void initView(View v) {
         List<?> teachers = (Version.PARENT == true) ? (mApplication.mTeachers) : (mApplication.mTeachersT);
 
-        if (Version.PARENT)
+        if (Version.PARENT) {
             for (int i = 0; i < teachers.size(); i++) {
                 //Get the teacher Inbox entity
                 final UserInbox userInbox = new UserInbox();
@@ -109,11 +110,10 @@ public class UserListFragment extends BaseFragment {
                         card.setTimestamp(DateUtils.timelineTimestamp(lastIMs.get(j).getTimestamp(), mParentContext));
                     }
                 }
-
                 //Add the card
                 listview.add(card);
             }
-        else {
+        } else {
             mCurrentClassid = findMyClass().get(0).getClassid();
             mIsParent = true;
             selectContacts(mCurrentClassid, mIsParent);
@@ -148,7 +148,7 @@ public class UserListFragment extends BaseFragment {
                     mTargetID = mApplication.mTeachers.get(position).getId();
                 }
 
-
+                ((MainActivity)mParentContext).pager.lock();
                 ConversationFragment fragment = new ConversationFragment();
                 Uri uri = Uri.parse("rong://" + getActivity().getApplicationInfo().packageName).buildUpon()
                         .appendPath("conversation").appendPath(io.rong.imlib.model.Conversation.ConversationType.PRIVATE.getName().toLowerCase())
@@ -218,6 +218,7 @@ public class UserListFragment extends BaseFragment {
         } else {
             mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
         }
+
     }
 
     @Override
@@ -235,6 +236,7 @@ public class UserListFragment extends BaseFragment {
                 } else {
                     mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
                 }
+                ((MainActivity)mParentContext).pager.unlock();
                 break;
             case R.id.action_teacher:
                 mIsParent = false;

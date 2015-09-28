@@ -109,6 +109,8 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         mStudentView.setmItemClickListener(mStudentClickListener);
         getSupportActionBar().setTitle(getResources().getString(R.string.upload));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
     }
 
     @Override
@@ -141,7 +143,10 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
 
             BusProvider.getInstance().post(new IsUploadingEvent());
 
+
             finish();
+
+            this.overridePendingTransition(R.anim.scalefromcorner, R.anim.scaletocorner);
 
             return true;
         }

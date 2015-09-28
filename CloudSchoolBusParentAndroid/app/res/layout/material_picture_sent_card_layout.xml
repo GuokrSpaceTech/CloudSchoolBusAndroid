@@ -18,15 +18,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/small_padding"
-                android:layout_weight="20">
+                android:padding="@dimen/tiny_padding"
+                android:layout_weight="17">
 
                 <TextView
                     android:id="@+id/timestamp"
                     style="@style/CardBigTitle"
                     android:layout_gravity="center_vertical"
                     android:padding="@dimen/small_padding"
-                    tools:text="小花老师"
+                    tools:text="09-26"
                     android:textColor="@color/material_blue_grey_950"
                     android:layout_width="fill_parent"/>
             </LinearLayout>
@@ -35,7 +35,7 @@
                 android:id="@+id/card_body"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="80"
+                android:layout_weight="83"
                 android:orientation="vertical"
                 android:padding="@dimen/small_padding">
 

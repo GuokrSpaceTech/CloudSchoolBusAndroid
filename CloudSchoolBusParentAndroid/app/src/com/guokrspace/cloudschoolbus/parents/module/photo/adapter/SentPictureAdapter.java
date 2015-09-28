@@ -83,17 +83,12 @@ public class SentPictureAdapter extends BaseAdapter {
             convertView =  LayoutInflater.from(mContext).inflate(R.layout.listview_picture_item, null);
             holder.mPictureView = (ImageView)convertView.findViewById(R.id.picture_item_image);
             holder.mRetryIcon   = (ImageView)convertView.findViewById(R.id.retry_icon);
-//            holder.mProgressBar = (ProgressBar)convertView.findViewById(R.id.progressBar);
-//            // Get the Drawable custom_progressbar
-//            Drawable draw=mContext.getResources().getDrawable(R.drawable.customize_progress_bar);
-//            holder.mProgressBar.setProgressDrawable(draw);
-
+            holder.mProgressBar = (ProgressBar)convertView.findViewById(R.id.progressBar);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder)convertView.getTag();
         }
         String url = getItem(position).getFbody();
-
         Bitmap bm = decodeSampledBitmapFromUri(url, 220, 220);
 
         //Upload is in progress
@@ -103,6 +98,7 @@ public class SentPictureAdapter extends BaseAdapter {
             holder.mPictureView.setImageBitmap(bm);
             holder.mPictureView.setOnClickListener(null);
             holder.mRetryIcon.setVisibility(View.INVISIBLE);
+            holder.mProgressBar.setVisibility(View.VISIBLE);
 
         // Upload failed
         } else if(!getItem(position).getIsSuccess()){
@@ -112,11 +108,13 @@ public class SentPictureAdapter extends BaseAdapter {
             holder.mPictureView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    holder.mRetryIcon.setVisibility(View.VISIBLE);
+                    holder.mRetryIcon.setVisibility(View.INVISIBLE);
+                    holder.mProgressBar.setVisibility(View.VISIBLE);
                     UploadFileHelper.getInstance().retryFailedFile(mPictureList.get(position));
                 }
             });
             holder.mRetryIcon.setVisibility(View.VISIBLE);
+            holder.mProgressBar.setVisibility(View.INVISIBLE);
         // Upload Success
         } else {
             holder.mPictureView.setImageBitmap(bm);
@@ -128,7 +126,6 @@ public class SentPictureAdapter extends BaseAdapter {
             holder.mPictureView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     Intent intent = new Intent(mContext, GalleryActivityUrl.class);
                     Bundle bundle = new Bundle();
                     bundle.putStringArrayList("fileUrls", (ArrayList<String>) mFilePaths);
@@ -138,20 +135,19 @@ public class SentPictureAdapter extends BaseAdapter {
                 }
             });
             holder.mRetryIcon.setVisibility(View.INVISIBLE);
+            holder.mProgressBar.setVisibility(View.INVISIBLE);
         }
-
-
-
         return convertView;
     }
 
     static class ViewHolder{
         public ImageView mPictureView;
         public ImageView mRetryIcon;
-//        public ProgressBar mProgressBar;
+        public ProgressBar mProgressBar;
     }
 
-    public Bitmap decodeSampledBitmapFromUri(String path, int reqWidth, int reqHeight) {
+    public Bitmap decodeSampledBitmapFromUri(String path, int reqWidth, int reqHeight)
+    {
 
         Bitmap bm = null;
         // First decode with inJustDecodeBounds=true to check dimensions
@@ -169,9 +165,8 @@ public class SentPictureAdapter extends BaseAdapter {
         return bm;
     }
 
-    public int calculateInSampleSize(
-
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
+    {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -184,10 +179,6 @@ public class SentPictureAdapter extends BaseAdapter {
                 inSampleSize = Math.round((float)width / (float)reqWidth);
             }
         }
-
         return inSampleSize;
     }
-
-
-
 }

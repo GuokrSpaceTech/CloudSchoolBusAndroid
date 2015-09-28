@@ -105,7 +105,7 @@ public class MainActivity extends BaseActivity implements
     private PagerSlidingTabStrip tabs;
     private PictureProcess mPictureProcess;
     private List<BadgeView> badgeViews = new ArrayList();
-    private ViewPager pager;
+    public  NonSwipeableViewPager pager;
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
 //    private List<String> mFragementTags = new ArrayList();
@@ -186,7 +186,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     void setupViews() {
-        pager = (ViewPager) findViewById(R.id.pager);
+        pager = (NonSwipeableViewPager) findViewById(R.id.pager);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
         pager.setPageMargin(pageMargin);
@@ -456,6 +456,9 @@ public class MainActivity extends BaseActivity implements
         public int getPageIconResId(int position) {
             return ICONS[position];
         }
+
+
+
     }
 
     /**
@@ -489,8 +492,9 @@ public class MainActivity extends BaseActivity implements
 
     @Subscribe public void onUserIsUploadingEvent(IsUploadingEvent event)
     {
+        this.overridePendingTransition(R.anim.scalefromcorner, R.anim.scaletocorner);
         //Just set a red dot
-        setBadge(3,0);
+        setBadge(3, 0);
     }
 
 

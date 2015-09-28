@@ -15,13 +15,13 @@ import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 
 import java.util.List;
 
-public class TagsAdapter extends BaseAdapter {
+public class TagSelectAdapter extends BaseAdapter {
 
 	private Context mContext;
 	private List<TagsEntityT> mPhotoTagList;
     private boolean[] mSeletions;
 
-	public TagsAdapter(Context context, List<TagsEntityT> tags) {
+	public TagSelectAdapter(Context context, List<TagsEntityT> tags) {
 		mContext = context;
 		mPhotoTagList = tags;
         mSeletions = new boolean[tags.size()];

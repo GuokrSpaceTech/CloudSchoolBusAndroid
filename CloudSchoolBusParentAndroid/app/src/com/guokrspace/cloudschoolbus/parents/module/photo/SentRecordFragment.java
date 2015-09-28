@@ -25,8 +25,9 @@ import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.parents.event.FileUploadedEvent;
+import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.SentPictureAdapter;
-import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.TagRecycleViewAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.photo.adapter.TagDisplyAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
 import com.guokrspace.cloudschoolbus.parents.widget.PictureSentCard;
 import com.squareup.otto.Subscribe;
@@ -85,10 +86,14 @@ public class SentRecordFragment extends BaseFragment {
         switch (item.getItemId())
         {
             case android.R.id.home:
+                getFragmentManager().popBackStack();
+                break;
             default:
+
         }
 
-        return super.onOptionsItemSelected(item); // Let the parenting activity handles
+//        return false;
+        return super.onOptionsItemSelected(item); // Let the parenting activity handles PhotoTakenAction
     }
 
 	protected void setListener(View view) {
@@ -170,12 +175,25 @@ public class SentRecordFragment extends BaseFragment {
         }
     }
 
+    @Subscribe public void onReceiveIsUploadingEvent(IsUploadingEvent event)
+    {
+        mUploadQ = UploadFileHelper.getInstance().readUploadArticleQ();
+        mListView.clear();
+        for(UploadArticleEntity article:mUploadQ) {
+            PictureSentCard card = buildSentRecordCard(article);
+            mListView.add(card);
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
+        inflater.inflate(R.menu.main_teacher, menu);
         ((MainActivity)mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.upload_record));
-        super.onCreateOptionsMenu(menu, inflater);
+//        super.onCreateOptionsMenu(menu, inflater);
     }
+
+
 
     private PictureSentCard buildSentRecordCard(UploadArticleEntity article)
     {
@@ -189,7 +207,7 @@ public class SentRecordFragment extends BaseFragment {
             pictures.add(uploadFile.getFbody());
         }
         SentPictureAdapter imageAdapter = new SentPictureAdapter(mParentContext,article.getUploadArticleFileEntityList());
-        TagRecycleViewAdapter tagsAdapter = new TagRecycleViewAdapter(article.getTagsEntityTList());
+        TagDisplyAdapter tagsAdapter = new TagDisplyAdapter(article.getTagsEntityTList());
 
         card.setImageAdapter(imageAdapter);
         card.setTagAdapter(tagsAdapter);

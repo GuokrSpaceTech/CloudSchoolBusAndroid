@@ -58,8 +58,8 @@ import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
-import com.guokrspace.cloudschoolbus.parents.base.adapter.ImageAdapter;
-import com.guokrspace.cloudschoolbus.parents.module.explore.TagRecycleViewAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.explore.adapter.ImageAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.explore.adapter.TagRecycleViewAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleDetailFragment;
@@ -859,7 +859,7 @@ public class BaseFragment extends Fragment {
         for(ClassEntityT theClass: mApplication.mClassesT)
         {
             for(TeacherDutyClassRelationEntity relation:mApplication.mTeacherClassDutys) {
-                if (theClass.getClassid().equals(relation.getClassid())) {
+                if (theClass.getClassid().equals(relation.getClassid()) && mApplication.mConfig.getUserid().equals(relation.getTeacherid())) {
                     retEntity.add(theClass);
                 }
             }

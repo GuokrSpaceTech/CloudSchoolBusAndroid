@@ -162,7 +162,7 @@ public class UploadFileHelper {
 
     private synchronized void setArticleParameters(final UploadArticleEntity uploadArticle) {
 
-        DebugLog.logI("uploadFile11111111111111111111111111111111111");
+//        DebugLog.logI("uploadFile11111111111111111111111111111111111");
         RequestParams params = new RequestParams();
 
         params.put("pickey", uploadArticle.getPickey());
@@ -173,7 +173,7 @@ public class UploadFileHelper {
         params.put("tagids", generateTagidString(uploadArticle));
         params.put("content", uploadArticle.getContent());
 
-        DebugLog.logI("mMethod : " + ProtocolDef.METHOD_over + " RequestParams : " + params.toString());
+//        DebugLog.logI("mMethod : " + ProtocolDef.METHOD_over + " RequestParams : " + params.toString());
         CloudSchoolBusRestClient.upload(ProtocolDef.METHOD_over, params, new AsyncHttpResponseHandler() {
 
             @Override

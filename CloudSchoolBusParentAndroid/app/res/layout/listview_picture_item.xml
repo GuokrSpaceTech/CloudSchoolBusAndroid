@@ -22,13 +22,14 @@
         android:layout_centerInParent="true"
         android:background="@drawable/ic_reload"/>
 
-    <!--<ProgressBar-->
-        <!--android:id="@+id/progressBar"-->
-        <!--style="?android:attr/progressBarStyleHorizontal"-->
-        <!--android:progressDrawable="@drawable/customize_progress_bar"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:indeterminate="false"/>-->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/customize_progress_bar"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:background="@android:color/transparent"/>
 
 </net.soulwolf.image.picturelib.view.SquareLayout>

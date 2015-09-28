@@ -27,6 +27,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 
@@ -93,6 +94,7 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
             Picasso.with(mContext).cancelRequest(holder.mPictureView);
             holder.mPictureView.invalidate();
         } else {
+            holder.mPictureView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             String url = mDataset.get(position).getPicturePath();
             if (url == null) url = mDataset.get(position).getThumbPath();
             //      ImageLoadTask.getInstance().display(holder.mPictureView, Utils.urlFromFile(url));

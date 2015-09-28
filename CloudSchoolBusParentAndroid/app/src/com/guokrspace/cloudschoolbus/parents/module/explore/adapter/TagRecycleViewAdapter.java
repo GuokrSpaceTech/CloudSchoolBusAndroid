@@ -1,4 +1,4 @@
-package com.guokrspace.cloudschoolbus.parents.module.photo.adapter;
+package com.guokrspace.cloudschoolbus.parents.module.explore.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.widget.Button;
 
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by kai on 7/16/15.
  */
 public class TagRecycleViewAdapter extends RecyclerView.Adapter<TagRecycleViewAdapter.ViewHolder> {
-    private List<TagsEntityT> mDataset;
+    private List<TagEntity> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -31,7 +30,7 @@ public class TagRecycleViewAdapter extends RecyclerView.Adapter<TagRecycleViewAd
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public TagRecycleViewAdapter(List<TagsEntityT> myDataset) {
+    public TagRecycleViewAdapter(List<TagEntity> myDataset) {
         mDataset = myDataset;
     }
 
@@ -52,7 +51,7 @@ public class TagRecycleViewAdapter extends RecyclerView.Adapter<TagRecycleViewAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTagButton.setText(mDataset.get(position).getTagname());
+        holder.mTagButton.setText(mDataset.get(position).getTagName());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
