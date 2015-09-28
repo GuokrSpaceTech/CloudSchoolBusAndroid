@@ -193,8 +193,6 @@ public class SentRecordFragment extends BaseFragment {
 //        super.onCreateOptionsMenu(menu, inflater);
     }
 
-
-
     private PictureSentCard buildSentRecordCard(UploadArticleEntity article)
     {
         PictureSentCard card = new PictureSentCard(mParentContext);

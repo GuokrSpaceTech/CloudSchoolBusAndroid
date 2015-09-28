@@ -42,9 +42,10 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/class_name"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/textViewSubtitle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="50"
                         android:padding="@dimen/small_padding"
                         android:textColor="@color/description_color"
                         android:textSize="@dimen/description_size"
@@ -52,12 +53,27 @@
 
                     <TextView
                         android:id="@+id/timestamp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/small_padding"
                         android:textColor="@color/description_color"
                         android:textSize="@dimen/description_size"
                         tools:text="两小时前"/>
+
+                    <TextView
+                        tools:text="两小时前"
+                        android:id="@+id/phonenumber"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:padding="@dimen/small_padding"
+                        android:textColor="@color/description_color"
+                        android:textSize="@dimen/description_size"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:clickable="false"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

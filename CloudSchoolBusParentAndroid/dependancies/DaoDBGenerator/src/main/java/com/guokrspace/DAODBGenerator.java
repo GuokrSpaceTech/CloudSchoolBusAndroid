@@ -225,7 +225,7 @@ public class DAODBGenerator {
         message.addStringProperty("ismass");
         message.addStringProperty("isreaded");
         message.addStringProperty("body");
-        Property senderIdMessage = message.addStringProperty("senderid").notNull().getProperty();
+        Property senderIdMessage = message.addStringProperty("senderid").getProperty();
 
         ToMany messageToTag    = message.addToMany(tag,      messageIdTag);
         ToOne  messageToSender = message.addToOne(sender, senderIdMessage);

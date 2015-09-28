@@ -13,15 +13,16 @@ public class ContactListCard extends SimpleCard {
 
     private String contactAvatarUrl;
     private String contactName;
-    private String classname;
+    private String subtitle;
+    private String phonenumber;
     private String timestamp;
-    private Context context;
+    private Context mContext;
     private int     badgeCount;
     private View.OnClickListener onClickListener;
 
     public ContactListCard(Context context) {
         super(context);
-        context = context;
+        mContext = context;
     }
 
     public String getContactAvatarUrl() {
@@ -40,20 +41,28 @@ public class ContactListCard extends SimpleCard {
         this.contactName = contactName;
     }
 
-    public String getClassname() {
-        return classname;
+    public String getSubtitle() {
+        return subtitle;
     }
 
-    public void setClassname(String classname) {
-        this.classname = classname;
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
     }
 
     public Context getContext() {
-        return context;
+        return mContext;
     }
 
     public void setContext(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     public String getTimestamp() {

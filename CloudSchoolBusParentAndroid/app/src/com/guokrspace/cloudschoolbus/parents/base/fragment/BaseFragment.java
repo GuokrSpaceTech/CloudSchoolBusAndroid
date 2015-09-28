@@ -300,11 +300,16 @@ public class BaseFragment extends Fragment {
                 List<Timeline> timelines = FastJsonTools.getListObject(response.toString(), Timeline.class);
                 for (int i = 0; i < timelines.size(); i++) {
                     Timeline message = timelines.get(i);
-                    Timeline.Sender sender = message.getSender();
-                    MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(), message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(), message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
-                    messageEntityDao.insertOrReplace(messageEntity);
-                    SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
-                    senderEntityDao.insertOrReplace(senderEntity);
+                    if (!cardType(message.getApptype()).equals("")) {
+                        Timeline.Sender sender = message.getSender();
+                        MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(),
+                                message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(),
+                                message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
+
+                        messageEntityDao.insertOrReplace(messageEntity);
+                        SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
+                        senderEntityDao.insertOrReplace(senderEntity);
+                    }
                 }
 
                 //Refresh mMessageEntities
@@ -356,17 +361,15 @@ public class BaseFragment extends Fragment {
         });
 	}
 
-	public void changeAvatarUser(String studentid, Object image, final android.os.Handler handler){
+	public void changeAvatarUser(final String userid, final Object image, final android.os.Handler handler){
 		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
 		}
 
-//		showWaitDialog("", null);
-		RequestParams params = new RequestParams();
+        RequestParams params = new RequestParams();
 
-		if(studentid!=null) params.put("studentid", studentid);
-
+        //File path
         if (image instanceof String) {
             if (image != null) {
 //			params.put("fbody", ImageUtil.getPicString(imageFilePath, 512));
@@ -384,52 +387,64 @@ public class BaseFragment extends Fragment {
             params.put("fbody", new ByteArrayInputStream(bos.toByteArray()));
         }
 
-		CloudSchoolBusRestClient.post(ProtocolDef.METHOD_changeAvartarStudent, params, new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				Message msg = handler.obtainMessage();
-				msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
-				handler.sendMessage(msg);
-				super.onSuccess(statusCode, headers, response);
-			}
+		CloudSchoolBusRestClient.post(ProtocolDef.METHOD_changeAvartar, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Message msg = handler.obtainMessage();
+                msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
+                Bundle bundle = new Bundle();
+                try {
+                    String remoteUrl = response.get("filepath").toString();
+                    //Trim the . in the end
+                    remoteUrl = remoteUrl.substring(0,remoteUrl.lastIndexOf('.'));
+                    bundle.putString("filepath", remoteUrl);
+                    bundle.putString("userid",userid);
+                    bundle.putString("cache",(String)image);
+                    msg.setData(bundle);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                handler.sendMessage(msg);
+                super.onSuccess(statusCode, headers, response);
+            }
 
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-				Message msg = handler.obtainMessage();
-				msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
-				handler.sendMessage(msg);
-				super.onSuccess(statusCode, headers, response);
-			}
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Message msg = handler.obtainMessage();
+                msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
+                handler.sendMessage(msg);
+                super.onSuccess(statusCode, headers, response);
+            }
 
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, String responseString) {
-				Message msg = handler.obtainMessage();
-				msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
-				handler.sendMessage(msg);
-				super.onSuccess(statusCode, headers, responseString);
-			}
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Message msg = handler.obtainMessage();
+                msg.what = HandlerConstant.MSG_AVATAR_STUDENT_OK;
+                handler.sendMessage(msg);
+                super.onSuccess(statusCode, headers, responseString);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-			}
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-				handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-			}
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-				handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
-				super.onFailure(statusCode, headers, responseString, throwable);
-			}
-		});
-	}
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                handler.sendEmptyMessage(HandlerConstant.MSG_AVATAR_STUDENT_FAIL);
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+    }
 
-	public void UserConfirm(String messageid, final Button button, final android.os.Handler handler) {
+    public void UserConfirm(String messageid, final Button button, final android.os.Handler handler) {
 		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
@@ -437,62 +452,62 @@ public class BaseFragment extends Fragment {
 
 		showWaitDialog("", null);
 
-		HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<String, String>();
 		if(messageid!=null) params.put("messageid", messageid);
 
 		CloudSchoolBusRestClient.get(ProtocolDef.METHOD_noticeconfirm, params, new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				Message msg = handler.obtainMessage();
-				msg.what = HandlerConstant.MSG_CONFIRM_OK;
-				msg.obj = button;
-				handler.sendMessage(msg);
-				super.onSuccess(statusCode, headers, response);
-			}
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Message msg = handler.obtainMessage();
+                msg.what = HandlerConstant.MSG_CONFIRM_OK;
+                msg.obj = button;
+                handler.sendMessage(msg);
+                super.onSuccess(statusCode, headers, response);
+            }
 
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-				Message msg = handler.obtainMessage();
-				msg.what = HandlerConstant.MSG_CONFIRM_OK;
-				msg.obj = button;
-				handler.sendMessage(msg);
-				super.onSuccess(statusCode, headers, response);
-			}
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Message msg = handler.obtainMessage();
+                msg.what = HandlerConstant.MSG_CONFIRM_OK;
+                msg.obj = button;
+                handler.sendMessage(msg);
+                super.onSuccess(statusCode, headers, response);
+            }
 
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, String responseString) {
-				Message msg = handler.obtainMessage();
-				msg.what = HandlerConstant.MSG_CONFIRM_OK;
-				msg.obj = button;
-				handler.sendMessage(msg);
-				super.onSuccess(statusCode, headers, responseString);
-			}
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Message msg = handler.obtainMessage();
+                msg.what = HandlerConstant.MSG_CONFIRM_OK;
+                msg.obj = button;
+                handler.sendMessage(msg);
+                super.onSuccess(statusCode, headers, responseString);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				Message msg = handler.obtainMessage();
-				msg.what = HandlerConstant.MSG_SERVER_ERROR;
-				msg.obj = throwable;
-				handler.sendMessage(msg);
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-			}
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Message msg = handler.obtainMessage();
+                msg.what = HandlerConstant.MSG_SERVER_ERROR;
+                msg.obj = throwable;
+                handler.sendMessage(msg);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-				handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-			}
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
 
-			@Override
-			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-				handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
-				super.onFailure(statusCode, headers, responseString, throwable);
-			}
-		});
-	}
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+    }
 
 
-	public void animation(View v) {
+    public void animation(View v) {
 		v.clearAnimation();
 		ScaleAnimation animation = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		animation.setDuration(300);
@@ -557,10 +572,10 @@ public class BaseFragment extends Fragment {
 		card.setTeacherAvatarUrl(teacherAvatarString);
 		card.setTeacherName(message.getSenderEntity().getName());
 		card.setKindergarten(mApplication.mSchools.get(0).getName());
-		card.setCardType(cardType(message.getApptype()));
+        card.setCardType(cardType(message.getApptype()));
 		card.setSentTime(message.getSendtime());
 		card.setTitle(message.getTitle());
-		card.setDescription(message.getDescription());
+        card.setDescription(message.getDescription());
 		List<String> pictureUrls = new ArrayList<>();
 		try {
 			JSONObject jsonObject = new JSONObject(message.getBody());
@@ -574,7 +589,7 @@ public class BaseFragment extends Fragment {
 		TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
 		card.setTagAdapter(adapter);
 
-		CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+        CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
 				animation(view);
@@ -590,7 +605,7 @@ public class BaseFragment extends Fragment {
 		});
 		card.setmOnItemSelectedListener(tagClickListener);
 
-		View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				showShare();
@@ -598,7 +613,7 @@ public class BaseFragment extends Fragment {
 		};
 		card.setmShareButtonClickListener(shareButtonClickListener);
 
-		return card;
+        return card;
 	}
 
 	public NoticeCard BuildNoticeCard(final MessageEntity messageEntity, final Handler handler)
@@ -636,15 +651,15 @@ public class BaseFragment extends Fragment {
 		theCard.setIsNeedConfirm(messageEntity.getIsconfirm());
 		theCard.setTitle(messageEntity.getTitle());
 		theCard.setDescription(messageEntity.getDescription());
-		ActivityBody messageBody = FastJsonTools.getObject(messageEntity.getBody(), ActivityBody.class);
+        ActivityBody messageBody = FastJsonTools.getObject(messageEntity.getBody(), ActivityBody.class);
 		if (messageBody != null) theCard.setDrawable(messageBody.getPList().get(0));
 		theCard.setmConfirmButtonClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				UserConfirm(messageEntity.getMessageid(), (Button) view, handler);
-			}
-		});
-		return theCard;
+            @Override
+            public void onClick(View view) {
+                UserConfirm(messageEntity.getMessageid(), (Button) view, handler);
+            }
+        });
+        return theCard;
 	}
 
 	public AttendanceRecordCard BuildAttendanceCard(MessageEntity messageEntity)
@@ -652,16 +667,16 @@ public class BaseFragment extends Fragment {
 		AttendanceRecordCard attendanceRecordCard = new AttendanceRecordCard(mParentContext);
 		String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
 		attendanceRecordCard.setTeacherAvatarUrl(teacherAvatarString);
-		attendanceRecordCard.setTeacherName(messageEntity.getSenderEntity().getName());
-		attendanceRecordCard.setClassName(messageEntity.getSenderEntity().getClassname());
-		attendanceRecordCard.setCardType(cardType(messageEntity.getApptype()));
-		attendanceRecordCard.setSentTime(messageEntity.getSendtime());
-		String messageBody = messageEntity.getBody();
+        attendanceRecordCard.setTeacherName(messageEntity.getSenderEntity().getName());
+        attendanceRecordCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        attendanceRecordCard.setCardType(cardType(messageEntity.getApptype()));
+        attendanceRecordCard.setSentTime(messageEntity.getSendtime());
+        String messageBody = messageEntity.getBody();
 		AttendanceRecord attendanceRecord = FastJsonTools.getObject(messageBody, AttendanceRecord.class);
-		attendanceRecordCard.setRecordTime(attendanceRecord.getPunchtime().toString());
+        attendanceRecordCard.setRecordTime(attendanceRecord.getPunchtime().toString());
 		attendanceRecordCard.setDrawable(attendanceRecord.getPicture());
 		attendanceRecordCard.setDescription(attendanceRecord.getPunchtime());
-		return attendanceRecordCard;
+        return attendanceRecordCard;
 	}
 
 	public StreamingNoticeCard BuildStreamingNoticeCard(MessageEntity messageEntity)
@@ -670,11 +685,11 @@ public class BaseFragment extends Fragment {
 		streamingNoticeCard.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
 		streamingNoticeCard.setKindergartenName(messageEntity.getSenderEntity().getName());
 		streamingNoticeCard.setClassName(messageEntity.getSenderEntity().getClassname());
-		streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
-		streamingNoticeCard.setCardType(cardType(messageEntity.getApptype()));
-		streamingNoticeCard.setContext(mParentContext);
-		streamingNoticeCard.setDescription(messageEntity.getDescription());
-		String messageBody = messageEntity.getBody();
+        streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+        streamingNoticeCard.setCardType(cardType(messageEntity.getApptype()));
+        streamingNoticeCard.setContext(mParentContext);
+        streamingNoticeCard.setDescription(messageEntity.getDescription());
+        String messageBody = messageEntity.getBody();
 		final Ipcparam ipcpara = FastJsonTools.getObject(messageBody, Ipcparam.class);
 		streamingNoticeCard.setClickListener(new View.OnClickListener() {
 			@Override
@@ -697,13 +712,13 @@ public class BaseFragment extends Fragment {
 		ReportListCard reportListCard = new ReportListCard(mParentContext);
 		String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
 		reportListCard.setTeacherAvatarUrl(teacherAvatarString);
-		reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
-		reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
-		reportListCard.setCardType(cardType(messageEntity.getApptype()));
-		reportListCard.setSentTime(messageEntity.getSendtime());
-		String messageBody = messageEntity.getBody();
+        reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
+        reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        reportListCard.setCardType(cardType(messageEntity.getApptype()));
+        reportListCard.setSentTime(messageEntity.getSendtime());
+        String messageBody = messageEntity.getBody();
 		final StudentReport studentReport = FastJsonTools.getObject(messageBody, StudentReport.class);
-		reportListCard.setReporttype(studentReport.getReportType());
+        reportListCard.setReporttype(studentReport.getReportType());
 		reportListCard.setClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -757,7 +772,7 @@ public class BaseFragment extends Fragment {
 		card.setContext(mParentContext);
 		card.setDescription(messageEntity.getDescription());
 		Schedule schedule = FastJsonTools.getObject(messageEntity.getBody(), Schedule.class);
-		final String scheduleUrl = schedule.getUrl();
+        final String scheduleUrl = schedule.getUrl();
 		card.setClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -780,7 +795,7 @@ public class BaseFragment extends Fragment {
 		return (ArrayList<MessageEntity>)queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(messageType)).list();
 	}
 
-	//Get all messages from cache
+    //Get all messages from cache
 	private ArrayList<MessageEntity> GetMessageFromCache() {
 		MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
 		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
@@ -914,8 +929,7 @@ public class BaseFragment extends Fragment {
         {
             for(StudentClassRelationEntity relation:mApplication.mStudentClasses) {
                 if(relation.getClassid().equals(classid)) {
-                    if (student.getStudentid().equals(relation.getStudentid()))
-                    {
+                    if (student.getStudentid().equals(relation.getStudentid())) {
                         //Found the student, then find the parents
                         retStudents.add(student);
                         break;
@@ -944,5 +958,24 @@ public class BaseFragment extends Fragment {
         }
 
         return retTeachers;
+    }
+
+    public ArrayList<StudentEntityT> findStudentsOfParents(ParentEntityT parent)
+    {
+        ArrayList<StudentEntityT> retStudents = new ArrayList<>();
+        //Loop over students list
+        for(StudentEntityT student:mApplication.mStudentsT)
+        {
+            //Loop Over the relationship table
+            for(StudentParentRelationEntity relation:mApplication.mStudentParents)
+            {
+                //If found the student in the relation table and its parent is eqaul to the designated parent
+                if(student.getStudentid().equals(relation.getStudentid()) && parent.getParentid().equals(relation.getParentid()))
+                {
+                    retStudents.add(student);
+                }
+            }
+        }
+        return retStudents;
     }
 }

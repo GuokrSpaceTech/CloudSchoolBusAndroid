@@ -10,11 +10,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +45,7 @@ import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
@@ -51,9 +54,12 @@ import com.guokrspace.cloudschoolbus.parents.module.photo.SentRecordFragment;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by wangjianfeng on 15/8/13.
@@ -101,6 +107,16 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             switch (msg.what) {
                 case HandlerConstant.MSG_AVATAR_STUDENT_OK:
                     imageViewAvatar.setImageBitmap(bitMap);
+                    Bundle bundle = msg.getData();
+                    String avatarurl = (String)bundle.get("filepath");
+                    String userid    = (String)bundle.get("userid");
+                    String localPath = (String)bundle.get("cache");
+                    saveUserAvatarInfo(userid, avatarurl);
+                    updateUserInformation();
+                    File file = new File(localPath);
+                    if (file.exists()) {
+                        file.delete();
+                    }
                     break;
                 case HandlerConstant.MSG_AVATAR_STUDENT_FAIL:
                     SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.server_error))
@@ -318,27 +334,6 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    // 下面这两句是对图片按照一定的比例缩放
-                    if (bitMap == null) {
-                        SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.invalid_picture))
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-                        return;
-                    }
-                    int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
-                    bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale),
-                            (int) (bitMap.getHeight() / scale));
-
-                    // 获取相册图片的路径
-                    String[] proj = { MediaStore.Images.Media.DATA };
-                    // 好像是android多媒体数据库的封装接口，具体的看Android文档
-                    @SuppressWarnings("deprecation")
-                    Cursor cursor = ((MainActivity)(mParentContext)).managedQuery(selectedImageUri, proj, null, null, null);
-                    // 按我个人理解 这个是获得用户选择的图片的索引值
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    // 将光标移至开头 ，这个很重要，不小心很容易引起越界
-                    cursor.moveToFirst();
-                    // 最后根据索引值获取图片路径
-                    bitmapFilePath = cursor.getString(column_index);
                 }
                 break;
             case CAMERA_WITH_DATA: // 拍照
@@ -353,6 +348,35 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                 break;
         }
 
+        // 下面这两句是对图片按照一定的比例缩放
+        if (bitMap == null) {
+            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.invalid_picture))
+                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+            return;
+        }
+        int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
+        bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale),
+                (int) (bitMap.getHeight() / scale));
+
+        File myDir = new File(mApplication.mCacheDir + "/avatars");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n + ".jpg";
+        File file = new File(myDir, fname);
+        if (file.exists())
+            file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitMap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+            bitmapFilePath = file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if(bitmapFilePath==null)
         {
             if(Version.PARENT)
@@ -363,7 +387,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             if(Version.PARENT)
                 changeAvatarUser(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(), bitMap, mHandler);
             else
-                changeAvatarUser(getMyself().getTeacherid(), bitMap, mHandler);
+                changeAvatarUser(getMyself().getTeacherid(), bitmapFilePath, mHandler);
         }
     }
 
@@ -480,7 +504,9 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             }
 
             if(user!=null) {
-                Picasso.with(mParentContext).load(user.getAvatar()).into(imageViewAvatar);
+                //Trim the . end of url
+                String url = user.getAvatar().substring(0, user.getAvatar().lastIndexOf('.'));
+                Picasso.with(mParentContext).load(url).into(imageViewAvatar);
                 textViewUserName.setText(user.getRealname());
             }
         }
@@ -511,4 +537,17 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         return (int) (dip * mParentContext.getResources().getDisplayMetrics().density + 0.5f);
     }
 
+    private void saveUserAvatarInfo(String userid, String url) {
+
+        for(TeacherEntityT teacher:mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list())
+        {
+            if(teacher.getTeacherid().equals(userid))
+            {
+                teacher.setAvatar(url);
+                mApplication.mDaoSession.getTeacherEntityTDao().update(teacher);
+            }
+        }
+
+        mApplication.mTeachersT = mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list();
+    }
 }

@@ -13,6 +13,7 @@ public class ProtocolDef {
     public static final String METHOD_latestchat             =    "getLastLetter";
     public static final String METHOD_noticeconfirm          =    "confirm";
     public static final String METHOD_changeAvartarStudent   =    "setStudentAvatar";
+    public static final String METHOD_changeAvartar          =    "setavatar";
     public static final String METHOD_changeAvartarParent    =    "setParentAvatar";
     public static final String METHOD_Source                 =   "file-receiver";
     public static final String METHOD_upload                 =   "upload";

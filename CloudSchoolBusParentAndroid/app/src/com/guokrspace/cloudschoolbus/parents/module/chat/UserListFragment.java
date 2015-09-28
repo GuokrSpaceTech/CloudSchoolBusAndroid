@@ -29,9 +29,11 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.widget.ContactListCard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
@@ -100,7 +102,7 @@ public class UserListFragment extends BaseFragment {
                 ClassEntity classEntity = null;
                 if (results.size() != 0) {
                     classEntity = results.get(0);
-                    card.setClassname(classEntity.getName());
+                    card.setSubtitle(classEntity.getName());
                 }
 
                 //Lastmessage timestamp
@@ -134,7 +136,6 @@ public class UserListFragment extends BaseFragment {
                     if (mIsParent) {
                         mTargetID = findParentsinClass(mCurrentClassid).get(position).getParentid();
                         userName = findParentsinClass(mCurrentClassid).get(position).getNikename();
-
                     } else {
                         mTargetID = findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
                         userName = findTeachersinClass(mCurrentClassid).get(position).getNickname();
@@ -148,7 +149,7 @@ public class UserListFragment extends BaseFragment {
                     mTargetID = mApplication.mTeachers.get(position).getId();
                 }
 
-                ((MainActivity)mParentContext).pager.lock();
+                ((MainActivity) mParentContext).pager.lock();
                 ConversationFragment fragment = new ConversationFragment();
                 Uri uri = Uri.parse("rong://" + getActivity().getApplicationInfo().packageName).buildUpon()
                         .appendPath("conversation").appendPath(io.rong.imlib.model.Conversation.ConversationType.PRIVATE.getName().toLowerCase())
@@ -261,7 +262,8 @@ public class UserListFragment extends BaseFragment {
                 ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
                 card.setContactAvatarUrl(parent.getAvatar()); //Avatar
                 card.setContactName(parent.getNikename()); //Name
-                card.setClassname(findCurrentClass().getClassname());
+                card.setSubtitle(generateStudentsNameSting(findStudentsOfParents(parent)));
+                card.setPhonenumber(parent.getMobile());
                 List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao().queryBuilder().list();
                 for (int j = 0; j < lastIMs.size(); j++) {
                     if (lastIMs.get(j).getTeacherid().equals(parent.getParentid())) {
@@ -282,7 +284,8 @@ public class UserListFragment extends BaseFragment {
                 ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
                 card.setContactAvatarUrl(teacher.getAvatar()); //Avatar
                 card.setContactName(teacher.getRealname()); //Name
-                card.setClassname(findCurrentClass().getClassname());
+                card.setSubtitle(findCurrentClass().getClassname());
+                card.setPhonenumber(teacher.getMobile());
 
                 //Lastmessage timestamp
                 List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao().queryBuilder().list();
@@ -297,22 +300,24 @@ public class UserListFragment extends BaseFragment {
         }
     }
 
-    private void initActionBar()
-    {
+    private void initActionBar() {
         mainActivity.getMenuInflater().inflate(R.menu.menu_contacts, mMenu);
-        mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        if (findMyClass().size() > 1) {
+            mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, findMyClass());
 
-        SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, findMyClass());
-
-        ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
-            @Override
-            public boolean onNavigationItemSelected(int i, long l) {
-                mCurrentClassid = findMyClass().get(i).getClassid();
-                selectContacts(mCurrentClassid, mIsParent);
-                return false;
-            }
-        };
-        mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
+            ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
+                @Override
+                public boolean onNavigationItemSelected(int i, long l) {
+                    mCurrentClassid = findMyClass().get(i).getClassid();
+                    selectContacts(mCurrentClassid, mIsParent);
+                    return false;
+                }
+            };
+            mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
+        } else {
+            mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        }
         mainActivity.getSupportActionBar().setTitle("");
     }
 
@@ -341,5 +346,18 @@ public class UserListFragment extends BaseFragment {
             if(!Version.PARENT)
             selectContacts(mCurrentClassid, mIsParent);
         }
+    }
+
+    private String generateStudentsNameSting(ArrayList<StudentEntityT> students)
+    {
+        String retString = "";
+        for(StudentEntityT student:students)
+        {
+            retString += student.getCnname() + ",";
+        }
+
+        retString = retString.substring(0,retString.lastIndexOf(',')) + getResources().getString(R.string.parents);
+
+        return retString;
     }
 }

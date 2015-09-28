@@ -22,7 +22,6 @@ public class MessageEntity {
     private String ismass;
     private String isreaded;
     private String body;
-    /** Not-null value. */
     private String senderid;
 
     /** Used to resolve relations */
@@ -145,12 +144,10 @@ public class MessageEntity {
         this.body = body;
     }
 
-    /** Not-null value. */
     public String getSenderid() {
         return senderid;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setSenderid(String senderid) {
         this.senderid = senderid;
     }
@@ -173,12 +170,9 @@ public class MessageEntity {
     }
 
     public void setSenderEntity(SenderEntity senderEntity) {
-        if (senderEntity == null) {
-            throw new DaoException("To-one property 'senderid' has not-null constraint; cannot set to-one to null");
-        }
         synchronized (this) {
             this.senderEntity = senderEntity;
-            senderid = senderEntity.getId();
+            senderid = senderEntity == null ? null : senderEntity.getId();
             senderEntity__resolvedKey = senderid;
         }
     }

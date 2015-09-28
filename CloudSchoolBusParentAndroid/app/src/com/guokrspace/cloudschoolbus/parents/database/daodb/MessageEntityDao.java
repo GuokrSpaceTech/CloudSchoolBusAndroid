@@ -65,7 +65,7 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
                 "'ISMASS' TEXT," + // 7: ismass
                 "'ISREADED' TEXT," + // 8: isreaded
                 "'BODY' TEXT," + // 9: body
-                "'SENDERID' TEXT NOT NULL );"); // 10: senderid
+                "'SENDERID' TEXT);"); // 10: senderid
     }
 
     /** Drops the underlying database table. */
@@ -124,7 +124,11 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
         if (body != null) {
             stmt.bindString(10, body);
         }
-        stmt.bindString(11, entity.getSenderid());
+ 
+        String senderid = entity.getSenderid();
+        if (senderid != null) {
+            stmt.bindString(11, senderid);
+        }
     }
 
     @Override
@@ -153,7 +157,7 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // ismass
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // isreaded
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // body
-            cursor.getString(offset + 10) // senderid
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // senderid
         );
         return entity;
     }
@@ -171,7 +175,7 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
         entity.setIsmass(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setIsreaded(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setBody(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setSenderid(cursor.getString(offset + 10));
+        entity.setSenderid(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
      }
     
     /** @inheritdoc */
@@ -217,9 +221,7 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, String> {
         int offset = getAllColumns().length;
 
         SenderEntity senderEntity = loadCurrentOther(daoSession.getSenderEntityDao(), cursor, offset);
-         if(senderEntity != null) {
-            entity.setSenderEntity(senderEntity);
-        }
+        entity.setSenderEntity(senderEntity);
 
         return entity;    
     }

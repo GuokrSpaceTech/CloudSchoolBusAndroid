@@ -97,6 +97,8 @@ public class CloudSchoolBusParentsApplication extends Application {
     public List<StudentClassRelationEntity> mStudentClasses;
     public List<StudentParentRelationEntity> mStudentParents;
 
+    public String mCacheDir;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -110,7 +112,18 @@ public class CloudSchoolBusParentsApplication extends Application {
 
         initImageLoader();
 
+        initCacheFile();
+
         RongIM.init(this);
+    }
+
+    private void initCacheFile() {
+        if(android.os.Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED)){
+            this.mCacheDir = getExternalCacheDir().getAbsolutePath();
+        }else {
+            this.mCacheDir = getCacheDir().getAbsolutePath();
+        }
     }
 
     private void initDB() {
