@@ -1,7 +1,6 @@
 package com.guokrspace.cloudschoolbus.parents.entity;
 
 import java.util.List;
-import java.util.Map;
 
 /* Example: We only cares about the "record" field under "attendance"
 "{

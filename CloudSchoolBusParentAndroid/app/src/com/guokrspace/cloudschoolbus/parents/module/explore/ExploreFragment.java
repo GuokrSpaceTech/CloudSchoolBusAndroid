@@ -78,15 +78,18 @@ public class ExploreFragment extends BaseFragment {
             switch (msg.what) {
                 case HandlerConstant.MSG_ONREFRESH:
                     clearAppBadgetCount(mParentContext);
+                    setActionBarTitle(getResources().getString(R.string.module_explore), getResources().getString(R.string.module_explore));
                     AddCards();
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     break;
                 case HandlerConstant.MSG_ONLOADMORE:
                     hideWaitDialog();
+                    setActionBarTitle(getResources().getString(R.string.module_explore), getResources().getString(R.string.module_explore));
                     AddCards();
                     break;
                 case HandlerConstant.MSG_ONCACHE:
+                    setActionBarTitle(getResources().getString(R.string.module_explore), getResources().getString(R.string.module_explore));
                     hideWaitDialog();
                     AddCards();
                     break;
@@ -128,6 +131,17 @@ public class ExploreFragment extends BaseFragment {
                 case HandlerConstant.MSG_CONFIRM_OK:
                     hideWaitDialog();
                     Button button = (Button) msg.obj;
+                    String messageid = (String)button.getTag();
+                    List<MessageEntity> messages = mApplication.mDaoSession.getMessageEntityDao()
+                            .queryBuilder().where(MessageEntityDao.Properties.Messageid.eq(messageid))
+                            .list();
+                    if(messages.size()>0) {
+                        messages.get(0).setIsconfirm("2");
+                        mApplication.mDaoSession.getMessageEntityDao().update(messages.get(0));
+                    }
+                    //Update the memory
+                    int i = mMesageEntities.indexOf(messages.get(0));
+                    mMesageEntities.get(i).setIsconfirm("2");
                     button.setText(getResources().getString(R.string.confirmed_notice));
                     button.setBackgroundColor(getResources().getColor(R.color.button_disable));
                     button.setEnabled(false);
@@ -471,6 +485,7 @@ public class ExploreFragment extends BaseFragment {
                     return false;
                 }
             });
+            mainActivity.getSupportActionBar().setTitle("");
         }
         super.onCreateOptionsMenu(menu, inflater);
     }

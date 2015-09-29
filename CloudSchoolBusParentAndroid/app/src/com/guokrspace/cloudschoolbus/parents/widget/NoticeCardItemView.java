@@ -12,9 +12,6 @@ import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * Created by Yang Kai on 15/7/14.
  */
@@ -104,7 +101,12 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
         if(card.getIsNeedConfirm()!= null) {
             if (card.getIsNeedConfirm().equals("1")) {
                 confirmButton.setOnClickListener(card.getmConfirmButtonClickListener());
+                confirmButton.setText(getResources().getString(R.string.confirm_notice));
+                confirmButton.setBackgroundColor(getResources().getColor(R.color.button_enable));
+                confirmButton.setEnabled(true);
             } else if (card.getIsNeedConfirm().equals("2")) {
+                confirmButton.setText(getResources().getString(R.string.confirmed_notice));
+                confirmButton.setBackgroundColor(getResources().getColor(R.color.button_disable));
                 confirmButton.setEnabled(false);
             } else {
                 confirmButton.setVisibility(View.GONE);

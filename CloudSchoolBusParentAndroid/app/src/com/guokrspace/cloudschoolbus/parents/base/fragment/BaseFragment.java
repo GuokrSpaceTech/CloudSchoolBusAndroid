@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -60,9 +61,6 @@ import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.adapter.ImageAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.explore.adapter.TagRecycleViewAdapter;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.food.FoodDetailFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.report.ReportDetailFragment;
-import com.guokrspace.cloudschoolbus.parents.module.explore.classify.schedule.ScheduleDetailFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.protocols.ProtocolDef;
 import com.guokrspace.cloudschoolbus.parents.widget.ActivityCard;
@@ -387,7 +385,16 @@ public class BaseFragment extends Fragment {
             params.put("fbody", new ByteArrayInputStream(bos.toByteArray()));
         }
 
-		CloudSchoolBusRestClient.post(ProtocolDef.METHOD_changeAvartar, params, new JsonHttpResponseHandler() {
+        String requestMethod = "";
+        if(Version.PARENT)
+        {
+            requestMethod = ProtocolDef.METHOD_changeAvartarStudent;
+            params.put("studentid",userid);
+        } else {
+            requestMethod = ProtocolDef.METHOD_changeAvartar;
+        }
+
+		CloudSchoolBusRestClient.post(requestMethod, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Message msg = handler.obtainMessage();
@@ -444,7 +451,7 @@ public class BaseFragment extends Fragment {
         });
     }
 
-    public void UserConfirm(String messageid, final Button button, final android.os.Handler handler) {
+    public void UserConfirm(final String messageid, final Button button, final android.os.Handler handler) {
 		if (!mApplication.networkStatusEvent.isNetworkConnected()) {
 			handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
 			return;
@@ -460,6 +467,7 @@ public class BaseFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Message msg = handler.obtainMessage();
                 msg.what = HandlerConstant.MSG_CONFIRM_OK;
+                button.setTag(messageid);
                 msg.obj = button;
                 handler.sendMessage(msg);
                 super.onSuccess(statusCode, headers, response);
@@ -469,6 +477,7 @@ public class BaseFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Message msg = handler.obtainMessage();
                 msg.what = HandlerConstant.MSG_CONFIRM_OK;
+                button.setTag(messageid);
                 msg.obj = button;
                 handler.sendMessage(msg);
                 super.onSuccess(statusCode, headers, response);
@@ -478,6 +487,7 @@ public class BaseFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Message msg = handler.obtainMessage();
                 msg.what = HandlerConstant.MSG_CONFIRM_OK;
+                button.setTag(messageid);
                 msg.obj = button;
                 handler.sendMessage(msg);
                 super.onSuccess(statusCode, headers, responseString);
@@ -716,17 +726,18 @@ public class BaseFragment extends Fragment {
         reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
         reportListCard.setCardType(cardType(messageEntity.getApptype()));
         reportListCard.setSentTime(messageEntity.getSendtime());
+        reportListCard.setReporttype(messageEntity.getTitle());
         String messageBody = messageEntity.getBody();
 		final StudentReport studentReport = FastJsonTools.getObject(messageBody, StudentReport.class);
         reportListCard.setReporttype(studentReport.getReportType());
 		reportListCard.setClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				MainActivity mainActivity = (MainActivity)mParentContext;
-				mainActivity.setActionBarTitle(getResources().getString(R.string.report), getResources().getString(R.string.module_explore));
-				ReportDetailFragment reportDetailFragment = ReportDetailFragment.newInstance(messageEntity.getSendtime(), studentReport.getReportUrl());
+//				MainActivity mainActivity = (MainActivity)mParentContext;
+//				mainActivity.setActionBarTitle(getResources().getString(R.string.report), getResources().getString(R.string.module_explore));
+				WebviewFragment theFragment = WebviewFragment.newInstance(studentReport.getReportUrl(), getResources().getString(R.string.report),"");
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
-				transaction.replace(R.id.article_module_layout, reportDetailFragment);
+				transaction.replace(R.id.article_module_layout, theFragment);
 				transaction.addToBackStack(null);
 				transaction.commit();
 			}
@@ -749,9 +760,7 @@ public class BaseFragment extends Fragment {
 		card.setClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				MainActivity mainActivity = (MainActivity)mParentContext;
-				mainActivity.setActionBarTitle(getResources().getString(R.string.food), getResources().getString(R.string.module_explore));
-				FoodDetailFragment fragment = FoodDetailFragment.newInstance(foodUrl);
+				WebviewFragment fragment = WebviewFragment.newInstance(foodUrl, getResources().getString(R.string.food),"");
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
 				transaction.replace(R.id.article_module_layout, fragment);
 				transaction.addToBackStack(null);
@@ -777,8 +786,8 @@ public class BaseFragment extends Fragment {
 			@Override
 			public void onClick(View view) {
 				MainActivity mainActivity = (MainActivity)mParentContext;
-				mainActivity.setActionBarTitle(getResources().getString(R.string.schedule), getResources().getString(R.string.module_explore));
-				ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(scheduleUrl);
+//				mainActivity.setActionBarTitle(getResources().getString(R.string.schedule), getResources().getString(R.string.module_explore));
+				WebviewFragment fragment = WebviewFragment.newInstance(scheduleUrl, getResources().getString(R.string.schedule),"");
 				FragmentTransaction transaction = getFragmentManager().beginTransaction();
 				transaction.replace(R.id.article_module_layout, fragment);
 				transaction.addToBackStack(null);

@@ -15,7 +15,6 @@ import com.guokrspace.cloudschoolbus.parents.R;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by Yang Kai on 15/7/14.

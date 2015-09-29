@@ -9,8 +9,6 @@ import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

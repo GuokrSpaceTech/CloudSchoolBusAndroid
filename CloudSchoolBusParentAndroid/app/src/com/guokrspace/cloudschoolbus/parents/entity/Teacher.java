@@ -11,6 +11,7 @@ import java.io.Serializable;
 //              "duty":"班主任",
 //              "name":"小美"}],
 public class Teacher implements Serializable {
+    private String avatar;
     private String id;
     private String duty;
     private String name;
@@ -37,5 +38,13 @@ public class Teacher implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

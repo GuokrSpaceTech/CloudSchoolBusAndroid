@@ -20,8 +20,6 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;

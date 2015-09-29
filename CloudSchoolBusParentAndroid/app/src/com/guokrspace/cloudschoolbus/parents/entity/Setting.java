@@ -1,7 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.entity;
 
-import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

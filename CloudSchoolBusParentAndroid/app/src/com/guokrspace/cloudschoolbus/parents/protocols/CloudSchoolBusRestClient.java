@@ -1,25 +1,12 @@
 package com.guokrspace.cloudschoolbus.parents.protocols;
 
-import android.text.TextUtils;
-
-import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.loopj.android.http.*;
 
-import org.apache.http.Header;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

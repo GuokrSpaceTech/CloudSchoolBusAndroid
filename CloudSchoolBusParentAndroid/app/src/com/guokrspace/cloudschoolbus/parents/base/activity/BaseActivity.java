@@ -1,47 +1,31 @@
 package com.guokrspace.cloudschoolbus.parents.base.activity;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.internal.widget.ActionBarContainer;
 
 
 import com.alibaba.fastjson.JSONException;
 import com.android.support.debug.DebugLog;
-import com.android.support.utils.SDCardToolUtil;
-import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.android.support.dialog.*;
-import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoMaster;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
-import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
-import com.guokrspace.cloudschoolbus.parents.entity.Student;
-import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;

@@ -13,7 +13,7 @@ public class ContactListCard extends SimpleCard {
 
     private String contactAvatarUrl;
     private String contactName;
-    private String subtitle;
+    private String childrenname;
     private String phonenumber;
     private String timestamp;
     private Context mContext;
@@ -25,12 +25,12 @@ public class ContactListCard extends SimpleCard {
         mContext = context;
     }
 
-    public String getContactAvatarUrl() {
+    public String getChildrenname() {
         return contactAvatarUrl;
     }
 
-    public void setContactAvatarUrl(String contactAvatarUrl) {
-        this.contactAvatarUrl = contactAvatarUrl;
+    public void setChildrenname(String childrenname) {
+        this.contactAvatarUrl = childrenname;
     }
 
     public String getContactName() {
@@ -42,11 +42,11 @@ public class ContactListCard extends SimpleCard {
     }
 
     public String getSubtitle() {
-        return subtitle;
+        return childrenname;
     }
 
     public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
+        this.childrenname = subtitle;
     }
 
     public String getPhonenumber() {

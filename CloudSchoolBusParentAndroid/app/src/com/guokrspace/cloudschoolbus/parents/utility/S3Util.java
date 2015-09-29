@@ -18,7 +18,6 @@ package com.guokrspace.cloudschoolbus.parents.utility;
 import android.content.Context;
 import android.net.Uri;
 
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;

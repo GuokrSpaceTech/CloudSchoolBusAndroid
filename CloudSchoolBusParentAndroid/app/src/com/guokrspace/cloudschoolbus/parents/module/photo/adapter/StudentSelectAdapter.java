@@ -17,8 +17,6 @@ import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.parents.widget.RoundCornerImageView;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

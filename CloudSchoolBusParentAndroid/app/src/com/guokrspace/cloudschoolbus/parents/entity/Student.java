@@ -1,7 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.entity;
 
-import com.android.support.utils.DateUtils;
-
 import java.io.Serializable;
 
 /**

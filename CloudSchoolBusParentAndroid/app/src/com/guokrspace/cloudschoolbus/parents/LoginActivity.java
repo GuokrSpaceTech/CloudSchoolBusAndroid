@@ -37,7 +37,6 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentClassRelation
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityTDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentParentRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
@@ -429,7 +428,8 @@ public class LoginActivity extends BaseActivity {
                                     //Save teacher information
                                     List<Teacher> teachers = classes.get(j).getTeacher();
                                     for (int k = 0; k < teachers.size(); k++) {
-                                        TeacherEntity teacherEntity = new TeacherEntity(teachers.get(k).getId(), teachers.get(k).getDuty(), "https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png", teachers.get(k).getName(), classEntity.getClassid());
+                                        TeacherEntity teacherEntity = new TeacherEntity(teachers.get(k).getId(), teachers.get(k).getDuty(),
+                                                teachers.get(k).getAvatar(), teachers.get(k).getName(), classEntity.getClassid());
                                         teacherEntityDao.insertOrReplace(teacherEntity);
                                     }
 

@@ -7,9 +7,6 @@ import android.view.Menu;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 
-import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
-
 /**
  * webview的基类
  * 

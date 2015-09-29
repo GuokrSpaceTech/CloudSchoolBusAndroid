@@ -3,6 +3,7 @@ package com.guokrspace.cloudschoolbus.parents.base.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,14 +22,16 @@ import im.delight.android.webview.AdvancedWebView;
 public class WebviewFragment extends BaseFragment implements AdvancedWebView.Listener {
 
     private AdvancedWebView mWebView;
-    private String mUrl = null;
+    private String mUrl = "";
     private String mTitle = "";
+    private String mParams = "";
 
-    public static WebviewFragment newInstance(String url, String title) {
+    public static WebviewFragment newInstance(String url, String title, String params) {
         WebviewFragment fragment = new WebviewFragment();
         Bundle args = new Bundle();
         args.putString("url", url);
         args.putString("title", title);
+        args.putString("params",params);
         fragment.setArguments(args);
         return fragment;
     }
@@ -37,6 +40,7 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     public void onCreate(Bundle savedInstanceState) {
         mUrl        = (String)getArguments().getSerializable("url");
         mTitle      = (String)getArguments().getSerializable("title");
+        mParams     = (String)getArguments().getSerializable("params");
         super.onCreate(savedInstanceState);
     }
 
@@ -51,12 +55,10 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
                 return false;
             }
         });
-        mWebView.loadUrl(mUrl);
+        mWebView.loadUrl(mUrl + mParams);
         setHasOptionsMenu(true);
         return root;
     }
-
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -109,6 +111,7 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         ((MainActivity)mParentContext).getSupportActionBar().setTitle(mTitle);
+        ((MainActivity)mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

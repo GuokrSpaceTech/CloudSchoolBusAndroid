@@ -88,8 +88,15 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.imkit.RongContext;
 import io.rong.imkit.RongIM;
+import io.rong.imkit.widget.provider.CameraInputProvider;
+import io.rong.imkit.widget.provider.ImageInputProvider;
+import io.rong.imkit.widget.provider.InputProvider;
+import io.rong.imkit.widget.provider.LocationInputProvider;
+import io.rong.imkit.widget.provider.VoIPInputProvider;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static com.guokrspace.cloudschoolbus.parents.R.string;
@@ -632,6 +639,14 @@ public class MainActivity extends BaseActivity implements
         RongIM.connect(token, new RongIMClient.ConnectCallback() {
             @Override
             public void onSuccess(String userId) {
+                //扩展功能自定义
+                InputProvider.ExtendProvider[] provider = {
+                        new ImageInputProvider(RongContext.getInstance()),//图片
+                        new CameraInputProvider(RongContext.getInstance()),//相机
+//                        new LocationInputProvider(RongContext.getInstance()),//地理位置
+//                        new VoIPInputProvider(RongContext.getInstance()),// 语音通话
+                };
+                RongIM.getInstance().resetInputExtensionProvider(Conversation.ConversationType.PRIVATE, provider);
                 Log.i("IM Connect", "Success");
             /* 连接成功 */
             }

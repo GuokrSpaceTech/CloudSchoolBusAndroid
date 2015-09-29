@@ -1,9 +1,6 @@
 package com.guokrspace.cloudschoolbus.parents.module.photo.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +10,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-import com.android.support.utils.ImageFormatUtils;
-import com.android.support.utils.ThumbnailUtils;
-import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 

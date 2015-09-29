@@ -97,6 +97,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="85"
+                    android:id="@+id/switchTextView"
                     android:padding="@dimen/big_padding"
                     android:text="@string/switch_class"
                     android:textColor="@color/primary_dark"
@@ -215,7 +216,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginLeft="32dp"
-                android:background="@color/primary_dark"/>
+                android:background="@color/primary_dark"
+                android:id="@+id/divider3"/>
 
             <LinearLayout
                 android:id="@+id/linearLayoutHelp"

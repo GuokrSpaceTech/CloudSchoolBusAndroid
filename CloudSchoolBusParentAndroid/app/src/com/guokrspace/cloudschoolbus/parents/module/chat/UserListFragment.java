@@ -11,10 +11,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.SpinnerAdapter;
 
 import com.android.support.utils.DateUtils;
@@ -93,7 +91,10 @@ public class UserListFragment extends BaseFragment {
 
                 // Init the card
                 ContactListCard card = new ContactListCard(mParentContext);
-                card.setContactAvatarUrl(userInbox.getTeacherEntity().getAvatar()); //Avatar
+                //Trim the . in the end
+                String avatar = userInbox.getTeacherEntity().getAvatar();
+                avatar = avatar.substring(0,avatar.lastIndexOf('.'));
+                card.setChildrenname(avatar); //Avatar
                 card.setContactName(userInbox.getTeacherEntity().getName()); //Name
 
                 //Classname
@@ -129,8 +130,6 @@ public class UserListFragment extends BaseFragment {
         listview.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(CardItemView view, int position) {
-                MainActivity activity = (MainActivity) mParentContext;
-
                 String mTargetID = "";
                 if (!Version.PARENT) {
                     if (mIsParent) {
@@ -140,14 +139,12 @@ public class UserListFragment extends BaseFragment {
                         mTargetID = findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
                         userName = findTeachersinClass(mCurrentClassid).get(position).getNickname();
                     }
-
-                    setUpChattingPageActionbar();
-
                 } else {
-                    activity.setActionBarTitle(userName, getResources().getString(R.string.module_teacher));
                     userName = mApplication.mTeachers.get(position).getName();
                     mTargetID = mApplication.mTeachers.get(position).getId();
                 }
+
+                setUpChattingPageActionbar();
 
                 ((MainActivity) mParentContext).pager.lock();
                 ConversationFragment fragment = new ConversationFragment();
@@ -260,7 +257,7 @@ public class UserListFragment extends BaseFragment {
 
             for (ParentEntityT parent : parents) {
                 ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
-                card.setContactAvatarUrl(parent.getAvatar()); //Avatar
+                card.setChildrenname(parent.getAvatar()); //Avatar
                 card.setContactName(parent.getNikename()); //Name
                 card.setSubtitle(generateStudentsNameSting(findStudentsOfParents(parent)));
                 card.setPhonenumber(parent.getMobile());
@@ -282,7 +279,7 @@ public class UserListFragment extends BaseFragment {
             List<TeacherEntityT> teacherList = findTeachersinClass(classid);
             for (TeacherEntityT teacher : teacherList) {
                 ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
-                card.setContactAvatarUrl(teacher.getAvatar()); //Avatar
+                card.setChildrenname(teacher.getAvatar()); //Avatar
                 card.setContactName(teacher.getRealname()); //Name
                 card.setSubtitle(findCurrentClass().getClassname());
                 card.setPhonenumber(teacher.getMobile());
@@ -328,7 +325,7 @@ public class UserListFragment extends BaseFragment {
             mainActivity.getSupportActionBar().setTitle(userName);
             mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         } else {
-            mainActivity.getSupportActionBar().setTitle(userName);
+            mainActivity.setActionBarTitle(userName,getResources().getString(R.string.module_teacher));
         }
     }
 

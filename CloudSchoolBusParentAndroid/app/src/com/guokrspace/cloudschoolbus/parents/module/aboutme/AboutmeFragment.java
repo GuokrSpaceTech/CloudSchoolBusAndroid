@@ -4,19 +4,16 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +42,6 @@ import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
@@ -56,10 +52,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by wangjianfeng on 15/8/13.
@@ -89,11 +83,9 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     private LinearLayout layoutClearCache;
     private LinearLayout layoutUploadRecord;
     private LinearLayout layoutHelpFeedback;
-    private ImageView uploadRecordIcon;
     private ImageView redDotIcon;
     private Button logoutButton;
     private int currentChild;
-    private TextView textViewSwitch;
     private boolean isUploading = false;
 
     // 上传图片
@@ -111,11 +103,13 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                     String avatarurl = (String)bundle.get("filepath");
                     String userid    = (String)bundle.get("userid");
                     String localPath = (String)bundle.get("cache");
-                    saveUserAvatarInfo(userid, avatarurl);
-                    updateUserInformation();
-                    File file = new File(localPath);
-                    if (file.exists()) {
-                        file.delete();
+                    if(userid!=null && avatarurl!=null) {
+                        saveUserAvatarInfo(userid, avatarurl);
+                        updateUserInfoUI();
+                        File file = new File(localPath);
+                        if (file.exists()) {
+                            file.delete();
+                        }
                     }
                     break;
                 case HandlerConstant.MSG_AVATAR_STUDENT_FAIL:
@@ -157,8 +151,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if (getArguments() != null) {
-        }
+        if (getArguments() != null) {}
 
         super.onCreate(savedInstanceState);
     }
@@ -176,7 +169,6 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         textViewUserName = (TextView)root.findViewById(R.id.child_name);
         textViewCache = (TextView)root.findViewById(R.id.textViewCacheSize);
         buttonKindergarten = (Button)root.findViewById(R.id.kindergarten_name);
-        uploadRecordIcon = (ImageView)root.findViewById(R.id.upload_record_icon);
         redDotIcon = (ImageView)root.findViewById(R.id.red_dot);
         if(isUploading == false)
             redDotIcon.setVisibility(View.INVISIBLE);
@@ -187,12 +179,19 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             currentChild = mApplication.mConfig.getCurrentChild();
 
         /* Get the current user's avatar */
-        updateUserInformation();
+        updateUserInfoUI();
 
-        if(Version.PARENT)
+        if(Version.PARENT) {
             buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
-        else
+            layoutUploadRecord.setVisibility(View.GONE);
+            View divider = root.findViewById(R.id.divider3);
+            divider.setVisibility(View.GONE);
+            TextView switchTextView = (TextView)root.findViewById(R.id.switchTextView);
+            switchTextView.setText(getResources().getString(R.string.switch_child));
+        }
+        else {
             buttonKindergarten.setText(mApplication.mSchoolsT.get(0).getName());
+        }
 
         textViewCache.setText(getDBSize());
 
@@ -238,7 +237,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             @Override
             public void onClick(View view) {
                 ((MainActivity)mParentContext).pager.lock();
-                WebviewFragment fragment = WebviewFragment.newInstance(getResources().getString(R.string.aboutmeurl), getResources().getString(R.string.companyweb));
+                WebviewFragment fragment = WebviewFragment.newInstance(getResources().getString(R.string.aboutmeurl), getResources().getString(R.string.companyweb), "");
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_aboutme_container, fragment);
                 transaction.addToBackStack(null);
@@ -322,11 +321,12 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         if (resultCode != Activity.RESULT_OK)
             return;
 
+        if (bitMap != null && !bitMap.isRecycled()) {
+            bitMap.recycle();
+        }
+
         switch (requestCode) {
             case PHOTO_PICKED_WITH_DATA: // 从本地选择图片
-                if (bitMap != null && !bitMap.isRecycled()) {
-                    bitMap.recycle();
-                }
                 Uri selectedImageUri = data.getData();
                 if (selectedImageUri != null) {
                     try {
@@ -337,16 +337,13 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                 }
                 break;
             case CAMERA_WITH_DATA: // 拍照
-                // Bundle bundle = data.getExtras();
-                // bitMap = (Bitmap)bundle.get("data");
-                if (bitMap != null && !bitMap.isRecycled())
-                    bitMap.recycle();
                 bitMap = (Bitmap) data.getExtras().get("data");
-                bitmapFilePath = ImageUtil.saveImage(bitMap);// 将图片保存到指定的路径
-                int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
-                bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale), (int) (bitMap.getHeight() / scale));
                 break;
         }
+
+        int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
+        bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale), (int) (bitMap.getHeight() / scale));
+        bitmapFilePath = ImageUtil.saveImage(bitMap);// 将图片保存到指定的路径
 
         // 下面这两句是对图片按照一定的比例缩放
         if (bitMap == null) {
@@ -354,38 +351,12 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                     .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
             return;
         }
-        int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
-        bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale),
-                (int) (bitMap.getHeight() / scale));
 
-        File myDir = new File(mApplication.mCacheDir + "/avatars");
-        myDir.mkdirs();
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-" + n + ".jpg";
-        File file = new File(myDir, fname);
-        if (file.exists())
-            file.delete();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            bitMap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-            bitmapFilePath = file.getAbsolutePath();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        if(bitmapFilePath==null)
+        if(bitmapFilePath!=null)
         {
             if(Version.PARENT)
-                changeAvatarUser(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(), bitMap, mHandler);
-            else
-                changeAvatarUser(getMyself().getTeacherid(), bitMap, mHandler);
-        } else {
-            if(Version.PARENT)
-                changeAvatarUser(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(), bitMap, mHandler);
+                changeAvatarUser(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(), bitmapFilePath, mHandler);
             else
                 changeAvatarUser(getMyself().getTeacherid(), bitmapFilePath, mHandler);
         }
@@ -469,7 +440,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     public void onChildrenSwitched(InfoSwitchedEvent event)
     {
         currentChild = event.getCurrentChild();
-        updateUserInformation();
+        updateUserInfoUI();
     }
 
     @Subscribe public void onUserIsUploadingEvent(IsUploadingEvent event)
@@ -478,7 +449,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         isUploading = true;
     }
 
-    private void updateUserInformation()
+    private void updateUserInfoUI()
     {
         /* Get the current child's avatar */
         StudentEntity studentEntity = null;
@@ -487,7 +458,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             studentEntity = mApplication.mStudents.get(currentChild);
 
             avatar = studentEntity.getAvatar();
-            Picasso.with(mParentContext).load(avatar).into(imageViewAvatar);
+            Picasso.with(mParentContext).load(avatar).fit().centerCrop().into(imageViewAvatar);
 
             if (studentEntity.getNikename() == null)
                 textViewUserName.setText(studentEntity.getCnname());
@@ -539,15 +510,27 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
     private void saveUserAvatarInfo(String userid, String url) {
 
-        for(TeacherEntityT teacher:mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list())
+        if(Version.PARENT)
         {
-            if(teacher.getTeacherid().equals(userid))
+            for(StudentEntity student : mApplication.mDaoSession.getStudentEntityDao().queryBuilder().list())
             {
-                teacher.setAvatar(url);
-                mApplication.mDaoSession.getTeacherEntityTDao().update(teacher);
+                if(student.getStudentid().equals(userid))
+                {
+                    student.setAvatar(url);
+                    mApplication.mDaoSession.getStudentEntityDao().update(student);
+                    break;
+                }
             }
+            mApplication.mStudents = mApplication.mDaoSession.getStudentEntityDao().queryBuilder().list();
+        } else {
+            for (TeacherEntityT teacher : mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list()) {
+                if (teacher.getTeacherid().equals(userid)) {
+                    teacher.setAvatar(url);
+                    mApplication.mDaoSession.getTeacherEntityTDao().update(teacher);
+                    break;
+                }
+            }
+            mApplication.mTeachersT = mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list();
         }
-
-        mApplication.mTeachersT = mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list();
     }
 }

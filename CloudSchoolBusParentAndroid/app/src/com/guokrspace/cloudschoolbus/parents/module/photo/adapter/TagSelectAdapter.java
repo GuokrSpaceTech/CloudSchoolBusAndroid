@@ -9,9 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.guokrspace.cloudschoolbus.parents.R;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
-import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 
 import java.util.List;
 

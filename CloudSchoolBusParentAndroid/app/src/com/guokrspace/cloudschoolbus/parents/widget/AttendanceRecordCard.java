@@ -1,7 +1,6 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
-import android.view.View;
 
 import com.dexafree.materialList.cards.SimpleCard;
 import com.guokrspace.cloudschoolbus.parents.R;

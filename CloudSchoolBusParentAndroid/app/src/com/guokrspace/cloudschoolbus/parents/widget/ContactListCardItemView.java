@@ -1,8 +1,9 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -41,10 +42,10 @@ public class ContactListCardItemView extends CardItemView<ContactListCard> {
         //Teacher Head
         ImageView ContactHead = (ImageView) findViewById(R.id.teacher_avatar);
         if (ContactHead != null) {
-            if(card.getContactAvatarUrl() == null || card.getContactAvatarUrl().isEmpty()) {
+            if (card.getChildrenname() == null || card.getChildrenname().isEmpty()) {
                 ContactHead.setImageDrawable(card.getDrawable());
             } else {
-                Picasso.with(getContext()).load(card.getContactAvatarUrl()).into(ContactHead);
+                Picasso.with(getContext()).load(card.getChildrenname()).fit().centerCrop().into(ContactHead);
             }
         }
         //Teacher Name
@@ -61,15 +62,25 @@ public class ContactListCardItemView extends CardItemView<ContactListCard> {
             classNameTextView.setTextColor(card.getDescriptionColor());
         }
 
-        TextView phoneNumberTextView = (TextView)findViewById(R.id.phonenumber);
-        phoneNumberTextView.setText(card.getPhonenumber());
-        phoneNumberTextView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + card.getPhonenumber()));
-                card.getContext().startActivity(intent);
-            }
-        });
+//        TextView phoneNumberTextView = (TextView) findViewById(R.id.phonenumber);
+//        phoneNumberTextView.setText(card.getPhonenumber());
+//        phoneNumberTextView.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + card.getPhonenumber()));
+//                if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                    // TODO: Consider calling
+//                    //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+//                    // here to request the missing permissions, and then overriding
+//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                    //                                          int[] grantResults)
+//                    // to handle the case where the user grants the permission. See the documentation
+//                    // for Activity#requestPermissions for more details.
+//                    return;
+//                }
+//                card.getContext().startActivity(intent);
+//            }
+//        });
 
         //Timestamp
         TextView timstampTextView = (TextView) findViewById(R.id.timestamp);

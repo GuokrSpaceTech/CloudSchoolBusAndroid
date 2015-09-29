@@ -99,9 +99,14 @@ public class ActivityCardItemView extends CardItemView<ActivityCard> {
          */
         Button confirmButton = (Button) findViewById(R.id.confirm);
         //1: need user confirm 2: already confirmed 3: no user ops need
-        if(card.getIsNeedConfirm().equals("1")) {
+        if (card.getIsNeedConfirm().equals("1")) {
             confirmButton.setOnClickListener(card.getmConfirmButtonClickListener());
-        } else if(card.getIsNeedConfirm().equals("2")) {
+            confirmButton.setText(getResources().getString(R.string.confirm_notice));
+            confirmButton.setBackgroundColor(getResources().getColor(R.color.button_enable));
+            confirmButton.setEnabled(true);
+        } else if (card.getIsNeedConfirm().equals("2")) {
+            confirmButton.setText(getResources().getString(R.string.confirmed_notice));
+            confirmButton.setBackgroundColor(getResources().getColor(R.color.button_disable));
             confirmButton.setEnabled(false);
         } else {
             confirmButton.setVisibility(View.GONE);

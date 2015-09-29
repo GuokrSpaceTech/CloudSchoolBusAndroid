@@ -1,7 +1,6 @@
 package com.guokrspace.cloudschoolbus.parents;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -11,37 +10,26 @@ import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityTDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassModuleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoMaster;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.DaoSession;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageTypeEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageTypeEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityTDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityTDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityTDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentParentRelationEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityTDao;
-import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
-import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
-import com.guokrspace.cloudschoolbus.parents.entity.Student;
-import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -51,11 +39,9 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient;
 
 public class CloudSchoolBusParentsApplication extends Application {
 

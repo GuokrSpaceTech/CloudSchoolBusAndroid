@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.guokrspace.cloudschoolbus.parents.widget.ContactListCardItemView style="@style/MainLayout"
+<com.guokrspace.cloudschoolbus.parents.widget.ContactListCardItemView
+    style="@style/MainLayout"
                                                                       xmlns:android="http://schemas.android.com/apk/res/android"
                                                                       xmlns:tools="http://schemas.android.com/tools">
 
@@ -54,7 +55,7 @@
                     <TextView
                         android:id="@+id/timestamp"
                         android:layout_width="0dp"
-                        android:layout_weight="25"
+                        android:layout_weight="20"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/small_padding"
                         android:textColor="@color/description_color"
@@ -65,7 +66,7 @@
                         tools:text="两小时前"
                         android:id="@+id/phonenumber"
                         android:layout_width="0dp"
-                        android:layout_weight="25"
+                        android:layout_weight="35"
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:padding="@dimen/small_padding"

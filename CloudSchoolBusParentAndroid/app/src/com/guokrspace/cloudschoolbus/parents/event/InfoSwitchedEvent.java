@@ -1,7 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.event;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by macbook on 15-8-20.
  */

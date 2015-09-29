@@ -1,7 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.entity;
 
-import java.util.List;
-
 /**
  * Created by macbook on 15-8-4.
  */
