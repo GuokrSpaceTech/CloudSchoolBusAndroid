@@ -3,5 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity">
     <item android:id="@+id/action_upload" android:title="@string/send"
-        android:orderInCategory="100" app:showAsAction="always" />
+        android:orderInCategory="100" app:showAsAction="always"
+        android:icon="@drawable/ic_send_white_24dp"/>
 </menu>

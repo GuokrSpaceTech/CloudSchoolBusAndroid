@@ -36,7 +36,7 @@ android {
         versionName '3.5.3'
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
-        applicationId "com.guokrspace.cloudschoolbus.parents"
+        applicationId "com.guokrspace.cloudschoolbus.teacher"
     }
     signingConfigs { release }
     buildTypes {

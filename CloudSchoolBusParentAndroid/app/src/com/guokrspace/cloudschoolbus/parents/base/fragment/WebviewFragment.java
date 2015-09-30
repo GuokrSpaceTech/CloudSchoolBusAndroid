@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +113,10 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         ((MainActivity)mParentContext).getSupportActionBar().setTitle(mTitle);
         ((MainActivity)mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
     }
 }

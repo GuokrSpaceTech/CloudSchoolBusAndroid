@@ -177,8 +177,12 @@ public class SelectUserDialogFragment extends DialogFragment {
             void build(String title, String avatarUrl) {
                 titleText.setText(title);
 
-                if(!avatarUrl.equals(""))
-                    Picasso.with(getContext()).load(avatarUrl).into(image);
+                if(!avatarUrl.equals("")) {
+                    //Trim the .
+                    if(avatarUrl.contains("jpg."))
+                    avatarUrl = avatarUrl.substring(0,avatarUrl.lastIndexOf('.'));
+                    Picasso.with(getContext()).load(avatarUrl).fit().centerCrop().into(image);
+                }
             }
         }
     }
@@ -188,13 +192,13 @@ public class SelectUserDialogFragment extends DialogFragment {
         CloudSchoolBusParentsApplication theApplication =
                 (CloudSchoolBusParentsApplication) getActivity().getApplicationContext();
         ConfigEntityDao configEntityDao = theApplication.mDaoSession.getConfigEntityDao();
-        ConfigEntity oldConfigEntity = configEntityDao.queryBuilder().limit(1).list().get(0);
-        oldConfigEntity.setCurrentChild(currentChild);
-        ConfigEntity newConfigEntity = oldConfigEntity;
-        configEntityDao.update(newConfigEntity);
-        theApplication.mConfig = newConfigEntity;
-
-        BusProvider.getInstance().post(new InfoSwitchedEvent(current));
+        List<ConfigEntity> configEntitys = configEntityDao.queryBuilder().list();
+        if(configEntitys.size()>0) {
+            configEntitys.get(0).setCurrentChild(current);
+            configEntityDao.update(configEntitys.get(0));
+            theApplication.mConfig = configEntitys.get(0);
+            BusProvider.getInstance().post(new InfoSwitchedEvent(current));
+        }
 
         dismiss();
     }

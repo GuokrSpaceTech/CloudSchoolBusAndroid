@@ -73,7 +73,7 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             @Override
             public void onItemClick(View view, int position) {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.mainFrameLayout,new BigImageGalleryFragment().newInstance(mPictures,position,false));
+                transaction.add(R.id.mainFrameLayout,new BigImageGalleryFragment().newInstance(mPictures,position,false,R.color.accent));
                 transaction.addToBackStack("big_picture");
                 transaction.commit();
             }
@@ -140,7 +140,6 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             UploadFileHelper.getInstance().uploadFileService();
 
             BusProvider.getInstance().post(new IsUploadingEvent());
-
 
             finish();
 
@@ -248,9 +247,6 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
-
 
     public ArrayList<StudentEntityT> findStudentsinClass(String classid)
     {

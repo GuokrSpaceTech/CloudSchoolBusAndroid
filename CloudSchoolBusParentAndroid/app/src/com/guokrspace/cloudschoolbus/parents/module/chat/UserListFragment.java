@@ -93,8 +93,9 @@ public class UserListFragment extends BaseFragment {
                 ContactListCard card = new ContactListCard(mParentContext);
                 //Trim the . in the end
                 String avatar = userInbox.getTeacherEntity().getAvatar();
+                if(avatar.contains("jpg."))
                 avatar = avatar.substring(0,avatar.lastIndexOf('.'));
-                card.setChildrenname(avatar); //Avatar
+                card.setContactAvatarUrl(avatar);
                 card.setContactName(userInbox.getTeacherEntity().getName()); //Name
 
                 //Classname
@@ -230,7 +231,7 @@ public class UserListFragment extends BaseFragment {
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (!Version.PARENT) {
-                    initActionBar();
+                    initTeacherActionBar();
                 } else {
                     mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
                 }
@@ -266,10 +267,8 @@ public class UserListFragment extends BaseFragment {
                     if (lastIMs.get(j).getTeacherid().equals(parent.getParentid())) {
                         card.setTimestamp(DateUtils.timelineTimestamp(lastIMs.get(j).getTimestamp(), mParentContext));
                         int unread =  Integer.valueOf(lastIMs.get(j).getHasUnread());
-
                     }
                 }
-
                 //Find the kids
                 listview.add(card);
             }
@@ -297,7 +296,7 @@ public class UserListFragment extends BaseFragment {
         }
     }
 
-    private void initActionBar() {
+    private void initTeacherActionBar() {
         mainActivity.getMenuInflater().inflate(R.menu.menu_contacts, mMenu);
         if (findMyClass().size() > 1) {
             mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -312,10 +311,11 @@ public class UserListFragment extends BaseFragment {
                 }
             };
             mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
+            mainActivity.getSupportActionBar().setTitle("");
         } else {
             mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
         }
-        mainActivity.getSupportActionBar().setTitle("");
     }
 
     private void setUpChattingPageActionbar()

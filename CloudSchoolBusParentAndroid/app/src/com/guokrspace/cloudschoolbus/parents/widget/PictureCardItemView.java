@@ -48,7 +48,11 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
             if (card.getTeacherAvatarUrl() == null || card.getTeacherAvatarUrl().isEmpty()) {
                 teacherHead.setImageDrawable(card.getDrawable());
             } else {
-                Picasso.with(getContext()).load(card.getTeacherAvatarUrl()).into(teacherHead);
+                String url = card.getTeacherAvatarUrl();
+                if(url.contains("jpg.")) {
+                    url.replaceAll("jpg.","jpg");
+                }
+                Picasso.with(getContext()).load(card.getTeacherAvatarUrl()).fit().centerCrop().into(teacherHead);
             }
         }
         //Teacher Name

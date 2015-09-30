@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -403,7 +402,8 @@ public class BaseFragment extends Fragment {
                 try {
                     String remoteUrl = response.get("filepath").toString();
                     //Trim the . in the end
-                    remoteUrl = remoteUrl.substring(0,remoteUrl.lastIndexOf('.'));
+                    if(remoteUrl.charAt(remoteUrl.length()-1)=='.')
+                        remoteUrl = remoteUrl.substring(0,remoteUrl.lastIndexOf('.'));
                     bundle.putString("filepath", remoteUrl);
                     bundle.putString("userid",userid);
                     bundle.putString("cache",(String)image);
@@ -902,7 +902,7 @@ public class BaseFragment extends Fragment {
                 if(relation.getClassid().equals(classid)) {
                     if (student.getStudentid().equals(relation.getStudentid()))
                     {
-                        //Found the student, then find the parents
+                        //Found the student, then find the arents
                         retStudents.add(student);
                         break;
                     }
@@ -920,6 +920,8 @@ public class BaseFragment extends Fragment {
                     {
                         if(parent.getParentid().equals(relation.getParentid()))
                         {
+                            //Some parents may have multiple kids
+                            if(!retParents.contains(parent))
                             retParents.add(parent);
                         }
                     }

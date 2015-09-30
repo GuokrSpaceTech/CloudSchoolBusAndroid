@@ -93,8 +93,6 @@ import io.rong.imkit.RongIM;
 import io.rong.imkit.widget.provider.CameraInputProvider;
 import io.rong.imkit.widget.provider.ImageInputProvider;
 import io.rong.imkit.widget.provider.InputProvider;
-import io.rong.imkit.widget.provider.LocationInputProvider;
-import io.rong.imkit.widget.provider.VoIPInputProvider;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import me.leolin.shortcutbadger.ShortcutBadger;

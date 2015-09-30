@@ -135,7 +135,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
         if(paths != null){
             Picture cameraIcon = new Picture();
             cameraIcon.isDrawable = true;
-            cameraIcon.drawable = getResources().getDrawable(R.drawable.pd_empty_picture);
+            cameraIcon.drawable = getResources().getDrawable(R.drawable.ic_camera_icon);
             mPictureList.add(cameraIcon);
             mPictureList.addAll(paths);
 //            mPictureChooseAdapter.notifyDataSetChanged();
@@ -309,16 +309,9 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
     @Override
     public void onSuccessString(List<String> pictures) {
-//        mPictureList.clear();
-//        Picture picture = new Picture();
-//        picture.setPicturePath(pictures.get(0));
-//        mPictureList.add(picture);
-//        mPictureChooseAdapter.setmPictureList(mPictureList);
-//        mPictureChooseAdapter.notifyDataSetChanged();
-
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.main_layout,new BigImageGalleryFragment().newInstance(pictures,0,true));
-//        transaction.addToBackStack("big_picture");
+        transaction.add(R.id.main_layout,new BigImageGalleryFragment().newInstance(pictures,0,true,mTitleBarBackground));
+        transaction.addToBackStack("bigpicture");
         transaction.commit();
     }
 

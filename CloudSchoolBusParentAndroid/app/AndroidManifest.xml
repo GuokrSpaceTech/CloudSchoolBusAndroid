@@ -25,13 +25,13 @@
 
 
     <application
-        android:name=".CloudSchoolBusParentsApplication"
+        android:name="com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.guokrspace.cloudschoolbus.parents.MainActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,25 +40,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="com.guokrspace.cloudschoolbus.parents.LoginActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
-            android:name=".module.classes.Streaming.IpcSelectionActivity"
+            android:name="com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.IpcSelectionActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light" />
-        <activity android:name=".module.classes.Streaming.Preview" />
+        <activity android:name="com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.Preview" />
         <activity
-            android:name=".base.activity.GalleryActivityUrl"
+            android:name="com.guokrspace.cloudschoolbus.parents.base.activity.GalleryActivityUrl"
             android:configChanges="orientation" >
         </activity>
         <activity
-            android:name=".module.photo.SelectStudentActivity"
+            android:name="com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity"
             android:label="@string/title_activity_select_student">
         </activity>
 
         <!-- push应用定义消息receiver声明 -->
-        <receiver android:name=".base.baidupush.BaiduPushMessageReceiver" >
+        <receiver android:name="com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushMessageReceiver" >
             <intent-filter>
 
                 <!-- 接收push消息 -->
@@ -98,7 +98,7 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".ConnectivityReceiver" >
+        <receiver android:name="com.guokrspace.cloudschoolbus.parents.ConnectivityReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>

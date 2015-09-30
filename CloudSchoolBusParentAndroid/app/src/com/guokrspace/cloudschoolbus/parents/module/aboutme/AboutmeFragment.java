@@ -355,9 +355,11 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
         if(bitmapFilePath!=null)
         {
-            if(Version.PARENT)
-                changeAvatarUser(mApplication.mStudents.get(mApplication.mConfig.getCurrentChild()).getStudentid(), bitmapFilePath, mHandler);
-            else
+            if(Version.PARENT) {
+                int currentchild = mApplication.mConfig.getCurrentChild();
+                String studentid = mApplication.mStudents.get(currentchild).getStudentid();
+                changeAvatarUser(studentid, bitmapFilePath, mHandler);
+            } else
                 changeAvatarUser(getMyself().getTeacherid(), bitmapFilePath, mHandler);
         }
     }
@@ -458,6 +460,9 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             studentEntity = mApplication.mStudents.get(currentChild);
 
             avatar = studentEntity.getAvatar();
+            //Trim the . in the end
+            if(avatar.charAt(avatar.length()-1) == '.')
+                avatar = avatar.substring(0,avatar.lastIndexOf('.'));
             Picasso.with(mParentContext).load(avatar).fit().centerCrop().into(imageViewAvatar);
 
             if (studentEntity.getNikename() == null)
@@ -476,7 +481,10 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
             if(user!=null) {
                 //Trim the . end of url
-                String url = user.getAvatar().substring(0, user.getAvatar().lastIndexOf('.'));
+                String url=user.getAvatar();
+                if(url.charAt(url.length() - 1) == '.') {
+                    url = url.substring(0, url.lastIndexOf('.'));
+                }
                 Picasso.with(mParentContext).load(url).into(imageViewAvatar);
                 textViewUserName.setText(user.getRealname());
             }
@@ -512,7 +520,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
         if(Version.PARENT)
         {
-            for(StudentEntity student : mApplication.mDaoSession.getStudentEntityDao().queryBuilder().list())
+            for(StudentEntity student : mApplication.mStudents)
             {
                 if(student.getStudentid().equals(userid))
                 {

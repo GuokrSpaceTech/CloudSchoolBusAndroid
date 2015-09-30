@@ -40,13 +40,14 @@ public class BigImageGalleryFragment extends Fragment{
 
     protected Button   mActionRight;
 
-    public static BigImageGalleryFragment newInstance(List<?> pictureList, int current, boolean hasTitleBar)
+    public static BigImageGalleryFragment newInstance(List<?> pictureList, int current, boolean hasTitleBar, int titleBarBackground)
     {
         BigImageGalleryFragment fragment = new BigImageGalleryFragment();
         Bundle args = new Bundle();
         args.putSerializable("pictures", (ArrayList)pictureList);
         args.putInt("current", current);
         args.putBoolean("hasTitleBar", hasTitleBar);
+        args.putInt("titleBarBackground", titleBarBackground);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,6 +62,7 @@ public class BigImageGalleryFragment extends Fragment{
             mPictureList = (ArrayList) getArguments().get("pictures");
             mCurrent = (int)getArguments().get("current");
             mHasTitleBar = (boolean)getArguments().get("hasTitleBar");
+            mTitleBarBackground = (int)getArguments().get("titleBarBackground");
         }
 
         setHasOptionsMenu(true);
@@ -73,12 +75,18 @@ public class BigImageGalleryFragment extends Fragment{
         View root = inflater.inflate(R.layout.fragment_image_viewer, container, false);
         mTitleBar = (RelativeLayout) root.findViewById(R.id.pi_title_bar);
         if(!mHasTitleBar) mTitleBar.setVisibility(View.GONE);
-        mTitleBar.setBackgroundColor(0xFF16C2DD);
+        mTitleBar.setBackgroundColor(mTitleBarBackground);
         mTitleText = (TextView)root.findViewById(R.id.pi_title_bar_title);
         mActionLeft = (Button)root.findViewById(R.id.pi_title_bar_left);
         mActionRight = (Button)root.findViewById(R.id.pi_title_bar_right);
         mTitleText.setText(R.string.ps_picture_choose);
-        mActionLeft.setText(R.string.ps_gallery);
+        mActionLeft.setText(R.string.ps_cancel);
+        mActionLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStack();
+            }
+        });
         mActionRight.setText(R.string.ps_complete);
         mActionRight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +112,6 @@ public class BigImageGalleryFragment extends Fragment{
         }
 
         UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(getActivity(), mUrlPaths);
-        final List<String> finalItems = (List<String>)mUrlPaths;
         pagerAdapter.setOnItemChangeListener(new OnItemChangeListener()
         {
             @Override

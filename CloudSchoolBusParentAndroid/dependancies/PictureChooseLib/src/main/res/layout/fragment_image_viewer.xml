@@ -5,7 +5,7 @@
     android:background="@color/pc_default_pager"
     android:orientation="vertical">
 
-    <!--<include layout="@layout/pl_title_bar_layout" />-->
+    <include layout="@layout/pl_title_bar_layout" />
 
     <ru.truba.touchgallery.GalleryWidget.GalleryViewPager
         android:id="@+id/view_pager"

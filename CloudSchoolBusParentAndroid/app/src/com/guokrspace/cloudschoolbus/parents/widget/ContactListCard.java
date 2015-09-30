@@ -25,6 +25,14 @@ public class ContactListCard extends SimpleCard {
         mContext = context;
     }
 
+    public String getContactAvatarUrl() {
+        return contactAvatarUrl;
+    }
+
+    public void setContactAvatarUrl(String contactAvatarUrl) {
+        this.contactAvatarUrl = contactAvatarUrl;
+    }
+
     public String getChildrenname() {
         return contactAvatarUrl;
     }
