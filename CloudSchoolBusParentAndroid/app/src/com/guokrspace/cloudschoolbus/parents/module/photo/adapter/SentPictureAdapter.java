@@ -29,10 +29,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.android.support.utils.ImageUtil;
+import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.activity.GalleryActivityUrl;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +49,13 @@ import jp.wasabeef.picasso.transformations.BlurTransformation;
 public class SentPictureAdapter extends BaseAdapter {
 
     Context mContext;
-
     List<UploadArticleFileEntity> mPictureList;
+    CloudSchoolBusParentsApplication mApplication;
 
     public SentPictureAdapter(Context context, List<UploadArticleFileEntity> pictures){
         this.mContext = context;
         this.mPictureList = pictures;
+        mApplication = (CloudSchoolBusParentsApplication)mContext.getApplicationContext();
     }
 
     @Override
@@ -83,23 +86,28 @@ public class SentPictureAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder)convertView.getTag();
         }
-        String url = getItem(position).getFbody();
-        Bitmap bm = ImageUtil.decodeSampledBitmapFromUri(url, 220, 220);
+        UploadArticleFileEntity uploadFile = getItem(position);
+        if(uploadFile.getThumb()==null || uploadFile.getThumb().isEmpty() || uploadFile.getThumb()=="") {
+            String url = getItem(position).getFbody();
+            Bitmap bm = ImageUtil.decodeSampledBitmapFromUri(url, 80, 80);
+            String thumb = ImageUtil.saveImage(bm);
+            uploadFile.setThumb(thumb);
+            mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadFile);
+        }
+        String thumb = "file://" + uploadFile.getThumb();
 
         //Upload is in progress
+        BlurTransformation transformation = new BlurTransformation(mContext, 25, 1);
         if(getItem(position).getIsSuccess() == null) {
-            BlurTransformation transformation = new BlurTransformation(mContext, 25, 1);
-            bm = transformation.transform(bm);
-            holder.mPictureView.setImageBitmap(bm);
+
+            Picasso.with(mContext).load(thumb).transform(transformation).fit().centerCrop().into(holder.mPictureView);
             holder.mPictureView.setOnClickListener(null);
             holder.mRetryIcon.setVisibility(View.INVISIBLE);
             holder.mProgressBar.setVisibility(View.VISIBLE);
 
         // Upload failed
         } else if(!getItem(position).getIsSuccess()){
-            BlurTransformation transformation = new BlurTransformation(mContext, 25, 1);
-            bm = transformation.transform(bm);
-            holder.mPictureView.setImageBitmap(bm);
+            Picasso.with(mContext).load(thumb).transform(transformation).fit().centerCrop().into(holder.mPictureView);
             holder.mPictureView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -112,7 +120,7 @@ public class SentPictureAdapter extends BaseAdapter {
             holder.mProgressBar.setVisibility(View.INVISIBLE);
         // Upload Success
         } else {
-            holder.mPictureView.setImageBitmap(bm);
+            Picasso.with(mContext).load(thumb).fit().centerCrop().into(holder.mPictureView);
             final List<String> mFilePaths = new ArrayList<>();
             for (UploadArticleFileEntity file : mPictureList) {
                 String filepath = file.getFbody();

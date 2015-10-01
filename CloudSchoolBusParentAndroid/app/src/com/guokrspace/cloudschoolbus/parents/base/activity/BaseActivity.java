@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONException;
 import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.android.support.dialog.*;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
+import io.rong.imkit.RongIM;
 
 /**
  * activity基类
@@ -117,14 +119,14 @@ abstract public class BaseActivity extends ActionBarActivity {
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		
-		DebugLog.logI("Activity onSaveInstanceState");
-//		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
-		outState.putSerializable("mConfig", mApplication.mConfig);
-		outState.putSerializable("mSchools", (ArrayList<SchoolEntity>)mApplication.mSchools);
-		outState.putSerializable("mClasses", (ArrayList<ClassEntity>)mApplication.mClasses);
-		outState.putSerializable("mTeachers",(ArrayList<TeacherEntity>)mApplication.mTeachers);
-		outState.putSerializable("mStudents",(ArrayList<StudentEntity>)mApplication.mStudents);
+        DebugLog.logI("Activity onSaveInstanceState");
+
+////		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
+//		outState.putSerializable("mConfig", mApplication.mConfig);
+//		outState.putSerializable("mSchools", (ArrayList<SchoolEntity>)mApplication.mSchools);
+//		outState.putSerializable("mClasses", (ArrayList<ClassEntity>)mApplication.mClasses);
+//		outState.putSerializable("mTeachers",(ArrayList<TeacherEntity>)mApplication.mTeachers);
+//		outState.putSerializable("mStudents",(ArrayList<StudentEntity>)mApplication.mStudents);
 
 		super.onSaveInstanceState(outState);
 	}
@@ -133,14 +135,23 @@ abstract public class BaseActivity extends ActionBarActivity {
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		
 		super.onRestoreInstanceState(savedInstanceState);
-		if(null != savedInstanceState){
-			DebugLog.logI("Activity onRestoreInstanceState");
-			mApplication.mConfig = (ConfigEntity)savedInstanceState.getSerializable("mConfig");
-			mApplication.mSchools = (List<SchoolEntity>)savedInstanceState.getSerializable("mSchools");
-			mApplication.mClasses = (List<ClassEntity>)savedInstanceState.getSerializable("mClasses");
-			mApplication.mTeachers = (List<TeacherEntity>)savedInstanceState.getSerializable("mTeachers");
-			mApplication.mStudents = (List<StudentEntity>)savedInstanceState.getSerializable("mStudents");
-		}
+
+        mApplication.initDB();
+
+        mApplication.initConfig();
+
+        mApplication.initBaseinfo();
+
+        mApplication.initCacheFile();
+
+//		if(null != savedInstanceState){
+//			DebugLog.logI("Activity onRestoreInstanceState");
+//			mApplication.mConfig = (ConfigEntity)savedInstanceState.getSerializable("mConfig");
+//			mApplication.mSchools = (List<SchoolEntity>)savedInstanceState.getSerializable("mSchools");
+//			mApplication.mClasses = (List<ClassEntity>)savedInstanceState.getSerializable("mClasses");
+//			mApplication.mTeachers = (List<TeacherEntity>)savedInstanceState.getSerializable("mTeachers");
+//			mApplication.mStudents = (List<StudentEntity>)savedInstanceState.getSerializable("mStudents");
+//		}
 	}
 
 	@Subscribe

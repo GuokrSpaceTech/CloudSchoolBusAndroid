@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.android.support.debug.DebugLog;
+import com.android.support.utils.FileUtils;
+import com.android.support.utils.ImageUtil;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
@@ -27,6 +29,8 @@ import org.apache.http.Header;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +105,7 @@ public class UploadFileHelper {
 		RequestParams params = new RequestParams();
         params.put("fname", uploadFile.getFname());
         try {
-            params.put("fbody", new File(uploadFile.getFbody()));
+            params.put("fbody", new File(compressUploadSource(uploadFile)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -202,7 +206,7 @@ public class UploadFileHelper {
         uploadArticle.setPictype("article");
         uploadArticle.setClassid(classid);
         uploadArticle.setContent(content);
-        uploadArticle.setSendtime(System.currentTimeMillis()/1000+"");
+        uploadArticle.setSendtime(System.currentTimeMillis() / 1000 + "");
 
         mApplication.mDaoSession.getUploadArticleEntityDao().insert(uploadArticle);
 
@@ -224,6 +228,7 @@ public class UploadFileHelper {
             uploadFile.setFbody(picPathString);
             uploadFile.setPictype("article");
             uploadFile.setPickey(pickey);
+//            uploadFile.setCompress(compressUploadSource(uploadFile));
 
             mApplication.mDaoSession.getUploadArticleFileEntityDao().insertOrReplace(uploadFile);
         }
@@ -329,17 +334,30 @@ public class UploadFileHelper {
         return retStr;
     }
 
-    public ByteArrayOutputStream generateUplodinputString(UploadArticleFileEntity fileEntity)
+    public String compressUploadSource(UploadArticleFileEntity fileEntity)
     {
 
+        File compressFile = new File(mApplication.mCacheDir, fileEntity.getFname() + ".small.jpg");
+        try {
+            compressFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return fileEntity.getFbody();
+        }
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inDither = false;                     //Disable Dithering mode
         opts.inPurgeable = true;                   //Tell to gc that whether it needs free memory, the Bitmap can be cleared
         opts.inInputShareable = true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
         opts.inTempStorage = new byte[32 * 1024];
         Bitmap bmp = BitmapFactory.decodeFile(fileEntity.getFbody(),opts);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 70, bos);
-        return bos;
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(compressFile);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            return fileEntity.getFbody();
+        }
+        bmp.compress(Bitmap.CompressFormat.JPEG, 70, fos);
+        return compressFile.getAbsolutePath();
     }
 }

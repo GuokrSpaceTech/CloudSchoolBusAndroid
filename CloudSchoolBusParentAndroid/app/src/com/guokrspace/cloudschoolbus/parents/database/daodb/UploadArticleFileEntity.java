@@ -8,6 +8,8 @@ public class UploadArticleFileEntity {
 
     private Long id;
     private String fbody;
+    private String thumb;
+    private String compress;
     private String fname;
     private String ftime;
     private String pictype;
@@ -22,9 +24,11 @@ public class UploadArticleFileEntity {
         this.id = id;
     }
 
-    public UploadArticleFileEntity(Long id, String fbody, String fname, String ftime, String pictype, Boolean isSuccess, String pickey) {
+    public UploadArticleFileEntity(Long id, String fbody, String thumb, String compress, String fname, String ftime, String pictype, Boolean isSuccess, String pickey) {
         this.id = id;
         this.fbody = fbody;
+        this.thumb = thumb;
+        this.compress = compress;
         this.fname = fname;
         this.ftime = ftime;
         this.pictype = pictype;
@@ -46,6 +50,22 @@ public class UploadArticleFileEntity {
 
     public void setFbody(String fbody) {
         this.fbody = fbody;
+    }
+
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
+    }
+
+    public String getCompress() {
+        return compress;
+    }
+
+    public void setCompress(String compress) {
+        this.compress = compress;
     }
 
     public String getFname() {

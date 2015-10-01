@@ -24,10 +24,10 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
+        style="?android:attr/progressBarStyle"
         android:progressDrawable="@drawable/customize_progress_bar"
-        android:layout_alignParentBottom="true"
-        android:layout_width="fill_parent"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:background="@android:color/transparent"/>

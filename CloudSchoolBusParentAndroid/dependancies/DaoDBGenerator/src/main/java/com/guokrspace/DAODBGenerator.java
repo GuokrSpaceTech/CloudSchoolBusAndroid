@@ -186,6 +186,8 @@ public class DAODBGenerator {
         Entity singlefile = schema.addEntity("UploadArticleFileEntity");
         singlefile.addIdProperty().primaryKey().autoincrement();
         singlefile.addStringProperty("fbody");
+        singlefile.addStringProperty("thumb");
+        singlefile.addStringProperty("compress");
         singlefile.addStringProperty("fname");
         singlefile.addStringProperty("ftime");
         singlefile.addStringProperty("pictype");

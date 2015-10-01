@@ -103,7 +103,7 @@ public class CloudSchoolBusParentsApplication extends Application {
         RongIM.init(this);
     }
 
-    private void initCacheFile() {
+    public void initCacheFile() {
         if(android.os.Environment.getExternalStorageState().equals(
                 android.os.Environment.MEDIA_MOUNTED)){
             this.mCacheDir = getExternalCacheDir().getAbsolutePath();
@@ -112,7 +112,7 @@ public class CloudSchoolBusParentsApplication extends Application {
         }
     }
 
-    private void initDB() {
+    public void initDB() {
         SQLiteDatabase db;
         if(Version.PARENT)
             mDBhelper = new DaoMaster.DevOpenHelper(this, "cloudschoolbusparents-db", null);

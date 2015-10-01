@@ -52,7 +52,7 @@ public class PictureSentCard extends SimpleCard {
     }
 
     public String getSentTime() {
-        return DateUtils.articleDate(sentTime, context);
+        return DateUtils.timelineTimestamp(sentTime, context);
     }
 
     public void setSentTime(String sentTime) {
