@@ -41,3 +41,8 @@ app/jni/ffmpeg-android
 
 #DaoDBGenerator
 dependancies/DaoDBGenerator/src-gen
+
+#NDK Build
+*.o
+*.d
+obj/local/*

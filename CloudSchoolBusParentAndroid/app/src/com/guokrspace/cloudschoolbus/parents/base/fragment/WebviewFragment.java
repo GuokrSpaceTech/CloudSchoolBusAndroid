@@ -3,11 +3,11 @@ package com.guokrspace.cloudschoolbus.parents.base.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +23,7 @@ import im.delight.android.webview.AdvancedWebView;
 public class WebviewFragment extends BaseFragment implements AdvancedWebView.Listener {
 
     private AdvancedWebView mWebView;
+    private SwipeRefreshLayout mRefreshView;
     private String mUrl = "";
     private String mTitle = "";
     private String mParams = "";
@@ -49,6 +50,7 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_webview, container, false);
         mWebView = (AdvancedWebView) root.findViewById(R.id.webView);
+        mRefreshView = (SwipeRefreshLayout)root.findViewById(R.id.swipeRefreshLayout);
         mWebView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View p_v, MotionEvent p_event) {
                 // this will disallow the touch request for parent scroll on touch of child view
@@ -57,6 +59,14 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
             }
         });
         mWebView.loadUrl(mUrl + mParams);
+        ((MainActivity) mParentContext).pager.lock();
+        mRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mWebView.loadUrl(mUrl + mParams);
+                mRefreshView.setRefreshing(false);
+            }
+        });
         setHasOptionsMenu(true);
         return root;
     }

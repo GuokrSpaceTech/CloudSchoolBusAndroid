@@ -15,6 +15,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-feature    android:name="android.hardware.camera" />
+    <uses-feature    android:name="android.hardware.camera.autofocus" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
 
@@ -53,6 +57,9 @@
         <activity
             android:name="com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity"
             android:label="@string/title_activity_select_student">
+        </activity>
+        <activity
+            android:name="com.guokrspace.cloudschoolbus.parents.module.qrcode.CaptureActivity">
         </activity>
 
         <!-- push应用定义消息receiver声明 -->

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.guokrspace.cloudschoolbus.parents.widget.PictureSentCardItemView style="@style/MainLayout"
+<com.guokrspace.cloudschoolbus.parents.widget.PictureSentCardItemView
+    style="@style/MainLayout"
                                                                       xmlns:android="http://schemas.android.com/apk/res/android"
                                                                       xmlns:tools="http://schemas.android.com/tools">
 

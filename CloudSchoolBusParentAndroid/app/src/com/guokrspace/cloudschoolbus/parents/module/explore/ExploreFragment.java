@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,28 +23,55 @@ import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.support.fastjson.FastJsonTools;
+import com.android.support.utils.DateUtils;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.MenuSpinnerAdapter;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.ServerInteractions;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
+import com.guokrspace.cloudschoolbus.parents.entity.ActivityBody;
+import com.guokrspace.cloudschoolbus.parents.entity.AttendanceRecord;
+import com.guokrspace.cloudschoolbus.parents.entity.Food;
+import com.guokrspace.cloudschoolbus.parents.entity.Ipcparam;
+import com.guokrspace.cloudschoolbus.parents.entity.NoticeBody;
+import com.guokrspace.cloudschoolbus.parents.entity.Schedule;
+import com.guokrspace.cloudschoolbus.parents.entity.StudentReport;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
+import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
+import com.guokrspace.cloudschoolbus.parents.module.explore.adapter.ImageAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.explore.adapter.TagRecycleViewAdapter;
+import com.guokrspace.cloudschoolbus.parents.widget.ActivityCard;
+import com.guokrspace.cloudschoolbus.parents.widget.AttendanceRecordCard;
+import com.guokrspace.cloudschoolbus.parents.widget.FoodNoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.NoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.PictureCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
+import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
+import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
 import com.squareup.otto.Subscribe;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 import de.greenrobot.dao.query.QueryBuilder;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -187,15 +215,19 @@ public class ExploreFragment extends BaseFragment {
 
         if (Version.DEBUG) {
             ClearCache();
-            GetLastestMessagesFromServer(mHandler);
+            ServerInteractions.getInstance().GetLastestMessagesFromServer(mHandler);
+            mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
         } else {
-            GetMessagesFromCache();
+            ServerInteractions.getInstance().GetMessagesFromCache();
             if(mMesageEntities.size()>0) {
                 mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
                 MessageEntity messageEntity = mMesageEntities.get(0);
-                GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
-            } else if (mMesageEntities.size() == 0)
-                GetLastestMessagesFromServer(mHandler);
+                ServerInteractions.getInstance().GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
+                mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
+            } else if (mMesageEntities.size() == 0) {
+                ServerInteractions.getInstance().GetLastestMessagesFromServer(mHandler);
+                mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
+            }
         }
 
         setHasOptionsMenu(true);
@@ -212,13 +244,16 @@ public class ExploreFragment extends BaseFragment {
                 mSwipeRefreshLayout.setRefreshing(true);
                 if (Version.DEBUG) {
                     ClearCache();
-                    GetLastestMessagesFromServer(mHandler);
+                    ServerInteractions.getInstance().GetLastestMessagesFromServer(mHandler);
+                    mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
                 } else {
                     if (mMesageEntities.size() > 0) {
                         MessageEntity messageEntity = mMesageEntities.get(0);
-                        GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
+                        ServerInteractions.getInstance().GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
+                        mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
                     } else {
-                        GetLastestMessagesFromServer(mHandler);
+                        ServerInteractions.getInstance().GetLastestMessagesFromServer(mHandler);
+                        mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
                     }
                 }
             }
@@ -251,7 +286,8 @@ public class ExploreFragment extends BaseFragment {
                     Log.i("...", "end called");
                     if (mMesageEntities.size() > 0) {
                         MessageEntity messageEntity = mMesageEntities.get(mMesageEntities.size() - 1);
-                        GetOldMessagesFromServer(messageEntity.getMessageid(), mHandler);
+                        ServerInteractions.getInstance().GetOldMessagesFromServer(messageEntity.getMessageid(), mHandler);
+                        mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
                         loading = true;
                     }
                 }
@@ -539,5 +575,274 @@ public class ExploreFragment extends BaseFragment {
             mMessageTypes.add(messageType);
             i++;
         }
+    }
+
+    public void showShare() {
+        ShareSDK.initSDK(mParentContext);
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+
+// 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
+//		oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+        oks.setTitle(getString(R.string.share));
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        oks.setTitleUrl("http://sharesdk.cn");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText("我是分享文本");
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl("http://sharesdk.cn");
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        oks.setComment("我是测试评论文本");
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite(getString(R.string.app_name));
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl("http://sharesdk.cn");
+
+// 启动分享GUI
+        oks.show(mParentContext);
+    }
+
+    public String cardType(String type)
+    {
+        String cardtype = "";
+
+        if(type.equals("Article"))
+            cardtype = getResources().getString(R.string.picturetype);
+        if(type.equals("Notice"))
+            cardtype = getResources().getString(R.string.noticetype);
+        else if(type.equals("Punch"))
+            cardtype = getResources().getString(R.string.attendancetype);
+        else if(type.equals("OpenClass"))
+            cardtype = getResources().getString(R.string.openclass);
+        else if(type.equals("Report"))
+            cardtype = getResources().getString(R.string.report);
+        else if(type.equals("Food"))
+            cardtype = getResources().getString(R.string.food);
+        else if(type.equals("Schedule"))
+            cardtype = getResources().getString(R.string.schedule);
+        else if(type.equals("Active"))
+            cardtype = getResources().getString(R.string.activity);
+        return cardtype;
+    }
+
+    public PictureCard buildArticleCard(MessageEntity message) {
+        PictureCard card = new PictureCard(mParentContext);
+        String teacherAvatarString = message.getSenderEntity().getAvatar();
+        card.setTeacherAvatarUrl(teacherAvatarString);
+        card.setTeacherName(message.getSenderEntity().getName());
+        card.setKindergarten(mApplication.mSchools.get(0).getName());
+        card.setCardType(cardType(message.getApptype()));
+        card.setSentTime(message.getSendtime());
+        card.setTitle(message.getTitle());
+        card.setDescription(message.getDescription());
+        List<String> pictureUrls = new ArrayList<>();
+        try {
+            JSONObject jsonObject = new JSONObject(message.getBody());
+            pictureUrls = FastJsonTools.getListObject(jsonObject.get("PList").toString(), String.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(pictureUrls!=null)
+            card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls));
+        final List<TagEntity> tagEntities = message.getTagEntityList();
+        TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
+        card.setTagAdapter(adapter);
+
+        CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                animation(view);
+                SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
+                        .setMessage(tagEntities.get(position).getTagnamedesc())
+                        .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
+        card.setmOnItemSelectedListener(tagClickListener);
+
+        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showShare();
+            }
+        };
+        card.setmShareButtonClickListener(shareButtonClickListener);
+
+        return card;
+    }
+
+    public NoticeCard BuildNoticeCard(final MessageEntity messageEntity, final Handler handler)
+    {
+        NoticeCard noticeCard = new NoticeCard(mParentContext);
+        String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+        noticeCard.setTeacherAvatarUrl(teacherAvatarString);
+        noticeCard.setTeacherName(messageEntity.getSenderEntity().getName());
+        noticeCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        noticeCard.setCardType(cardType(messageEntity.getApptype()));
+        noticeCard.setSentTime(messageEntity.getSendtime());
+        noticeCard.setIsNeedConfirm(messageEntity.getIsconfirm());
+        noticeCard.setTitle(messageEntity.getTitle());
+        noticeCard.setDescription(messageEntity.getDescription());
+        NoticeBody noticeBody = FastJsonTools.getObject(messageEntity.getBody(), NoticeBody.class);
+        if (noticeBody != null) noticeCard.setDrawable(noticeBody.getPList().get(0));
+        noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ServerInteractions.getInstance().UserConfirm(messageEntity.getMessageid(), (Button) view, handler);
+            }
+        });
+        return noticeCard;
+    }
+
+    public ActivityCard BuildActivityCard(final MessageEntity messageEntity, final Handler handler)
+    {
+        ActivityCard theCard = new ActivityCard(mParentContext);
+        String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+        theCard.setTeacherAvatarUrl(teacherAvatarString);
+        theCard.setTeacherName(messageEntity.getSenderEntity().getName());
+        theCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        theCard.setCardType(cardType(messageEntity.getApptype()));
+        theCard.setSentTime(messageEntity.getSendtime());
+        theCard.setIsNeedConfirm(messageEntity.getIsconfirm());
+        theCard.setTitle(messageEntity.getTitle());
+        theCard.setDescription(messageEntity.getDescription());
+        ActivityBody messageBody = FastJsonTools.getObject(messageEntity.getBody(), ActivityBody.class);
+        if (messageBody != null) theCard.setDrawable(messageBody.getPList().get(0));
+        theCard.setmConfirmButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ServerInteractions.getInstance().UserConfirm(messageEntity.getMessageid(), (Button) view, handler);
+            }
+        });
+        return theCard;
+    }
+
+    public AttendanceRecordCard BuildAttendanceCard(MessageEntity messageEntity)
+    {
+        AttendanceRecordCard attendanceRecordCard = new AttendanceRecordCard(mParentContext);
+        String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+        attendanceRecordCard.setTeacherAvatarUrl(teacherAvatarString);
+        attendanceRecordCard.setTeacherName(messageEntity.getSenderEntity().getName());
+        attendanceRecordCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        attendanceRecordCard.setCardType(cardType(messageEntity.getApptype()));
+        attendanceRecordCard.setSentTime(messageEntity.getSendtime());
+        String messageBody = messageEntity.getBody();
+        AttendanceRecord attendanceRecord = FastJsonTools.getObject(messageBody, AttendanceRecord.class);
+        attendanceRecordCard.setRecordTime(attendanceRecord.getPunchtime().toString());
+        attendanceRecordCard.setDrawable(attendanceRecord.getPicture());
+        attendanceRecordCard.setDescription(attendanceRecord.getPunchtime());
+        return attendanceRecordCard;
+    }
+
+    public StreamingNoticeCard BuildStreamingNoticeCard(MessageEntity messageEntity)
+    {
+        StreamingNoticeCard streamingNoticeCard = new StreamingNoticeCard(mParentContext);
+        streamingNoticeCard.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+        streamingNoticeCard.setKindergartenName(messageEntity.getSenderEntity().getName());
+        streamingNoticeCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        streamingNoticeCard.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+        streamingNoticeCard.setCardType(cardType(messageEntity.getApptype()));
+        streamingNoticeCard.setContext(mParentContext);
+        streamingNoticeCard.setDescription(messageEntity.getDescription());
+        String messageBody = messageEntity.getBody();
+        final Ipcparam ipcpara = FastJsonTools.getObject(messageBody, Ipcparam.class);
+        streamingNoticeCard.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity mainActivity = (MainActivity)mParentContext;
+                mainActivity.setActionBarTitle(getResources().getString(R.string.openclass), getResources().getString(R.string.module_explore));
+                StreamingChannelsFragment fragment = StreamingChannelsFragment.newInstance(ipcpara);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        return streamingNoticeCard;
+    }
+
+    public ReportListCard BuildReportListCard(final MessageEntity messageEntity)
+    {
+        ReportListCard reportListCard = new ReportListCard(mParentContext);
+        String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+        reportListCard.setTeacherAvatarUrl(teacherAvatarString);
+        reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
+        reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        reportListCard.setCardType(cardType(messageEntity.getApptype()));
+        reportListCard.setSentTime(messageEntity.getSendtime());
+        reportListCard.setReporttype(messageEntity.getTitle());
+        String messageBody = messageEntity.getBody();
+        final StudentReport studentReport = FastJsonTools.getObject(messageBody, StudentReport.class);
+        reportListCard.setReporttype(studentReport.getReportType());
+        reportListCard.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WebviewFragment theFragment = WebviewFragment.newInstance(studentReport.getReportUrl(), getResources().getString(R.string.report),"");
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, theFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        return reportListCard;
+    }
+
+    public FoodNoticeCard BuildFoodNoticeCard(final MessageEntity messageEntity)
+    {
+        FoodNoticeCard card = new FoodNoticeCard(mParentContext);
+        card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+        card.setKindergartenName(messageEntity.getSenderEntity().getName());
+        card.setClassName(messageEntity.getSenderEntity().getClassname());
+        card.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+        card.setCardType(cardType(messageEntity.getApptype()));
+        card.setContext(mParentContext);
+        card.setDescription(messageEntity.getDescription());
+        Food food = FastJsonTools.getObject(messageEntity.getBody(), Food.class);
+        final String foodUrl = food.getUrl();
+        card.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WebviewFragment fragment = WebviewFragment.newInstance(foodUrl, getResources().getString(R.string.food),"");
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        return card;
+    }
+
+    public ScheduleNoticeCard BuildScheduleNoticeCard(final MessageEntity messageEntity)
+    {
+        ScheduleNoticeCard card = new ScheduleNoticeCard(mParentContext);
+        card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
+        card.setKindergartenName(messageEntity.getSenderEntity().getName());
+        card.setClassName(messageEntity.getSenderEntity().getClassname());
+        card.setSentTime(DateUtils.timelineTimestamp(messageEntity.getSendtime(), mParentContext));
+        card.setCardType(cardType(messageEntity.getApptype()));
+        card.setContext(mParentContext);
+        card.setDescription(messageEntity.getDescription());
+        Schedule schedule = FastJsonTools.getObject(messageEntity.getBody(), Schedule.class);
+        final String scheduleUrl = schedule.getUrl();
+        card.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WebviewFragment fragment = WebviewFragment.newInstance(scheduleUrl, getResources().getString(R.string.schedule),"");
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.article_module_layout, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        return card;
     }
 }

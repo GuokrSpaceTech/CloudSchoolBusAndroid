@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassModuleEntity;
@@ -87,7 +88,7 @@ public class ClassFragment extends BaseFragment {
         mClassName = (TextView)root.findViewById(R.id.class_name);
         mSchoolName = (TextView)root.findViewById(R.id.kindergarten_name);
 
-        mClassName.setText(findCurrentClass(0).getClassname());
+        mClassName.setText(DataWrapper.getInstance().findCurrentClass(0).getClassname());
         mSchoolName.setText(mApplication.mSchoolsT.get(0).getName());
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
@@ -134,7 +135,7 @@ public class ClassFragment extends BaseFragment {
 
                 ClassModuleEntity classModule = (ClassModuleEntity) parent.getAdapter().getItem(position);
                 if(classModule.getUrl()!="") {
-                    String params = "?sid="+ mApplication.mConfig.getSid() + "&classid=" + findCurrentClass().getClassid();
+                    String params = "?sid="+ mApplication.mConfig.getSid() + "&classid=" + DataWrapper.getInstance().findCurrentClass().getClassid();
                     WebviewFragment fragment = WebviewFragment.newInstance(classModule.getUrl(), classModule.getTitle(),params);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.activity_class_layout, fragment);
@@ -262,7 +263,7 @@ public class ClassFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Picasso.with(mParentContext).load(getMyself().getAvatar()).fit().centerCrop().into(mTeacherAvatar);
+        Picasso.with(mParentContext).load(DataWrapper.getInstance().getMyself().getAvatar()).fit().centerCrop().into(mTeacherAvatar);
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

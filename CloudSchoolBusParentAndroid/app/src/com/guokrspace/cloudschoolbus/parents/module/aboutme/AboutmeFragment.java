@@ -36,6 +36,8 @@ import com.baidu.android.pushservice.PushManager;
 import com.guokrspace.cloudschoolbus.parents.LoginActivity;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
+import com.guokrspace.cloudschoolbus.parents.base.ServerInteractions;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
@@ -47,6 +49,7 @@ import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.SentRecordFragment;
+import com.guokrspace.cloudschoolbus.parents.module.qrcode.CaptureActivity;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -83,6 +86,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     private LinearLayout layoutClearCache;
     private LinearLayout layoutUploadRecord;
     private LinearLayout layoutHelpFeedback;
+    private LinearLayout layoutQRCode;
     private ImageView redDotIcon;
     private Button logoutButton;
     private int currentChild;
@@ -164,6 +168,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         layoutClearCache = (LinearLayout)root.findViewById(R.id.linearLayoutClearcache);
         layoutUploadRecord = (LinearLayout)root.findViewById(R.id.linearLayoutUploadRecord);
         layoutHelpFeedback = (LinearLayout)root.findViewById(R.id.linearLayoutHelp);
+        layoutQRCode  = (LinearLayout)root.findViewById(R.id.linearLayoutQRCode);
         logoutButton = (Button)root.findViewById(R.id.logoutButton);
         imageViewAvatar = (ImageView)root.findViewById(R.id.child_avatar);
         textViewUserName = (TextView)root.findViewById(R.id.child_name);
@@ -186,8 +191,11 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             layoutUploadRecord.setVisibility(View.GONE);
             View divider = root.findViewById(R.id.divider3);
             divider.setVisibility(View.GONE);
+            divider = root.findViewById(R.id.divider2);
+            divider.setVisibility(View.GONE);
             TextView switchTextView = (TextView)root.findViewById(R.id.switchTextView);
             switchTextView.setText(getResources().getString(R.string.switch_child));
+            layoutQRCode.setVisibility(View.GONE);
         }
         else {
             buttonKindergarten.setText(mApplication.mSchoolsT.get(0).getName());
@@ -257,6 +265,18 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                 redDotIcon.setVisibility(View.INVISIBLE);
             }
         });
+
+        if(!Version.PARENT)
+        {
+            layoutQRCode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((MainActivity) mParentContext).pager.lock();
+                    Intent intent = new Intent(mParentContext, CaptureActivity.class);
+                    startActivityForResult(intent, 3001);
+                }
+            });
+        }
 
         layoutClearCache.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,6 +359,11 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             case CAMERA_WITH_DATA: // 拍照
                 bitMap = (Bitmap) data.getExtras().get("data");
                 break;
+
+            case 3001:
+                String result = (String)data.getExtras().get("result");
+                ServerInteractions.getInstance().QRCodeLogin(result, mHandler);
+                return;
         }
 
         int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
@@ -358,9 +383,11 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             if(Version.PARENT) {
                 int currentchild = mApplication.mConfig.getCurrentChild();
                 String studentid = mApplication.mStudents.get(currentchild).getStudentid();
-                changeAvatarUser(studentid, bitmapFilePath, mHandler);
-            } else
-                changeAvatarUser(getMyself().getTeacherid(), bitmapFilePath, mHandler);
+                ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
+            } else {
+                String teacherid = DataWrapper.getInstance().getMyself().getTeacherid();
+                ServerInteractions.getInstance().changeAvatarUser(teacherid, bitmapFilePath, mHandler);
+            }
         }
     }
 
@@ -389,7 +416,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
         if (Version.PARENT) {
             theDialogFragment  = SelectUserDialogFragment.newInstance((ArrayList) mApplication.mStudents, "student");
         } else {
-            ArrayList<ClassEntityT> classes = findMyClass();
+            ArrayList<ClassEntityT> classes = DataWrapper.getInstance().findMyClass();
             theDialogFragment = SelectUserDialogFragment.newInstance(classes, "class");
         }
 

@@ -14,15 +14,10 @@ import com.alibaba.fastjson.JSONException;
 import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.android.support.dialog.*;
-import com.guokrspace.cloudschoolbus.parents.base.include.Version;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -32,10 +27,8 @@ import com.squareup.otto.Subscribe;
 import org.apache.http.Header;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
-import io.rong.imkit.RongIM;
 
 /**
  * activity基类

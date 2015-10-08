@@ -18,6 +18,9 @@ public class ProtocolDef {
     public static final String METHOD_Source                 =   "file-receiver";
     public static final String METHOD_upload                 =   "upload";
     public static final String METHOD_over                   =   "over";
+    public static final String METHOD_qrcodelogin            =   "qrcodelogin";
+
+
 
     /**获取sid,在登录的时候使用,GET*/
     public static final String METHOD_signin                 =    "signin";

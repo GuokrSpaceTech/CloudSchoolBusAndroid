@@ -21,6 +21,7 @@ import com.dexafree.materialList.model.CardItemView;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
@@ -118,7 +119,7 @@ public class UserListFragment extends BaseFragment {
                 listview.add(card);
             }
         } else {
-            mCurrentClassid = findMyClass().get(0).getClassid();
+            mCurrentClassid = DataWrapper.getInstance().findMyClass().get(0).getClassid();
             mIsParent = true;
             selectContacts(mCurrentClassid, mIsParent);
         }
@@ -134,11 +135,11 @@ public class UserListFragment extends BaseFragment {
                 String mTargetID = "";
                 if (!Version.PARENT) {
                     if (mIsParent) {
-                        mTargetID = findParentsinClass(mCurrentClassid).get(position).getParentid();
-                        userName = findParentsinClass(mCurrentClassid).get(position).getNikename();
+                        mTargetID = DataWrapper.getInstance().findParentsinClass(mCurrentClassid).get(position).getParentid();
+                        userName = DataWrapper.getInstance().findParentsinClass(mCurrentClassid).get(position).getNikename();
                     } else {
-                        mTargetID = findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
-                        userName = findTeachersinClass(mCurrentClassid).get(position).getNickname();
+                        mTargetID = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
+                        userName = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getNickname();
                     }
                 } else {
                     userName = mApplication.mTeachers.get(position).getName();
@@ -203,11 +204,11 @@ public class UserListFragment extends BaseFragment {
         if (!Version.PARENT) {
             mMenu = menu;
             inflater.inflate(R.menu.menu_contacts, menu);
-            SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, findMyClass());
+            SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, DataWrapper.getInstance().findMyClass());
             ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
                 @Override
                 public boolean onNavigationItemSelected(int i, long l) {
-                    mCurrentClassid = findMyClass().get(i).getClassid();
+                    mCurrentClassid = DataWrapper.getInstance().findMyClass().get(i).getClassid();
                     selectContacts(mCurrentClassid, mIsParent);
                     return false;
                 }
@@ -254,13 +255,13 @@ public class UserListFragment extends BaseFragment {
     private void selectContacts(String classid, boolean mIsParent) {
         if (mIsParent) {
             listview.clear();
-            List<ParentEntityT> parents = findParentsinClass(classid);
+            List<ParentEntityT> parents = DataWrapper.getInstance().findParentsinClass(classid);
 
             for (ParentEntityT parent : parents) {
                 ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
                 card.setChildrenname(parent.getAvatar()); //Avatar
                 card.setContactName(parent.getNikename()); //Name
-                card.setSubtitle(generateStudentsNameSting(findStudentsOfParents(parent)));
+                card.setSubtitle(generateStudentsNameSting(DataWrapper.getInstance().findStudentsOfParents(parent)));
                 card.setPhonenumber(parent.getMobile());
                 List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao().queryBuilder().list();
                 for (int j = 0; j < lastIMs.size(); j++) {
@@ -275,12 +276,12 @@ public class UserListFragment extends BaseFragment {
 
         } else {
             listview.clear();
-            List<TeacherEntityT> teacherList = findTeachersinClass(classid);
+            List<TeacherEntityT> teacherList = DataWrapper.getInstance().findTeachersinClass(classid);
             for (TeacherEntityT teacher : teacherList) {
                 ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
                 card.setChildrenname(teacher.getAvatar()); //Avatar
                 card.setContactName(teacher.getRealname()); //Name
-                card.setSubtitle(findCurrentClass().getClassname());
+                card.setSubtitle(DataWrapper.getInstance().findCurrentClass().getClassname());
                 card.setPhonenumber(teacher.getMobile());
 
                 //Lastmessage timestamp
@@ -298,14 +299,14 @@ public class UserListFragment extends BaseFragment {
 
     private void initTeacherActionBar() {
         mainActivity.getMenuInflater().inflate(R.menu.menu_contacts, mMenu);
-        if (findMyClass().size() > 1) {
+        if (DataWrapper.getInstance().findMyClass().size() > 1) {
             mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, findMyClass());
+            SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, DataWrapper.getInstance().findMyClass());
 
             ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
                 @Override
                 public boolean onNavigationItemSelected(int i, long l) {
-                    mCurrentClassid = findMyClass().get(i).getClassid();
+                    mCurrentClassid = DataWrapper.getInstance().findMyClass().get(i).getClassid();
                     selectContacts(mCurrentClassid, mIsParent);
                     return false;
                 }

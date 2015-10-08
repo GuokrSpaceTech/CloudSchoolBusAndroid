@@ -180,7 +180,7 @@ public class MainActivity extends BaseActivity implements
         if(Version.PARENT) {
             mFragments[0] = ExploreFragment.newInstance(null, null);
             mFragments[1] = UserListFragment.newInstance();
-            mFragments[2] = HobbyFragment.newInstance();
+            mFragments[2] = HobbyFragment.newInstance(null,null,null);
             mFragments[3] = AboutmeFragment.newInstance();
         }else {
             mFragments[0] = ExploreFragment.newInstance(null, null);

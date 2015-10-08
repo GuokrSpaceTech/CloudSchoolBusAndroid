@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.android.support.debug.DebugLog;
-import com.android.support.utils.FileUtils;
-import com.android.support.utils.ImageUtil;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
@@ -26,7 +24,6 @@ import net.soulwolf.image.picturelib.model.Picture;
 
 import org.apache.http.Header;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

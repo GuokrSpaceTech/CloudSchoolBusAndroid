@@ -118,6 +118,52 @@
                 android:background="@color/primary_dark"/>
 
             <LinearLayout
+                android:id="@+id/linearLayoutQRCode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFFFF"
+                android:baselineAligned="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_aspect_ratio_black_24dp"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="85"
+                    android:id="@+id/QRCodeTextView"
+                    android:padding="@dimen/big_padding"
+                    android:text="@string/scan"
+                    android:textColor="@color/primary_dark"
+                    android:textSize="16sp"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="16dp"
+                    android:layout_weight="15"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_next"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="32dp"
+                android:background="@color/primary_dark"
+                android:id="@+id/divider2"/>
+
+            <LinearLayout
                 android:id="@+id/linearLayoutClearcache"
                 android:layout_width="match_parent"
 
