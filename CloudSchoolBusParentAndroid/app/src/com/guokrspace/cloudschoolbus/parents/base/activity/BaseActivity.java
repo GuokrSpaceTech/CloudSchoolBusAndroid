@@ -14,6 +14,8 @@ import com.alibaba.fastjson.JSONException;
 import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.android.support.dialog.*;
+import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
+import com.guokrspace.cloudschoolbus.parents.base.ServerInteractions;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
@@ -49,8 +51,10 @@ abstract public class BaseActivity extends ActionBarActivity {
 
 		getWindow().setFormat(PixelFormat.RGBA_8888);
 		mContext = this;
-		mApplication = (CloudSchoolBusParentsApplication) mContext
-				.getApplicationContext();
+		mApplication = (CloudSchoolBusParentsApplication) mContext.getApplicationContext();
+
+		ServerInteractions.getInstance().init(mApplication, mContext);
+		DataWrapper.getInstance().init(mApplication);
 
 		mApplication.networkStatusEvent = new NetworkStatusEvent(false,false,false);
 		ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -193,27 +197,5 @@ abstract public class BaseActivity extends ActionBarActivity {
 				super.onFailure(statusCode, headers, throwable, errorResponse);
 			}
 		});
-	}
-
-	public Fragment getCurrentFragment(){
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
-		Fragment currentFragment = getSupportFragmentManager()
-				.findFragmentByTag(fragmentTag);
-		return currentFragment;
-	}
-
-	//Get filtered messages from cache
-	public ArrayList<MessageEntity> GetMessageFromCache(String messageType) {
-		MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
-		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
-		return (ArrayList<MessageEntity>)queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(messageType)).list();
-	}
-
-	//Get all messages from cache
-	private ArrayList<MessageEntity> GetMessageFromCache() {
-		MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
-		QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
-		return (ArrayList<MessageEntity>)queryBuilder.list();
 	}
 }

@@ -159,11 +159,14 @@ public class PictureProcess {
             }
         }else if(requestCode == PictureProcess.GALLERY_REQUEST_CODE){
             if(resultCode == PictureChooseActivity.RESULT_OK && data != null){
-                ArrayList<Picture> picture = (ArrayList<Picture>)data.getSerializableExtra(Constants.PICTURE_CHOOSE_LIST);
+                ArrayList<?> picture = (ArrayList<Picture>)data.getSerializableExtra(Constants.PICTURE_CHOOSE_LIST);
                 if(isClip && picture != null && picture.size() == 1){
-                    cropPicture(new File(picture.get(0).getPicturePath()));
+                    if(picture.get(0) instanceof String)
+                        cropPicture(new File((String)picture.get(0)));
+                    else if(picture.get(0) instanceof Picture)
+                        cropPicture(new File(((Picture)(picture.get(0))).getPicturePath()));
                 }else {
-                    onSuccess(picture);
+                    onSuccess((ArrayList<Picture>)picture);
                 }
             } else if ( resultCode == PictureChooseActivity.RESULT_CANCEL ) {
             }
@@ -199,12 +202,12 @@ public class PictureProcess {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(Uri.fromFile(path), "image/*");
         intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 2);
+        intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         intent.putExtra("outputX", mClipWidth);
         intent.putExtra("outputY", mClipHeight);
         intent.putExtra("scale", true);
-        intent.putExtra("return-data", false);
+        intent.putExtra("return-data", true);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         intent.putExtra("noFaceDetection", true); // no face detection
         startActivityForResult(intent, CLIP_REQUEST_CODE);

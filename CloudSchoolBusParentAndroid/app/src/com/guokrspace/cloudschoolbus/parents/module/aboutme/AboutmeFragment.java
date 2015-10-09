@@ -14,6 +14,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,16 +54,25 @@ import com.guokrspace.cloudschoolbus.parents.module.qrcode.CaptureActivity;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
+import net.soulwolf.image.picturelib.PictureFrom;
+import net.soulwolf.image.picturelib.PictureProcess;
+import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
+import net.soulwolf.image.picturelib.model.Picture;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wangjianfeng on 15/8/13.
  */
-public class AboutmeFragment extends BaseFragment implements IListDialogListener,
-        ISimpleDialogCancelListener, ISimpleDialogListener {
+public class AboutmeFragment extends BaseFragment implements
+        IListDialogListener,
+        ISimpleDialogCancelListener,
+        ISimpleDialogListener,OnPicturePickListener
+{
 
     //Styled Dialog defines
     private static final int REQUEST_PROGRESS = 1;
@@ -91,6 +101,8 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
     private Button logoutButton;
     private int currentChild;
     private boolean isUploading = false;
+
+    private PictureProcess mPictureProcess;
 
     // 上传图片
     private Bitmap bitMap;
@@ -157,6 +169,7 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
         if (getArguments() != null) {}
 
+        mPictureProcess = new PictureProcess(this, mApplication.getCacheDir());
         super.onCreate(savedInstanceState);
     }
 
@@ -225,19 +238,23 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                 signout();
             }
         });
-
+        final AboutmeFragment aboutmeFragment = this;
         imageViewAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ListDialogFragment
-                        .createBuilder(mParentContext, getFragmentManager())
-                        .setTitle(getResources().getString(R.string.picture_ops))
-                        .setItems(new String[]{getResources().getString(R.string.picture_ops_album),
-                                getResources().getString(R.string.picture_ops_take_pic)})
-                        .setRequestCode(REQUEST_LIST_SINGLE)
-                        .setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
-                        .setTargetFragment(mFragment, REQUEST_LIST_SIMPLE)
-                        .show();
+//                ListDialogFragment
+//                        .createBuilder(mParentContext, getFragmentManager())
+//                        .setTitle(getResources().getString(R.string.picture_ops))
+//                        .setItems(new String[]{getResources().getString(R.string.picture_ops_album),
+//                                getResources().getString(R.string.picture_ops_take_pic)})
+//                        .setRequestCode(REQUEST_LIST_SINGLE)
+//                        .setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
+//                        .setTargetFragment(mFragment, REQUEST_LIST_SIMPLE)
+//                        .show();
+                mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
+                mPictureProcess.setClip(true);
+                mPictureProcess.setMaxPictureCount(1);
+                mPictureProcess.execute(aboutmeFragment);
             }
         });
 
@@ -338,27 +355,30 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK)
-            return;
+        mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
 
-        if (bitMap != null && !bitMap.isRecycled()) {
-            bitMap.recycle();
-        }
+
+//        if (resultCode != Activity.RESULT_OK)
+//            return;
+
+//        if (bitMap != null && !bitMap.isRecycled()) {
+//            bitMap.recycle();
+//        }
 
         switch (requestCode) {
-            case PHOTO_PICKED_WITH_DATA: // 从本地选择图片
-                Uri selectedImageUri = data.getData();
-                if (selectedImageUri != null) {
-                    try {
-                        bitMap = BitmapFactory.decodeStream(mParentContext.getContentResolver().openInputStream(selectedImageUri));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-            case CAMERA_WITH_DATA: // 拍照
-                bitMap = (Bitmap) data.getExtras().get("data");
-                break;
+//            case PHOTO_PICKED_WITH_DATA: // 从本地选择图片
+//                Uri selectedImageUri = data.getData();
+//                if (selectedImageUri != null) {
+//                    try {
+//                        bitMap = BitmapFactory.decodeStream(mParentContext.getContentResolver().openInputStream(selectedImageUri));
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                break;
+//            case CAMERA_WITH_DATA: // 拍照
+//                bitMap = (Bitmap) data.getExtras().get("data");
+//                break;
 
             case 3001:
                 String result = (String)data.getExtras().get("result");
@@ -366,29 +386,29 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
                 return;
         }
 
-        int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
-        bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale), (int) (bitMap.getHeight() / scale));
-        bitmapFilePath = ImageUtil.saveImage(bitMap);// 将图片保存到指定的路径
-
-        // 下面这两句是对图片按照一定的比例缩放
-        if (bitMap == null) {
-            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.invalid_picture))
-                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-            return;
-        }
-
-
-        if(bitmapFilePath!=null)
-        {
-            if(Version.PARENT) {
-                int currentchild = mApplication.mConfig.getCurrentChild();
-                String studentid = mApplication.mStudents.get(currentchild).getStudentid();
-                ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
-            } else {
-                String teacherid = DataWrapper.getInstance().getMyself().getTeacherid();
-                ServerInteractions.getInstance().changeAvatarUser(teacherid, bitmapFilePath, mHandler);
-            }
-        }
+//        int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
+//        bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale), (int) (bitMap.getHeight() / scale));
+//        bitmapFilePath = ImageUtil.saveImage(bitMap);// 将图片保存到指定的路径
+//
+//        // 下面这两句是对图片按照一定的比例缩放
+//        if (bitMap == null) {
+//            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.invalid_picture))
+//                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+//            return;
+//        }
+//
+//
+//        if(bitmapFilePath!=null)
+//        {
+//            if(Version.PARENT) {
+//                int currentchild = mApplication.mConfig.getCurrentChild();
+//                String studentid = mApplication.mStudents.get(currentchild).getStudentid();
+//                ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
+//            } else {
+//                String teacherid = DataWrapper.getInstance().getMyself().getTeacherid();
+//                ServerInteractions.getInstance().changeAvatarUser(teacherid, bitmapFilePath, mHandler);
+//            }
+//        }
     }
 
     @Override
@@ -567,5 +587,66 @@ public class AboutmeFragment extends BaseFragment implements IListDialogListener
             }
             mApplication.mTeachersT = mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list();
         }
+    }
+
+    @Override
+    public void onSuccess(List<Picture> pictures) {
+
+        Log.i("", "");
+    }
+
+    @Override
+    public void onSuccessString(List<String> pictures) {
+        Log.i("", "");
+
+        if (bitMap != null && !bitMap.isRecycled()) {
+            bitMap.recycle();
+        }
+
+        Uri selectedImageUri = Uri.fromFile(new File(pictures.get(0)));
+        if (selectedImageUri != null) {
+            try {
+                bitMap = BitmapFactory.decodeStream(mParentContext.getContentResolver().openInputStream(selectedImageUri));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
+        bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale), (int) (bitMap.getHeight() / scale));
+        bitmapFilePath = ImageUtil.saveImage(bitMap);// 将图片保存到指定的路径
+
+        // 下面这两句是对图片按照一定的比例缩放
+        if (bitMap == null) {
+            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.invalid_picture))
+                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+            return;
+        }
+
+
+        if(bitmapFilePath!=null)
+        {
+            if(Version.PARENT) {
+                int currentchild = mApplication.mConfig.getCurrentChild();
+                String studentid = mApplication.mStudents.get(currentchild).getStudentid();
+                ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
+            } else {
+                String teacherid = DataWrapper.getInstance().getMyself().getTeacherid();
+                ServerInteractions.getInstance().changeAvatarUser(teacherid, bitmapFilePath, mHandler);
+            }
+        }
+
+    }
+
+    @Override
+    public void onError(Exception e) {
+        Log.i("", "");
+
+    }
+
+    @Override
+    public void onCancel() {
+        Log.i("", "");
+
     }
 }

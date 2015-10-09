@@ -412,7 +412,7 @@ public class MainActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //  Let the fragment to handle unhandled result
         /* http://stackoverflow.com/questions/6147884/onactivityresult-not-being-called-in-fragment?rq=1 */
-        mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
+//        mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
         super.onActivityResult(requestCode, resultCode, data); //Rest of the activity results goes to respective fragment
     }
 
@@ -867,10 +867,12 @@ public class MainActivity extends BaseActivity implements
     /*
      * converts dip to px
      */
-    private int dip2Px(float dip) {
+    private int dip2Px(float dip){
         return (int) (dip * mContext.getResources().getDisplayMetrics().density + 0.5f);
     }
 
+
+    //Listener for the image chooser
     @Override
     public void onSuccess(List<Picture> pictures) {
         if(Version.DEBUG){

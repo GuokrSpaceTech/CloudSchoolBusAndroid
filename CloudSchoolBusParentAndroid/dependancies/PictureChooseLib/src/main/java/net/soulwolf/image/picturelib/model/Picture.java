@@ -53,8 +53,9 @@ public class Picture implements Serializable {
 				return picturePath;
 			}else {
 				//// 本地照片,返回uri
-				return Uri.decode(Uri.fromFile(new File(picturePath))
-						.toString());
+				return picturePath;
+//				return Uri.decode(Uri.fromFile(new File(picturePath))
+//						.toString());
 			}
 		}
 
