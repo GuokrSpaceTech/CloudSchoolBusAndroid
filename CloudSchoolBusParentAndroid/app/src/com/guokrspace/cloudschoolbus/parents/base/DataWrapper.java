@@ -1,7 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.base;
 
-import android.content.Context;
-
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;

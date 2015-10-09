@@ -31,7 +31,6 @@ import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.MenuSpinnerAdapter;
-import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.ServerInteractions;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
@@ -61,6 +60,7 @@ import com.guokrspace.cloudschoolbus.parents.widget.PictureCard;
 import com.guokrspace.cloudschoolbus.parents.widget.ReportListCard;
 import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
+import com.guokrspace.cloudschoolbus.parents.R;
 import com.squareup.otto.Subscribe;
 
 import org.json.JSONException;

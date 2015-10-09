@@ -24,5 +24,5 @@ package net.soulwolf.image.picturelib;
  */
 public enum PictureFrom {
 
-    GALLERY,CAMERA,MIX
+    GALLERY,CAMERA
 }

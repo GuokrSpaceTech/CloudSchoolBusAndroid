@@ -97,8 +97,6 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
-import static com.guokrspace.cloudschoolbus.parents.R.string;
-
 //http://stackoverflow.com/questions/24838668/icon-selector-not-working-with-pagerslidingtabstrips
 
 public class MainActivity extends BaseActivity implements
@@ -215,7 +213,7 @@ public class MainActivity extends BaseActivity implements
             getSupportActionBar().setCustomView(R.layout.abs_layout);
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if(Version.PARENT) setActionBarTitle(getResources().getString(string.module_explore), "");
+        if(Version.PARENT) setActionBarTitle(getResources().getString(R.string.module_explore), "");
         else setActionBarTitle("", "");
     }
 
@@ -723,23 +721,23 @@ public class MainActivity extends BaseActivity implements
             // Check if this is the page you want.
             if (mFragments[position] instanceof ExploreFragment) {
                 if(Version.PARENT)
-                    setActionBarTitle(getResources().getString(string.module_explore),"");
+                    setActionBarTitle(getResources().getString(R.string.module_explore),"");
                 else {
                     getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
                     getSupportActionBar().setTitle("");
                 }
             } else if (mFragments[position] instanceof UserListFragment) {
-                setActionBarTitle(getResources().getString(string.module_teacher), "");
+                setActionBarTitle(getResources().getString(R.string.module_teacher), "");
                 if(!Version.PARENT)
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             } else if (mFragments[position] instanceof HobbyFragment) {
-                setActionBarTitle(getResources().getString(string.module_hobby),"");
+                setActionBarTitle(getResources().getString(R.string.module_hobby),"");
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             } else if (mFragments[position] instanceof AboutmeFragment) {
-                setActionBarTitle(getResources().getString(string.module_aboutme),"");
+                setActionBarTitle(getResources().getString(R.string.module_aboutme),"");
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             } else if (mFragments[position] instanceof ClassFragment) {
-                getSupportActionBar().setTitle(getResources().getString(string.module_class));
+                getSupportActionBar().setTitle(getResources().getString(R.string.module_class));
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             }
         }
