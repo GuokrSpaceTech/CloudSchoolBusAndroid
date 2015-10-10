@@ -100,13 +100,13 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 //http://stackoverflow.com/questions/24838668/icon-selector-not-working-with-pagerslidingtabstrips
 
 public class MainActivity extends BaseActivity implements
-        ExploreFragment.OnFragmentInteractionListener, OnPicturePickListener
+        ExploreFragment.OnFragmentInteractionListener
 {
     private Thread  thread;
     private boolean threadStopFlag = false;
 
     private PagerSlidingTabStrip tabs;
-    private PictureProcess mPictureProcess;
+//    private PictureProcess mPictureProcess;
     private List<BadgeView> badgeViews = new ArrayList();
     public  NonSwipeableViewPager pager;
     private MyPagerAdapter adapter;
@@ -164,7 +164,6 @@ public class MainActivity extends BaseActivity implements
         //Hack for force the overflow button in the actionbar
         getOverflowMenu();
         setContentView(R.layout.activity_main);
-        mPictureProcess = new PictureProcess(this);
         BusProvider.getInstance().register(this);
     }
 
@@ -271,21 +270,12 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        FragmentTransaction transaction;
         switch (item.getItemId()) {
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
                 if(Version.PARENT)
                 setActionBarTitle(mUpperLeverTitle,"");
                 break;
-            case R.id.action_take_photo:
-                mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
-                mPictureProcess.setClip(false);
-                mPictureProcess.setMaxPictureCount(9);
-                mPictureProcess.execute(this);
-                break;
-
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -412,7 +402,6 @@ public class MainActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //  Let the fragment to handle unhandled result
         /* http://stackoverflow.com/questions/6147884/onactivityresult-not-being-called-in-fragment?rq=1 */
-//        mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
         super.onActivityResult(requestCode, resultCode, data); //Rest of the activity results goes to respective fragment
     }
 
@@ -870,36 +859,4 @@ public class MainActivity extends BaseActivity implements
     private int dip2Px(float dip){
         return (int) (dip * mContext.getResources().getDisplayMetrics().density + 0.5f);
     }
-
-
-    //Listener for the image chooser
-    @Override
-    public void onSuccess(List<Picture> pictures) {
-        if(Version.DEBUG){
-            TLog.i("", "OnSuccess:%s", pictures);
-        }
-        Intent intent = new Intent(this, SelectStudentActivity.class);
-        intent.putExtra("pictures", (ArrayList)pictures);
-        startActivity(intent);
-
-    }
-
-    @Override
-    public void onError(Exception e) {
-        TLog.e("","onError",e);
-    }
-
-    @Override
-    public void onCancel() {
-
-    }
-
-    @Override
-    public void onSuccessString(List<String> pictures) {
-        if(Version.DEBUG){
-            TLog.i("", "OnSuccess:%s", pictures);
-        }
-        Intent intent = new Intent(this, SelectStudentActivity.class);
-        intent.putExtra("pictures", (ArrayList)pictures);
-        startActivity(intent);    }
 }

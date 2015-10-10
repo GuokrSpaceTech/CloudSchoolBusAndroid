@@ -2,6 +2,7 @@ package com.guokrspace.cloudschoolbus.parents.module.explore;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +53,7 @@ import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
 import com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.StreamingChannelsFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.adapter.ImageAdapter;
 import com.guokrspace.cloudschoolbus.parents.module.explore.adapter.TagRecycleViewAdapter;
+import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.parents.widget.ActivityCard;
 import com.guokrspace.cloudschoolbus.parents.widget.AttendanceRecordCard;
 import com.guokrspace.cloudschoolbus.parents.widget.FoodNoticeCard;
@@ -62,6 +64,12 @@ import com.guokrspace.cloudschoolbus.parents.widget.ScheduleNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.widget.StreamingNoticeCard;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.squareup.otto.Subscribe;
+import com.toaker.common.tlog.TLog;
+
+import net.soulwolf.image.picturelib.PictureFrom;
+import net.soulwolf.image.picturelib.PictureProcess;
+import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
+import net.soulwolf.image.picturelib.model.Picture;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,12 +90,14 @@ import me.leolin.shortcutbadger.ShortcutBadger;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class ExploreFragment extends BaseFragment {
+public class ExploreFragment extends BaseFragment implements OnPicturePickListener {
     private OnFragmentInteractionListener mListener;
 
     private MaterialListView mMaterialListView;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private PictureProcess mPictureProcess;
+
 
     private int mCurrentChild;
     private int previousTotal = 0;
@@ -199,6 +209,8 @@ public class ExploreFragment extends BaseFragment {
 
         if (getArguments() != null) {
         }
+
+        mPictureProcess = new PictureProcess(this);
     }
 
     @Override
@@ -462,6 +474,12 @@ public class ExploreFragment extends BaseFragment {
             case R.id.action_activity:
                 filterCards("Active");
                 setActionBarTitle(getResources().getString(R.string.activity), getResources().getString(R.string.module_explore));
+                break;
+            case R.id.action_take_photo:
+                mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
+                mPictureProcess.setClip(false);
+                mPictureProcess.setMaxPictureCount(9);
+                mPictureProcess.execute(this);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -757,7 +775,7 @@ public class ExploreFragment extends BaseFragment {
         streamingNoticeCard.setClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity mainActivity = (MainActivity)mParentContext;
+                MainActivity mainActivity = (MainActivity) mParentContext;
                 mainActivity.setActionBarTitle(getResources().getString(R.string.openclass), getResources().getString(R.string.module_explore));
                 StreamingChannelsFragment fragment = StreamingChannelsFragment.newInstance(ipcpara);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -786,7 +804,7 @@ public class ExploreFragment extends BaseFragment {
         reportListCard.setClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                WebviewFragment theFragment = WebviewFragment.newInstance(studentReport.getReportUrl(), getResources().getString(R.string.report),"");
+                WebviewFragment theFragment = WebviewFragment.newInstance(studentReport.getReportUrl(), getResources().getString(R.string.report), "");
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.article_module_layout, theFragment);
                 transaction.addToBackStack(null);
@@ -794,6 +812,13 @@ public class ExploreFragment extends BaseFragment {
             }
         });
         return reportListCard;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //  Let the fragment to handle unhandled result
+        /* http://stackoverflow.com/questions/6147884/onactivityresult-not-being-called-in-fragment?rq=1 */
+        mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
     }
 
     public FoodNoticeCard BuildFoodNoticeCard(final MessageEntity messageEntity)
@@ -811,7 +836,7 @@ public class ExploreFragment extends BaseFragment {
         card.setClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                WebviewFragment fragment = WebviewFragment.newInstance(foodUrl, getResources().getString(R.string.food),"");
+                WebviewFragment fragment = WebviewFragment.newInstance(foodUrl, getResources().getString(R.string.food), "");
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.article_module_layout, fragment);
                 transaction.addToBackStack(null);
@@ -836,7 +861,7 @@ public class ExploreFragment extends BaseFragment {
         card.setClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                WebviewFragment fragment = WebviewFragment.newInstance(scheduleUrl, getResources().getString(R.string.schedule),"");
+                WebviewFragment fragment = WebviewFragment.newInstance(scheduleUrl, getResources().getString(R.string.schedule), "");
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.article_module_layout, fragment);
                 transaction.addToBackStack(null);
@@ -845,4 +870,37 @@ public class ExploreFragment extends BaseFragment {
         });
         return card;
     }
+
+
+    //Listener for the image chooser
+    @Override
+    public void onSuccess(List<Picture> pictures) {
+        if(Version.DEBUG){
+            TLog.i("", "OnSuccess:%s", pictures);
+        }
+        Intent intent = new Intent(mParentContext, SelectStudentActivity.class);
+        intent.putExtra("pictures", (ArrayList)pictures);
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onError(Exception e) {
+        TLog.e("","onError",e);
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
+
+    @Override
+    public void onSuccessString(List<String> pictures) {
+        if(Version.DEBUG){
+            TLog.i("", "OnSuccess:%s", pictures);
+        }
+        Intent intent = new Intent(mParentContext, SelectStudentActivity.class);
+        intent.putExtra("pictures", (ArrayList)pictures);
+        startActivity(intent);    }
+
 }
