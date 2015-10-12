@@ -110,8 +110,8 @@ public class StudentSelectAdapter extends BaseAdapter {
             final ImageView selectImageView = (ImageView) view.findViewById(R.id.selectImageView);
 
             if (!TextUtils.isEmpty(student.getAvatar())) {
-                String avatarpath = "";
-                if (student.getAvatar().contains("jpg."))
+                String avatarpath = student.getAvatar();
+                if (avatarpath.contains("jpg."))
                     avatarpath = student.getAvatar().substring(0, student.getAvatar().lastIndexOf('.'));
                 if (!avatarpath.equals(""))
                     Picasso.with(mContext).load(avatarpath).fit().centerCrop().into(holder.avatarImageView);

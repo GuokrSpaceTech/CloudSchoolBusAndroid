@@ -80,7 +80,12 @@ public class StartupFragment extends BaseFragment {
     @Subscribe
     public void onReceiveImReadyEvent(ImReadyEvent event)
     {
-        getFragmentManager().popBackStack();
+        try {
+            getFragmentManager().popBackStackImmediate();
+        } catch (IllegalStateException ignored) {
+            // There's no way to avoid getting this if saveInstanceState has already been called.
+        }
+
     }
 
 }

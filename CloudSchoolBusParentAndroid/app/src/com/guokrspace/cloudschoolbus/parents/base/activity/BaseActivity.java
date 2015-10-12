@@ -5,8 +5,6 @@ import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 
 
@@ -18,8 +16,6 @@ import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.parents.base.ServerInteractions;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -27,10 +23,6 @@ import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
 
 import org.apache.http.Header;
-
-import java.util.ArrayList;
-
-import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * activity基类

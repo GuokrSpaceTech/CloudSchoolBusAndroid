@@ -17,7 +17,7 @@ import de.greenrobot.dao.query.QueryBuilder;
 /**
  * DAO for table LAST_IMMESSAGE_ENTITY.
 */
-public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, String> {
+public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Long> {
 
     public static final String TABLENAME = "LAST_IMMESSAGE_ENTITY";
 
@@ -26,12 +26,15 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Str
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Teacherid = new Property(0, String.class, "teacherid", true, "TEACHERID");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Timestamp = new Property(1, String.class, "timestamp", false, "TIMESTAMP");
         public final static Property HasUnread = new Property(2, String.class, "hasUnread", false, "HAS_UNREAD");
+        public final static Property Userid = new Property(3, String.class, "userid", false, "USERID");
     };
 
     private Query<LastIMMessageEntity> teacherEntity_LastIMMessageEntityListQuery;
+    private Query<LastIMMessageEntity> parentEntityT_LastIMMessageEntityListQuery;
+    private Query<LastIMMessageEntity> teacherEntityT_LastIMMessageEntityListQuery;
 
     public LastIMMessageEntityDao(DaoConfig config) {
         super(config);
@@ -45,9 +48,10 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Str
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'LAST_IMMESSAGE_ENTITY' (" + //
-                "'TEACHERID' TEXT PRIMARY KEY NOT NULL ," + // 0: teacherid
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "'TIMESTAMP' TEXT," + // 1: timestamp
-                "'HAS_UNREAD' TEXT);"); // 2: hasUnread
+                "'HAS_UNREAD' TEXT," + // 2: hasUnread
+                "'USERID' TEXT NOT NULL );"); // 3: userid
     }
 
     /** Drops the underlying database table. */
@@ -60,7 +64,11 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Str
     @Override
     protected void bindValues(SQLiteStatement stmt, LastIMMessageEntity entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getTeacherid());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String timestamp = entity.getTimestamp();
         if (timestamp != null) {
@@ -71,21 +79,23 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Str
         if (hasUnread != null) {
             stmt.bindString(3, hasUnread);
         }
+        stmt.bindString(4, entity.getUserid());
     }
 
     /** @inheritdoc */
     @Override
-    public String readKey(Cursor cursor, int offset) {
-        return cursor.getString(offset + 0);
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public LastIMMessageEntity readEntity(Cursor cursor, int offset) {
         LastIMMessageEntity entity = new LastIMMessageEntity( //
-            cursor.getString(offset + 0), // teacherid
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // timestamp
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // hasUnread
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // hasUnread
+            cursor.getString(offset + 3) // userid
         );
         return entity;
     }
@@ -93,22 +103,24 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Str
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, LastIMMessageEntity entity, int offset) {
-        entity.setTeacherid(cursor.getString(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setTimestamp(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setHasUnread(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUserid(cursor.getString(offset + 3));
      }
     
     /** @inheritdoc */
     @Override
-    protected String updateKeyAfterInsert(LastIMMessageEntity entity, long rowId) {
-        return entity.getTeacherid();
+    protected Long updateKeyAfterInsert(LastIMMessageEntity entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
     }
     
     /** @inheritdoc */
     @Override
-    public String getKey(LastIMMessageEntity entity) {
+    public Long getKey(LastIMMessageEntity entity) {
         if(entity != null) {
-            return entity.getTeacherid();
+            return entity.getId();
         } else {
             return null;
         }
@@ -121,16 +133,44 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Str
     }
     
     /** Internal query to resolve the "lastIMMessageEntityList" to-many relationship of TeacherEntity. */
-    public List<LastIMMessageEntity> _queryTeacherEntity_LastIMMessageEntityList(String teacherid) {
+    public List<LastIMMessageEntity> _queryTeacherEntity_LastIMMessageEntityList(String userid) {
         synchronized (this) {
             if (teacherEntity_LastIMMessageEntityListQuery == null) {
                 QueryBuilder<LastIMMessageEntity> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Teacherid.eq(null));
+                queryBuilder.where(Properties.Userid.eq(null));
                 teacherEntity_LastIMMessageEntityListQuery = queryBuilder.build();
             }
         }
         Query<LastIMMessageEntity> query = teacherEntity_LastIMMessageEntityListQuery.forCurrentThread();
-        query.setParameter(0, teacherid);
+        query.setParameter(0, userid);
+        return query.list();
+    }
+
+    /** Internal query to resolve the "lastIMMessageEntityList" to-many relationship of ParentEntityT. */
+    public List<LastIMMessageEntity> _queryParentEntityT_LastIMMessageEntityList(String userid) {
+        synchronized (this) {
+            if (parentEntityT_LastIMMessageEntityListQuery == null) {
+                QueryBuilder<LastIMMessageEntity> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.Userid.eq(null));
+                parentEntityT_LastIMMessageEntityListQuery = queryBuilder.build();
+            }
+        }
+        Query<LastIMMessageEntity> query = parentEntityT_LastIMMessageEntityListQuery.forCurrentThread();
+        query.setParameter(0, userid);
+        return query.list();
+    }
+
+    /** Internal query to resolve the "lastIMMessageEntityList" to-many relationship of TeacherEntityT. */
+    public List<LastIMMessageEntity> _queryTeacherEntityT_LastIMMessageEntityList(String userid) {
+        synchronized (this) {
+            if (teacherEntityT_LastIMMessageEntityListQuery == null) {
+                QueryBuilder<LastIMMessageEntity> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.Userid.eq(null));
+                teacherEntityT_LastIMMessageEntityListQuery = queryBuilder.build();
+            }
+        }
+        Query<LastIMMessageEntity> query = teacherEntityT_LastIMMessageEntityListQuery.forCurrentThread();
+        query.setParameter(0, userid);
         return query.list();
     }
 

@@ -1,6 +1,7 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -30,7 +31,6 @@ public class ContactListCardItemView extends CardItemView<ContactListCard> {
     @Override
     public void build(final ContactListCard card) {
         super.build(card);
-
         /*
          * Header
          */
@@ -56,6 +56,11 @@ public class ContactListCardItemView extends CardItemView<ContactListCard> {
         if (card.getDescriptionColor() != -1) {
             classNameTextView.setTextColor(card.getDescriptionColor());
         }
+
+        //Badege
+        ImageView badgeImageView = (ImageView) findViewById(R.id.badgeImageView);
+        if(card.isHasUnread()) badgeImageView.setVisibility(VISIBLE);
+        else badgeImageView.setVisibility(INVISIBLE);
 
 //        TextView phoneNumberTextView = (TextView) findViewById(R.id.phonenumber);
 //        phoneNumberTextView.setText(card.getPhonenumber());
@@ -92,5 +97,9 @@ public class ContactListCardItemView extends CardItemView<ContactListCard> {
             badgeView.setGravity(Gravity.TOP | Gravity.RIGHT);
             badgeView.setTargetView(ContactHead);
         }
+
+        CardView cardView = (CardView) findViewById(R.id.cardView);
+        cardView.setTag(card.getPosition());
+        cardView.setOnClickListener(card.getOnClickListener());
     }
 }

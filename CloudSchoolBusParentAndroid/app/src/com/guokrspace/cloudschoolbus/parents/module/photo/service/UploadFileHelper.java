@@ -103,6 +103,8 @@ public class UploadFileHelper {
         params.put("fname", uploadFile.getFname());
         try {
             params.put("fbody", new File(compressUploadSource(uploadFile)));
+//            params.put("fbody", new File(uploadFile.getFbody()));
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

@@ -209,4 +209,25 @@ public class DataWrapper {
         }
         return retStudents;
     }
+
+    public ArrayList<StudentEntityT> findWhichStudentsInClass(ArrayList<StudentEntityT> students, String classid)
+    {
+        ArrayList<StudentEntityT> retStudents = new ArrayList<>();
+        ArrayList<StudentEntityT> class_students = findStudentsinClass(classid);
+        for(StudentEntityT student:students) {
+            if (class_students.contains(student))
+            {
+                retStudents.add(student);
+            }
+        }
+
+        return retStudents;
+    }
+
+    public ArrayList<StudentEntityT> findStudentInCurrentClassForParent(ParentEntityT parent, String classid)
+    {
+        ArrayList<StudentEntityT> students = DataWrapper.getInstance().findStudentsOfParents(parent);
+
+        return findWhichStudentsInClass(students, classid);
+    }
 }

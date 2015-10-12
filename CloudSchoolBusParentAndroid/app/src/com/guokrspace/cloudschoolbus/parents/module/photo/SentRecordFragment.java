@@ -188,7 +188,7 @@ public class SentRecordFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.main_teacher, menu);
+//        inflater.inflate(R.menu.main_teacher, menu);
         ((MainActivity)mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.upload_record));
 //        super.onCreateOptionsMenu(menu, inflater);
     }

@@ -49,14 +49,12 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
+import com.guokrspace.cloudschoolbus.parents.base.RongCloudEvent;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
@@ -66,7 +64,6 @@ import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.UserListFragment;
 import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
-import com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
 import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
@@ -74,12 +71,6 @@ import com.guokrspace.cloudschoolbus.parents.widget.BadgeView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
-import com.toaker.common.tlog.TLog;
-
-import net.soulwolf.image.picturelib.PictureFrom;
-import net.soulwolf.image.picturelib.PictureProcess;
-import net.soulwolf.image.picturelib.listener.OnPicturePickListener;
-import net.soulwolf.image.picturelib.model.Picture;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -220,7 +211,7 @@ public class MainActivity extends BaseActivity implements
 
     private void setListeners()
     {
-        RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
+//        RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
         tabs.delegatePageListener = new MyPageChangeListener();
         tabs.delegateOnTabClickListener = new View.OnClickListener() {
             @Override
@@ -409,15 +400,12 @@ public class MainActivity extends BaseActivity implements
             implements PagerSlidingTabStrip.IconTabProvider {
 
         private final String[] TITLES = {"Discover", "Class", "Hobby", "Me"};
-        private int[] ICONS = {R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
-                R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
+        private int[] ICONS = {};
         private Fragment[] mFragments = {};
-        private Context mContext;
 
         public MyPagerAdapter(FragmentManager fm, Fragment[] fragments, Context context) {
             super(fm);
             mFragments = fragments;
-            mContext = context;
         }
 
         @Override
@@ -433,11 +421,11 @@ public class MainActivity extends BaseActivity implements
         @Override
         public Fragment getItem(int position) {
 
-            if(Version.PARENT) {
-                ICONS =  new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
+            if (Version.PARENT) {
+                ICONS = new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
                         R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
             } else {
-                ICONS =  new int[]{R.drawable.selector_ic_tab_explore,R.drawable.selector_ic_tab_hobby,
+                ICONS = new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_hobby,
                         R.drawable.selector_ic_tab_teacher, R.drawable.selector_ic_tab_aboutme};
             }
 
@@ -446,13 +434,18 @@ public class MainActivity extends BaseActivity implements
 
         @Override
         public int getPageIconResId(int position) {
+            if (ICONS.length == 0) {
+                if (Version.PARENT) {
+                    ICONS = new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
+                            R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
+                } else {
+                    ICONS = new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_hobby,
+                            R.drawable.selector_ic_tab_teacher, R.drawable.selector_ic_tab_aboutme};
+                }
+            }
             return ICONS[position];
         }
-
-
-
     }
-
     /**
      * Handling of Events from other modules
      * @param event
@@ -632,6 +625,7 @@ public class MainActivity extends BaseActivity implements
 //                        new VoIPInputProvider(RongContext.getInstance()),// 语音通话
                 };
                 RongIM.getInstance().resetInputExtensionProvider(Conversation.ConversationType.PRIVATE, provider);
+                RongCloudEvent.getInstance().setOtherListener();
                 Log.i("IM Connect", "Success");
             /* 连接成功 */
             }
@@ -667,29 +661,29 @@ public class MainActivity extends BaseActivity implements
 
         @Override
         public boolean onReceived(io.rong.imlib.model.Message message, int left) {
-            for( int j=0; j < mApplication.mTeachers.size(); j++)
-            {
-                String teacherid;
-                if(Version.PARENT) {
-                    TeacherEntity teacher = mApplication.mTeachers.get(j);
-                    teacherid = teacher.getId();
-                } else {
-                    TeacherEntityT teacherT = mApplication.mTeachersT.get(j);
-                    teacherid = teacherT.getTeacherid();
-                }
-
-                if(teacherid.equals(message.getSenderUserId()))
-                {
-                    String hasUnread = "0";
-                    if(left>0)  hasUnread= "1";
-                    Long timestamp = message.getSentTime();
-                    LastIMMessageEntity lastIMMessageEntity = new LastIMMessageEntity(teacherid, Long.toString(timestamp/1000), hasUnread);
-                    mApplication.mDaoSession.getLastIMMessageEntityDao().insertOrReplace(lastIMMessageEntity);
-                }
-            }
-
+//            for( int j=0; j < mApplication.mTeachers.size(); j++)
+//            {
+//                String teacherid;
+//                if(Version.PARENT) {
+//                    TeacherEntity teacher = mApplication.mTeachers.get(j);
+//                    teacherid = teacher.getId();
+//                } else {
+//                    TeacherEntityT teacherT = mApplication.mTeachersT.get(j);
+//                    teacherid = teacherT.getTeacherid();
+//                }
+//
+//                if(teacherid.equals(message.getSenderUserId()))
+//                {
+//                    String hasUnread = "0";
+//                    if(left>0)  hasUnread= "1";
+//                    Long timestamp = message.getSentTime();
+//                    LastIMMessageEntity lastIMMessageEntity = new LastIMMessageEntity(teacherid, Long.toString(timestamp/1000), hasUnread);
+//                    mApplication.mDaoSession.getLastIMMessageEntityDao().insertOrReplace(lastIMMessageEntity);
+//                }
+//            }
+//
             //Just set a red dot
-            setBadge(1,0);
+            if(Version.PARENT) setBadge(1,0); else setBadge(2,0);
 
             return false;
         }

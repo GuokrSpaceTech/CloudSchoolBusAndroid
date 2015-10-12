@@ -17,10 +17,7 @@ import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.module.photo.service.UploadFileHelper;
@@ -110,7 +107,6 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         getSupportActionBar().setTitle(getResources().getString(R.string.upload));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
     }
 
     @Override
@@ -130,6 +126,9 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         int id = item.getItemId();
 
         if (id == R.id.action_upload) {
+
+            item.setEnabled(false);
+
             String pickey = System.currentTimeMillis() + mApplication.mConfig.getUserid();
 
             mCommentStr = mCommentView.getCommentText();

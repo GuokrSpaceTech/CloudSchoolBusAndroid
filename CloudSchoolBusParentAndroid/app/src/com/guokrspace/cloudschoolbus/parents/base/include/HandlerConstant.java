@@ -30,4 +30,6 @@ public class HandlerConstant {
 
     public static final int MSG_AVATAR_STUDENT_OK = 17;
     public static final int MSG_AVATAR_STUDENT_FAIL = 18;
+
+    public static final int MSG_IM_RECEIVED = 19;
 }

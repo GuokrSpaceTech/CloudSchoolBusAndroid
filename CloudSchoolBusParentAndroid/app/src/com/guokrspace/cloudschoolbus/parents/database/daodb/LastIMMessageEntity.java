@@ -6,32 +6,32 @@ package com.guokrspace.cloudschoolbus.parents.database.daodb;
  */
 public class LastIMMessageEntity {
 
-    /** Not-null value. */
-    private String teacherid;
+    private Long id;
     private String timestamp;
     private String hasUnread;
+    /** Not-null value. */
+    private String userid;
 
     public LastIMMessageEntity() {
     }
 
-    public LastIMMessageEntity(String teacherid) {
-        this.teacherid = teacherid;
+    public LastIMMessageEntity(Long id) {
+        this.id = id;
     }
 
-    public LastIMMessageEntity(String teacherid, String timestamp, String hasUnread) {
-        this.teacherid = teacherid;
+    public LastIMMessageEntity(Long id, String timestamp, String hasUnread, String userid) {
+        this.id = id;
         this.timestamp = timestamp;
         this.hasUnread = hasUnread;
+        this.userid = userid;
     }
 
-    /** Not-null value. */
-    public String getTeacherid() {
-        return teacherid;
+    public Long getId() {
+        return id;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setTeacherid(String teacherid) {
-        this.teacherid = teacherid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTimestamp() {
@@ -48,6 +48,16 @@ public class LastIMMessageEntity {
 
     public void setHasUnread(String hasUnread) {
         this.hasUnread = hasUnread;
+    }
+
+    /** Not-null value. */
+    public String getUserid() {
+        return userid;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
 }

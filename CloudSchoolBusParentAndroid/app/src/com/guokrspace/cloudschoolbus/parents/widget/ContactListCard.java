@@ -18,6 +18,8 @@ public class ContactListCard extends SimpleCard {
     private String timestamp;
     private Context mContext;
     private int     badgeCount;
+    private boolean hasUnread;
+    private int     position;
     private View.OnClickListener onClickListener;
 
     public ContactListCard(Context context) {
@@ -95,6 +97,22 @@ public class ContactListCard extends SimpleCard {
 
     public void setBadgeCount(int badgeCount) {
         this.badgeCount = badgeCount;
+    }
+
+    public boolean isHasUnread() {
+        return hasUnread;
+    }
+
+    public void setHasUnread(boolean hasUnread) {
+        this.hasUnread = hasUnread;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     @Override

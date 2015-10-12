@@ -14,14 +14,15 @@
         android:layout_marginLeft="2dip"
         android:layout_marginRight="2dip"
         android:layout_marginTop="10dip"
-        android:background="#40000000"
+        android:background="#30000000"
         android:gravity="top|left"
         android:lines="5"
         android:maxLength="280"
         android:padding="5dip"
         android:textColor="@color/primary_dark"
         android:textColorHint="@color/primary_white"
-        android:hint="@string/comment_hint">
+        android:hint="@string/comment_hint"
+        android:inputType="textMultiLine">
         <requestFocus />
     </EditText>
 

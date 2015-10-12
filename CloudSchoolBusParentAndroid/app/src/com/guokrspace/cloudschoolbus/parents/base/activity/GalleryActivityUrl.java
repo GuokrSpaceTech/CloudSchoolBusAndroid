@@ -2,6 +2,8 @@ package com.guokrspace.cloudschoolbus.parents.base.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.guokrspace.cloudschoolbus.parents.R;
 
@@ -16,6 +18,7 @@ import ru.truba.touchgallery.GalleryWidget.UrlPagerAdapter;
  */
 public class GalleryActivityUrl extends BaseActivity{
     private GalleryViewPager mViewPager;
+    private RelativeLayout pititleLayout;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -30,6 +33,12 @@ public class GalleryActivityUrl extends BaseActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(title(position,items.size()));
 
+        pititleLayout = (RelativeLayout)findViewById(R.id.pi_title_bar);
+
+        if(!bundle.getBoolean("hasTitle"))
+        {
+            pititleLayout.setVisibility(View.GONE);
+        }
         UrlPagerAdapter pagerAdapter = new ru.truba.touchgallery.GalleryWidget.UrlPagerAdapter(this, items);
         final List<String> finalItems = items;
         pagerAdapter.setOnItemChangeListener(new OnItemChangeListener()

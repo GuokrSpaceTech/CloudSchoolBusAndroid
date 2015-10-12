@@ -476,6 +476,8 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                 setActionBarTitle(getResources().getString(R.string.activity), getResources().getString(R.string.module_explore));
                 break;
             case R.id.action_take_photo:
+                 //Prevent multiple touches
+                item.setEnabled(false);
                 mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
                 mPictureProcess.setClip(false);
                 mPictureProcess.setMaxPictureCount(9);
@@ -524,7 +526,6 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
             mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
             inflater.inflate(R.menu.main, menu);
         }else {
-
             inflater.inflate(R.menu.main_teacher, menu);
 
             //Setup the spinner menu

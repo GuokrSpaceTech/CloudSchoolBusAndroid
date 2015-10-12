@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
+import com.guokrspace.cloudschoolbus.parents.base.RongCloudEvent;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
@@ -75,8 +76,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import io.rong.imkit.RongContext;
 import io.rong.imkit.RongIM;
+import io.rong.imkit.widget.provider.CameraInputProvider;
+import io.rong.imkit.widget.provider.ImageInputProvider;
+import io.rong.imkit.widget.provider.InputProvider;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
 
 /**
  * A login screen that offers login via email/password.
@@ -429,7 +435,7 @@ public class LoginActivity extends BaseActivity {
                                     List<Teacher> teachers = classes.get(j).getTeacher();
                                     for (int k = 0; k < teachers.size(); k++) {
                                         TeacherEntity teacherEntity = new TeacherEntity(teachers.get(k).getId(), teachers.get(k).getDuty(),
-                                                teachers.get(k).getAvatar(), teachers.get(k).getName(), classEntity.getClassid());
+                                                teachers.get(k).getAvatar(), teachers.get(k).getName() ,classEntity.getClassid());
                                         teacherEntityDao.insertOrReplace(teacherEntity);
                                     }
 
@@ -817,6 +823,14 @@ public class LoginActivity extends BaseActivity {
         RongIM.connect(token, new RongIMClient.ConnectCallback() {
             @Override
             public void onSuccess(String userId) {
+                InputProvider.ExtendProvider[] provider = {
+                        new ImageInputProvider(RongContext.getInstance()),//图片
+                        new CameraInputProvider(RongContext.getInstance()),//相机
+//                        new LocationInputProvider(RongContext.getInstance()),//地理位置
+//                        new VoIPInputProvider(RongContext.getInstance()),// 语音通话
+                };
+                RongIM.getInstance().resetInputExtensionProvider(Conversation.ConversationType.PRIVATE, provider);
+                RongCloudEvent.getInstance().setOtherListener();
             /* 连接成功 */
             }
 

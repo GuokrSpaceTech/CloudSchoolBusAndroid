@@ -1,7 +1,6 @@
 package com.guokrspace.cloudschoolbus.parents.module.aboutme;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,14 +20,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.support.utils.ImageUtil;
-import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
@@ -381,8 +378,12 @@ public class AboutmeFragment extends BaseFragment implements
 //                break;
 
             case 3001:
-                String result = (String)data.getExtras().get("result");
-                ServerInteractions.getInstance().QRCodeLogin(result, mHandler);
+                if (data != null)
+                    if (data.getExtras() != null) {
+                        String result = (String) data.getExtras().get("result");
+                        if (result != null && !result.isEmpty())
+                            ServerInteractions.getInstance().QRCodeLogin(result, mHandler);
+                    }
                 return;
         }
 

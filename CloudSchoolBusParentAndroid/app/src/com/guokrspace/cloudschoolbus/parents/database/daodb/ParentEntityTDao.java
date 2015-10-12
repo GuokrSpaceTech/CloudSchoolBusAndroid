@@ -29,6 +29,8 @@ public class ParentEntityTDao extends AbstractDao<ParentEntityT, String> {
         public final static Property Avatar = new Property(4, String.class, "avatar", false, "AVATAR");
     };
 
+    private DaoSession daoSession;
+
 
     public ParentEntityTDao(DaoConfig config) {
         super(config);
@@ -36,6 +38,7 @@ public class ParentEntityTDao extends AbstractDao<ParentEntityT, String> {
     
     public ParentEntityTDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -80,6 +83,12 @@ public class ParentEntityTDao extends AbstractDao<ParentEntityT, String> {
         if (avatar != null) {
             stmt.bindString(5, avatar);
         }
+    }
+
+    @Override
+    protected void attachEntity(ParentEntityT entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */

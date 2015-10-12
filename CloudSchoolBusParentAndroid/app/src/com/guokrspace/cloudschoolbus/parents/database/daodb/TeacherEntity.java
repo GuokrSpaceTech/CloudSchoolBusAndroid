@@ -13,7 +13,7 @@ import de.greenrobot.dao.DaoException;
 public class TeacherEntity implements Serializable{
 
     /** Not-null value. */
-    private String id;
+    private String teacherid;
     private String duty;
     private String avatar;
     private String name;
@@ -31,12 +31,12 @@ public class TeacherEntity implements Serializable{
     public TeacherEntity() {
     }
 
-    public TeacherEntity(String id) {
-        this.id = id;
+    public TeacherEntity(String teacherid) {
+        this.teacherid = teacherid;
     }
 
-    public TeacherEntity(String id, String duty, String avatar, String name, String classid) {
-        this.id = id;
+    public TeacherEntity(String teacherid, String duty, String avatar, String name, String classid) {
+        this.teacherid = teacherid;
         this.duty = duty;
         this.avatar = avatar;
         this.name = name;
@@ -50,13 +50,13 @@ public class TeacherEntity implements Serializable{
     }
 
     /** Not-null value. */
-    public String getId() {
-        return id;
+    public String getTeacherid() {
+        return teacherid;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setId(String id) {
-        this.id = id;
+    public void setTeacherid(String teacherid) {
+        this.teacherid = teacherid;
     }
 
     public String getDuty() {
@@ -100,7 +100,7 @@ public class TeacherEntity implements Serializable{
                 throw new DaoException("Entity is detached from DAO context");
             }
             LastIMMessageEntityDao targetDao = daoSession.getLastIMMessageEntityDao();
-            List<LastIMMessageEntity> lastIMMessageEntityListNew = targetDao._queryTeacherEntity_LastIMMessageEntityList(id);
+            List<LastIMMessageEntity> lastIMMessageEntityListNew = targetDao._queryTeacherEntity_LastIMMessageEntityList(teacherid);
             synchronized (this) {
                 if(lastIMMessageEntityList == null) {
                     lastIMMessageEntityList = lastIMMessageEntityListNew;

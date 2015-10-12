@@ -26,7 +26,7 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, String.class, "id", true, "ID");
+        public final static Property Teacherid = new Property(0, String.class, "teacherid", true, "TEACHERID");
         public final static Property Duty = new Property(1, String.class, "duty", false, "DUTY");
         public final static Property Avatar = new Property(2, String.class, "avatar", false, "AVATAR");
         public final static Property Name = new Property(3, String.class, "name", false, "NAME");
@@ -50,7 +50,7 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'TEACHER_ENTITY' (" + //
-                "'ID' TEXT PRIMARY KEY NOT NULL ," + // 0: id
+                "'TEACHERID' TEXT PRIMARY KEY NOT NULL ," + // 0: teacherid
                 "'DUTY' TEXT," + // 1: duty
                 "'AVATAR' TEXT," + // 2: avatar
                 "'NAME' TEXT," + // 3: name
@@ -67,7 +67,7 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
     @Override
     protected void bindValues(SQLiteStatement stmt, TeacherEntity entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getId());
+        stmt.bindString(1, entity.getTeacherid());
  
         String duty = entity.getDuty();
         if (duty != null) {
@@ -102,7 +102,7 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
     @Override
     public TeacherEntity readEntity(Cursor cursor, int offset) {
         TeacherEntity entity = new TeacherEntity( //
-            cursor.getString(offset + 0), // id
+            cursor.getString(offset + 0), // teacherid
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // duty
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // avatar
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
@@ -114,7 +114,7 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, TeacherEntity entity, int offset) {
-        entity.setId(cursor.getString(offset + 0));
+        entity.setTeacherid(cursor.getString(offset + 0));
         entity.setDuty(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAvatar(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -124,14 +124,14 @@ public class TeacherEntityDao extends AbstractDao<TeacherEntity, String> {
     /** @inheritdoc */
     @Override
     protected String updateKeyAfterInsert(TeacherEntity entity, long rowId) {
-        return entity.getId();
+        return entity.getTeacherid();
     }
     
     /** @inheritdoc */
     @Override
     public String getKey(TeacherEntity entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.getTeacherid();
         } else {
             return null;
         }

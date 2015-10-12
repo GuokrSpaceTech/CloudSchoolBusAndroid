@@ -23,7 +23,6 @@ public class DAODBGenerator {
 
         addConfig(schema);
         addBaseInfo(schema);
-        addBaseInfoTeacher(schema);
         addTimeline(schema);
         addAriticle(schema);
         addAttendance(schema);
@@ -57,7 +56,7 @@ public class DAODBGenerator {
         Property classIdStudent = student.addStringProperty("classid").notNull().getProperty();
 
         Entity teacher = schema.addEntity("TeacherEntity");
-        teacher.addStringProperty("id").notNull().primaryKey();
+        teacher.addStringProperty("teacherid").notNull().primaryKey();
         teacher.addStringProperty("duty");
         teacher.addStringProperty("avatar");
         teacher.addStringProperty("name");
@@ -68,12 +67,6 @@ public class DAODBGenerator {
         classEntity.addStringProperty("name");
         Property schoolId = classEntity.addStringProperty("schoolid").notNull().getProperty();
 
-        Entity lastIMMessageEntity = schema.addEntity("LastIMMessageEntity");
-        Property teacherid = lastIMMessageEntity.addStringProperty("teacherid").notNull().primaryKey().getProperty();
-        lastIMMessageEntity.addStringProperty("timestamp");
-        lastIMMessageEntity.addStringProperty("hasUnread");
-
-        ToMany teacherToMessages = teacher.addToMany(lastIMMessageEntity,teacherid);
         ToMany classToStudents = classEntity.addToMany(student, classIdStudent);
         ToMany classToTeachers = classEntity.addToMany(teacher, classIdTeacher);
         ToMany studentToClasses = student.addToMany(classEntity, classid);
@@ -83,49 +76,46 @@ public class DAODBGenerator {
         school.addStringProperty("name");
         school.addStringProperty("address");
         ToMany schoolToClass = school.addToMany(classEntity, schoolId);
-    }
 
-    private static void addBaseInfoTeacher(Schema schema) {
+        Entity schoolT = schema.addEntity("SchoolEntityT");
+        Property schoolid = schoolT.addStringProperty("id").notNull().primaryKey().getProperty();
+        schoolT.addStringProperty("groupid");
+        schoolT.addStringProperty("name");
+        schoolT.addStringProperty("remark");
+        schoolT.addStringProperty("address");
 
-        Entity school = schema.addEntity("SchoolEntityT");
-        Property schoolid = school.addStringProperty("id").notNull().primaryKey().getProperty();
-        school.addStringProperty("groupid");
-        school.addStringProperty("name");
-        school.addStringProperty("remark");
-        school.addStringProperty("address");
+        Entity classEntityT = schema.addEntity("ClassEntityT");
+        Property classId = classEntityT.addStringProperty("classid").notNull().primaryKey().getProperty();
+        classEntityT.addStringProperty("classname");
+        classEntityT.addStringProperty("remark");
+        classEntityT.addStringProperty("dutyid");
+        Property schoolidclass = classEntityT.addStringProperty("schoolid").notNull().getProperty();
 
-        Entity classEntity = schema.addEntity("ClassEntityT");
-        Property classId = classEntity.addStringProperty("classid").notNull().primaryKey().getProperty();
-        classEntity.addStringProperty("classname");
-        classEntity.addStringProperty("remark");
-        classEntity.addStringProperty("dutyid");
-        Property schoolidclass = classEntity.addStringProperty("schoolid").notNull().getProperty();
+        Entity studentT = schema.addEntity("StudentEntityT");
+        Property studentId = studentT.addStringProperty("studentid").notNull().primaryKey().getProperty();
+        studentT.addStringProperty("nikename");
+        studentT.addStringProperty("cnname");
+        studentT.addStringProperty("sex");
+        studentT.addStringProperty("birthday");
+        studentT.addStringProperty("avatar");
+        Property uploadArticleIdStudent = studentT.addStringProperty("pickey").getProperty();
 
-        Entity student = schema.addEntity("StudentEntityT");
-        Property studentId = student.addStringProperty("studentid").notNull().primaryKey().getProperty();
-        student.addStringProperty("nikename");
-        student.addStringProperty("cnname");
-        student.addStringProperty("sex");
-        student.addStringProperty("birthday");
-        student.addStringProperty("avatar");
-        Property uploadArticleIdStudent = student.addStringProperty("pickey").getProperty();
+        Entity parentT = schema.addEntity("ParentEntityT");
+        Property parentId = parentT.addStringProperty("parentid").notNull().primaryKey().getProperty();
+        parentT.addStringProperty("nikename");
+        parentT.addStringProperty("relationship");
+        parentT.addStringProperty("mobile");
+        parentT.addStringProperty("avatar");
 
-        Entity parent = schema.addEntity("ParentEntityT");
-        Property parentId = parent.addStringProperty("parentid").notNull().primaryKey().getProperty();
-        parent.addStringProperty("nikename");
-        parent.addStringProperty("relationship");
-        parent.addStringProperty("mobile");
-        parent.addStringProperty("avatar");
-
-        Entity teacher = schema.addEntity("TeacherEntityT");
-        Property teacherId = teacher.addStringProperty("teacherid").notNull().primaryKey().getProperty();
-        teacher.addStringProperty("duty");
-        teacher.addStringProperty("avatar");
-        teacher.addStringProperty("realname");
-        teacher.addStringProperty("nickname");
-        teacher.addStringProperty("sex");
-        teacher.addStringProperty("mobile");
-        Property schoolidteacher = teacher.addStringProperty("schoolid").notNull().getProperty();
+        Entity teacherT = schema.addEntity("TeacherEntityT");
+        Property teacherId = teacherT.addStringProperty("teacherid").notNull().primaryKey().getProperty();
+        teacherT.addStringProperty("duty");
+        teacherT.addStringProperty("avatar");
+        teacherT.addStringProperty("realname");
+        teacherT.addStringProperty("nickname");
+        teacherT.addStringProperty("sex");
+        teacherT.addStringProperty("mobile");
+        Property schoolidteacher = teacherT.addStringProperty("schoolid").notNull().getProperty();
 
         //Settings related tables
         Entity tags = schema.addEntity("TagsEntityT");
@@ -168,12 +158,12 @@ public class DAODBGenerator {
         studentParentEntity.addStringProperty("studentid");
         studentParentEntity.addStringProperty("parentid");
 
-        ToMany schoolToClass = school.addToMany(classEntity, schoolidclass);
-        ToMany schoolToTags = school.addToMany(tags, schoolidtags);
-        ToMany schoolTomessagetype = school.addToMany(messagetype, schoolidmessagetype);
-        ToMany schoolToclassmodule = school.addToMany(classmodule, schoolidclassmodule);
-        ToMany schoolToduty = school.addToMany(teacherDuty, schoolidteacherduty);
-        ToMany schoolToTeacher = school.addToMany(teacher,schoolidteacher);
+        ToMany schoolToClassT = schoolT.addToMany(classEntityT, schoolidclass);
+        ToMany schoolToTagsT = schoolT.addToMany(tags, schoolidtags);
+        ToMany schoolTomessagetypeT = schoolT.addToMany(messagetype, schoolidmessagetype);
+        ToMany schoolToclassmoduleT = schoolT.addToMany(classmodule, schoolidclassmodule);
+        ToMany schoolTodutyT = schoolT.addToMany(teacherDuty, schoolidteacherduty);
+        ToMany schoolToTeacherT = schoolT.addToMany(teacherT,schoolidteacher);
 
         Entity article = schema.addEntity("UploadArticleEntity");
         article.addStringProperty("pickey").primaryKey().notNull();
@@ -194,6 +184,15 @@ public class DAODBGenerator {
         singlefile.addBooleanProperty("isSuccess");
         Property pickey = singlefile.addStringProperty("pickey").notNull().getProperty();
 
+        Entity lastIMMessageEntity = schema.addEntity("LastIMMessageEntity");
+        lastIMMessageEntity.addIdProperty().primaryKey().autoincrement();
+        lastIMMessageEntity.addStringProperty("timestamp");
+        lastIMMessageEntity.addStringProperty("hasUnread");
+        Property userid = lastIMMessageEntity.addStringProperty("userid").notNull().getProperty();
+
+        ToMany  teacherToMessages = teacher.addToMany(lastIMMessageEntity, userid);
+        ToMany  parentToLastIm = parentT.addToMany(lastIMMessageEntity, userid);
+        ToMany  teacherToLastIM = teacherT.addToMany(lastIMMessageEntity,userid);
         ToMany articleToFiles = article.addToMany(singlefile, pickey);
         ToMany articleToTags  = article.addToMany(tags, uploadArticleIdTags);
         ToMany articleToStudents = article.addToMany(student,uploadArticleIdStudent);

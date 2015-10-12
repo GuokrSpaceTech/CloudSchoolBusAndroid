@@ -90,9 +90,9 @@ public class EditCommentView extends BaseLinearLayout {
 			public CharSequence filter(CharSequence source, int start, int end,
 									   Spanned dest, int dstart, int dend) {
 
-				if (source.equals("\n")) {
-					return "";
-				}
+//				if (source.equals("\n")) {
+//					return "";
+//				}
 				return source;
 			}
 
