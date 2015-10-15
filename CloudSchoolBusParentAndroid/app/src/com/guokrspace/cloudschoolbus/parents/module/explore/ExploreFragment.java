@@ -98,14 +98,12 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private PictureProcess mPictureProcess;
 
-
     private int mCurrentChild;
     private int previousTotal = 0;
     private int visibleThreshold = 3;
     int firstVisibleItem, visibleItemCount, totalItemCount;
 
     private ArrayList<MenuSpinnerAdapter.MessageType> mMessageTypes = new ArrayList<>();
-
 
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -230,10 +228,10 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
             ServerInteractions.getInstance().GetLastestMessagesFromServer(mHandler);
             mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
         } else {
-            ServerInteractions.getInstance().GetMessagesFromCache();
+            mMesageEntities = ServerInteractions.getInstance().GetMessagesFromCache();
             if(mMesageEntities.size()>0) {
-                mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
                 MessageEntity messageEntity = mMesageEntities.get(0);
+                mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
                 ServerInteractions.getInstance().GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
                 mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
             } else if (mMesageEntities.size() == 0) {
@@ -369,6 +367,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     }
 
     public void filterCards(String type) {
+        //in case mDaoSession is released
         MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
         QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
         List<MessageEntity> messageEntityList;
@@ -503,10 +502,14 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     public void onChildrenSwitched(InfoSwitchedEvent event)
     {
         mCurrentChild = event.getCurrentChild();
-        if(Version.PARENT) {
-            String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
-            filterCardsChild(studentId);
-        }
+
+        /**
+         * Todo:
+         */
+//        if(Version.PARENT) {
+//            String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
+//            filterCardsChild(studentId);
+//        }
     }
 
     @Override
@@ -653,7 +656,17 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         String teacherAvatarString = message.getSenderEntity().getAvatar();
         card.setTeacherAvatarUrl(teacherAvatarString);
         card.setTeacherName(message.getSenderEntity().getName());
-        card.setKindergarten(mApplication.mSchools.get(0).getName());
+        if(Version.PARENT) {
+            if(mApplication.mSchools.size()>0)
+                card.setKindergarten(mApplication.mSchools.get(0).getName());
+            else
+                card.setKindergarten("");
+        } else {
+            if(mApplication.mSchoolsT.size()>0)
+                card.setKindergarten(mApplication.mSchoolsT.get(0).getName());
+            else
+                card.setKindergarten("");
+        }
         card.setCardType(cardType(message.getApptype()));
         card.setSentTime(message.getSendtime());
         card.setTitle(message.getTitle());
@@ -792,10 +805,13 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     public ReportListCard BuildReportListCard(final MessageEntity messageEntity)
     {
         ReportListCard reportListCard = new ReportListCard(mParentContext);
-        String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
-        reportListCard.setTeacherAvatarUrl(teacherAvatarString);
-        reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
-        reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        String teacherAvatarString = "";
+        if(messageEntity.getSenderEntity()!=null) {
+            teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
+            reportListCard.setTeacherAvatarUrl(teacherAvatarString);
+            reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
+            reportListCard.setClassName(messageEntity.getSenderEntity().getClassname());
+        }
         reportListCard.setCardType(cardType(messageEntity.getApptype()));
         reportListCard.setSentTime(messageEntity.getSendtime());
         reportListCard.setReporttype(messageEntity.getTitle());

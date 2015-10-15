@@ -55,6 +55,9 @@
             android:configChanges="orientation" >
         </activity>
         <activity
+            android:name="com.guokrspace.cloudschoolbus.parents.base.activity.BaseWebViewActivity">
+        </activity>
+        <activity
             android:name="com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity"
             android:label="@string/title_activity_select_student">
         </activity>

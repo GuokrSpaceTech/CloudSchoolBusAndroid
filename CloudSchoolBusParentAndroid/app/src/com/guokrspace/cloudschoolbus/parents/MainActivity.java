@@ -16,17 +16,16 @@
 
 package com.guokrspace.cloudschoolbus.parents;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.*;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -41,7 +40,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONException;
@@ -97,12 +95,11 @@ public class MainActivity extends BaseActivity implements
     private boolean threadStopFlag = false;
 
     private PagerSlidingTabStrip tabs;
-//    private PictureProcess mPictureProcess;
     private List<BadgeView> badgeViews = new ArrayList();
     public  NonSwipeableViewPager pager;
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
-//    private List<String> mFragementTags = new ArrayList();
+    private int mPosition = 0;
 
     public String mUpperLeverTitle="";
     public String mCurrentTitle="";
@@ -116,7 +113,6 @@ public class MainActivity extends BaseActivity implements
     private static final int REQUEST_CODE = 1;
 
     MainActivity c = this;
-    SpinnerAdapter mSpinnerAdapter;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -216,16 +212,18 @@ public class MainActivity extends BaseActivity implements
         tabs.delegateOnTabClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int position = (int)view.getTag();
-                if(position==0)
+                mPosition = (int)view.getTag();
+                if(mPosition==0)
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
-//                    setActionBarTitle(getResources().getString(string.module_explore),"");
-                    if(!Version.PARENT)
-                    getSupportActionBar().setSelectedNavigationItem(0); //Select all
                     theFragment.filterCards("All");
+
+                    if(!Version.PARENT)
+                        getSupportActionBar().setSelectedNavigationItem(0);//Select all
+                    else
+                        setActionBarTitle(getResources().getString(R.string.module_explore),"");
                 }
-                clearBadge(position);
+                clearBadge(mPosition);
             }
         };
 
@@ -276,14 +274,25 @@ public class MainActivity extends BaseActivity implements
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                if(getSupportFragmentManager().getBackStackEntryCount()==0)
-                    finish();
-                else
-                   getSupportFragmentManager().popBackStack();
+                if(getSupportFragmentManager().getBackStackEntryCount()==0) {
+                    //兴趣爱好直接是WebviewFragment, 返回需要特殊处理
+                    if(mPosition==2 && mFragments[mPosition].isVisible())
+                    {
+                        boolean ret = ((HobbyFragment)mFragments[mPosition]).onKeyDown(keyCode, event);
+                        if(ret==true) //到了顶级页面
+                            exit_diaglog();
+                    } else {
+                        exit_diaglog();
+                    }
+                }
+                else {
+                    getSupportFragmentManager().popBackStack();
+                }
                 return true;
         }
         return super.onKeyDown(keyCode, event);
     }
+
 
     private void changeColor(int newColor) {
 
@@ -297,6 +306,7 @@ public class MainActivity extends BaseActivity implements
             LayerDrawable ld = new LayerDrawable(new Drawable[]{colorDrawable, bottomDrawable});
 
             if (oldBackground == null) {
+
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     ld.setCallback(drawableCallback);
                 } else {
@@ -325,6 +335,30 @@ public class MainActivity extends BaseActivity implements
 
         }
         currentColor = newColor;
+    }
+
+    private void exit_diaglog()
+    {
+        final AlertDialog.Builder alterDialog = new AlertDialog.Builder(this);
+        alterDialog.setMessage("确定退出应用？");
+        alterDialog.setCancelable(true);
+
+        alterDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (RongIM.getInstance() != null)
+                    RongIM.getInstance().logout();
+
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+        alterDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alterDialog.show();
     }
 
     public void onColorClicked(View v) {
@@ -786,7 +820,7 @@ public class MainActivity extends BaseActivity implements
 
     private void showStartupPage()
     {
-        TimerTick(1);
+        TimerTick(2);
         StartupFragment theFragment = StartupFragment.newInstance(null, null);
         FragmentTransaction transaction;
         transaction = getSupportFragmentManager().beginTransaction();
@@ -821,7 +855,7 @@ public class MainActivity extends BaseActivity implements
         badgeViews.get(position).setVisibility(View.VISIBLE);
     }
 
-    private void clearBadge(int position)
+    public void clearBadge(int position)
     {
         badgeViews.get(position).setVisibility(View.INVISIBLE);
     }
@@ -853,4 +887,5 @@ public class MainActivity extends BaseActivity implements
     private int dip2Px(float dip){
         return (int) (dip * mContext.getResources().getDisplayMetrics().density + 0.5f);
     }
+
 }

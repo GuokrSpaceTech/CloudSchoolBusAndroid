@@ -39,7 +39,9 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
+import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.widget.ContactListCard;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +75,25 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
             public boolean handleMessage(android.os.Message msg) {
                 switch (msg.what) {
                     case HandlerConstant.MSG_IM_RECEIVED:
-                        if(Version.PARENT)
+
+                        if(!Version.PARENT) {
+                            if (mainActivity != null)
+                                mainActivity.setBadge(2, 0);
+                        } else {
+                            if (mainActivity != null)
+                                mainActivity.setBadge(1, 0);
+                        }
+
+                        if(isInMiddleOfUpdateView) break;
+
+                        if(!mFragment.isVisible()) break;
+
+                        if(Version.PARENT) {
                             updateContacts();
-                        else
+                        }else {
                             selectContacts(mCurrentClassid, mIsParent);
+                        }
+
                         break;
                 }
                 return false;
@@ -90,7 +107,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
             //Start the conversation fragment
             //For some reason, the fragment cannot be found, hence re-entry issue when quickly touch the list
             ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag("Conversation");
-            if (fragment == null && isConverstaionFragmentCreated == false) {
+            if (isConverstaionFragmentCreated == false) {
             int position = (int) view.getTag();
             String mTargetID = "";
             if (!Version.PARENT) {
@@ -141,6 +158,14 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                 //Update the View
                 ImageView badgeView = (ImageView) view.findViewById(R.id.badgeImageView);
                 badgeView.setVisibility(View.INVISIBLE);
+
+                //clear the badge in the bottom
+                if(mainActivity!=null) {
+                    if (Version.PARENT)
+                        mainActivity.clearBadge(1);
+                    else
+                        mainActivity.clearBadge(2);
+                }
             }
         }
     };
@@ -201,7 +226,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
         if (Version.PARENT) {
             updateContacts();
         } else {
-            mCurrentClassid = DataWrapper.getInstance().findMyClass().get(0).getClassid();
+            mCurrentClassid = DataWrapper.getInstance().findCurrentClass(mApplication.mConfig.getCurrentChild()).getClassid();
             mIsParent = true;
             selectContacts(mCurrentClassid, mIsParent);
         }
@@ -337,10 +362,10 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                 imm.hideSoftInputFromWindow(((MainActivity) mParentContext).getWindow().getDecorView().getWindowToken(), 0);
 
                 try {
+                    isConverstaionFragmentCreated = false;
                     Fragment fragment = getFragmentManager().findFragmentByTag("Conversation");
                     if(fragment!=null) {
                         getFragmentManager().popBackStack("Conversation", 0);
-                        isConverstaionFragmentCreated = false;
                     }
 
                     if (!Version.PARENT) {
@@ -375,6 +400,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
             listview.clear();
             List<ParentEntityT> parents = DataWrapper.getInstance().findParentsinClass(classid);
 
+            int i =0;
             for (ParentEntityT parent : parents) {
                 ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
                 List<StudentEntityT> students = DataWrapper.getInstance().findStudentInCurrentClassForParent(parent, classid);
@@ -385,9 +411,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                 card.setContactName(parent.getNikename()); //Name
                 card.setSubtitle(generateStudentsNameSting(DataWrapper.getInstance().findStudentsOfParents(parent)));
                 card.setPhonenumber(parent.getMobile());
-
-
-//                List<LastIMMessageEntity> lastIMs =  parent.getLastIMMessageEntityList();
                 List<LastIMMessageEntity> lastIMs =  mApplication.mDaoSession.getLastIMMessageEntityDao()
                         .queryBuilder()
                         .where(LastIMMessageEntityDao.Properties.Userid.eq(parent.getParentid()))
@@ -401,23 +424,23 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                         card.setHasUnread(false);
                     }
                 }
-
+                card.setPosition(i);
                 card.setOnClickListener(mOnClickListener);
                 listview.add(card);
+                i++;
             }
 
         } else {
             listview.clear();
             List<TeacherEntityT> teacherList = DataWrapper.getInstance().findTeachersinClass(classid);
+            int i = 0;
             for (TeacherEntityT teacher : teacherList) {
                 ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
                 card.setContactAvatarUrl(teacher.getAvatar()); //Avatar
                 card.setContactName(teacher.getRealname()); //Name
                 card.setSubtitle(DataWrapper.getInstance().findCurrentClass().getClassname());
                 card.setPhonenumber(teacher.getMobile());
-
-                //Lastmessage timestamp
-//                List<LastIMMessageEntity> lastIMs =  teacher.getLastIMMessageEntityList();
+                card.setPosition(i);
                 List<LastIMMessageEntity> lastIMs =  mApplication.mDaoSession.getLastIMMessageEntityDao()
                         .queryBuilder()
                         .where(LastIMMessageEntityDao.Properties.Userid.eq(teacher.getTeacherid()))
@@ -430,14 +453,9 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                         card.setHasUnread(false);
                     }
                 }
-//                List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao().queryBuilder().list();
-//                for (int j = 0; j < lastIMs.size(); j++) {
-//                    if (lastIMs.get(j).getTeacherid().equals(teacher.getTeacherid())) {
-//                        card.setTimestamp(DateUtils.timelineTimestamp(lastIMs.get(j).getTimestamp(), mParentContext));
-//                    }
-//                }
                 card.setOnClickListener(mOnClickListener);
                 listview.add(card);
+                i++;
             }
         }
         isInMiddleOfUpdateView = false;
@@ -446,6 +464,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     private void updateContacts()
     {
         listview.clear();
+        int i=0;
         for (TeacherEntity teacher:mApplication.mTeachers) {
             //Get the teacher Inbox entity
             final UserInbox userInbox = new UserInbox();
@@ -468,7 +487,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                 classEntity = results.get(0);
                 card.setSubtitle(classEntity.getName());
             }
-
             List<LastIMMessageEntity> lastIMs =  mApplication.mDaoSession.getLastIMMessageEntityDao()
                     .queryBuilder()
                     .where(LastIMMessageEntityDao.Properties.Userid.eq(teacher.getTeacherid()))
@@ -481,16 +499,11 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                     card.setHasUnread(false);
                 }
             }
-            //Lastmessage timestamp
-//                List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao().queryBuilder().list();
-//                for (int j = 0; j < lastIMs.size(); j++) {
-//                    if (lastIMs.get(j).getTeacherid().equals(userInbox.getTeacherEntity().getTeacherid())) {
-//                        card.setTimestamp(DateUtils.timelineTimestamp(lastIMs.get(j).getTimestamp(), mParentContext));
-//                    }
-//                }
             //Add the card
+            card.setPosition(i);
             card.setOnClickListener(mOnClickListener);
             listview.add(card);
+            i++;
         }
     }
 
@@ -530,12 +543,18 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     @Override
     public void onMessageReceived() {
         Log.i("","");
-
-        if(isInMiddleOfUpdateView) return;
-
-        if(!mFragment.isVisible()) return;
-
         mHandler.sendEmptyMessage(HandlerConstant.MSG_IM_RECEIVED);
+    }
+
+    @Subscribe public void onUserSwitchEvent(InfoSwitchedEvent event)
+    {
+        if (Version.PARENT) {
+            updateContacts();
+        } else {
+            mCurrentClassid = DataWrapper.getInstance().findCurrentClass(event.getCurrentChild()).getClassid();
+            mIsParent = true;
+            selectContacts(mCurrentClassid, mIsParent);
+        }
     }
 
     private class MyConversationBehaviorListener implements RongIM.ConversationBehaviorListener {

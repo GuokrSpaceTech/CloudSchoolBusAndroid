@@ -111,12 +111,12 @@ public class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (null != savedInstanceState) {
-            DebugLog.logI("Activity onRestoreInstanceState");
+            DebugLog.logI("Fragment onRestoreInstanceState");
             //		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onRestoreInstanceState");
-            mApplication.mSchools = (List<SchoolEntity>) savedInstanceState.getSerializable("mSchools");
-            mApplication.mClasses = (List<ClassEntity>) savedInstanceState.getSerializable("mClasses");
-            mApplication.mTeachers = (List<TeacherEntity>) savedInstanceState.getSerializable("mTeachers");
-            mApplication.mStudents = (List<StudentEntity>) savedInstanceState.getSerializable("mStudents");
+//            mApplication.mSchools = (List<SchoolEntity>) savedInstanceState.getSerializable("mSchools");
+//            mApplication.mClasses = (List<ClassEntity>) savedInstanceState.getSerializable("mClasses");
+//            mApplication.mTeachers = (List<TeacherEntity>) savedInstanceState.getSerializable("mTeachers");
+//            mApplication.mStudents = (List<StudentEntity>) savedInstanceState.getSerializable("mStudents");
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -126,11 +126,11 @@ public class BaseFragment extends Fragment {
 
         DebugLog.logI("Fragment onSaveInstanceState");
 //		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
-        outState.putSerializable("mConfig", mApplication.mConfig);
-        outState.putSerializable("mSchools", (ArrayList<SchoolEntity>) mApplication.mSchools);
-        outState.putSerializable("mClasses", (ArrayList<ClassEntity>) mApplication.mClasses);
-        outState.putSerializable("mTeachers", (ArrayList<TeacherEntity>) mApplication.mTeachers);
-        outState.putSerializable("mStudents", (ArrayList<StudentEntity>) mApplication.mStudents);
+//        outState.putSerializable("mConfig", mApplication.mConfig);
+//        outState.putSerializable("mSchools", (ArrayList<SchoolEntity>) mApplication.mSchools);
+//        outState.putSerializable("mClasses", (ArrayList<ClassEntity>) mApplication.mClasses);
+//        outState.putSerializable("mTeachers", (ArrayList<TeacherEntity>) mApplication.mTeachers);
+//        outState.putSerializable("mStudents", (ArrayList<StudentEntity>) mApplication.mStudents);
 
         super.onSaveInstanceState(outState);
     }

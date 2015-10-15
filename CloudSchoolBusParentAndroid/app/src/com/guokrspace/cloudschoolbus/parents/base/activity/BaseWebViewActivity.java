@@ -1,78 +1,122 @@
 package com.guokrspace.cloudschoolbus.parents.base.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.webkit.WebSettings.LayoutAlgorithm;
-import android.webkit.WebView;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+
+import com.guokrspace.cloudschoolbus.parents.R;
+
+import im.delight.android.webview.AdvancedWebView;
 
 /**
- * webview的基类
- * 
- * @author lenovo
- * 
+ * Created by wangjianfeng on 15/7/27.
  */
-public class BaseWebViewActivity extends BaseActivity {
+public class BaseWebViewActivity extends BaseActivity implements AdvancedWebView.Listener {
 
-	protected WebView mWebView;
+	private AdvancedWebView mWebView;
+	private SwipeRefreshLayout mRefreshView;
+	private String mUrl = "";
+	private String mTitle = "";
+	private String mParams = "";
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        String title = intent.getExtras().getString("title");
-        getSupportActionBar().setTitle(title);
+		Bundle bundle = getIntent().getExtras();
+		mUrl        = (String)bundle.get("url");
+		mTitle      = (String)bundle.get("title");
+		mParams     = (String)bundle.get("params");
+
+		setContentView(R.layout.activity_webview);
+
+		getSupportActionBar().setTitle(mTitle);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_cross);
+		mWebView = (AdvancedWebView)findViewById(R.id.webView);
+		mWebView.setOnTouchListener(new View.OnTouchListener() {
+			public boolean onTouch(View p_v, MotionEvent p_event) {
+				// this will disallow the touch request for parent scroll on touch of child view
+				p_v.getParent().requestDisallowInterceptTouchEvent(true);
+				return false;
+			}
+		});
+		mWebView.canGoBack();
+		mWebView.loadUrl(mUrl + mParams);
 	}
 
-	/**
-	 * 初始化webview
-	 * 
-	 * @param webView
-	 */
-	protected void initWebView(WebView webView) {
-		mWebView.getSettings().setJavaScriptEnabled(true);
-		// 设置可以支持缩放
-		mWebView.getSettings().setSupportZoom(false);
-		// 设置出现缩放工具
-		mWebView.getSettings().setBuiltInZoomControls(false);
-		// 扩大比例的缩放
-		mWebView.getSettings().setUseWideViewPort(true);
-		mWebView.getSettings().setDefaultTextEncodingName("UTF-8");
-		// 自适应屏幕
-		mWebView.getSettings()
-				.setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
-		mWebView.getSettings().setLoadWithOverviewMode(true);
-
-		// 不保存密码
-		mWebView.getSettings().setSavePassword(false);
-		mWebView.getSettings().setAppCacheEnabled(false);
-		// mWebView.getSettings()
-		// .setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		mWebView.onResume();
+		// ...
+	}
 
-	protected void cancel() {
-		if (mWebView.canGoBack()) {
-			// 返回键退回
-			mWebView.goBack();
-		} else {
-			finish();
-		}
+	@Override
+	public void onPause() {
+		mWebView.onPause();
+		// ...
+		super.onPause();
+	}
+
+	@Override
+	public void onDestroy() {
+		mWebView.onDestroy();
+		// ...
+		super.onDestroy();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
+		mWebView.onActivityResult(requestCode, resultCode, intent);
+		// ...
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if(item.getItemId() == android.R.id.home )
+		    finish();
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onPageStarted(String url, Bitmap favicon) { }
+
+	@Override
+	public void onPageFinished(String url) { }
+
+	@Override
+	public void onPageError(int errorCode, String description, String failingUrl) { }
+
+	@Override
+	public void onDownloadRequested(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) { }
+
+	@Override
+	public void onExternalPageRequest(String url) {
+
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			cancel();
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		return super.onPrepareOptionsMenu(menu);
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if( mWebView.onBackPressed() ) //到了顶级页面
+			{
+				finish();
+			}
+		}
+
+		return true;
 	}
 }

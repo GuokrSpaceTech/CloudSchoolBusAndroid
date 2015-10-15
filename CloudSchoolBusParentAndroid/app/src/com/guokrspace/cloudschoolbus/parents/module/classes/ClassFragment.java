@@ -19,7 +19,6 @@ package com.guokrspace.cloudschoolbus.parents.module.classes;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,32 +34,29 @@ import android.widget.TextView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
+import com.guokrspace.cloudschoolbus.parents.base.activity.BaseWebViewActivity;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
-import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassModuleEntity;
+import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
-
-import net.soulwolf.image.picturelib.model.Picture;
 
 import org.askerov.dynamicgrid.BaseDynamicGridAdapter;
 import org.askerov.dynamicgrid.DynamicGridView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ClassFragment extends BaseFragment {
 
     private static final String ARG_POSITION = "position";
     private static final String TAG = ClassFragment.class.getName();
-    private OnCompleteListener mListener;
-    List<Picture> mPictureList = new ArrayList<>();
     private ImageView mTeacherAvatar;
     private TextView  mClassName;
     private TextView  mSchoolName;
     private DynamicGridView gridView;
     private Context mContext;
     private ActionBar mActionBar;
-//    private int position;
+    private int currentUser;
 
     public static ClassFragment newInstance() {
         ClassFragment f = new ClassFragment();
@@ -88,8 +84,11 @@ public class ClassFragment extends BaseFragment {
         mClassName = (TextView)root.findViewById(R.id.class_name);
         mSchoolName = (TextView)root.findViewById(R.id.kindergarten_name);
 
-        mClassName.setText(DataWrapper.getInstance().findCurrentClass(0).getClassname());
-        mSchoolName.setText(mApplication.mSchoolsT.get(0).getName());
+        currentUser = mApplication.mConfig.getCurrentChild();
+        mClassName.setText(DataWrapper.getInstance().findCurrentClass(currentUser).getClassname());
+        if(mApplication.mSchoolsT.size()>0) {
+            mSchoolName.setText(mApplication.mSchoolsT.get(0).getName());
+        }
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
 
@@ -135,12 +134,15 @@ public class ClassFragment extends BaseFragment {
 
                 ClassModuleEntity classModule = (ClassModuleEntity) parent.getAdapter().getItem(position);
                 if(classModule.getUrl()!="") {
+
                     String params = "?sid="+ mApplication.mConfig.getSid() + "&classid=" + DataWrapper.getInstance().findCurrentClass().getClassid();
-                    WebviewFragment fragment = WebviewFragment.newInstance(classModule.getUrl(), classModule.getTitle(),params);
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.activity_class_layout, fragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
+                    Intent intent = new Intent(mParentContext, BaseWebViewActivity.class);
+                    intent.putExtra("params",params);
+                    intent.putExtra("url", classModule.getUrl());
+                    intent.putExtra("title",classModule.getTitle());
+                    ((MainActivity) mParentContext).pager.lock();
+
+                    startActivityForResult(intent, 0x6001 );
                 }
             }
         });
@@ -258,6 +260,10 @@ public class ClassFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //Return form webview
+        if(requestCode==0x6001) {
+            ((MainActivity) mParentContext).pager.unlock();
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -266,4 +272,13 @@ public class ClassFragment extends BaseFragment {
         Picasso.with(mParentContext).load(DataWrapper.getInstance().getMyself().getAvatar()).fit().centerCrop().into(mTeacherAvatar);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    @Subscribe
+    public void onUserSwitchEvent(InfoSwitchedEvent event)
+    {
+        currentUser = event.getCurrentChild();
+        mClassName.setText(DataWrapper.getInstance().findCurrentClass(currentUser).getClassname());
+    }
+
+
 }

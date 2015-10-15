@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,8 +52,6 @@ public class HobbyFragment extends BaseFragment implements AdvancedWebView.Liste
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_webview, container, false);
-        mRefreshView = (SwipeRefreshLayout)root.findViewById(R.id.swipeRefreshLayout);
-        mRefreshView.setVisibility(View.VISIBLE);
         mWebView = (AdvancedWebView) root.findViewById(R.id.webView);
         mWebView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View p_v, MotionEvent p_event) {
@@ -62,15 +61,6 @@ public class HobbyFragment extends BaseFragment implements AdvancedWebView.Liste
             }
         });
         mWebView.loadUrl(mUrl + mParams);
-
-        mRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mWebView.loadUrl(mUrl+mParams);
-                mRefreshView.setRefreshing(false);
-            }
-        });
-
         setHasOptionsMenu(true);
         return root;
     }
@@ -132,5 +122,13 @@ public class HobbyFragment extends BaseFragment implements AdvancedWebView.Liste
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.clear();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return mWebView.onBackPressed();
+        }
+        return false;
     }
 }

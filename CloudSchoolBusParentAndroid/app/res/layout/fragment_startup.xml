@@ -4,29 +4,21 @@
     tools:context="com.guokrspace.cloudschoolbus.parents.StartupFragment">
 
         <ImageView
-            android:layout_width="fill_parent"
+            android:layout_width="700dp"
             android:layout_height="fill_parent"
             android:id="@+id/imageView2"
-            android:background="@drawable/startup_background" />
+            android:background="@drawable/startup_background"
+            android:layout_marginLeft="-200dp"
+            android:layout_marginRight="-200dp"
+            android:layout_gravity="center"
+            android:alpha="0.1" />
 
         <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:id="@+id/imageView3"
-            android:background="@drawable/cloudschoolbu_big_icon"
-            android:layout_centerInParent="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="50dp" />
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView3"
-            android:text="@string/slogan"
-            android:id="@+id/textView2"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:textSize="@dimen/bigger_title_size"
-            android:textStyle="bold"
-            android:textColor="@color/primary_white" />
-    </RelativeLayout>
+            android:id="@+id/imageView3"
+            android:background="@drawable/ic_logo_2"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="false" />
+
+</RelativeLayout>

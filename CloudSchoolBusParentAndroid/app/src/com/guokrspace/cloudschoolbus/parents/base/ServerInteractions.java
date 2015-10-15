@@ -155,9 +155,14 @@ public class ServerInteractions {
                                 message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(),
                                 message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
 
-                        messageEntityDao.insertOrReplace(messageEntity);
                         SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
-                        senderEntityDao.insertOrReplace(senderEntity);
+                        if(senderEntity.getId()!=null
+                                && !senderEntity.getId().isEmpty()
+                                && messageEntity.getMessageid()!=null
+                                && !messageEntity.getMessageid().isEmpty()) {
+                            messageEntityDao.insertOrReplace(messageEntity);
+                            senderEntityDao.insertOrReplace(senderEntity);
+                        }
                     }
                 }
 
@@ -210,26 +215,28 @@ public class ServerInteractions {
         });
     }
 
-    public void GetMessagesFromCache()
+    public List<MessageEntity> GetMessagesFromCache()
     {
-        if(Version.PARENT) {
-            int current = mApplication.mConfig.getCurrentChild();
-            String currentstudentid = null;
-            if(mApplication.mStudents.size()>(current)) {
-                currentstudentid = mApplication.mStudents.get(current).getStudentid();
-            }
+//        if(Version.PARENT) {
+//            int current = mApplication.mConfig.getCurrentChild();
+//            String currentstudentid = null;
+//            if(mApplication.mStudents.size()>(current)) {
+//                currentstudentid = mApplication.mStudents.get(current).getStudentid();
+//            }
 
-            if(currentstudentid!=null) {
-                mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-                        .orderDesc(MessageEntityDao.Properties.Messageid)
-                        .where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
-                        .list();
-            }
-        } else {
+//            if(currentstudentid!=null) {
+//                mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+//                        .orderDesc(MessageEntityDao.Properties.Messageid)
+//                        .where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
+//                        .list();
+//            }
+//        } else {
             mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
                     .orderDesc(MessageEntityDao.Properties.Messageid)
                     .list();
-        }
+//        }
+
+        return mMesageEntities;
     }
 
     //Get all articles from newest in Cache to newest in Server

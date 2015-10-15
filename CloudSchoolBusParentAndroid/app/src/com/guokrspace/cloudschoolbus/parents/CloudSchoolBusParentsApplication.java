@@ -117,10 +117,12 @@ public class CloudSchoolBusParentsApplication extends Application {
 
     public void initDB() {
         SQLiteDatabase db;
-        if(Version.PARENT)
+        if (mDBhelper != null) mDBhelper.close();
+        if(Version.PARENT) {
             mDBhelper = new DaoMaster.DevOpenHelper(this, "cloudschoolbusparents-db", null);
-        else
+        }else {
             mDBhelper = new DaoMaster.DevOpenHelper(this, "cloudschoolbusteacher-db", null);
+        }
         db = mDBhelper.getWritableDatabase();
 
         mDaoMaster = new DaoMaster(db);
@@ -287,6 +289,8 @@ public class CloudSchoolBusParentsApplication extends Application {
             mStudentClasses = null;
             mStudentParents = null;
         }
+
+        mDBhelper.close();
     }
 
     public void clearData()

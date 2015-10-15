@@ -110,7 +110,9 @@ abstract public class BaseActivity extends ActionBarActivity {
 	protected void onSaveInstanceState(Bundle outState) {
         DebugLog.logI("Activity onSaveInstanceState");
 
-////		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
+//		mApplication.clearDb();
+
+//		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
 //		outState.putSerializable("mConfig", mApplication.mConfig);
 //		outState.putSerializable("mSchools", (ArrayList<SchoolEntity>)mApplication.mSchools);
 //		outState.putSerializable("mClasses", (ArrayList<ClassEntity>)mApplication.mClasses);
@@ -122,8 +124,8 @@ abstract public class BaseActivity extends ActionBarActivity {
 	
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		
-		super.onRestoreInstanceState(savedInstanceState);
+
+        super.onRestoreInstanceState(savedInstanceState);
 
         mApplication.initDB();
 
