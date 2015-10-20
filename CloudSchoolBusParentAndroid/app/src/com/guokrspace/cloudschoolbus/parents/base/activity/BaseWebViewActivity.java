@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ public class BaseWebViewActivity extends BaseActivity implements AdvancedWebView
 	private String mUrl = "";
 	private String mTitle = "";
 	private String mParams = "";
+	private int fontToggler = 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,20 @@ public class BaseWebViewActivity extends BaseActivity implements AdvancedWebView
 		if(item.getItemId() == android.R.id.home )
 		    finish();
 
+		if(item.getItemId() == R.id.action_toggle_font) {
+			mWebView.loadUrl(String.format("javascript:fontToSmall(%d)", fontToggler)); //
+			if( fontToggler == 1 ) fontToggler = -1;
+			else fontToggler = 1;
+		}
+
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		getMenuInflater().inflate(R.menu.webview, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -119,4 +134,6 @@ public class BaseWebViewActivity extends BaseActivity implements AdvancedWebView
 
 		return true;
 	}
+
+
 }

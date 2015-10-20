@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.event.ImReadyEvent;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -85,8 +90,51 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
         mainActivity.getSupportActionBar().hide();
 
         View root = inflater.inflate(R.layout.fragment_startup, container, false);
+        String startupImageUrl = "";
+        if(Version.PARENT) {
+            if (mApplication.mSchools.size() > 0)
+                startupImageUrl = mApplication.mSchools.get(0).getCover();
+        }else{
+            if (mApplication.mSchoolsT.size() > 0)
+                startupImageUrl = mApplication.mSchoolsT.get(0).getCover();
+        }
 
         final ImageView mImgBackgroud = (ImageView)root.findViewById(R.id.imageView2);
+        final ImageView mImageLogo = (ImageView)root.findViewById(R.id.imageView3);
+
+        final String finalStartupImageUrl = startupImageUrl;
+        if(!startupImageUrl.equals("") && !startupImageUrl.isEmpty() && !startupImageUrl.equals("http://.") && startupImageUrl != null)
+        {
+            Picasso.with(mParentContext)
+                    .load(finalStartupImageUrl)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(mImageLogo, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
+                            mImgBackgroud.setAlpha(1L);
+                        }
+                        @Override
+                        public void onError() {
+                            //Try again online if cache failed
+                            Picasso.with(mParentContext)
+                                    .load(finalStartupImageUrl)
+                                    .into(mImageLogo, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
+                                            mImgBackgroud.setAlpha(1L);
+                                        }
+
+                                        @Override
+                                        public void onError() {
+                                            Log.v("Picasso", "Could not fetch image");
+                                        }
+                                    });
+                        }
+                    });
+        }
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {

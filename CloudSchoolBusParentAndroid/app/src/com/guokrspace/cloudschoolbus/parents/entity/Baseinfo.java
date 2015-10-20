@@ -30,7 +30,8 @@ import java.util.List;
 public class Baseinfo implements Serializable {
 
     private List<SchoolInfo> schools;
-    private List<Student>   students;
+    private List<Group>      groups;
+    private List<Student>    students;
 
     public List<SchoolInfo> getSchools() {
         return schools;
@@ -46,6 +47,14 @@ public class Baseinfo implements Serializable {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 }
 

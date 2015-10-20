@@ -27,6 +27,8 @@ public class SchoolEntityTDao extends AbstractDao<SchoolEntityT, String> {
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
         public final static Property Remark = new Property(3, String.class, "remark", false, "REMARK");
         public final static Property Address = new Property(4, String.class, "address", false, "ADDRESS");
+        public final static Property Logo = new Property(5, String.class, "logo", false, "LOGO");
+        public final static Property Cover = new Property(6, String.class, "cover", false, "COVER");
     };
 
     private DaoSession daoSession;
@@ -49,7 +51,9 @@ public class SchoolEntityTDao extends AbstractDao<SchoolEntityT, String> {
                 "'GROUPID' TEXT," + // 1: groupid
                 "'NAME' TEXT," + // 2: name
                 "'REMARK' TEXT," + // 3: remark
-                "'ADDRESS' TEXT);"); // 4: address
+                "'ADDRESS' TEXT," + // 4: address
+                "'LOGO' TEXT," + // 5: logo
+                "'COVER' TEXT);"); // 6: cover
     }
 
     /** Drops the underlying database table. */
@@ -83,6 +87,16 @@ public class SchoolEntityTDao extends AbstractDao<SchoolEntityT, String> {
         if (address != null) {
             stmt.bindString(5, address);
         }
+ 
+        String logo = entity.getLogo();
+        if (logo != null) {
+            stmt.bindString(6, logo);
+        }
+ 
+        String cover = entity.getCover();
+        if (cover != null) {
+            stmt.bindString(7, cover);
+        }
     }
 
     @Override
@@ -105,7 +119,9 @@ public class SchoolEntityTDao extends AbstractDao<SchoolEntityT, String> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // groupid
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // remark
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // address
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // address
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // logo
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // cover
         );
         return entity;
     }
@@ -118,6 +134,8 @@ public class SchoolEntityTDao extends AbstractDao<SchoolEntityT, String> {
         entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setRemark(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setAddress(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setLogo(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setCover(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     /** @inheritdoc */

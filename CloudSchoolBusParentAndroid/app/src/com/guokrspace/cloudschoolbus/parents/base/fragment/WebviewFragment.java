@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     private String mUrl = "";
     private String mTitle = "";
     private String mParams = "";
+    private int fontToggler = 1;
 
     public static WebviewFragment newInstance(String url, String title, String params) {
         WebviewFragment fragment = new WebviewFragment();
@@ -113,10 +115,21 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         ((MainActivity)mParentContext).getSupportActionBar().setTitle(mTitle);
         ((MainActivity)mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        menu.clear();
+        inflater.inflate(R.menu.webview, menu);
     }
 
+
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.clear();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home )
+            getFragmentManager().popBackStack();
+
+        if(item.getItemId() == R.id.action_toggle_font) {
+            mWebView.loadUrl(String.format("javascript:fontToSmall(%d)", fontToggler)); //
+            if( fontToggler == 1 ) fontToggler = -1;
+            else fontToggler = 1;
+        }
+        return false;
     }
 }

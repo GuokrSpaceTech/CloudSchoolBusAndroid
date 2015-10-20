@@ -1,6 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.database.daodb;
 
-import java.io.Serializable;
 import java.util.List;
 
 import de.greenrobot.dao.DaoException;
@@ -10,10 +9,12 @@ import de.greenrobot.dao.DaoException;
 /**
  * Entity mapped to table SCHOOL_ENTITY.
  */
-public class SchoolEntity implements Serializable{
+public class SchoolEntity {
 
     /** Not-null value. */
     private String id;
+    private String logo;
+    private String cover;
     private String name;
     private String address;
 
@@ -32,8 +33,10 @@ public class SchoolEntity implements Serializable{
         this.id = id;
     }
 
-    public SchoolEntity(String id, String name, String address) {
+    public SchoolEntity(String id, String logo, String cover, String name, String address) {
         this.id = id;
+        this.logo = logo;
+        this.cover = cover;
         this.name = name;
         this.address = address;
     }
@@ -52,6 +55,22 @@ public class SchoolEntity implements Serializable{
     /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     public String getName() {

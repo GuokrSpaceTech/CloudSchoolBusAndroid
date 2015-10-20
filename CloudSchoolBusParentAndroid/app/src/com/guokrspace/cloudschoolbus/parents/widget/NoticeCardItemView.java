@@ -100,16 +100,20 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
         Button confirmButton = (Button) findViewById(R.id.confirm);
         if(card.getIsNeedConfirm()!= null) {
             if (card.getIsNeedConfirm().equals("1")) {
+                confirmButton.invalidate();
                 confirmButton.setOnClickListener(card.getmConfirmButtonClickListener());
                 confirmButton.setText(getResources().getString(R.string.confirm_notice));
                 confirmButton.setBackgroundColor(getResources().getColor(R.color.button_enable));
+                confirmButton.setVisibility(View.VISIBLE);
                 confirmButton.setEnabled(true);
             } else if (card.getIsNeedConfirm().equals("2")) {
+                confirmButton.invalidate();
                 confirmButton.setText(getResources().getString(R.string.confirmed_notice));
                 confirmButton.setBackgroundColor(getResources().getColor(R.color.button_disable));
+                confirmButton.setVisibility(View.VISIBLE);
                 confirmButton.setEnabled(false);
             } else {
-                confirmButton.setVisibility(View.GONE);
+                confirmButton.setVisibility(View.INVISIBLE);
             }
         }
     }

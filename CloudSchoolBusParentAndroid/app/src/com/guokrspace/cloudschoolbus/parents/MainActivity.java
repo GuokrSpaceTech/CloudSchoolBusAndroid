@@ -40,7 +40,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONException;
 import com.astuetz.PagerSlidingTabStrip;
@@ -157,6 +156,9 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         BusProvider.getInstance().unregister(this);
+        if(RongIM.getInstance()!=null)
+            RongIM.getInstance().logout();
+        PushManager.stopWork(mContext);
         super.onDestroy();
     }
 
@@ -193,17 +195,13 @@ public class MainActivity extends BaseActivity implements
             badgeViews.add(badgeView);
         }
 
-        //Customise the Action Bar
-        if(Version.PARENT) {
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            getSupportActionBar().setCustomView(R.layout.abs_layout);
-        }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if(Version.PARENT) setActionBarTitle(getResources().getString(R.string.module_explore), "");
-        else setActionBarTitle("", "");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        if(Version.PARENT)
+            getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
+        else
+            getSupportActionBar().setTitle("");
+
     }
-
-
 
     private void setListeners()
     {
@@ -233,7 +231,7 @@ public class MainActivity extends BaseActivity implements
                 int backCount = getSupportFragmentManager().getBackStackEntryCount();
                 // First Level of Fragment, no Homeasup Arrow, with bottoms Tabs
                 if (backCount == 0) {
-                    // block where back has been pressed. since backstack is zero.
+                    //
                     getTabs().setVisibility(View.VISIBLE);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                     getSupportActionBar().show();
@@ -259,15 +257,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getSupportFragmentManager().popBackStack();
-                if(Version.PARENT)
-                setActionBarTitle(mUpperLeverTitle,"");
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item); //Let the fragment handle the it's own option
     }
 
     @Override
@@ -804,13 +794,14 @@ public class MainActivity extends BaseActivity implements
     public void setActionBarTitle(String title, String upLeverTitle)
     {
         if(Version.PARENT) {
-            View view = getSupportActionBar().getCustomView();
-            TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-            textView.setText(title);
-            mUpperLeverTitle = upLeverTitle;
-            mCurrentTitle = title;
+            getSupportActionBar().setTitle(title);
+//            View view = getSupportActionBar().getCustomView();
+//            TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+//            textView.setText(title);
+//            mUpperLeverTitle = upLeverTitle;
+//            mCurrentTitle = title;
         } else {
-            //First Tab do not have title
+            //Teacher App: First Tab do not have title
             if(upLeverTitle.equals(getResources().getString(R.string.module_explore)))
                 getSupportActionBar().setTitle("");
             else
@@ -820,7 +811,7 @@ public class MainActivity extends BaseActivity implements
 
     private void showStartupPage()
     {
-        TimerTick(2);
+        TimerTick(3);
         StartupFragment theFragment = StartupFragment.newInstance(null, null);
         FragmentTransaction transaction;
         transaction = getSupportFragmentManager().beginTransaction();

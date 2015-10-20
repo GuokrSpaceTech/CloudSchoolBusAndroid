@@ -8,7 +8,7 @@
     <string name="confirm_cancel_upload">确定要取消发送吗？</string>
     <string name="server_error">出现错误了，一会再试试</string>
     <string name="unknow_message">消息类型不支持</string>
-    <string name="invalid_mobile">手机未在学校登记，请联系学校老师</string>
+    <string name="invalid_mobile">手机号码验证失败，请联系学校老师</string>
     <string name="SMS_oversend">验证码当天请求次数过多，改天再试</string>
     <string name="invalid_verify_code">验证码错误</string>
     <string name="failure_baseinfo">获取基础信息错误，请联系产品客服: 400-606-0996</string>
@@ -99,5 +99,6 @@
     <string name="scan_tips">将二维码图片对准扫描框即可自动扫描</string>
     <string name="scan">扫一扫</string>
 
+    <string name="fonttoggler">改变字体</string>
 
 </resources>

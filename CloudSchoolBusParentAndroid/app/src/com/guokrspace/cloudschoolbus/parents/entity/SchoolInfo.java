@@ -7,9 +7,11 @@ import java.util.List;
  */
 public class SchoolInfo {
     List<ClassInfo> classes;
-    String address;
+    String logo;
     String schoolid;
+    String cover;
     String schoolname;
+    String address;
 
     public List<ClassInfo> getClasses() {
         return classes;
@@ -41,5 +43,21 @@ public class SchoolInfo {
 
     public void setSchoolname(String schoolname) {
         this.schoolname = schoolname;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 }

@@ -8,6 +8,8 @@ import java.util.List;
  */
 public class School implements Serializable{
     String id;
+    String logo;
+    String cover;
     String groupid;
     String name;
     String remark;
@@ -71,6 +73,22 @@ public class School implements Serializable{
 
     public void setSettings(Setting settings) {
         this.settings = settings;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }
 

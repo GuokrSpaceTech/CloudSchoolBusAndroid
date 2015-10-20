@@ -276,21 +276,20 @@ public class CloudSchoolBusParentsApplication extends Application {
             mSchools = null;
             mStudents = null;
             mTeachers = null;
-        }else{
-            mSchoolsT = null;
-            mClassesT = null;
+            mDBhelper.close();
+        } else {
+            mSchoolsT  = null;
+            mClassesT  = null;
             mTeachersT = null;
             mStudentsT = null;
-            mParents = null;
+            mParents   = null;
             mMessageTypes = null;
-            mTagsT = null;
-            mClassModules = null;
+            mTagsT        = null;
+            mClassModules      = null;
             mTeacherClassDutys = null;
-            mStudentClasses = null;
-            mStudentParents = null;
-        }
-
-        mDBhelper.close();
+            mStudentClasses    = null;
+            mStudentParents    = null; }
+            mDBhelper.close();
     }
 
     public void clearData()

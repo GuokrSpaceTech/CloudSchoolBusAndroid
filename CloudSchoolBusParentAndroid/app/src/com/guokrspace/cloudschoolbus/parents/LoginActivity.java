@@ -53,6 +53,7 @@ import com.guokrspace.cloudschoolbus.parents.entity.ClassinfoT;
 import com.guokrspace.cloudschoolbus.parents.entity.Module;
 import com.guokrspace.cloudschoolbus.parents.entity.Parent;
 import com.guokrspace.cloudschoolbus.parents.entity.School;
+import com.guokrspace.cloudschoolbus.parents.entity.SchoolInfo;
 import com.guokrspace.cloudschoolbus.parents.entity.Setting;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
 import com.guokrspace.cloudschoolbus.parents.entity.StudentT;
@@ -421,11 +422,17 @@ public class LoginActivity extends BaseActivity {
                         //Save School Information
                         if(baseinfo instanceof Baseinfo ) {
 
-                            for (int i = 0; i < ((Baseinfo)baseinfo).getSchools().size(); i++) {
-                                SchoolEntity schoolEntity = new SchoolEntity(((Baseinfo)baseinfo).getSchools().get(i).getSchoolid(), ((Baseinfo)baseinfo).getSchools().get(i).getSchoolname(), ((Baseinfo)baseinfo).getSchools().get(i).getAddress());
+                            for (SchoolInfo schoolInfo : ((Baseinfo)baseinfo).getSchools()) {
+                                SchoolEntity schoolEntity = new SchoolEntity();
+                                schoolEntity.setId(schoolInfo.getSchoolid());
+                                schoolEntity.setAddress(schoolInfo.getAddress());
+                                schoolEntity.setLogo(schoolInfo.getLogo());
+                                schoolEntity.setCover(schoolInfo.getCover());
+                                schoolEntity.setName(schoolInfo.getSchoolname());
+
                                 schoolEntityDao.insertOrReplace(schoolEntity);
                                 //Save Class Information
-                                List<ClassInfo> classes = ((Baseinfo)baseinfo).getSchools().get(i).getClasses();
+                                List<ClassInfo> classes =schoolInfo.getClasses();
                                 for (int j = 0; j < classes.size(); j++) {
                                     ClassInfo classinfo = classes.get(j);
                                     ClassEntity classEntity = new ClassEntity(classes.get(j).getClassid(), classes.get(j).getClassname(), schoolEntity.getId());
@@ -465,6 +472,8 @@ public class LoginActivity extends BaseActivity {
                                 schoolDb.setAddress(school.getAddress());
                                 schoolDb.setGroupid(school.getGroupid());
                                 schoolDb.setName(school.getName());
+                                schoolDb.setCover(school.getCover());
+                                schoolDb.setLogo(school.getLogo());
                                 schoolDb.setRemark(school.getRemark());
                                 mApplication.mDaoSession.getSchoolEntityTDao().insertOrReplace(schoolDb);
 
@@ -717,9 +726,6 @@ public class LoginActivity extends BaseActivity {
      * the user.
      */
     public void verify(String verify_code, String mobile) {
-
-
-        ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
 
         if(!mApplication.networkStatusEvent.isNetworkConnected()) {
             handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);

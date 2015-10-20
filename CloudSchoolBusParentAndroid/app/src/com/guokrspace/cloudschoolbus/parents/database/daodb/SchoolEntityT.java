@@ -17,6 +17,8 @@ public class SchoolEntityT {
     private String name;
     private String remark;
     private String address;
+    private String logo;
+    private String cover;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -38,12 +40,14 @@ public class SchoolEntityT {
         this.id = id;
     }
 
-    public SchoolEntityT(String id, String groupid, String name, String remark, String address) {
+    public SchoolEntityT(String id, String groupid, String name, String remark, String address, String logo, String cover) {
         this.id = id;
         this.groupid = groupid;
         this.name = name;
         this.remark = remark;
         this.address = address;
+        this.logo = logo;
+        this.cover = cover;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -92,6 +96,22 @@ public class SchoolEntityT {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

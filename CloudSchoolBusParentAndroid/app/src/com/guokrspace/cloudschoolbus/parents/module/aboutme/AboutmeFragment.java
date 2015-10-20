@@ -30,8 +30,6 @@ import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
 import com.avast.android.dialogs.iface.ISimpleDialogCancelListener;
 import com.avast.android.dialogs.iface.ISimpleDialogListener;
-import com.baidu.android.pushservice.PushManager;
-import com.guokrspace.cloudschoolbus.parents.LoginActivity;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
@@ -239,15 +237,6 @@ public class AboutmeFragment extends BaseFragment implements
         imageViewAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ListDialogFragment
-//                        .createBuilder(mParentContext, getFragmentManager())
-//                        .setTitle(getResources().getString(R.string.picture_ops))
-//                        .setItems(new String[]{getResources().getString(R.string.picture_ops_album),
-//                                getResources().getString(R.string.picture_ops_take_pic)})
-//                        .setRequestCode(REQUEST_LIST_SINGLE)
-//                        .setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
-//                        .setTargetFragment(mFragment, REQUEST_LIST_SIMPLE)
-//                        .show();
                 mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
                 mPictureProcess.setClip(true);
                 mPictureProcess.setMaxPictureCount(1);
@@ -355,28 +344,7 @@ public class AboutmeFragment extends BaseFragment implements
         mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
 
 
-//        if (resultCode != Activity.RESULT_OK)
-//            return;
-
-//        if (bitMap != null && !bitMap.isRecycled()) {
-//            bitMap.recycle();
-//        }
-
         switch (requestCode) {
-//            case PHOTO_PICKED_WITH_DATA: // 从本地选择图片
-//                Uri selectedImageUri = data.getData();
-//                if (selectedImageUri != null) {
-//                    try {
-//                        bitMap = BitmapFactory.decodeStream(mParentContext.getContentResolver().openInputStream(selectedImageUri));
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                break;
-//            case CAMERA_WITH_DATA: // 拍照
-//                bitMap = (Bitmap) data.getExtras().get("data");
-//                break;
-
             case 3001:
                 if (data != null)
                     if (data.getExtras() != null) {
@@ -386,30 +354,6 @@ public class AboutmeFragment extends BaseFragment implements
                     }
                 return;
         }
-
-//        int scale = ImageUtil.reckonThumbnail(bitMap.getWidth(), bitMap.getHeight(), 109, 127);
-//        bitMap = ImageUtil.PicZoom(bitMap, (int) (bitMap.getWidth() / scale), (int) (bitMap.getHeight() / scale));
-//        bitmapFilePath = ImageUtil.saveImage(bitMap);// 将图片保存到指定的路径
-//
-//        // 下面这两句是对图片按照一定的比例缩放
-//        if (bitMap == null) {
-//            SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.invalid_picture))
-//                    .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-//            return;
-//        }
-//
-//
-//        if(bitmapFilePath!=null)
-//        {
-//            if(Version.PARENT) {
-//                int currentchild = mApplication.mConfig.getCurrentChild();
-//                String studentid = mApplication.mStudents.get(currentchild).getStudentid();
-//                ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
-//            } else {
-//                String teacherid = DataWrapper.getInstance().getMyself().getTeacherid();
-//                ServerInteractions.getInstance().changeAvatarUser(teacherid, bitmapFilePath, mHandler);
-//            }
-//        }
     }
 
     @Override
@@ -427,7 +371,6 @@ public class AboutmeFragment extends BaseFragment implements
                 break;
                 default:break;
         }
-//        return super.onOptionsItemSelected(item);
         return false;
     }
 
@@ -459,13 +402,15 @@ public class AboutmeFragment extends BaseFragment implements
     @Override
     public void onPositiveButtonClicked(int requestCode) {
         if (requestCode == REQUEST_SIMPLE_DIALOG) {
-//            Toast.makeText(mParentContext, "Positive button clicked", Toast.LENGTH_SHORT).show();
-            mApplication.clearBaseinfo();
+            /**
+             * Just clear the data, DB will stay open
+             * LoginActivity will re-init the Database
+             */
             mApplication.clearConfig();
-            mApplication.clearDb();
-            //stop Baidu Push
-            PushManager.stopWork(mParentContext);
-            Intent intent = new Intent(mParentContext, LoginActivity.class);
+            mApplication.clearData();
+            mApplication.clearBaseinfo();
+            ((MainActivity)mParentContext).finish();
+            Intent intent = new Intent(mParentContext, MainActivity.class);
             startActivity(intent);
         }
     }
@@ -528,12 +473,7 @@ public class AboutmeFragment extends BaseFragment implements
             }
 
             if(user!=null) {
-                //Trim the . end of url
-                String url=user.getAvatar();
-                if(url.charAt(url.length() - 1) == '.') {
-                    url = url.substring(0, url.lastIndexOf('.'));
-                }
-                Picasso.with(mParentContext).load(url).into(imageViewAvatar);
+                Picasso.with(mParentContext).load(user.getAvatar()).into(imageViewAvatar);
                 textViewUserName.setText(user.getRealname());
             }
         }

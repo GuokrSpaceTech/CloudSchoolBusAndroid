@@ -15,6 +15,7 @@ import java.io.Serializable;
 //              "nickname":"大顺",
 //              "studentid":"39738"}
 public class Student implements Serializable {
+	String relation;
 	String cnname;
 	String birthday;
 	String sex;
@@ -68,6 +69,14 @@ public class Student implements Serializable {
 
 	public void setStudentid(String studentid) {
 		this.studentid = studentid;
+	}
+
+	public String getRelation() {
+		return relation;
+	}
+
+	public void setRelation(String relation) {
+		this.relation = relation;
 	}
 }
 

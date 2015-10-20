@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -99,17 +100,26 @@ public class ActivityCardItemView extends CardItemView<ActivityCard> {
          */
         Button confirmButton = (Button) findViewById(R.id.confirm);
         //1: need user confirm 2: already confirmed 3: no user ops need
-        if (card.getIsNeedConfirm().equals("1")) {
-            confirmButton.setOnClickListener(card.getmConfirmButtonClickListener());
-            confirmButton.setText(getResources().getString(R.string.confirm_notice));
-            confirmButton.setBackgroundColor(getResources().getColor(R.color.button_enable));
-            confirmButton.setEnabled(true);
-        } else if (card.getIsNeedConfirm().equals("2")) {
-            confirmButton.setText(getResources().getString(R.string.confirmed_notice));
-            confirmButton.setBackgroundColor(getResources().getColor(R.color.button_disable));
-            confirmButton.setEnabled(false);
-        } else {
-            confirmButton.setVisibility(View.GONE);
+        if(Version.PARENT) {
+            if (card.getIsNeedConfirm().equals("1")) {
+                confirmButton.invalidate();
+                confirmButton.setOnClickListener(card.getmConfirmButtonClickListener());
+                confirmButton.setText(getResources().getString(R.string.confirm_activity));
+                confirmButton.setBackgroundColor(getResources().getColor(R.color.button_enable));
+                confirmButton.setVisibility(View.VISIBLE);
+                confirmButton.setEnabled(true);
+            } else if (card.getIsNeedConfirm().equals("2")) {
+                confirmButton.invalidate();
+                confirmButton.setText(getResources().getString(R.string.confirmed_notice));
+                confirmButton.setBackgroundColor(getResources().getColor(R.color.button_disable));
+                confirmButton.setEnabled(false);
+                confirmButton.setVisibility(View.VISIBLE);
+            } else {
+                confirmButton.invalidate();
+                confirmButton.setVisibility(View.INVISIBLE);
+            }
+        }else{ //Teacher App do not show activity
+            confirmButton.setVisibility(View.INVISIBLE);
         }
     }
 }

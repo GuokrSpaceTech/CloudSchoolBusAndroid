@@ -47,6 +47,14 @@ public class DataWrapper {
         BusProvider.getInstance().post(new InfoSwitchedEvent(currentChild));
     }
 
+    //This function only works in parent app
+    public String findCurrentStudentid()
+    {
+        int current =  mApplication.mConfig.getCurrentChild();
+        String studentId = mApplication.mStudents.get(current).getStudentid();
+        return studentId;
+    }
+
     public TeacherEntityT getMyself()
     {
         TeacherEntityT entity = null;

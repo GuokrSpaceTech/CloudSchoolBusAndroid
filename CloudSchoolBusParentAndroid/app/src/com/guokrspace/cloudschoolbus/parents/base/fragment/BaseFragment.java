@@ -14,11 +14,7 @@ import com.android.support.dialog.CustomWaitDialog.OnKeyCancel;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.parents.base.ServerInteractions;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 
 import java.util.ArrayList;
@@ -34,15 +30,20 @@ public class BaseFragment extends Fragment {
     public List<MessageEntity> mMesageEntities = new ArrayList<>();
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mParentContext = activity;
         mFragment = this;
-        mApplication = (CloudSchoolBusParentsApplication) mParentContext.getApplicationContext();
-        ServerInteractions.getInstance().init(mApplication, mParentContext);
-        DataWrapper.getInstance().init(mApplication);
-        BusProvider.getInstance().register(this);
+        mParentContext = activity;
         DebugLog.setTag(mFragment.getClass().getName());
+        mApplication = (CloudSchoolBusParentsApplication) mParentContext.getApplicationContext();
+        DataWrapper.getInstance().init(mApplication);
+        ServerInteractions.getInstance().init(mApplication, mParentContext);
+        BusProvider.getInstance().register(this);
     }
 
     @Override
@@ -108,8 +109,7 @@ public class BaseFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (null != savedInstanceState) {
             DebugLog.logI("Fragment onRestoreInstanceState");
             //		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onRestoreInstanceState");

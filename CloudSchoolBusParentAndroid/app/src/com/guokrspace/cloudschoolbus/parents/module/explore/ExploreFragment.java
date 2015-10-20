@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -22,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.android.support.fastjson.FastJsonTools;
 import com.android.support.utils.DateUtils;
@@ -32,6 +32,7 @@ import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.parents.MainActivity;
 import com.guokrspace.cloudschoolbus.parents.MenuSpinnerAdapter;
+import com.guokrspace.cloudschoolbus.parents.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.parents.base.ServerInteractions;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
@@ -103,6 +104,8 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     private int visibleThreshold = 3;
     int firstVisibleItem, visibleItemCount, totalItemCount;
 
+    private String mCurrentDisplayingCardType = "All";
+
     private ArrayList<MenuSpinnerAdapter.MessageType> mMessageTypes = new ArrayList<>();
 
     private Handler mHandler = new Handler(new Handler.Callback() {
@@ -114,20 +117,20 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
             switch (msg.what) {
                 case HandlerConstant.MSG_ONREFRESH:
                     clearAppBadgetCount(mParentContext);
-                    setActionBarTitle(getResources().getString(R.string.module_explore), getResources().getString(R.string.module_explore));
-                    AddCards();
+                    setActionBarTitle(getResources().getString(R.string.module_explore));
+                    filterCards(null);
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     break;
                 case HandlerConstant.MSG_ONLOADMORE:
                     hideWaitDialog();
-                    setActionBarTitle(getResources().getString(R.string.module_explore), getResources().getString(R.string.module_explore));
-                    AddCards();
+                    setActionBarTitle(getResources().getString(R.string.module_explore));
+                    filterCards(null);
                     break;
                 case HandlerConstant.MSG_ONCACHE:
-                    setActionBarTitle(getResources().getString(R.string.module_explore), getResources().getString(R.string.module_explore));
+                    setActionBarTitle(getResources().getString(R.string.module_explore));
                     hideWaitDialog();
-                    AddCards();
+                    filterCards(null);
                     break;
                 case HandlerConstant.MSG_NOCHANGE:
                     clearAppBadgetCount(mParentContext);
@@ -168,6 +171,8 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                     hideWaitDialog();
                     Button button = (Button) msg.obj;
                     String messageid = (String)button.getTag();
+
+                    //Update the DB
                     List<MessageEntity> messages = mApplication.mDaoSession.getMessageEntityDao()
                             .queryBuilder().where(MessageEntityDao.Properties.Messageid.eq(messageid))
                             .list();
@@ -176,11 +181,21 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                         mApplication.mDaoSession.getMessageEntityDao().update(messages.get(0));
                     }
                     //Update the memory
-                    int i = mMesageEntities.indexOf(messages.get(0));
-                    mMesageEntities.get(i).setIsconfirm("2");
-                    button.setText(getResources().getString(R.string.confirmed_notice));
-                    button.setBackgroundColor(getResources().getColor(R.color.button_disable));
-                    button.setEnabled(false);
+                    int i = 0;
+                    for(MessageEntity message : mMesageEntities)
+                    {
+                        if(message.getMessageid().equals(messageid))
+                        {
+                            mMesageEntities.get(i).setIsconfirm("2");
+                        }
+                        i++;
+                    }
+
+                    filterCards(null);
+
+//                    button.setText(getResources().getString(R.string.confirmed_notice));
+//                    button.setBackgroundColor(getResources().getColor(R.color.button_disable));
+//                    button.setEnabled(false);
                     break;
             }
             return false;
@@ -357,26 +372,42 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         public void onFragmentInteraction(String id);
     }
 
-    private void AddCards() {
-        mMaterialListView.clear();
-        for (int i = 0; i < mMesageEntities.size(); i++) {
-            Card theCard = (Card) buildcard(mMesageEntities.get(i), i);
-            if (theCard != null)
-                mMaterialListView.add(theCard);
-        }
-    }
 
-    public void filterCards(String type) {
-        //in case mDaoSession is released
-        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
-        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
-        List<MessageEntity> messageEntityList;
-        if (type.equals("All")) {
-            messageEntityList = queryBuilder.orderDesc(MessageEntityDao.Properties.Messageid).list();
+    public void filterCards(@Nullable String type) {
+
+        if(type == null) //Do not know the type, just use the current type
+        {
+            type = mCurrentDisplayingCardType;
         } else {
-            messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type))
-                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
+            mCurrentDisplayingCardType = type;
         }
+
+        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+        List<MessageEntity> messageEntityList;
+
+
+        if(Version.PARENT) {
+            String studentid = DataWrapper.getInstance().findCurrentStudentid();
+            if (type.equals("All")) {
+                messageEntityList = queryBuilder
+                        .where(MessageEntityDao.Properties.Studentid.eq(studentid))
+                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
+            } else {
+                messageEntityList = queryBuilder
+                        .where(MessageEntityDao.Properties.Apptype.eq(type), MessageEntityDao.Properties.Studentid.eq(studentid))
+                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
+            }
+        } else {
+            if (type.equals("All")) {
+                messageEntityList = queryBuilder.orderDesc(MessageEntityDao.Properties.Messageid).list();
+            } else {
+                messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type))
+                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
+            }
+        }
+
+
         mMaterialListView.clear();
         for (int i = 0; i < messageEntityList.size(); i++) {
             Card theCard = (Card) buildcard(messageEntityList.get(i), i);
@@ -385,19 +416,19 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         }
     }
 
-    public void filterCardsChild(String studentid) {
-        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
-        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
-        List<MessageEntity> messageEntityList;
-        messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Studentid.eq(studentid))
-                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
-        mMaterialListView.clear();
-        for (int i = 0; i < messageEntityList.size(); i++) {
-            Card theCard = (Card) buildcard(messageEntityList.get(i), i);
-            if (theCard != null)
-                mMaterialListView.add(theCard);
-        }
-    }
+//    public void filterCardsChild(String studentid) {
+//        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
+//        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
+//        List<MessageEntity> messageEntityList;
+//        messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Studentid.eq(studentid))
+//                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
+//        mMaterialListView.clear();
+//        for (int i = 0; i < messageEntityList.size(); i++) {
+//            Card theCard = (Card) buildcard(messageEntityList.get(i), i);
+//            if (theCard != null)
+//                mMaterialListView.add(theCard);
+//        }
+//    }
 
     private void ClearCache() {
         final MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
@@ -426,7 +457,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
             return BuildFoodNoticeCard(messageEntity);
         } else if (messageEntity.getApptype().equals("Schedule")) {
             return BuildScheduleNoticeCard(messageEntity);
-        } else if (messageEntity.getApptype().equals("Active") | messageEntity.getApptype().equals("Event"))
+        } else if (messageEntity.getApptype().equals("Active"))
             return BuildActivityCard(messageEntity, mHandler);
         else {
             SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.unknow_message))
@@ -444,35 +475,35 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         switch (item.getItemId()) {
             case R.id.action_notice:
                 filterCards("Notice");
-                setActionBarTitle(getResources().getString(R.string.noticetype),getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.noticetype));
                 break;
             case R.id.action_attendance:
                 filterCards("Punch");
-                setActionBarTitle(getResources().getString(R.string.attendancetype), getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.attendancetype));
                 break;
             case R.id.action_schedule:
                 filterCards("Schedule");
-                setActionBarTitle(getResources().getString(R.string.schedule), getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.schedule));
                 break;
             case R.id.action_report:
-                setActionBarTitle(getResources().getString(R.string.report), getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.report));
                 filterCards("Report");
                 break;
             case R.id.action_food:
                 filterCards("Food");
-                setActionBarTitle(getResources().getString(R.string.food), getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.food));
                 break;
             case R.id.action_streaming:
                 filterCards("OpenClass");
-                setActionBarTitle(getResources().getString(R.string.openclass), getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.openclass));
                 break;
             case R.id.action_picture:
                 filterCards("Article");
-                setActionBarTitle(getResources().getString(R.string.picturetype), getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.picturetype));
                 break;
             case R.id.action_activity:
                 filterCards("Active");
-                setActionBarTitle(getResources().getString(R.string.activity), getResources().getString(R.string.module_explore));
+                setActionBarTitle(getResources().getString(R.string.activity));
                 break;
             case R.id.action_take_photo:
                  //Prevent multiple touches
@@ -486,15 +517,16 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         return super.onOptionsItemSelected(item);
     }
 
-    public void setActionBarTitle(String title, String preTitle)
+    public void setActionBarTitle(String title)
     {
         if(Version.PARENT) {
             MainActivity mainActivity = (MainActivity) mParentContext;
-            View view = mainActivity.getSupportActionBar().getCustomView();
-            TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-            textView.setText(title);
-            mainActivity.mCurrentTitle = title;
-            mainActivity.mUpperLeverTitle = preTitle;
+            mainActivity.getSupportActionBar().setTitle(title);
+//            View view = mainActivity.getSupportActionBar().getCustomView();
+//            TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
+//            textView.setText(title);
+//            mainActivity.mCurrentTitle = title;
+//            mainActivity.mUpperLeverTitle = preTitle;
         }
     }
 
@@ -506,10 +538,11 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         /**
          * Todo:
          */
-//        if(Version.PARENT) {
+        if(Version.PARENT) {
 //            String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
 //            filterCardsChild(studentId);
-//        }
+            filterCards(null);
+        }
     }
 
     @Override
@@ -581,7 +614,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
 
     private void initMessageTypes()
     {
-        String[]  messageTypes = {"All","Article", "Notice", "Event", "Punch", "Report", "OpenClass", "Food", "Schedule"};
+        String[]  messageTypes = {"All","Article", "Notice", "Active", "Punch", "Report", "OpenClass", "Food", "Schedule"};
         Integer[] resIcon = {0, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_event, R.drawable.ic_attendance,
                 R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
         Integer[]  descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.activity, R.string.attendancetype,
@@ -724,6 +757,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         noticeCard.setTitle(messageEntity.getTitle());
         noticeCard.setDescription(messageEntity.getDescription());
         NoticeBody noticeBody = FastJsonTools.getObject(messageEntity.getBody(), NoticeBody.class);
+
         if (noticeBody != null) noticeCard.setDrawable(noticeBody.getPList().get(0));
         noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
             @Override

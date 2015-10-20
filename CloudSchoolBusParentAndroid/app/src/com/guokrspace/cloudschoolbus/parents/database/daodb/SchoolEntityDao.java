@@ -23,8 +23,10 @@ public class SchoolEntityDao extends AbstractDao<SchoolEntity, String> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, String.class, "id", true, "ID");
-        public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property Address = new Property(2, String.class, "address", false, "ADDRESS");
+        public final static Property Logo = new Property(1, String.class, "logo", false, "LOGO");
+        public final static Property Cover = new Property(2, String.class, "cover", false, "COVER");
+        public final static Property Name = new Property(3, String.class, "name", false, "NAME");
+        public final static Property Address = new Property(4, String.class, "address", false, "ADDRESS");
     };
 
     private DaoSession daoSession;
@@ -44,8 +46,10 @@ public class SchoolEntityDao extends AbstractDao<SchoolEntity, String> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'SCHOOL_ENTITY' (" + //
                 "'ID' TEXT PRIMARY KEY NOT NULL ," + // 0: id
-                "'NAME' TEXT," + // 1: name
-                "'ADDRESS' TEXT);"); // 2: address
+                "'LOGO' TEXT," + // 1: logo
+                "'COVER' TEXT," + // 2: cover
+                "'NAME' TEXT," + // 3: name
+                "'ADDRESS' TEXT);"); // 4: address
     }
 
     /** Drops the underlying database table. */
@@ -60,14 +64,24 @@ public class SchoolEntityDao extends AbstractDao<SchoolEntity, String> {
         stmt.clearBindings();
         stmt.bindString(1, entity.getId());
  
+        String logo = entity.getLogo();
+        if (logo != null) {
+            stmt.bindString(2, logo);
+        }
+ 
+        String cover = entity.getCover();
+        if (cover != null) {
+            stmt.bindString(3, cover);
+        }
+ 
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(2, name);
+            stmt.bindString(4, name);
         }
  
         String address = entity.getAddress();
         if (address != null) {
-            stmt.bindString(3, address);
+            stmt.bindString(5, address);
         }
     }
 
@@ -88,8 +102,10 @@ public class SchoolEntityDao extends AbstractDao<SchoolEntity, String> {
     public SchoolEntity readEntity(Cursor cursor, int offset) {
         SchoolEntity entity = new SchoolEntity( //
             cursor.getString(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // address
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // logo
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // cover
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // address
         );
         return entity;
     }
@@ -98,8 +114,10 @@ public class SchoolEntityDao extends AbstractDao<SchoolEntity, String> {
     @Override
     public void readEntity(Cursor cursor, SchoolEntity entity, int offset) {
         entity.setId(cursor.getString(offset + 0));
-        entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setAddress(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setLogo(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setCover(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setAddress(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
      }
     
     /** @inheritdoc */
