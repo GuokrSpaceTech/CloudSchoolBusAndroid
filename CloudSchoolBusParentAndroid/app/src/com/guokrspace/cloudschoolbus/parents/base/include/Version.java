@@ -29,4 +29,8 @@ public class Version {
 	public final static String platform = "android";
 	// App名称
 	public final static String APP_NAME = "CloudSchoolBusParent.apk";
+
+    public static final String APP_ID = "wx0806e84a7bf07a27";
+
+
 }

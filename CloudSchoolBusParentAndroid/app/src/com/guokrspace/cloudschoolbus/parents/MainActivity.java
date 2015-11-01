@@ -65,9 +65,12 @@ import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
 import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.parents.widget.BadgeView;
+import com.guokrspace.cloudschoolbus.parents.widget.NonSwipeableViewPager;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -95,7 +98,7 @@ public class MainActivity extends BaseActivity implements
 
     private PagerSlidingTabStrip tabs;
     private List<BadgeView> badgeViews = new ArrayList();
-    public  NonSwipeableViewPager pager;
+    public NonSwipeableViewPager pager;
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
     private int mPosition = 0;
@@ -112,6 +115,7 @@ public class MainActivity extends BaseActivity implements
     private static final int REQUEST_CODE = 1;
 
     MainActivity c = this;
+    private IWXAPI api;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -151,6 +155,10 @@ public class MainActivity extends BaseActivity implements
         getOverflowMenu();
         setContentView(R.layout.activity_main);
         BusProvider.getInstance().register(this);
+
+        api = WXAPIFactory.createWXAPI(this, Version.APP_ID, true);
+
+//        api.registerApp(Version.APP_ID);
     }
 
     @Override
@@ -276,7 +284,12 @@ public class MainActivity extends BaseActivity implements
                     }
                 }
                 else {
-                    getSupportFragmentManager().popBackStack();
+                    if(mPosition==1 && mFragments[mPosition].isVisible()) //ChatList
+                    {
+                        ((UserListFragment)mFragments[mPosition]).onBackPressed();
+                    } else {
+                        getSupportFragmentManager().popBackStack();
+                    }
                 }
                 return true;
         }

@@ -1,0 +1,14 @@
+include ':pagerSlidingTabStrip', ':AndroidSupport', ':android-styled-dialogs', ':dynamicgrid'
+include ':DaoDBGenerator', ':materialList', ':Android-AdvancedWebView-master'
+include  ':IMKit', ':AndroidTouchGallery', ':PictureChooseLib'
+include 'app'
+project(':pagerSlidingTabStrip').projectDir = new File('dependancies/pagerSlidingTabStrip')
+project(':AndroidSupport').projectDir = new File('dependancies/AndroidSupport')
+project(':android-styled-dialogs').projectDir = new File('dependancies/android-styled-dialogs')
+project(':dynamicgrid').projectDir = new File('dependancies/dynamicgrid')
+project(':DaoDBGenerator').projectDir = new File('dependancies/DaoDBGenerator')
+project(':materialList').projectDir = new File('dependancies/materialList')
+project(':Android-AdvancedWebView-master').projectDir = new File('dependancies/Android-AdvancedWebView-master')
+project(':IMKit').projectDir = new File('dependancies/IMKit')
+project(':AndroidTouchGallery').projectDir = new File('dependancies/AndroidTouchGallery')
+project(':PictureChooseLib').projectDir = new File('dependancies/PictureChooseLib')

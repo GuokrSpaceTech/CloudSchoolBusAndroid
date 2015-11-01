@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">云中校车</string>
+    <string name="app_name_teacher">教师助手</string>
     <string name="mobile_num">输入已登记的手机号码</string>
     <string name="verify_code">验证码</string>
     <string name="no_network">无法链接网络，请检查网络设置</string>
@@ -70,7 +71,7 @@
     <string name="report">班级报告</string>
     <string name="food">食谱</string>
     <string name="schedule">课程表</string>
-    <string name="activity">活动发布</string>
+    <string name="activity">活动</string>
     <string name="picture">相册</string>
     <string name="attendancetime">考勤时间: </string>
     <string name="classify">分类</string>
@@ -83,6 +84,8 @@
 
     <string name="altersignout">"注意：本地数据将会被删除"</string>
 
+    <string name="pictureshare">分享</string>
+    <string name="picturesave">保存</string>
     <string name="gallery_choose">Gallery Select</string>
     <string name="camera_choose">Now Photograph</string>
     <string name="title_activity_select_student">SelectStudentActivity</string>

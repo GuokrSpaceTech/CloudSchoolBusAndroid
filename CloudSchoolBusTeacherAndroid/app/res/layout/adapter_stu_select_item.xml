@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:id="@+id/mainLayout"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/itemImage"
+        android:layout_width="70dip"
+        android:layout_height="wrap_content" >
+
+        <com.guokrspace.cloudschoolbus.teacher.widget.RoundCornerImageView
+            android:id="@+id/headImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape_product_round_tag"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/selectImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/headImageView"
+            android:layout_alignTop="@id/headImageView"
+            android:src="@drawable/checkbox_checked"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/selectAllTextView"
+            android:visibility="invisible"
+            android:text="@string/all"
+            android:textColor="@color/primary_dark"
+            android:textSize="20sp"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <TextView
+        android:singleLine="true"
+        android:layout_marginTop="2dp"
+        android:id="@+id/stuNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_dark"
+        android:text="" />
+
+</LinearLayout>

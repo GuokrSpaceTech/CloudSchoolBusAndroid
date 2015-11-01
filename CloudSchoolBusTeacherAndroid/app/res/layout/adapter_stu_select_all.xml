@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:id="@+id/mainLayout" 
+    android:gravity="center">
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="74dip"-->
+        <!--android:layout_height="40dip"-->
+        <!--android:layout_centerInParent="true" >-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/allSelectImageView"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:src="@drawable/btn_selected_all_student_xml" />-->
+    <!--</RelativeLayout>-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textVIewSelectAll"
+        android:background="@android:color/white"
+        android:textColor="@color/primary_dark"
+        android:visibility="gone"
+        android:text="@string/all"
+        />
+
+</LinearLayout>

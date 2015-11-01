@@ -41,7 +41,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
     int maxPreloadWidth = 320;
     int maxPreloadHeight = 240;
 
-    UrlTouchImageView currUrlTouchImageView;
+    public UrlTouchImageView currUrlTouchImageView;
 
     protected final List<URL> mUrls;
 

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.guokrspace.cloudschoolbus.teacher.widget.StreamingNoticeCardItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MainLayout"
+    android:nestedScrollingEnabled="false">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardView"
+        style="@style/MainCardView"
+        card_view:cardCornerRadius="@dimen/card_corner_radius">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/small_padding">
+
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_image_default"
+                    android:id="@+id/kindergarten_avatar"
+                    app:border_color="#FF000000"
+                    app:border_width="1px" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:id="@+id/kindergarten_name"
+                        style="@style/CardTitle"
+                        android:layout_above="@+id/kindergarten_name"
+                        android:layout_alignParentTop="true"
+                        tools:text="小星星绘画班"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/material_blue_grey_950"
+                        android:layout_width="fill_parent" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/classname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/description_color"
+                            android:textSize="@dimen/description_size"
+                            tools:text="泥塑班"
+                            android:layout_weight="40"
+                            android:padding="@dimen/big_padding" />
+
+                        <TextView
+                            android:id="@+id/timestamp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/description_color"
+                            android:textSize="@dimen/description_size"
+                            tools:text="2小时前"
+                            android:layout_weight="30"
+                            android:padding="@dimen/big_padding" />
+
+                        <Button
+                            android:id="@+id/card_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="22dp"
+                            android:textColor="#FFFFFFFF"
+                            android:textSize="@dimen/description_size"
+                            tools:text="视频公开课"
+                            android:layout_weight="30"
+                            android:background="@drawable/shape_message_type_round_button"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@color/background_window"
+                        android:focusableInTouchMode="false"
+                        android:id="@+id/taptovideoLayout"
+                        android:paddingBottom="1dp"
+                        android:layout_gravity="right">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:src = "@drawable/ic_streaming"
+                            android:scaleType="center"
+                            android:layout_weight="10"
+                            android:cropToPadding="true" />
+
+                        <TextView
+                            android:id="@+id/description"
+                            android:layout_width="0dp"
+                            android:layout_weight="90"
+                            android:gravity="center_vertical"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/small_padding"
+                            tools:text="有视频空开课  了，请   点   击    查看！"
+                            android:textSize="@dimen/description_size"
+                            android:singleLine="false"
+                            android:layout_marginLeft="4dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/primary_dark" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</com.guokrspace.cloudschoolbus.teacher.widget.StreamingNoticeCardItemView>

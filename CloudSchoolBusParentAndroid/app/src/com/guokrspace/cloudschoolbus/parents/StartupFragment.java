@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
@@ -135,13 +133,13 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
                     });
         }
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Animation animation = AnimationUtils.loadAnimation(mParentContext, R.anim.translate_anim);
-                mImgBackgroud.startAnimation(animation);
-            }
-        });
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                Animation animation = AnimationUtils.loadAnimation(mParentContext, R.anim.translate_anim);
+//                mImgBackgroud.startAnimation(animation);
+//            }
+//        });
         return root;
     }
 

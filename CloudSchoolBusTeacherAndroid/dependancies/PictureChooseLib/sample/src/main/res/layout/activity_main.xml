@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_default_pager">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/pi_toolbar"
+        android:layout_width="match_parent"
+        android:background="@color/pc_title_bar"
+        android:layout_height="?actionBarSize"/>
+
+    <Button
+        android:text="@string/gallery_choose"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_background_selector"
+        android:onClick="onGallery"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="@string/camera_choose"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="10dp"
+        android:textColor="@android:color/white"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_background_selector"
+        android:onClick="onCamera"
+        android:layout_height="wrap_content" />
+
+    <GridView
+        android:id="@+id/pi_grid"
+        android:layout_width="match_parent"
+        android:horizontalSpacing="8dp"
+        android:verticalSpacing="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:numColumns="3"
+        android:layout_height="match_parent"/>
+</LinearLayout>

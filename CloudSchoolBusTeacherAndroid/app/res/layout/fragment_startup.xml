@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.guokrspace.cloudschoolbus.teacher.StartupFragment">
+
+        <ImageView
+            android:layout_width="800dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/imageView2"
+            android:background="@drawable/startup_background"
+            android:layout_marginLeft="-200dp"
+            android:layout_marginRight="-200dp"
+            android:layout_gravity="center"
+            android:alpha="1" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView3"
+            android:background="@drawable/cloudschoolbu_big_icon"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="北京果壳空间科技有限公司"
+        android:id="@+id/textView2"
+        android:layout_alignParentBottom="true"
+        android:autoText="false"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp"
+        android:textColor="#ff0099cc"
+        android:textSize="16sp" />
+
+</RelativeLayout>

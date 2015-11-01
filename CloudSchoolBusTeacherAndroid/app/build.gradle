@@ -1,0 +1,89 @@
+apply plugin: 'android'
+
+dependencies {
+    compile project(':pagerSlidingTabStrip')
+    compile fileTree(dir: '../dependancies', include: ['*.jar'])
+    compile fileTree(dir: './libs', include: ['*.jar'])
+    compile project(':AndroidSupport')
+    compile project(':android-styled-dialogs')
+    compile project(':dynamicgrid')
+    compile 'com.loopj.android:android-async-http:1.4.8'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    compile 'de.greenrobot:greendao:1.3.7'
+    compile 'de.greenrobot:greendao-generator:1.3.1'
+    compile 'com.squareup:otto:1.3.5'
+    compile project(':materialList')
+    compile 'de.hdodenhof:circleimageview:1.3.0'
+    //    compile project(':android-week-view')
+    compile project(':Android-AdvancedWebView-master')
+    compile project(':IMKit')
+    compile project(':AndroidTouchGallery')
+    compile project(':PictureChooseLib')
+    compile 'me.leolin:ShortcutBadger:1.1.3@aar'
+    compile 'jp.wasabeef:picasso-transformations:1.2.1'
+    compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
+    // If you want to use the GPU Filters
+    //    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.3.0'
+    // If you want to use the GPU Filters
+}
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion '22.0.0'
+    defaultConfig {
+        minSdkVersion 11
+        targetSdkVersion 23
+        versionName '3.5.3'
+        renderscriptTargetApi 23
+        renderscriptSupportModeEnabled true
+        applicationId "com.guokrspace.cloudschoolbus.teacher"
+    }
+    signingConfigs { release }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+            jniLibs.srcDirs = ['jniLibs']
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    lintOptions {//在build apk 时Android Lint产生的错误不会导致中断生成APK
+        abortOnError false
+    }
+    productFlavors {
+    }
+}
+
+File propFile = file('signing.properties');
+if (propFile.exists()) {
+    def Properties props = new Properties()
+    props.load(new FileInputStream(propFile))
+
+    if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+} else {
+    android.buildTypes.release.signingConfig = null
+}
+
+android {
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}

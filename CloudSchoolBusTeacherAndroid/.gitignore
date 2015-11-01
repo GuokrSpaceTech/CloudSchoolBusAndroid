@@ -1,0 +1,48 @@
+#Android generated
+bin
+gen
+gen*
+
+#Eclipse
+.project
+.classpath
+.settings
+
+#IntelliJ IDEA
+.idea
+*.iml
+*.ipr
+*.iws
+out
+
+#Maven
+target
+release.properties
+pom.xml.*
+
+#Ant
+build.xml
+local.properties
+proguard.cfg
+
+#Gradle
+.gradle
+build
+
+#OSX
+.DS_Store
+
+#Personal Files
+signing.properties
+
+#ffmpeg
+app/jni/ffmpeg*
+app/jni/ffmpeg-android
+
+#DaoDBGenerator
+dependancies/DaoDBGenerator/src-gen
+
+#NDK Build
+*.o
+*.d
+obj/local/*

@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+
+android {
+
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        minSdkVersion 11
+        targetSdkVersion 21
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'Source/AndroidManifest.xml'
+            java.srcDirs = ['Source/src']
+            resources.srcDirs = ['Source/src']
+            aidl.srcDirs = ['Source/src']
+            renderscript.srcDirs = ['Source/src']
+            res.srcDirs = ['Source/res']
+            assets.srcDirs = ['Source/assets']
+        }
+
+        instrumentTest.setRoot('tests')
+    }
+}
+dependencies {
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    compile 'com.android.support:support-v4:21.0.0'
+    compile 'com.android.support:appcompat-v7:22.0.0'
+}

@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,6 +66,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     private String mCurrentClassid;
     private boolean mIsParent;
     private Menu mMenu;
+    private View rootView;
     private boolean isInMiddleOfUpdateView;
     private boolean isConverstaionFragmentCreated;
 
@@ -195,16 +197,16 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.activity_teacher_list, container, false);
-        listview = (MaterialListView) root.findViewById(R.id.material_listview);
+        rootView = inflater.inflate(R.layout.activity_teacher_list, container, false);
+        listview = (MaterialListView) rootView.findViewById(R.id.material_listview);
 
-        initView(root);
+        initView(rootView);
 
         setListener();
 
         setHasOptionsMenu(true);
 
-        return root;
+        return rootView;
     }
 
     public void onDestroyView() {
@@ -244,6 +246,63 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
         //
         if (RongCloudEvent.getInstance() != null)
             RongCloudEvent.getInstance().setmListener(this);
+
+        if (rootView != null) {
+            rootView.setFocusableInTouchMode(true);
+            rootView.requestFocus();
+            rootView.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        ((MainActivity) mParentContext).pager.unlock();
+
+                        InputMethodManager imm = (InputMethodManager) mParentContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(((MainActivity) mParentContext).getWindow().getDecorView().getWindowToken(), 0);
+
+                        try {
+                            isConverstaionFragmentCreated = false;
+                            Fragment fragment = getFragmentManager().findFragmentByTag("Conversation");
+                            if (fragment != null) {
+                                getFragmentManager().popBackStack();
+                            }
+
+                            if (!Version.PARENT) {
+                                initTeacherActionBar();
+                            } else {
+                                mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
+                            }
+                        } catch (IllegalStateException ignored) {
+                            // There's no way to avoid getting this if saveInstanceState has already been called.
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+    public void onBackPressed() {
+        ((MainActivity) mParentContext).pager.unlock();
+
+        InputMethodManager imm = (InputMethodManager) mParentContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(((MainActivity) mParentContext).getWindow().getDecorView().getWindowToken(), 0);
+
+        try {
+            isConverstaionFragmentCreated = false;
+            Fragment fragment = getFragmentManager().findFragmentByTag("Conversation");
+            if (fragment != null) {
+                getFragmentManager().popBackStack();
+            }
+
+            if (!Version.PARENT) {
+                initTeacherActionBar();
+            } else {
+                mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
+            }
+        } catch (IllegalStateException ignored) {
+            // There's no way to avoid getting this if saveInstanceState has already been called.
+        }
+
     }
 
     @Override
@@ -442,24 +501,26 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     }
 
     private void initTeacherActionBar() {
-        mainActivity.getMenuInflater().inflate(R.menu.menu_contacts, mMenu);
-        if (DataWrapper.getInstance().findMyClass().size() > 1) {
-            mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, DataWrapper.getInstance().findMyClass());
+        if(!mMenu.hasVisibleItems()) {
+            mainActivity.getMenuInflater().inflate(R.menu.menu_contacts, mMenu);
+            if (DataWrapper.getInstance().findMyClass().size() > 1) {
+                mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+                SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, DataWrapper.getInstance().findMyClass());
 
-            ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
-                @Override
-                public boolean onNavigationItemSelected(int i, long l) {
-                    mCurrentClassid = DataWrapper.getInstance().findMyClass().get(i).getClassid();
-                    selectContacts(mCurrentClassid, mIsParent);
-                    return false;
-                }
-            };
-            mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
-            mainActivity.getSupportActionBar().setTitle("");
-        } else {
-            mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
+                ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(int i, long l) {
+                        mCurrentClassid = DataWrapper.getInstance().findMyClass().get(i).getClassid();
+                        selectContacts(mCurrentClassid, mIsParent);
+                        return false;
+                    }
+                };
+                mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
+                mainActivity.getSupportActionBar().setTitle("");
+            } else {
+                mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
+            }
         }
     }
 

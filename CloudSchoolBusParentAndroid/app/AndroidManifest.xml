@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.guokrspace.cloudschoolbus.parents"
-    android:versionCode="10"
-    android:versionName="3.5.3" >
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.guokrspace.cloudschoolbus.parents"
+          android:versionCode="10"
+          android:versionName="3.5.3">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -52,7 +53,8 @@
         <activity android:name="com.guokrspace.cloudschoolbus.parents.module.classes.Streaming.Preview" />
         <activity
             android:name="com.guokrspace.cloudschoolbus.parents.base.activity.GalleryActivityUrl"
-            android:configChanges="orientation" >
+            android:configChanges="orientation"
+            android:theme="@style/GalleryTheme">
         </activity>
         <activity
             android:name="com.guokrspace.cloudschoolbus.parents.base.activity.BaseWebViewActivity">
@@ -74,6 +76,14 @@
                 <!-- 接收bind,unbind,fetch,delete等反馈消息 -->
                 <action android:name="com.baidu.android.pushservice.action.RECEIVE" />
                 <action android:name="com.baidu.android.pushservice.action.notification.CLICK" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".base.wxapi.AppRegister"
+            android:permission="com.tencent.mm.plugin.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
         </receiver>
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_window">#FFE5E5E5</color>
+    <color name="primary">#F1A141</color>
+    <color name="primary_dark">#8f000000</color>
+    <color name="primary_white">#FFFFFF</color>
+    <color name="accent">#F4982E</color>
+    <color name="event_color_01">#59dbe0</color>
+    <color name="event_color_02">#f57f68</color>
+    <color name="event_color_03">#87d288</color>
+    <color name="event_color_04">#f8b552</color>
+    <color name="toolbar">#efefef</color>
+    <color name="action_bar_icon">#FFFFFF</color>
+    <color name="toolbar_text">#8f000000</color>
+    <color name="button_disable">#C8C8C8</color>
+    <color name="text_blue">#157efb</color>
+    <color name="button_enable">#2392C1</color>
+    <color name="list_gray_text_color">#848484</color>
+</resources>

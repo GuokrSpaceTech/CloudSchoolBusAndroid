@@ -275,4 +275,12 @@ public class UrlTouchImageView extends RelativeLayout {
         deleteCacheFiles();
         super.finalize();
     }
+
+    public Bitmap getmBmp() {
+        return mBmp;
+    }
+
+    public void setmBmp(Bitmap mBmp) {
+        this.mBmp = mBmp;
+    }
 }

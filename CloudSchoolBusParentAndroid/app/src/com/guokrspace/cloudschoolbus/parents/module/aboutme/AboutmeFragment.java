@@ -453,10 +453,9 @@ public class AboutmeFragment extends BaseFragment implements
             studentEntity = mApplication.mStudents.get(currentChild);
 
             avatar = studentEntity.getAvatar();
-            //Trim the . in the end
-            if(avatar.charAt(avatar.length()-1) == '.')
-                avatar = avatar.substring(0,avatar.lastIndexOf('.'));
-            Picasso.with(mParentContext).load(avatar).fit().centerCrop().into(imageViewAvatar);
+
+            if(avatar!=null && !avatar.isEmpty())
+                Picasso.with(mParentContext).load(avatar).fit().centerCrop().into(imageViewAvatar);
 
             if (studentEntity.getNikename() == null)
                 textViewUserName.setText(studentEntity.getCnname());
@@ -473,7 +472,8 @@ public class AboutmeFragment extends BaseFragment implements
             }
 
             if(user!=null) {
-                Picasso.with(mParentContext).load(user.getAvatar()).into(imageViewAvatar);
+                if(user.getAvatar()!=null && !user.getAvatar().isEmpty())
+                    Picasso.with(mParentContext).load(user.getAvatar()).into(imageViewAvatar);
                 textViewUserName.setText(user.getRealname());
             }
         }

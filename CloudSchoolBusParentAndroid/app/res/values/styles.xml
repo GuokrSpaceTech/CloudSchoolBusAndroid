@@ -45,4 +45,16 @@
     <style name="ShrinkAnimationTheme" parent="AppTheme">
         <item name="android:windowExitAnimation">@anim/scaletocorner</item>
     </style>
+
+
+    <style name="GalleryTheme" parent="Theme.AppCompat">
+        <item name="android:actionBarStyle">@style/GalleryActionBar</item>
+    </style>
+
+    <style name="GalleryActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@android:color/black</item>
+        <!--<item name="android:windowActionBar">false</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+    </style>
+
 </resources>

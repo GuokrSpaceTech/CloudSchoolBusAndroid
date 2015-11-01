@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.guokrspace.cloudschoolbus.parents.base.activity.GalleryActivityUrl">
+    <item
+        android:id="@+id/picture_share"
+        android:icon="@drawable/ic_share_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/pictureshare"
+        app:showAsAction="always">
+        <!-- A empty SubMenu as Placeholder-->
+        <menu> </menu>
+        </item>
+    <item
+        android:id="@+id/picture_save"
+        android:icon="@drawable/ic_file_download_white_24dp"
+        android:title="@string/picturesave"
+        app:showAsAction="always">
+
+    </item>
+</menu>

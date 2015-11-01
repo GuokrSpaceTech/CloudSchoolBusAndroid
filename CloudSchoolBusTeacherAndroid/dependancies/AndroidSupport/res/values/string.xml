@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="loading">@string/loading</string>
+    <string name="Mon">周一</string>
+    <string name="Tue">周二</string>
+    <string name="Web">周三</string>
+    <string name="Thu">周四</string>
+    <string name="Fri">周五</string>
+    <string name="Sat">周六</string>
+    <string name="Sun">周日</string>
+    <string name="january">一月</string>
+    <string name="february">二月</string>
+    <string name="march">三月</string>
+    <string name="april">四月</string>
+    <string name="may">五月</string>
+    <string name="june">六月</string>
+    <string name="july">七月</string>
+    <string name="august">八月</string>
+    <string name="september">九月</string>
+    <string name="october">十月</string>
+    <string name="november">十一月</string>
+    <string name="december">十二月</string>
+    <string name="minutes_ago">分钟前</string>
+    <string name="hours_ago">小时前</string>
+
+</resources>

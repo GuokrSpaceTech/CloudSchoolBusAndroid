@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.soulwolf.image.picturelib.view.SquareLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="55dp"
+    android:layout_height="55dp"
+    android:padding="1sp"
+    android:background="@color/pc_black_t"
+    android:focusable="false">
+
+    <ImageView
+        android:id="@+id/picture_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pd_empty_picture"
+        android:layout_centerInParent="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/retry_icon"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ic_reload"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:progressDrawable="@drawable/customize_progress_bar"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:background="@android:color/transparent"/>
+
+</net.soulwolf.image.picturelib.view.SquareLayout>

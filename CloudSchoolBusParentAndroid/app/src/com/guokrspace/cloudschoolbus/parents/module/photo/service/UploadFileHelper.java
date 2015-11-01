@@ -21,6 +21,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import net.soulwolf.image.picturelib.model.Picture;
+import net.soulwolf.image.picturelib.view.cropwindow.handle.Handle;
 
 import org.apache.http.Header;
 
@@ -39,6 +40,7 @@ import java.util.List;
  */
 public class UploadFileHelper {
 
+    Thread thread;
 	private Context mContext;
 	private Fragment mFragment;
 	private CloudSchoolBusParentsApplication mApplication;
@@ -194,43 +196,48 @@ public class UploadFileHelper {
     }
 
 
-    public void addUploadQueue( ArrayList<Picture> pictureList, String content, String pickey)
+    public void addUploadQueue( final ArrayList<Picture> pictureList, final String content, final String pickey)
     {
-        int currentclass = mApplication.mConfig.getCurrentChild();
-        String classid = mApplication.mTeacherClassDutys.get(currentclass).getClassid();
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int currentclass = mApplication.mConfig.getCurrentChild();
+                    String classid = mApplication.mTeacherClassDutys.get(currentclass).getClassid();
 
-        UploadArticleEntity uploadArticle = new UploadArticleEntity();
-        uploadArticle.setPickey(pickey);
-        uploadArticle.setTeacherid(mApplication.mConfig.getUserid());
-        uploadArticle.setPictype("article");
-        uploadArticle.setClassid(classid);
-        uploadArticle.setContent(content);
-        uploadArticle.setSendtime(System.currentTimeMillis() / 1000 + "");
+                    UploadArticleEntity uploadArticle = new UploadArticleEntity();
+                    uploadArticle.setPickey(pickey);
+                    uploadArticle.setTeacherid(mApplication.mConfig.getUserid());
+                    uploadArticle.setPictype("article");
+                    uploadArticle.setClassid(classid);
+                    uploadArticle.setContent(content);
+                    uploadArticle.setSendtime(System.currentTimeMillis() / 1000 + "");
 
-        mApplication.mDaoSession.getUploadArticleEntityDao().insert(uploadArticle);
+                    mApplication.mDaoSession.getUploadArticleEntityDao().insert(uploadArticle);
 
-        for(Picture picture:pictureList)
-        {
-            UploadArticleFileEntity uploadFile = new UploadArticleFileEntity();
+                    for (Picture picture : pictureList) {
+                        UploadArticleFileEntity uploadFile = new UploadArticleFileEntity();
 
-            String picPathString = picture.getPicturePath().replace("file:///", "/");
-            String fname = "";
-            String ftime = "";
-            if (!TextUtils.isEmpty(picPathString)) {
-                File file= new File(picPathString);
-                ftime = (file.lastModified()/1000) + "";
-                fname = picPathString.substring(picPathString.lastIndexOf("/") + 1);
-            }
+                        String picPathString = picture.getPicturePath().replace("file:///", "/");
+                        String fname = "";
+                        String ftime = "";
+                        if (!TextUtils.isEmpty(picPathString)) {
+                            File file = new File(picPathString);
+                            ftime = (file.lastModified() / 1000) + "";
+                            fname = picPathString.substring(picPathString.lastIndexOf("/") + 1);
+                        }
 
-            uploadFile.setFname(fname);
-            uploadFile.setFtime(ftime);
-            uploadFile.setFbody(picPathString);
-            uploadFile.setPictype("article");
-            uploadFile.setPickey(pickey);
-//            uploadFile.setCompress(compressUploadSource(uploadFile));
+                        uploadFile.setFname(fname);
+                        uploadFile.setFtime(ftime);
+                        uploadFile.setFbody(picPathString);
+                        uploadFile.setPictype("article");
+                        uploadFile.setPickey(pickey);
 
-            mApplication.mDaoSession.getUploadArticleFileEntityDao().insertOrReplace(uploadFile);
-        }
+                        mApplication.mDaoSession.getUploadArticleFileEntityDao().insertOrReplace(uploadFile);
+                    }
+                }
+            });
+
+            thread.run();
     }
 
     public List<UploadArticleEntity> readUploadQ ()

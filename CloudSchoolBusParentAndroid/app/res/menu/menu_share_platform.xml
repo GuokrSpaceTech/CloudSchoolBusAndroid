@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+        <item
+            android:id="@+id/wechat_friend"
+            android:icon="@drawable/skyblue_logo_wechat"
+            android:title="微信好友"
+            app:showAsAction="always"/>
+        <item
+            android:id="@+id/wechat_moments"
+            android:icon="@drawable/skyblue_logo_wechatmoments"
+            android:title="朋友圈"
+            app:showAsAction="always"/>
+</menu>

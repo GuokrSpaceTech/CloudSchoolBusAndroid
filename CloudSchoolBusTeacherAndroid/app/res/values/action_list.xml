@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="action_list">
+        <item>照片</item>
+        <item>通知</item>
+        <item>活动报名</item>
+        <item>考勤</item>
+        <item>视频公开课</item>
+        <item>班级报告</item>
+        <item>课程表</item>
+        <item>食谱</item>
+    </string-array>
+</resources>

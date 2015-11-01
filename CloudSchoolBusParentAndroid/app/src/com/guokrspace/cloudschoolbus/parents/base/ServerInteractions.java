@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Button;
 
+import com.android.support.dialog.CustomWaitDialog;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
@@ -41,6 +42,8 @@ import java.util.List;
  * Created by kai on 10/8/15.
  */
 public class ServerInteractions {
+
+    private CustomWaitDialog mCustomWaitDialog;
 
     private static final ServerInteractions SERVER_INTERACT = new ServerInteractions();
     private static CloudSchoolBusParentsApplication mApplication=null;
@@ -156,9 +159,9 @@ public class ServerInteractions {
                                 message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
 
                         SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
-                        if(senderEntity.getId()!=null
+                        if (senderEntity.getId() != null
                                 && !senderEntity.getId().isEmpty()
-                                && messageEntity.getMessageid()!=null
+                                && messageEntity.getMessageid() != null
                                 && !messageEntity.getMessageid().isEmpty()) {
                             messageEntityDao.insertOrReplace(messageEntity);
                             senderEntityDao.insertOrReplace(senderEntity);
@@ -204,7 +207,7 @@ public class ServerInteractions {
                 }
                 if (retCode.equals("1")) {
                     // No New Records are found
-                    handler.sendEmptyMessage(HandlerConstant.MSG_NOCHANGE);
+                    handler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE); //Try to display the cached message
                 } else {
                     Message msg = handler.obtainMessage();
                     msg.what = HandlerConstant.MSG_SERVER_ERROR;
@@ -353,12 +356,15 @@ public class ServerInteractions {
             return;
         }
 
+        showWaitDialog("",null);
+
         HashMap<String, String> params = new HashMap<String, String>();
         if(messageid!=null) params.put("messageid", messageid);
 
         CloudSchoolBusRestClient.get(ProtocolDef.METHOD_noticeconfirm, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                hideWaitDialog();
                 Message msg = handler.obtainMessage();
                 msg.what = HandlerConstant.MSG_CONFIRM_OK;
                 button.setTag(messageid);
@@ -369,6 +375,7 @@ public class ServerInteractions {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                hideWaitDialog();
                 Message msg = handler.obtainMessage();
                 msg.what = HandlerConstant.MSG_CONFIRM_OK;
                 button.setTag(messageid);
@@ -379,6 +386,7 @@ public class ServerInteractions {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                hideWaitDialog();
                 Message msg = handler.obtainMessage();
                 msg.what = HandlerConstant.MSG_CONFIRM_OK;
                 button.setTag(messageid);
@@ -389,6 +397,7 @@ public class ServerInteractions {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                hideWaitDialog();
                 Message msg = handler.obtainMessage();
                 msg.what = HandlerConstant.MSG_SERVER_ERROR;
                 msg.obj = throwable;
@@ -398,12 +407,14 @@ public class ServerInteractions {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                hideWaitDialog();
                 handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                hideWaitDialog();
                 handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
@@ -466,5 +477,42 @@ public class ServerInteractions {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+    }
+
+    /**
+     * 显示等待对话框
+     *
+     * @param messageString
+     */
+    protected void showWaitDialog(String messageString,
+                                  final CustomWaitDialog.OnKeyCancel onKeyCancel) {
+        if (null == mCustomWaitDialog) {
+            mCustomWaitDialog = new CustomWaitDialog(mContext,
+                    com.android.support.R.style.CustomWaitDialog);
+            mCustomWaitDialog.setCancelable(true);
+            mCustomWaitDialog.setCanceledOnTouchOutside(false);
+            mCustomWaitDialog.setMessage(messageString);
+            mCustomWaitDialog.setOnKeyCancelListener(new CustomWaitDialog.OnKeyCancel() {
+
+                @Override
+                public void onKeyCancelListener() {
+                    if (null != onKeyCancel) {
+                        onKeyCancel.onKeyCancelListener();
+                    }
+                    if (null != mCustomWaitDialog) {
+                        mCustomWaitDialog.cancel();
+                        mCustomWaitDialog = null;
+                    }
+                }
+            });
+            mCustomWaitDialog.show();
+        }
+    }
+
+    protected void hideWaitDialog() {
+        if (null != mCustomWaitDialog) {
+            mCustomWaitDialog.cancel();
+            mCustomWaitDialog = null;
+        }
     }
 }
