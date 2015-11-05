@@ -12,8 +12,6 @@ public class TagEntity {
     private String tagnamedesc;
     private String tagname_en;
     private String tagnamedesc_en;
-    /** Not-null value. */
-    private String messageid;
 
     public TagEntity() {
     }
@@ -22,13 +20,12 @@ public class TagEntity {
         this.tagid = tagid;
     }
 
-    public TagEntity(String tagid, String tagName, String tagnamedesc, String tagname_en, String tagnamedesc_en, String messageid) {
+    public TagEntity(String tagid, String tagName, String tagnamedesc, String tagname_en, String tagnamedesc_en) {
         this.tagid = tagid;
         this.tagName = tagName;
         this.tagnamedesc = tagnamedesc;
         this.tagname_en = tagname_en;
         this.tagnamedesc_en = tagnamedesc_en;
-        this.messageid = messageid;
     }
 
     /** Not-null value. */
@@ -71,16 +68,6 @@ public class TagEntity {
 
     public void setTagnamedesc_en(String tagnamedesc_en) {
         this.tagnamedesc_en = tagnamedesc_en;
-    }
-
-    /** Not-null value. */
-    public String getMessageid() {
-        return messageid;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setMessageid(String messageid) {
-        this.messageid = messageid;
     }
 
 }

@@ -32,7 +32,6 @@ import android.widget.TextView;
 import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
@@ -51,7 +50,6 @@ public class SelectUserDialogFragment extends DialogFragment {
     private static final String USERINFO = "userinfo";
     private static final String TAG = SelectUserDialogFragment.class.getName();
     private List<StudentEntity> mChildren;
-    private List<ClassEntityT> mClasses;
     private int currentChild;
 
     private DynamicGridView gridView;
@@ -72,10 +70,7 @@ public class SelectUserDialogFragment extends DialogFragment {
 
         Object infos = getArguments().get(USERINFO);
         String type = getArguments().getString("type");
-        if(type.equals("class"))
-            mClasses = (ArrayList<ClassEntityT>)infos;
-        else if(type.equals("student"))
-            mChildren = (ArrayList<StudentEntity>)infos;
+        mChildren = (ArrayList<StudentEntity>)infos;
     }
 
     @Override
@@ -90,8 +85,6 @@ public class SelectUserDialogFragment extends DialogFragment {
 
         if(mChildren!=null)
             gridView.setAdapter(new SwitchAdapter(getActivity(), mChildren, getResources().getInteger(R.integer.column_count)));
-        else
-            gridView.setAdapter(new SwitchAdapter(getActivity(), mClasses,  getResources().getInteger(R.integer.column_count)));
 
         //add callback to stop edit mode if needed
         gridView.setOnDropListener(new DynamicGridView.OnDropListener()
@@ -154,13 +147,8 @@ public class SelectUserDialogFragment extends DialogFragment {
                 holder = (ClassViewHolder) convertView.getTag();
             }
 
-            if(getItem(position) instanceof StudentEntity) {
-                StudentEntity childInfo = (StudentEntity) getItem(position);
-                holder.build(childInfo.getCnname(), childInfo.getAvatar());
-            } else if(getItem(position) instanceof ClassEntityT) {
-                ClassEntityT theClass = (ClassEntityT)getItem(position);
-                holder.build(theClass.getClassname(), "");
-            }
+            StudentEntity childInfo = (StudentEntity) getItem(position);
+            holder.build(childInfo.getCnname(), childInfo.getAvatar());
 
             return convertView;
         }
@@ -194,7 +182,7 @@ public class SelectUserDialogFragment extends DialogFragment {
         ConfigEntityDao configEntityDao = theApplication.mDaoSession.getConfigEntityDao();
         List<ConfigEntity> configEntitys = configEntityDao.queryBuilder().list();
         if(configEntitys.size()>0) {
-            configEntitys.get(0).setCurrentChild(current);
+            configEntitys.get(0).setCurrentuser(current);
             configEntityDao.update(configEntitys.get(0));
             theApplication.mConfig = configEntitys.get(0);
             BusProvider.getInstance().post(new InfoSwitchedEvent(current));

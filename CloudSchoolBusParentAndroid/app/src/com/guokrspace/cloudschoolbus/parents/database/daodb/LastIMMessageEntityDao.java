@@ -33,8 +33,6 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Lon
     };
 
     private Query<LastIMMessageEntity> teacherEntity_LastIMMessageEntityListQuery;
-    private Query<LastIMMessageEntity> parentEntityT_LastIMMessageEntityListQuery;
-    private Query<LastIMMessageEntity> teacherEntityT_LastIMMessageEntityListQuery;
 
     public LastIMMessageEntityDao(DaoConfig config) {
         super(config);
@@ -142,34 +140,6 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Lon
             }
         }
         Query<LastIMMessageEntity> query = teacherEntity_LastIMMessageEntityListQuery.forCurrentThread();
-        query.setParameter(0, userid);
-        return query.list();
-    }
-
-    /** Internal query to resolve the "lastIMMessageEntityList" to-many relationship of ParentEntityT. */
-    public List<LastIMMessageEntity> _queryParentEntityT_LastIMMessageEntityList(String userid) {
-        synchronized (this) {
-            if (parentEntityT_LastIMMessageEntityListQuery == null) {
-                QueryBuilder<LastIMMessageEntity> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Userid.eq(null));
-                parentEntityT_LastIMMessageEntityListQuery = queryBuilder.build();
-            }
-        }
-        Query<LastIMMessageEntity> query = parentEntityT_LastIMMessageEntityListQuery.forCurrentThread();
-        query.setParameter(0, userid);
-        return query.list();
-    }
-
-    /** Internal query to resolve the "lastIMMessageEntityList" to-many relationship of TeacherEntityT. */
-    public List<LastIMMessageEntity> _queryTeacherEntityT_LastIMMessageEntityList(String userid) {
-        synchronized (this) {
-            if (teacherEntityT_LastIMMessageEntityListQuery == null) {
-                QueryBuilder<LastIMMessageEntity> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Userid.eq(null));
-                teacherEntityT_LastIMMessageEntityListQuery = queryBuilder.build();
-            }
-        }
-        Query<LastIMMessageEntity> query = teacherEntityT_LastIMMessageEntityListQuery.forCurrentThread();
         query.setParameter(0, userid);
         return query.list();
     }

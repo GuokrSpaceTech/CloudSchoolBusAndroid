@@ -36,10 +36,7 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.LastIMMessageEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.widget.ContactListCard;
 import com.squareup.otto.Subscribe;
@@ -91,11 +88,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
 
                         if (!mFragment.isVisible()) break;
 
-                        if (Version.PARENT) {
                             updateContacts();
-                        } else {
-                            selectContacts(mCurrentClassid, mIsParent);
-                        }
 
                         break;
                 }
@@ -113,18 +106,9 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
             if (isConverstaionFragmentCreated == false) {
                 int position = (int) view.getTag();
                 String mTargetID = "";
-                if (!Version.PARENT) {
-                    if (mIsParent) {
-                        mTargetID = DataWrapper.getInstance().findParentsinClass(mCurrentClassid).get(position).getParentid();
-                        userName = DataWrapper.getInstance().findParentsinClass(mCurrentClassid).get(position).getNikename();
-                    } else {
-                        mTargetID = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
-                        userName = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getNickname();
-                    }
-                } else {
+
                     userName = mApplication.mTeachers.get(position).getName();
                     mTargetID = mApplication.mTeachers.get(position).getTeacherid();
-                }
 
                 //
                 setUpChattingPageActionbar();
@@ -223,13 +207,8 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
 
 
     private void initView(View v) {
-        if (Version.PARENT) {
             updateContacts();
-        } else {
-            mCurrentClassid = DataWrapper.getInstance().findCurrentClass(mApplication.mConfig.getCurrentChild()).getClassid();
-            mIsParent = true;
-            selectContacts(mCurrentClassid, mIsParent);
-        }
+
     }
 
     @Override
@@ -266,11 +245,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                                 getFragmentManager().popBackStack();
                             }
 
-                            if (!Version.PARENT) {
-                                initTeacherActionBar();
-                            } else {
                                 mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
-                            }
                         } catch (IllegalStateException ignored) {
                             // There's no way to avoid getting this if saveInstanceState has already been called.
                         }
@@ -294,11 +269,8 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                 getFragmentManager().popBackStack();
             }
 
-            if (!Version.PARENT) {
-                initTeacherActionBar();
-            } else {
+
                 mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
-            }
         } catch (IllegalStateException ignored) {
             // There's no way to avoid getting this if saveInstanceState has already been called.
         }
@@ -318,25 +290,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        if (!Version.PARENT) {
-            mMenu = menu;
-            inflater.inflate(R.menu.menu_contacts, menu);
-            SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, DataWrapper.getInstance().findMyClass());
-            ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
-                @Override
-                public boolean onNavigationItemSelected(int i, long l) {
-                    mCurrentClassid = DataWrapper.getInstance().findMyClass().get(i).getClassid();
-                    selectContacts(mCurrentClassid, mIsParent);
-                    return false;
-                }
-            };
-            mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
-            mainActivity.getSupportActionBar().setTitle("");
-        } else {
             mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
-        }
-
     }
 
     @Override
@@ -362,97 +316,16 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                         getFragmentManager().popBackStack();
                     }
 
-                    if (!Version.PARENT) {
-                        initTeacherActionBar();
-                    } else {
+
                         mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
-                    }
+
                 } catch (IllegalStateException ignored) {
                     // There's no way to avoid getting this if saveInstanceState has already been called.
                 }
-
-                break;
-            case R.id.action_teacher:
-                mIsParent = false;
-                selectContacts(mCurrentClassid, mIsParent);
-                break;
-            case R.id.action_parents:
-                mIsParent = true;
-                selectContacts(mCurrentClassid, mIsParent);
                 break;
         }
 
         return false;
-    }
-
-
-    //Select contact group either parents or teachers
-    private void selectContacts(String classid, boolean mIsParent) {
-
-        isInMiddleOfUpdateView = true;
-        if (mIsParent) {
-            listview.clear();
-            List<ParentEntityT> parents = DataWrapper.getInstance().findParentsinClass(classid);
-
-            int i = 0;
-            for (ParentEntityT parent : parents) {
-                ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
-                List<StudentEntityT> students = DataWrapper.getInstance().findStudentInCurrentClassForParent(parent, classid);
-                //Find the student in this class
-                if (students.size() > 0) {
-                    card.setContactAvatarUrl(students.get(0).getAvatar()); //Avatar
-                }
-                card.setContactName(parent.getNikename()); //Name
-                card.setSubtitle(generateStudentsNameSting(DataWrapper.getInstance().findStudentsOfParents(parent)));
-                card.setPhonenumber(parent.getMobile());
-                List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao()
-                        .queryBuilder()
-                        .where(LastIMMessageEntityDao.Properties.Userid.eq(parent.getParentid()))
-                        .list();
-
-                if (lastIMs.size() > 0) {
-                    card.setTimestamp(DateUtils.timelineTimestamp(lastIMs.get(0).getTimestamp(), mParentContext));
-                    if (lastIMs.get(0).getHasUnread().equals("1")) {
-                        card.setHasUnread(true);
-                    } else {
-                        card.setHasUnread(false);
-                    }
-                }
-                card.setPosition(i);
-                card.setOnClickListener(mOnClickListener);
-                listview.add(card);
-                i++;
-            }
-
-        } else {
-            listview.clear();
-            List<TeacherEntityT> teacherList = DataWrapper.getInstance().findTeachersinClass(classid);
-            int i = 0;
-            for (TeacherEntityT teacher : teacherList) {
-                ContactListCard card = new ContactListCard(mParentContext); //This card can be teacher or parents
-                card.setContactAvatarUrl(teacher.getAvatar()); //Avatar
-                card.setContactName(teacher.getRealname()); //Name
-                card.setSubtitle(DataWrapper.getInstance().findCurrentClass().getClassname());
-                card.setPhonenumber(teacher.getMobile());
-                card.setPosition(i);
-                List<LastIMMessageEntity> lastIMs = mApplication.mDaoSession.getLastIMMessageEntityDao()
-                        .queryBuilder()
-                        .where(LastIMMessageEntityDao.Properties.Userid.eq(teacher.getTeacherid()))
-                        .list();
-                if (lastIMs.size() > 0) {
-                    card.setTimestamp(DateUtils.timelineTimestamp(lastIMs.get(0).getTimestamp(), mParentContext));
-                    if (lastIMs.get(0).getHasUnread().equals("1")) {
-                        card.setHasUnread(true);
-                    } else {
-                        card.setHasUnread(false);
-                    }
-                }
-                card.setOnClickListener(mOnClickListener);
-                listview.add(card);
-                i++;
-            }
-        }
-        isInMiddleOfUpdateView = false;
     }
 
     private void updateContacts() {
@@ -500,38 +373,8 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
         }
     }
 
-    private void initTeacherActionBar() {
-        if(!mMenu.hasVisibleItems()) {
-            mainActivity.getMenuInflater().inflate(R.menu.menu_contacts, mMenu);
-            if (DataWrapper.getInstance().findMyClass().size() > 1) {
-                mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-                SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, DataWrapper.getInstance().findMyClass());
-
-                ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(int i, long l) {
-                        mCurrentClassid = DataWrapper.getInstance().findMyClass().get(i).getClassid();
-                        selectContacts(mCurrentClassid, mIsParent);
-                        return false;
-                    }
-                };
-                mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
-                mainActivity.getSupportActionBar().setTitle("");
-            } else {
-                mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-                mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
-            }
-        }
-    }
-
     private void setUpChattingPageActionbar() {
-        if (!Version.PARENT) {
-            mMenu.clear();
-            mainActivity.getSupportActionBar().setTitle(userName);
-            mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        } else {
             mainActivity.setActionBarTitle(userName, getResources().getString(R.string.module_teacher));
-        }
     }
 
     @Override
@@ -542,13 +385,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
 
     @Subscribe
     public void onUserSwitchEvent(InfoSwitchedEvent event) {
-        if (Version.PARENT) {
             updateContacts();
-        } else {
-            mCurrentClassid = DataWrapper.getInstance().findCurrentClass(event.getCurrentChild()).getClassid();
-            mIsParent = true;
-            selectContacts(mCurrentClassid, mIsParent);
-        }
     }
 
     private class MyConversationBehaviorListener implements RongIM.ConversationBehaviorListener {
@@ -628,15 +465,4 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
         }
     }
 
-
-    private String generateStudentsNameSting(ArrayList<StudentEntityT> students) {
-        String retString = "";
-        for (StudentEntityT student : students) {
-            retString += student.getCnname() + ",";
-        }
-
-        retString = retString.substring(0, retString.lastIndexOf(',')) + getResources().getString(R.string.parents);
-
-        return retString;
-    }
 }

@@ -81,6 +81,8 @@
     <string name="parents">家长</string>
     <string name="teachers">教师</string>
 
+    <string name="pictureshare">分享</string>
+    <string name="picturesave">保存</string>
     <string name="altersignout">"注意：本地数据将会被删除"</string>
 
     <string name="gallery_choose">Gallery Select</string>

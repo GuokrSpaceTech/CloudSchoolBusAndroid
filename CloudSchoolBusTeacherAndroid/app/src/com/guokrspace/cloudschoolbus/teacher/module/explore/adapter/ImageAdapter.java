@@ -25,10 +25,14 @@ import java.util.List;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private List<String> mPicUrls = new ArrayList<>();
+    private String mDesc;
+    private String mTitle;
 
-    public ImageAdapter(Context c, List<String> urls) {
+    public ImageAdapter(Context c, List<String> urls, String desc, String title) {
         mContext = c;
         mPicUrls = urls;
+        mDesc = desc;
+        mTitle = title;
     }
 
     @Override
@@ -89,6 +93,8 @@ public class ImageAdapter extends BaseAdapter {
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("fileUrls", (ArrayList<String>) mPicUrls);
                 bundle.putInt("currentFile", position);
+                bundle.putString("description", mDesc);
+                bundle.putString("tilte", mTitle);
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
             }

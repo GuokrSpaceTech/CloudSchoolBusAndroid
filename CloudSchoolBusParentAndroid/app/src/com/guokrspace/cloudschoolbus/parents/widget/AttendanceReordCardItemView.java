@@ -1,22 +1,31 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.activity.GalleryActivityUrl;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 /**
  * Created by Yang Kai on 15/7/14.
  */
 public class AttendanceReordCardItemView extends CardItemView<AttendanceRecordCard> {
 
+    Context mContext;
+
     public AttendanceReordCardItemView(Context context) {
         super(context);
+        this.mContext = context;
     }
 
     public AttendanceReordCardItemView(Context context, AttributeSet attrs) {
@@ -40,7 +49,10 @@ public class AttendanceReordCardItemView extends CardItemView<AttendanceRecordCa
             if(card.getTeacherAvatarUrl() == null || card.getTeacherAvatarUrl().isEmpty()) {
                 teacherHead.setImageDrawable(card.getDrawable());
             } else {
-                Picasso.with(getContext()).load(card.getTeacherAvatarUrl()).into(teacherHead);
+                Picasso.with(getContext())
+                        .load(card.getTeacherAvatarUrl()).centerCrop()
+                        .fit()
+                        .into(teacherHead);
             }
         }
         //Teacher Name
@@ -61,6 +73,7 @@ public class AttendanceReordCardItemView extends CardItemView<AttendanceRecordCa
         TextView sentTimeTextView    = (TextView) findViewById(R.id.timestamp);
         sentTimeTextView.setText(DateUtils.timelineTimestamp(sentTime,card.getContext()));
 
+
         /* Card Type */
         TextView cardTypeTextView = (TextView)findViewById(R.id.card_type);
         cardTypeTextView.setText(card.getCardType());
@@ -68,12 +81,13 @@ public class AttendanceReordCardItemView extends CardItemView<AttendanceRecordCa
         // ImageView
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
         if (imageView != null) {
-            if(card.getUrlImage() == null || card.getUrlImage().isEmpty()){
+            if(card.getRecordPicture() == null || card.getRecordPicture().isEmpty()){
                 imageView.setImageDrawable(card.getDrawable());
             } else {
-                Picasso.with(getContext()).load(card.getUrlImage()).into(imageView);
+                Picasso.with(getContext()).load(card.getRecordPicture()).centerCrop().fit().into(imageView);
             }
         }
+        imageView.setOnClickListener(card.getImageClickListener());
 
         // Description
         TextView description = (TextView) findViewById(R.id.text_content);

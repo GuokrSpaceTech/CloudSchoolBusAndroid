@@ -38,14 +38,10 @@ import com.guokrspace.cloudschoolbus.parents.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.parents.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.parents.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
-import com.guokrspace.cloudschoolbus.parents.module.photo.SentRecordFragment;
-import com.guokrspace.cloudschoolbus.parents.module.qrcode.CaptureActivity;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -188,13 +184,11 @@ public class AboutmeFragment extends BaseFragment implements
         else
             redDotIcon.setVisibility(View.VISIBLE);
 
-        if(Version.PARENT)
-            currentChild = mApplication.mConfig.getCurrentChild();
+            currentChild = mApplication.mConfig.getCurrentuser();
 
         /* Get the current user's avatar */
         updateUserInfoUI();
 
-        if(Version.PARENT) {
             buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
             layoutUploadRecord.setVisibility(View.GONE);
             View divider = root.findViewById(R.id.divider3);
@@ -204,10 +198,7 @@ public class AboutmeFragment extends BaseFragment implements
             TextView switchTextView = (TextView)root.findViewById(R.id.switchTextView);
             switchTextView.setText(getResources().getString(R.string.switch_child));
             layoutQRCode.setVisibility(View.GONE);
-        }
-        else {
-            buttonKindergarten.setText(mApplication.mSchoolsT.get(0).getName());
-        }
+
 
         textViewCache.setText(getDBSize());
 
@@ -255,31 +246,6 @@ public class AboutmeFragment extends BaseFragment implements
                 transaction.commit();
             }
         });
-
-        layoutUploadRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)mParentContext).pager.lock();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_aboutme_container, new SentRecordFragment(), "sentrecord");
-                transaction.addToBackStack("sentrecord");
-                transaction.commit();
-                isUploading = false;
-                redDotIcon.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        if(!Version.PARENT)
-        {
-            layoutQRCode.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ((MainActivity) mParentContext).pager.lock();
-                    Intent intent = new Intent(mParentContext, CaptureActivity.class);
-                    startActivityForResult(intent, 3001);
-                }
-            });
-        }
 
         layoutClearCache.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -377,12 +343,7 @@ public class AboutmeFragment extends BaseFragment implements
     private void showSwithUserDialog()
     {
         SelectUserDialogFragment theDialogFragment = null;
-        if (Version.PARENT) {
-            theDialogFragment  = SelectUserDialogFragment.newInstance((ArrayList) mApplication.mStudents, "student");
-        } else {
-            ArrayList<ClassEntityT> classes = DataWrapper.getInstance().findMyClass();
-            theDialogFragment = SelectUserDialogFragment.newInstance(classes, "class");
-        }
+        theDialogFragment  = SelectUserDialogFragment.newInstance((ArrayList) mApplication.mStudents, "student");
 
         theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyFragmentDialogStyle);
 
@@ -409,6 +370,7 @@ public class AboutmeFragment extends BaseFragment implements
             mApplication.clearConfig();
             mApplication.clearData();
             mApplication.clearBaseinfo();
+
             ((MainActivity)mParentContext).finish();
             Intent intent = new Intent(mParentContext, MainActivity.class);
             startActivity(intent);
@@ -449,7 +411,6 @@ public class AboutmeFragment extends BaseFragment implements
         /* Get the current child's avatar */
         StudentEntity studentEntity = null;
         String avatar = "";
-        if(Version.PARENT) {
             studentEntity = mApplication.mStudents.get(currentChild);
 
             avatar = studentEntity.getAvatar();
@@ -462,21 +423,6 @@ public class AboutmeFragment extends BaseFragment implements
             else
                 textViewUserName.setText(studentEntity.getNikename());
 
-        } else {
-            TeacherEntityT user = null;
-            for(TeacherEntityT teacher:mApplication.mTeachersT) {
-                if (teacher.getTeacherid().equals(mApplication.mConfig.getUserid())) {
-                    user = teacher;
-                    break;
-                }
-            }
-
-            if(user!=null) {
-                if(user.getAvatar()!=null && !user.getAvatar().isEmpty())
-                    Picasso.with(mParentContext).load(user.getAvatar()).into(imageViewAvatar);
-                textViewUserName.setText(user.getRealname());
-            }
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -506,8 +452,7 @@ public class AboutmeFragment extends BaseFragment implements
 
     private void saveUserAvatarInfo(String userid, String url) {
 
-        if(Version.PARENT)
-        {
+
             for(StudentEntity student : mApplication.mStudents)
             {
                 if(student.getStudentid().equals(userid))
@@ -518,16 +463,7 @@ public class AboutmeFragment extends BaseFragment implements
                 }
             }
             mApplication.mStudents = mApplication.mDaoSession.getStudentEntityDao().queryBuilder().list();
-        } else {
-            for (TeacherEntityT teacher : mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list()) {
-                if (teacher.getTeacherid().equals(userid)) {
-                    teacher.setAvatar(url);
-                    mApplication.mDaoSession.getTeacherEntityTDao().update(teacher);
-                    break;
-                }
-            }
-            mApplication.mTeachersT = mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list();
-        }
+
     }
 
     @Override
@@ -567,14 +503,10 @@ public class AboutmeFragment extends BaseFragment implements
 
         if(bitmapFilePath!=null)
         {
-            if(Version.PARENT) {
-                int currentchild = mApplication.mConfig.getCurrentChild();
+                int currentchild = mApplication.mConfig.getCurrentuser();
                 String studentid = mApplication.mStudents.get(currentchild).getStudentid();
                 ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
-            } else {
-                String teacherid = DataWrapper.getInstance().getMyself().getTeacherid();
-                ServerInteractions.getInstance().changeAvatarUser(teacherid, bitmapFilePath, mHandler);
-            }
+
         }
 
     }

@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.android.support.handlerui.HandlerToastUI;
 import com.android.support.utils.ImageUtil;
+import com.guokrspace.cloudschoolbus.parents.LoginActivity;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
@@ -26,6 +28,7 @@ import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 
@@ -119,9 +122,10 @@ public class GalleryActivityUrl extends BaseActivity implements IWXAPIEventHandl
                 finish();
                 break;
             case R.id.wechat_friend:
-                wxsharefriend(items.get(position));
+                wxsharefriend(items.get(position), descritption);
                 break;
             case R.id.wechat_moments:
+                wxshareMoments(items.get(position), descritption);
                 break;
             case R.id.picture_save:
                 Bitmap bitmap = pagerAdapter.currUrlTouchImageView.getmBmp();
@@ -152,35 +156,6 @@ public class GalleryActivityUrl extends BaseActivity implements IWXAPIEventHandl
         return getResources().getString(R.string.picturetype)+"("+ current + "/" + total +")";
     }
 
-//    public void showShare(String url) {
-//        ShareSDK.initSDK(mContext);
-//        OnekeyShare oks = new OnekeyShare();
-//        //关闭sso授权
-//        oks.disableSSOWhenAuthorize();
-//
-//        oks.setText("");
-//        oks.setImageUrl(url);
-//        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-////        oks.setTitle("");
-//////         titleUrl是标题的网络链接，仅在人人网和QQ空间使用
-////        oks.setTitleUrl("http://sharesdk.cn");
-////        // text是分享文本，所有平台都需要这个字段
-////        oks.setText("");
-////        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-////        oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
-////        // url仅在微信（包括好友和朋友圈）中使用
-////        oks.setUrl(url);
-////        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-////        oks.setComment("我是测试评论文本");
-//////        // site是分享此内容的网站名称，仅在QQ空间使用
-////        oks.setSite(getString(R.string.app_name));
-//////        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-////        oks.setSiteUrl("http://sharesdk.cn");
-//
-//// 启动分享GUI
-//        oks.show(mContext);
-//    }
-
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
@@ -188,30 +163,74 @@ public class GalleryActivityUrl extends BaseActivity implements IWXAPIEventHandl
         popup.show();
     }
 
-    private void wxsharefriend(String url)
+    private void wxsharefriend(final String url, final String descritption)
     {
-        try{
-            WXImageObject imgObj = new WXImageObject();
-            imgObj.imageUrl = url;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Bitmap bmp = BitmapFactory.decodeStream(new URL(url).openStream());
+                    int scale = ImageUtil.reckonThumbnail(bmp.getWidth(), bmp.getHeight(), 80, 80);
+                    Bitmap thumbBmp = ImageUtil.PicZoom(bmp, (int) (bmp.getWidth() / scale), (int) (bmp.getHeight() / scale));
+                    bmp.recycle();
 
-            WXMediaMessage msg = new WXMediaMessage();
-            msg.mediaObject = imgObj;
+                    WXWebpageObject webObj = new WXWebpageObject();
+                    webObj.webpageUrl = url;
 
-            Bitmap bmp = BitmapFactory.decodeStream(new URL(url).openStream());
-            Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
-            bmp.recycle();
-            msg.thumbData = ImageUtil.bmpToByteArray(thumbBmp, true);
+                    WXMediaMessage msg = new WXMediaMessage();
+                    msg.mediaObject = webObj;
+                    msg.thumbData = ImageUtil.bmpToByteArray(thumbBmp, true);
+                    msg.description = descritption;
 
-            SendMessageToWX.Req req = new SendMessageToWX.Req();
-            req.transaction = buildTransaction("img");
-            req.message = msg;
-            req.scene = SendMessageToWX.Req.WXSceneSession;
-            api.sendReq(req);
+
+                    SendMessageToWX.Req req = new SendMessageToWX.Req();
+                    req.transaction = buildTransaction("img");
+                    req.message = msg;
+                    req.scene = SendMessageToWX.Req.WXSceneSession;
+                    api.sendReq(req);
 
 //            finish();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
+
+    private void wxshareMoments(final String url, final String descritption)
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Bitmap bmp = BitmapFactory.decodeStream(new URL(url).openStream());
+                    int scale = ImageUtil.reckonThumbnail(bmp.getWidth(), bmp.getHeight(), 80, 80);
+                    Bitmap thumbBmp = ImageUtil.PicZoom(bmp, (int) (bmp.getWidth() / scale), (int) (bmp.getHeight() / scale));
+                    bmp.recycle();
+
+                    WXWebpageObject webObj = new WXWebpageObject();
+                    webObj.webpageUrl = url;
+
+                    WXMediaMessage msg = new WXMediaMessage();
+                    msg.mediaObject = webObj;
+                    msg.thumbData = ImageUtil.bmpToByteArray(thumbBmp, true);
+                    msg.description = descritption;
+                    msg.title = descritption;
+
+                    SendMessageToWX.Req req = new SendMessageToWX.Req();
+                    req.transaction = buildTransaction("img");
+                    req.message = msg;
+                    req.scene = SendMessageToWX.Req.WXSceneTimeline;
+                    api.sendReq(req);
+
+//            finish();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
     private String buildTransaction(final String type) {
@@ -220,11 +239,11 @@ public class GalleryActivityUrl extends BaseActivity implements IWXAPIEventHandl
 
     @Override
     public void onReq(BaseReq baseReq) {
-
+        Log.i("","");
     }
 
     @Override
     public void onResp(BaseResp baseResp) {
-
+        Log.i("","");
     }
 }

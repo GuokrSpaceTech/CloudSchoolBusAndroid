@@ -714,8 +714,8 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
             e.printStackTrace();
         }
         if(pictureUrls!=null)
-            card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls));
-        final List<TagEntity> tagEntities = message.getTagEntityList();
+            card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls,
+                    message.getDescription(), message.getTitle()));        final List<TagEntity> tagEntities = message.getTagEntityList();
         TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
         card.setTagAdapter(adapter);
 

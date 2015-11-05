@@ -30,7 +30,7 @@ public class Version {
 	// App名称
 	public final static String APP_NAME = "CloudSchoolBusParent.apk";
 
-    public static final String APP_ID = "wx0806e84a7bf07a27";
+    public static final String APP_ID = "wxa970bb62c9962756";
 
 
 }

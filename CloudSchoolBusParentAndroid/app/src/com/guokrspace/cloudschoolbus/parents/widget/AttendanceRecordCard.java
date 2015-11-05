@@ -1,6 +1,8 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.view.View;
 
 import com.dexafree.materialList.cards.SimpleCard;
 import com.guokrspace.cloudschoolbus.parents.R;
@@ -17,6 +19,7 @@ public class AttendanceRecordCard extends SimpleCard {
     private String cardType;
     private String recordTime;
     private String recordPicture;
+    private View.OnClickListener imageClickListener;
     private Context context;
 
     public String getTeacherAvatarUrl() {
@@ -81,6 +84,14 @@ public class AttendanceRecordCard extends SimpleCard {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public View.OnClickListener getImageClickListener() {
+        return imageClickListener;
+    }
+
+    public void setImageClickListener(View.OnClickListener imageClickListener) {
+        this.imageClickListener = imageClickListener;
     }
 
     public AttendanceRecordCard(Context context) {

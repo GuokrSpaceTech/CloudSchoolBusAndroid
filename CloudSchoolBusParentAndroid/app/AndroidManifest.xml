@@ -16,20 +16,14 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-feature    android:name="android.hardware.camera" />
-    <uses-feature    android:name="android.hardware.camera.autofocus" />
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
 
     <application
         android:name="com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication"
         android:allowBackup="true"
+        android:screenOrientation="portrait"
         android:icon="@drawable/ic_launcher_teacher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -59,13 +53,6 @@
         <activity
             android:name="com.guokrspace.cloudschoolbus.parents.base.activity.BaseWebViewActivity">
         </activity>
-        <activity
-            android:name="com.guokrspace.cloudschoolbus.parents.module.photo.SelectStudentActivity"
-            android:label="@string/title_activity_select_student">
-        </activity>
-        <activity
-            android:name="com.guokrspace.cloudschoolbus.parents.module.qrcode.CaptureActivity">
-        </activity>
 
         <!-- push应用定义消息receiver声明 -->
         <receiver android:name="com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushMessageReceiver" >
@@ -80,7 +67,7 @@
         </receiver>
 
         <receiver
-            android:name=".base.wxapi.AppRegister"
+            android:name=".wxapi.AppRegister"
             android:permission="com.tencent.mm.plugin.permission.SEND" >
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
@@ -141,27 +128,7 @@
             android:name="api_key"
             android:value="TnbKjnQlMKKrj5g0iyopnHIB" />
 
-        <activity
-            android:name="com.mob.tools.MobUIShell"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-            <intent-filter>
-                <data android:scheme="tencent100371282" />
 
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.mob.WXEntryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

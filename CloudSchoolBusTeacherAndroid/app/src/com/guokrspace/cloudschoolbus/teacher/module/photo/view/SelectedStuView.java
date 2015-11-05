@@ -76,7 +76,7 @@ public class SelectedStuView extends BaseLinearLayout {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
 
-            if(pair.getKey() == 0) //Select all students
+            if((int)pair.getKey() == 0) //Select all students
             {
                 for(StudentEntityT student:mStudents)
                 {

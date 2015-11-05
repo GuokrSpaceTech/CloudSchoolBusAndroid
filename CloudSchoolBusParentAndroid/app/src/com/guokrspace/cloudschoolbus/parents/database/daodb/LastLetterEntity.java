@@ -6,11 +6,16 @@ package com.guokrspace.cloudschoolbus.parents.database.daodb;
  */
 public class LastLetterEntity {
 
+    /** Not-null value. */
     private String teacherid;
     private String lastchat;
     private String picture;
 
     public LastLetterEntity() {
+    }
+
+    public LastLetterEntity(String teacherid) {
+        this.teacherid = teacherid;
     }
 
     public LastLetterEntity(String teacherid, String lastchat, String picture) {
@@ -19,10 +24,12 @@ public class LastLetterEntity {
         this.picture = picture;
     }
 
+    /** Not-null value. */
     public String getTeacherid() {
         return teacherid;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setTeacherid(String teacherid) {
         this.teacherid = teacherid;
     }

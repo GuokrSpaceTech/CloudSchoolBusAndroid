@@ -1,6 +1,5 @@
 package com.guokrspace.cloudschoolbus.parents.database.daodb;
 
-import java.io.Serializable;
 import java.util.List;
 
 import de.greenrobot.dao.DaoException;
@@ -10,7 +9,7 @@ import de.greenrobot.dao.DaoException;
 /**
  * Entity mapped to table TEACHER_ENTITY.
  */
-public class TeacherEntity implements Serializable{
+public class TeacherEntity {
 
     /** Not-null value. */
     private String teacherid;

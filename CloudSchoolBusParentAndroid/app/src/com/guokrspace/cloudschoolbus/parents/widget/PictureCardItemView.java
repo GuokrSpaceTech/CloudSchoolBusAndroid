@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -130,13 +131,10 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
 
         // specify an adapter (see also next example)
         recyclerView.setAdapter(card.getTagAdapter());
-
-        if (card.getTagAdapter().getItemCount() > 0) {
-            recyclerView.addOnItemTouchListener(card.getmOnItemSelectedListener());
-        }
+        recyclerView.addOnItemTouchListener(card.getmOnItemSelectedListener());
 
         //ShareButton
-        ImageView shareButton = (ImageView) findViewById(R.id.share_button);
-        shareButton.setOnClickListener(card.getmShareButtonClickListener());
+//        ImageView shareButton = (ImageView) findViewById(R.id.share_button);
+//        shareButton.setOnClickListener(card.getmShareButtonClickListener());
     }
 }

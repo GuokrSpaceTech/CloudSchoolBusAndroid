@@ -13,7 +13,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 /**
  * DAO for table LAST_LETTER_ENTITY.
 */
-public class LastLetterEntityDao extends AbstractDao<LastLetterEntity, Void> {
+public class LastLetterEntityDao extends AbstractDao<LastLetterEntity, String> {
 
     public static final String TABLENAME = "LAST_LETTER_ENTITY";
 
@@ -22,7 +22,7 @@ public class LastLetterEntityDao extends AbstractDao<LastLetterEntity, Void> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Teacherid = new Property(0, String.class, "teacherid", false, "TEACHERID");
+        public final static Property Teacherid = new Property(0, String.class, "teacherid", true, "TEACHERID");
         public final static Property Lastchat = new Property(1, String.class, "lastchat", false, "LASTCHAT");
         public final static Property Picture = new Property(2, String.class, "picture", false, "PICTURE");
     };
@@ -40,7 +40,7 @@ public class LastLetterEntityDao extends AbstractDao<LastLetterEntity, Void> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'LAST_LETTER_ENTITY' (" + //
-                "'TEACHERID' TEXT," + // 0: teacherid
+                "'TEACHERID' TEXT PRIMARY KEY NOT NULL ," + // 0: teacherid
                 "'LASTCHAT' TEXT," + // 1: lastchat
                 "'PICTURE' TEXT);"); // 2: picture
     }
@@ -55,11 +55,7 @@ public class LastLetterEntityDao extends AbstractDao<LastLetterEntity, Void> {
     @Override
     protected void bindValues(SQLiteStatement stmt, LastLetterEntity entity) {
         stmt.clearBindings();
- 
-        String teacherid = entity.getTeacherid();
-        if (teacherid != null) {
-            stmt.bindString(1, teacherid);
-        }
+        stmt.bindString(1, entity.getTeacherid());
  
         String lastchat = entity.getLastchat();
         if (lastchat != null) {
@@ -74,15 +70,15 @@ public class LastLetterEntityDao extends AbstractDao<LastLetterEntity, Void> {
 
     /** @inheritdoc */
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public String readKey(Cursor cursor, int offset) {
+        return cursor.getString(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public LastLetterEntity readEntity(Cursor cursor, int offset) {
         LastLetterEntity entity = new LastLetterEntity( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // teacherid
+            cursor.getString(offset + 0), // teacherid
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // lastchat
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // picture
         );
@@ -92,22 +88,25 @@ public class LastLetterEntityDao extends AbstractDao<LastLetterEntity, Void> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, LastLetterEntity entity, int offset) {
-        entity.setTeacherid(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setTeacherid(cursor.getString(offset + 0));
         entity.setLastchat(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setPicture(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     /** @inheritdoc */
     @Override
-    protected Void updateKeyAfterInsert(LastLetterEntity entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected String updateKeyAfterInsert(LastLetterEntity entity, long rowId) {
+        return entity.getTeacherid();
     }
     
     /** @inheritdoc */
     @Override
-    public Void getKey(LastLetterEntity entity) {
-        return null;
+    public String getKey(LastLetterEntity entity) {
+        if(entity != null) {
+            return entity.getTeacherid();
+        } else {
+            return null;
+        }
     }
 
     /** @inheritdoc */

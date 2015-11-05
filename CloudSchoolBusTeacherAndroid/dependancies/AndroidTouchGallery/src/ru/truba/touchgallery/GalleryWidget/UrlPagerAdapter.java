@@ -18,6 +18,7 @@
 package ru.truba.touchgallery.GalleryWidget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
     int maxPreloadWidth = 320;
     int maxPreloadHeight = 240;
 
-    UrlTouchImageView currUrlTouchImageView;
+    public UrlTouchImageView currUrlTouchImageView;
 
     protected final List<URL> mUrls;
 

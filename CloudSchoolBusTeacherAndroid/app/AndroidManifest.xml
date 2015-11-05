@@ -69,6 +69,14 @@
             android:name="com.guokrspace.cloudschoolbus.teacher.module.photo.service.UploadFileHelper" >
         </service>
 
+        <receiver
+            android:name=".wxapi.AppRegister"
+            android:permission="com.tencent.mm.plugin.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+            </intent-filter>
+        </receiver>
+
         <!-- push应用定义消息receiver声明 -->
         <receiver android:name="com.guokrspace.cloudschoolbus.teacher.base.baidupush.BaiduPushMessageReceiver" >
             <intent-filter>
@@ -151,7 +159,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.mob.WXEntryActivity"
+            android:name="com.guokrspace.cloudschoolbus.teacher.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"

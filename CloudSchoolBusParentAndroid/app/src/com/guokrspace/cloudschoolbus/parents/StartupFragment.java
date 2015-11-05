@@ -89,14 +89,8 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
 
         View root = inflater.inflate(R.layout.fragment_startup, container, false);
         String startupImageUrl = "";
-        if(Version.PARENT) {
             if (mApplication.mSchools.size() > 0)
                 startupImageUrl = mApplication.mSchools.get(0).getCover();
-        }else{
-            if (mApplication.mSchoolsT.size() > 0)
-                startupImageUrl = mApplication.mSchoolsT.get(0).getCover();
-        }
-
         final ImageView mImgBackgroud = (ImageView)root.findViewById(R.id.imageView2);
         final ImageView mImageLogo = (ImageView)root.findViewById(R.id.imageView3);
 
@@ -120,8 +114,12 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
                                     .into(mImageLogo, new Callback() {
                                         @Override
                                         public void onSuccess() {
-                                            mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
-                                            mImgBackgroud.setAlpha(1L);
+                                            try {
+                                                mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
+                                                mImgBackgroud.setAlpha(1L);
+                                            }catch (Exception e) {
+                                                Log.i("StartUpFragment",e.toString());
+                                            }
                                         }
 
                                         @Override

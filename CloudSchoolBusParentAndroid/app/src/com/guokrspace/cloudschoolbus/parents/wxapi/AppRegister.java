@@ -1,4 +1,4 @@
-package com.guokrspace.cloudschoolbus.parents.base.wxapi;
+package com.guokrspace.cloudschoolbus.parents.wxapi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

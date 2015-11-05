@@ -25,42 +25,22 @@ import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ClassModuleEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageTypeEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.ParentEntityT;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.SchoolEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentClassRelationEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentParentRelationEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TagsEntityT;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyClassRelationEntity;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherDutyEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.TagEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
-import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityT;
-import com.guokrspace.cloudschoolbus.parents.entity.BaseInfoT;
 import com.guokrspace.cloudschoolbus.parents.entity.Baseinfo;
 
 import com.guokrspace.cloudschoolbus.parents.entity.ClassInfo;
-import com.guokrspace.cloudschoolbus.parents.entity.ClassinfoT;
-import com.guokrspace.cloudschoolbus.parents.entity.Module;
-import com.guokrspace.cloudschoolbus.parents.entity.Parent;
-import com.guokrspace.cloudschoolbus.parents.entity.School;
 import com.guokrspace.cloudschoolbus.parents.entity.SchoolInfo;
-import com.guokrspace.cloudschoolbus.parents.entity.Setting;
 import com.guokrspace.cloudschoolbus.parents.entity.Student;
-import com.guokrspace.cloudschoolbus.parents.entity.StudentT;
 import com.guokrspace.cloudschoolbus.parents.entity.TagT;
 import com.guokrspace.cloudschoolbus.parents.entity.Teacher;
-import com.guokrspace.cloudschoolbus.parents.entity.TeacherClassInfo;
-import com.guokrspace.cloudschoolbus.parents.entity.TeacherT;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
@@ -72,10 +52,7 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import io.rong.imkit.RongContext;
 import io.rong.imkit.RongIM;
@@ -413,11 +390,7 @@ public class LoginActivity extends BaseActivity {
                         }
 
                         Object baseinfo;
-                        if(Version.PARENT) {
-                             baseinfo = FastJsonTools.getObject(response.toString(), Baseinfo.class);
-                        }else{
-                             baseinfo = FastJsonTools.getObject(response.toString(), BaseInfoT.class);
-                        }
+                        baseinfo = FastJsonTools.getObject(response.toString(), Baseinfo.class);
 
                         //Save School Information
                         if(baseinfo instanceof Baseinfo ) {
@@ -431,6 +404,19 @@ public class LoginActivity extends BaseActivity {
                                 schoolEntity.setName(schoolInfo.getSchoolname());
 
                                 schoolEntityDao.insertOrReplace(schoolEntity);
+
+                                //Save the TagEntities
+                                for(TagT tag:schoolInfo.getTags())
+                                {
+                                    TagEntity tagDb = new TagEntity();
+                                    tagDb.setTagid(tag.getTagid());
+                                    tagDb.setTagName(tag.getTagname());
+                                    tagDb.setTagname_en(tag.getTagname_en());
+                                    tagDb.setTagnamedesc(tag.getTagnamedesc());
+                                    tagDb.setTagnamedesc_en(tag.getTagnamedesc_en());
+                                    mApplication.mDaoSession.getTagEntityDao().insertOrReplace(tagDb);
+                                }
+
                                 //Save Class Information
                                 List<ClassInfo> classes =schoolInfo.getClasses();
                                 for (int j = 0; j < classes.size(); j++) {
@@ -459,147 +445,6 @@ public class LoginActivity extends BaseActivity {
                                             }
                                         }
                                     }
-                                }
-                            }
-                        } else if (baseinfo instanceof BaseInfoT) {
-                            HashMap<String,School> schoolsmap = ((BaseInfoT)baseinfo).getSchools();
-                            Iterator<Map.Entry<String, School>> iterator = schoolsmap.entrySet().iterator();
-                            while (iterator.hasNext()) {
-                                Map.Entry<String, School> entry = iterator.next();
-                                School school = entry.getValue();
-                                SchoolEntityT schoolDb = new SchoolEntityT();
-                                schoolDb.setId(school.getId());
-                                schoolDb.setAddress(school.getAddress());
-                                schoolDb.setGroupid(school.getGroupid());
-                                schoolDb.setName(school.getName());
-                                schoolDb.setCover(school.getCover());
-                                schoolDb.setLogo(school.getLogo());
-                                schoolDb.setRemark(school.getRemark());
-                                mApplication.mDaoSession.getSchoolEntityTDao().insertOrReplace(schoolDb);
-
-                                for(TagT tag:school.getTags())
-                                {
-                                    TagsEntityT tagDb = new TagsEntityT();
-                                    tagDb.setTagid(tag.getTagid());
-                                    tagDb.setTagname(tag.getTagname());
-                                    tagDb.setTagname_en(tag.getTagname_en());
-                                    tagDb.setTagnamedesc(tag.getTagnamedesc());
-                                    tagDb.setTagnamedesc_en(tag.getTagnamedesc_en());
-                                    tagDb.setSchoolid(school.getId());
-                                    mApplication.mDaoSession.getTagsEntityTDao().insertOrReplace(tagDb);
-                                }
-
-                                Setting setting = school.getSettings();
-                                int i=0;
-                                for(String messagetype : setting.getMessage_type())
-                                {
-                                    MessageTypeEntity messageTypeDb = new MessageTypeEntity();
-                                    messageTypeDb.setSchoolid(school.getId());
-                                    messageTypeDb.setId(Integer.toString(i));
-                                    messageTypeDb.setType(messagetype);
-                                    i++;
-                                    mApplication.mDaoSession.getMessageTypeEntityDao().insertOrReplace(messageTypeDb);
-                                }
-
-                                i=0;
-                                for(Module classmodule: setting.getClass_module()) {
-
-                                    ClassModuleEntity classModuleDb = new ClassModuleEntity();
-                                    classModuleDb.setSchoolid(school.getId());
-                                    classModuleDb.setIcon(classmodule.getIcon());
-                                    classModuleDb.setTitle(classmodule.getTitle());
-                                    classModuleDb.setUrl(classmodule.getUrl());
-                                    classModuleDb.setId(Integer.toString(i));
-                                    mApplication.mDaoSession.getClassModuleEntityDao().insert(classModuleDb);
-                                    i++;
-                                }
-
-                                HashMap<String, String> dutymap = setting.getTeacher_duty();
-                                Iterator<Map.Entry<String,String>> entryIterator = dutymap.entrySet().iterator();
-                                while(entryIterator.hasNext())
-                                {
-                                    Map.Entry<String,String> entry1 = entryIterator.next();
-                                    TeacherDutyEntity teacherDutyEntity = new TeacherDutyEntity();
-                                    teacherDutyEntity.setId(entry1.getKey());
-                                    teacherDutyEntity.setSchoolid(school.getId());
-                                    teacherDutyEntity.setDuty(entry1.getValue());
-                                    mApplication.mDaoSession.getTeacherDutyEntityDao().insert(teacherDutyEntity);
-                                }
-                            } //Finish of Schools
-
-                            List<ClassinfoT> classes = ((BaseInfoT)baseinfo).getClasses();
-                            for(ClassinfoT classinfo: classes)
-                            {
-                                ClassEntityT classDb = new ClassEntityT();
-                                classDb.setSchoolid(classinfo.getSchoolid());
-                                classDb.setClassid(classinfo.getClassid());
-                                classDb.setClassname(classinfo.getClassname());
-                                classDb.setRemark(classinfo.getRemark());
-                                classDb.setDutyid(classinfo.getDutyid());
-                                mApplication.mDaoSession.getClassEntityTDao().insert(classDb);
-                            }
-
-                            List<TeacherT> teachers = ((BaseInfoT)baseinfo).getTeachers();
-                            for(TeacherT teacher:teachers)
-                            {
-                                TeacherEntityT teacherDb = new TeacherEntityT();
-                                teacherDb.setTeacherid(teacher.getTeacherid());
-                                teacherDb.setAvatar(teacher.getAvatar());
-                                teacherDb.setDuty(teacher.getDuty());
-                                teacherDb.setRealname(teacher.getRealname());
-                                teacherDb.setNickname(teacher.getNickname());
-                                teacherDb.setSex(teacher.getSex());
-                                teacherDb.setMobile(teacher.getMobile());
-                                teacherDb.setSchoolid(teacher.getSchoolid());
-                                mApplication.mDaoSession.getTeacherEntityTDao().insert(teacherDb);
-
-                                for( TeacherClassInfo teacherClass : teacher.getClasses() )
-                                {
-                                    TeacherDutyClassRelationEntity relation = new TeacherDutyClassRelationEntity();
-                                    relation.setTeacherid(teacher.getTeacherid());
-                                    relation.setDutyid(teacherClass.getDutyid());
-                                    relation.setClassid(teacherClass.getClassid());
-                                    mApplication.mDaoSession.getTeacherDutyClassRelationEntityDao().insert(relation);
-                                }
-                            }
-
-                            List<StudentT> students = ((BaseInfoT)baseinfo).getStudents();
-                            for(StudentT student:students)
-                            {
-                                StudentEntityT studentDb = new StudentEntityT();
-                                studentDb.setStudentid(student.getStudentid());
-                                studentDb.setSex(student.getSex());
-                                studentDb.setAvatar(student.getAvatar());
-                                studentDb.setBirthday(student.getBirthday());
-                                studentDb.setCnname(student.getCnname());
-                                studentDb.setNikename(student.getNickname());
-                                mApplication.mDaoSession.getStudentEntityTDao().insert(studentDb);
-
-                                for(String classid:student.getClassids())
-                                {
-                                    StudentClassRelationEntity relation = new StudentClassRelationEntity();
-                                    relation.setClassid(classid);
-                                    relation.setStudentid(student.getStudentid());
-                                    mApplication.mDaoSession.getStudentClassRelationEntityDao().insert(relation);
-                                }
-                            }
-
-                            List<Parent> parents = ((BaseInfoT)baseinfo).getParents();
-                            for(Parent parent:parents)
-                            {
-                                ParentEntityT parentDb = new ParentEntityT();
-                                parentDb.setNikename(parent.getNickname());
-                                parentDb.setAvatar(parent.getAvatar());
-                                parentDb.setMobile(parent.getMobile());
-                                parentDb.setParentid(parent.getParentid());
-                                parentDb.setRelationship(parent.getRelationship());
-                                mApplication.mDaoSession.getParentEntityTDao().insert(parentDb);
-
-                                for(String studentid:parent.getStudentids()) {
-                                    StudentParentRelationEntity relation = new StudentParentRelationEntity();
-                                    relation.setStudentid(studentid);
-                                    relation.setParentid(parent.getParentid());
-                                    mApplication.mDaoSession.getStudentParentRelationEntityDao().insert(relation);
                                 }
                             }
                         }

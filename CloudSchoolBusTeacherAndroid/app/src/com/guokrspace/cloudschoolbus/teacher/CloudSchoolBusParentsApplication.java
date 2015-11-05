@@ -294,7 +294,7 @@ public class CloudSchoolBusParentsApplication extends Application {
 
     public void clearData()
     {
-        mDaoSession.getMessageTypeEntityDao().deleteAll();
+        mDaoSession.getMessageEntityDao().deleteAll();
         mDaoSession.clear();
     }
 

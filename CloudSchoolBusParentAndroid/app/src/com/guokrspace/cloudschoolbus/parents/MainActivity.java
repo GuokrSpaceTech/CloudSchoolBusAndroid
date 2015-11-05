@@ -60,7 +60,6 @@ import com.guokrspace.cloudschoolbus.parents.event.NewMessageEvent;
 import com.guokrspace.cloudschoolbus.parents.event.SidExpireEvent;
 import com.guokrspace.cloudschoolbus.parents.module.aboutme.AboutmeFragment;
 import com.guokrspace.cloudschoolbus.parents.module.chat.UserListFragment;
-import com.guokrspace.cloudschoolbus.parents.module.classes.ClassFragment;
 import com.guokrspace.cloudschoolbus.parents.module.explore.ExploreFragment;
 import com.guokrspace.cloudschoolbus.parents.module.hobby.HobbyFragment;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
@@ -98,7 +97,7 @@ public class MainActivity extends BaseActivity implements
 
     private PagerSlidingTabStrip tabs;
     private List<BadgeView> badgeViews = new ArrayList();
-    public NonSwipeableViewPager pager;
+    public  NonSwipeableViewPager pager;
     private MyPagerAdapter adapter;
     private Fragment[] mFragments = {null, null, null, null};
     private int mPosition = 0;
@@ -171,17 +170,10 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initFragments() {
-        if(Version.PARENT) {
             mFragments[0] = ExploreFragment.newInstance(null, null);
             mFragments[1] = UserListFragment.newInstance();
             mFragments[2] = HobbyFragment.newInstance(null,null,null);
             mFragments[3] = AboutmeFragment.newInstance();
-        }else {
-            mFragments[0] = ExploreFragment.newInstance(null, null);
-            mFragments[1] = ClassFragment.newInstance();
-            mFragments[2] = UserListFragment.newInstance();
-            mFragments[3] = AboutmeFragment.newInstance();
-        }
     }
 
     void setupViews() {
@@ -528,21 +520,13 @@ public class MainActivity extends BaseActivity implements
      */
     public void CheckLoginCredential() throws JSONException {
 
-        if(Version.PARENT) {
             if (mApplication.mConfig == null || mApplication.mSchools == null || mApplication.mClasses == null) {
                 //Ask for login
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
             } else
                 LoginSuccessHandles();
-        } else {
-            if (mApplication.mConfig == null || mApplication.mSchoolsT == null || mApplication.mClassesT == null) {
-                //Ask for login
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
-            } else
-                LoginSuccessHandles();
-        }
+
     }
 
     /**
@@ -637,7 +621,7 @@ public class MainActivity extends BaseActivity implements
         String token = response.getString("token");
         String imToken = response.getString("rongtoken");
         ConfigEntity oldConfigEntity =  mApplication.mDaoSession.getConfigEntityDao().queryBuilder().limit(1).list().get(0);
-        ConfigEntity newConfigEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken,oldConfigEntity.getCurrentChild());
+        ConfigEntity newConfigEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken,oldConfigEntity.getCurrentuser());
         mApplication.mDaoSession.getConfigEntityDao().insertOrReplace(newConfigEntity);
         mApplication.mConfig.setSid(response.getString("sid"));
         mApplication.mConfig.setToken(token);
@@ -755,9 +739,6 @@ public class MainActivity extends BaseActivity implements
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             } else if (mFragments[position] instanceof AboutmeFragment) {
                 setActionBarTitle(getResources().getString(R.string.module_aboutme),"");
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            } else if (mFragments[position] instanceof ClassFragment) {
-                getSupportActionBar().setTitle(getResources().getString(R.string.module_class));
                 getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             }
         }

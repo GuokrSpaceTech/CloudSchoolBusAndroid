@@ -79,95 +79,6 @@ public class DAODBGenerator {
         school.addStringProperty("address");
         ToMany schoolToClass = school.addToMany(classEntity, schoolId);
 
-        Entity schoolT = schema.addEntity("SchoolEntityT");
-        Property schoolid = schoolT.addStringProperty("id").notNull().primaryKey().getProperty();
-        schoolT.addStringProperty("groupid");
-        schoolT.addStringProperty("name");
-        schoolT.addStringProperty("remark");
-        schoolT.addStringProperty("address");
-        schoolT.addStringProperty("logo");
-        schoolT.addStringProperty("cover");
-
-        Entity classEntityT = schema.addEntity("ClassEntityT");
-        Property classId = classEntityT.addStringProperty("classid").notNull().primaryKey().getProperty();
-        classEntityT.addStringProperty("classname");
-        classEntityT.addStringProperty("remark");
-        classEntityT.addStringProperty("dutyid");
-        Property schoolidclass = classEntityT.addStringProperty("schoolid").notNull().getProperty();
-
-        Entity studentT = schema.addEntity("StudentEntityT");
-        Property studentId = studentT.addStringProperty("studentid").notNull().primaryKey().getProperty();
-        studentT.addStringProperty("nikename");
-        studentT.addStringProperty("cnname");
-        studentT.addStringProperty("sex");
-        studentT.addStringProperty("birthday");
-        studentT.addStringProperty("avatar");
-        Property uploadArticleIdStudent = studentT.addStringProperty("pickey").getProperty();
-
-        Entity parentT = schema.addEntity("ParentEntityT");
-        Property parentId = parentT.addStringProperty("parentid").notNull().primaryKey().getProperty();
-        parentT.addStringProperty("nikename");
-        parentT.addStringProperty("relationship");
-        parentT.addStringProperty("mobile");
-        parentT.addStringProperty("avatar");
-
-        Entity teacherT = schema.addEntity("TeacherEntityT");
-        Property teacherId = teacherT.addStringProperty("teacherid").notNull().primaryKey().getProperty();
-        teacherT.addStringProperty("duty");
-        teacherT.addStringProperty("avatar");
-        teacherT.addStringProperty("realname");
-        teacherT.addStringProperty("nickname");
-        teacherT.addStringProperty("sex");
-        teacherT.addStringProperty("mobile");
-        Property schoolidteacher = teacherT.addStringProperty("schoolid").notNull().getProperty();
-
-        //Settings related tables
-        Entity tags = schema.addEntity("TagsEntityT");
-        Property tagsId = tags.addStringProperty("tagid").primaryKey().getProperty();
-        tags.addStringProperty("tagname");
-        tags.addStringProperty("tagname_en");
-        tags.addStringProperty("tagnamedesc");
-        tags.addStringProperty("tagnamedesc_en");
-        Property schoolidtags = tags.addStringProperty("schoolid").notNull().getProperty();
-        Property uploadArticleIdTags = tags.addStringProperty("pickey").getProperty();
-
-        Entity messagetype = schema.addEntity("MessageTypeEntity");
-        Property messgetypeid = messagetype.addStringProperty("id").notNull().primaryKey().getProperty();
-        messagetype.addStringProperty("type");
-        Property schoolidmessagetype = messagetype.addStringProperty("schoolid").notNull().getProperty();
-
-        Entity classmodule = schema.addEntity("ClassModuleEntity");
-        classmodule.addStringProperty("id").notNull().primaryKey();
-        classmodule.addStringProperty("icon");
-        classmodule.addStringProperty("url");
-        classmodule.addStringProperty("title");
-        Property schoolidclassmodule = classmodule.addStringProperty("schoolid").notNull().getProperty();
-
-        Entity teacherDuty = schema.addEntity("TeacherDutyEntity");
-        teacherDuty.addStringProperty("id").notNull();
-        teacherDuty.addStringProperty("duty");
-        Property schoolidteacherduty = teacherDuty.addStringProperty("schoolid").notNull().getProperty();
-
-        //Many2many Relationship Tables
-        Entity teacherdutyclass = schema.addEntity("TeacherDutyClassRelationEntity");
-        teacherdutyclass.addStringProperty("classid");
-        teacherdutyclass.addStringProperty("dutyid");
-        teacherdutyclass.addStringProperty("teacherid");
-
-        Entity studentClassEntity = schema.addEntity("StudentClassRelationEntity");
-        studentClassEntity.addStringProperty("studentid");
-        studentClassEntity.addStringProperty("classid");
-
-        Entity studentParentEntity = schema.addEntity("StudentParentRelationEntity");
-        studentParentEntity.addStringProperty("studentid");
-        studentParentEntity.addStringProperty("parentid");
-
-        ToMany schoolToClassT = schoolT.addToMany(classEntityT, schoolidclass);
-        ToMany schoolToTagsT = schoolT.addToMany(tags, schoolidtags);
-        ToMany schoolTomessagetypeT = schoolT.addToMany(messagetype, schoolidmessagetype);
-        ToMany schoolToclassmoduleT = schoolT.addToMany(classmodule, schoolidclassmodule);
-        ToMany schoolTodutyT = schoolT.addToMany(teacherDuty, schoolidteacherduty);
-        ToMany schoolToTeacherT = schoolT.addToMany(teacherT,schoolidteacher);
 
         Entity article = schema.addEntity("UploadArticleEntity");
         article.addStringProperty("pickey").primaryKey().notNull();
@@ -195,11 +106,7 @@ public class DAODBGenerator {
         Property userid = lastIMMessageEntity.addStringProperty("userid").notNull().getProperty();
 
         ToMany  teacherToMessages = teacher.addToMany(lastIMMessageEntity, userid);
-        ToMany  parentToLastIm = parentT.addToMany(lastIMMessageEntity, userid);
-        ToMany  teacherToLastIM = teacherT.addToMany(lastIMMessageEntity,userid);
         ToMany articleToFiles = article.addToMany(singlefile, pickey);
-        ToMany articleToTags  = article.addToMany(tags, uploadArticleIdTags);
-        ToMany articleToStudents = article.addToMany(student,uploadArticleIdStudent);
     }
 
     private static void addTimeline(Schema schema)
@@ -217,7 +124,7 @@ public class DAODBGenerator {
         tag.addStringProperty("tagnamedesc");
         tag.addStringProperty("tagname_en");
         tag.addStringProperty("tagnamedesc_en");
-        Property messageIdTag = tag.addStringProperty("messageid").notNull().getProperty();
+//        Property messageIdTag = tag.addStringProperty("messageid").notNull().getProperty();
 
         Entity message = schema.addEntity("MessageEntity");
         message.addStringProperty("messageid").notNull().primaryKey().getProperty();
@@ -230,9 +137,9 @@ public class DAODBGenerator {
         message.addStringProperty("ismass");
         message.addStringProperty("isreaded");
         message.addStringProperty("body");
+        message.addStringProperty("tagids");
         Property senderIdMessage = message.addStringProperty("senderid").getProperty();
 
-        ToMany messageToTag    = message.addToMany(tag,      messageIdTag);
         ToOne  messageToSender = message.addToOne(sender, senderIdMessage);
     }
 

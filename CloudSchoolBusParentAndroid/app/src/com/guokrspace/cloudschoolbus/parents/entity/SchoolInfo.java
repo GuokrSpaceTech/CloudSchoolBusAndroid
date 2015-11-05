@@ -12,6 +12,7 @@ public class SchoolInfo {
     String cover;
     String schoolname;
     String address;
+    List<TagT> tags;
 
     public List<ClassInfo> getClasses() {
         return classes;
@@ -59,5 +60,13 @@ public class SchoolInfo {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public List<TagT> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TagT> tags) {
+        this.tags = tags;
     }
 }

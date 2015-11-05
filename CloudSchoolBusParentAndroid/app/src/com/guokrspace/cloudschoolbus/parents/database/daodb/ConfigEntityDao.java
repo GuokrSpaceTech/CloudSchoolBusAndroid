@@ -28,7 +28,7 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
         public final static Property Mobile = new Property(3, String.class, "mobile", false, "MOBILE");
         public final static Property Userid = new Property(4, String.class, "userid", false, "USERID");
         public final static Property ImToken = new Property(5, String.class, "imToken", false, "IM_TOKEN");
-        public final static Property CurrentChild = new Property(6, Integer.class, "currentChild", false, "CURRENT_CHILD");
+        public final static Property Currentuser = new Property(6, Integer.class, "currentuser", false, "CURRENTUSER");
     };
 
 
@@ -50,7 +50,7 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
                 "'MOBILE' TEXT," + // 3: mobile
                 "'USERID' TEXT," + // 4: userid
                 "'IM_TOKEN' TEXT," + // 5: imToken
-                "'CURRENT_CHILD' INTEGER);"); // 6: currentChild
+                "'CURRENTUSER' INTEGER);"); // 6: currentuser
     }
 
     /** Drops the underlying database table. */
@@ -94,9 +94,9 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
             stmt.bindString(6, imToken);
         }
  
-        Integer currentChild = entity.getCurrentChild();
-        if (currentChild != null) {
-            stmt.bindLong(7, currentChild);
+        Integer currentuser = entity.getCurrentuser();
+        if (currentuser != null) {
+            stmt.bindLong(7, currentuser);
         }
     }
 
@@ -116,7 +116,7 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // mobile
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // userid
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // imToken
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6) // currentChild
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6) // currentuser
         );
         return entity;
     }
@@ -130,7 +130,7 @@ public class ConfigEntityDao extends AbstractDao<ConfigEntity, Long> {
         entity.setMobile(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setUserid(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setImToken(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setCurrentChild(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setCurrentuser(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
      }
     
     /** @inheritdoc */

@@ -109,16 +109,6 @@ abstract public class BaseActivity extends ActionBarActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
         DebugLog.logI("Activity onSaveInstanceState");
-
-//		mApplication.clearDb();
-
-//		HandlerToastUI.getHandlerToastUI(mContext.getApplicationContext(), "onSaveInstanceState");
-//		outState.putSerializable("mConfig", mApplication.mConfig);
-//		outState.putSerializable("mSchools", (ArrayList<SchoolEntity>)mApplication.mSchools);
-//		outState.putSerializable("mClasses", (ArrayList<ClassEntity>)mApplication.mClasses);
-//		outState.putSerializable("mTeachers",(ArrayList<TeacherEntity>)mApplication.mTeachers);
-//		outState.putSerializable("mStudents",(ArrayList<StudentEntity>)mApplication.mStudents);
-
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -134,15 +124,6 @@ abstract public class BaseActivity extends ActionBarActivity {
         mApplication.initBaseinfo();
 
         mApplication.initCacheFile();
-
-//		if(null != savedInstanceState){
-//			DebugLog.logI("Activity onRestoreInstanceState");
-//			mApplication.mConfig = (ConfigEntity)savedInstanceState.getSerializable("mConfig");
-//			mApplication.mSchools = (List<SchoolEntity>)savedInstanceState.getSerializable("mSchools");
-//			mApplication.mClasses = (List<ClassEntity>)savedInstanceState.getSerializable("mClasses");
-//			mApplication.mTeachers = (List<TeacherEntity>)savedInstanceState.getSerializable("mTeachers");
-//			mApplication.mStudents = (List<StudentEntity>)savedInstanceState.getSerializable("mStudents");
-//		}
 	}
 
 	@Subscribe
@@ -178,7 +159,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 						String imToken = response.getString("imToken");
 						ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
 						ConfigEntity oldConfigEntity = configEntityDao.queryBuilder().limit(1).list().get(0);
-						ConfigEntity configEntity = new ConfigEntity(null, mApplication.mConfig.getToken(), sid, mApplication.mConfig.getMobile(), userid, imToken, oldConfigEntity.getCurrentChild());
+						ConfigEntity configEntity = new ConfigEntity(null, mApplication.mConfig.getToken(), sid, mApplication.mConfig.getMobile(), userid, imToken, oldConfigEntity.getCurrentuser());
 						configEntityDao.update(configEntity);
 					} catch (org.json.JSONException e) {
 						e.printStackTrace();

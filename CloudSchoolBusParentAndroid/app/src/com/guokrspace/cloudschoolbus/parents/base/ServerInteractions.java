@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Button;
 
 import com.android.support.dialog.CustomWaitDialog;
@@ -35,6 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -151,21 +153,46 @@ public class ServerInteractions {
 
                 List<Timeline> timelines = FastJsonTools.getListObject(response.toString(), Timeline.class);
                 for (int i = 0; i < timelines.size(); i++) {
-                    Timeline message = timelines.get(i);
-                    if (!cardType(message.getApptype()).equals("")) {
-                        Timeline.Sender sender = message.getSender();
-                        MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(),
-                                message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(),
-                                message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
+                    try {
+                        Timeline message = timelines.get(i);
+                        if (!cardType(message.getApptype()).equals("")) {
+                            Timeline.Sender sender = message.getSender();
+                            /*
+                             * Check if the messages are intended to multiple kids
+                             */
+                            if (message.getStudentid().contains(",")) {
+                                String studentids[] = message.getStudentid().split(",");
+                                for (String studentid : studentids) {
+                                    MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(),
+                                            message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(),
+                                            studentid, message.getIsmass(), message.getIsreaded(), message.getBody(), message.getTag(), sender.getId());
 
-                        SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
-                        if (senderEntity.getId() != null
-                                && !senderEntity.getId().isEmpty()
-                                && messageEntity.getMessageid() != null
-                                && !messageEntity.getMessageid().isEmpty()) {
-                            messageEntityDao.insertOrReplace(messageEntity);
-                            senderEntityDao.insertOrReplace(senderEntity);
+                                    SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
+                                    if (senderEntity.getId() != null
+                                            && !senderEntity.getId().isEmpty()
+                                            && messageEntity.getMessageid() != null
+                                            && !messageEntity.getMessageid().isEmpty()) {
+                                        messageEntityDao.insertOrReplace(messageEntity);
+                                        senderEntityDao.insertOrReplace(senderEntity);
+                                    }
+                                }
+                            } else {
+                                MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(),
+                                        message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(),
+                                        message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), message.getTag(),sender.getId());
+
+                                SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
+                                if (senderEntity.getId() != null
+                                        && !senderEntity.getId().isEmpty()
+                                        && messageEntity.getMessageid() != null
+                                        && !messageEntity.getMessageid().isEmpty()) {
+                                    messageEntityDao.insertOrReplace(messageEntity);
+                                    senderEntityDao.insertOrReplace(senderEntity);
+                                }
+                            }
                         }
+                    } catch (Exception e) {
+                        Log.e("Timeline Parsor Error",e.toString());
                     }
                 }
 
@@ -220,24 +247,10 @@ public class ServerInteractions {
 
     public List<MessageEntity> GetMessagesFromCache()
     {
-//        if(Version.PARENT) {
-//            int current = mApplication.mConfig.getCurrentChild();
-//            String currentstudentid = null;
-//            if(mApplication.mStudents.size()>(current)) {
-//                currentstudentid = mApplication.mStudents.get(current).getStudentid();
-//            }
 
-//            if(currentstudentid!=null) {
-//                mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-//                        .orderDesc(MessageEntityDao.Properties.Messageid)
-//                        .where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
-//                        .list();
-//            }
-//        } else {
-            mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+        mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
                     .orderDesc(MessageEntityDao.Properties.Messageid)
                     .list();
-//        }
 
         return mMesageEntities;
     }

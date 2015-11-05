@@ -129,14 +129,14 @@
                     android:layout_weight="55"
                     android:scrollbars="horizontal" />
 
-                <ImageView
-                    android:id="@+id/share_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:background="@drawable/ic_share"
-                    android:layout_gravity="bottom">
-                </ImageView>
+                <!--<ImageView-->
+                    <!--android:id="@+id/share_button"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="8dp"-->
+                    <!--android:background="@drawable/ic_share"-->
+                    <!--android:layout_gravity="bottom">-->
+                <!--</ImageView>-->
             </LinearLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
