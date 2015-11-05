@@ -58,7 +58,6 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
             }
         });
         mWebView.loadUrl(mUrl + mParams);
-        ((MainActivity) mParentContext).pager.lock();
         setHasOptionsMenu(true);
         return root;
     }
@@ -114,7 +113,6 @@ public class WebviewFragment extends BaseFragment implements AdvancedWebView.Lis
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         ((MainActivity)mParentContext).getSupportActionBar().setTitle(mTitle);
-        ((MainActivity)mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         menu.clear();
         inflater.inflate(R.menu.webview, menu);
     }

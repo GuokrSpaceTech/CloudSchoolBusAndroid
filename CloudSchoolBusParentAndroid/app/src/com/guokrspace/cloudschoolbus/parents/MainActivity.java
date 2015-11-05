@@ -196,17 +196,13 @@ public class MainActivity extends BaseActivity implements
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        if(Version.PARENT)
-            getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
-        else
-            getSupportActionBar().setTitle("");
-
+        getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
     }
 
     private void setListeners()
     {
 //        RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
-        tabs.delegatePageListener = new MyPageChangeListener();
+//        tabs.delegatePageListener = new MyPageChangeListener();
         tabs.delegateOnTabClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,11 +211,7 @@ public class MainActivity extends BaseActivity implements
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
                     theFragment.filterCards("All");
-
-                    if(!Version.PARENT)
-                        getSupportActionBar().setSelectedNavigationItem(0);//Select all
-                    else
-                        setActionBarTitle(getResources().getString(R.string.module_explore),"");
+                    setActionBarTitle(getResources().getString(R.string.module_explore));
                 }
                 clearBadge(mPosition);
             }
@@ -710,44 +702,39 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    private class MyPageChangeListener implements ViewPager.OnPageChangeListener
-    {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            //Clear the badge icon
-//            badgeViews.get(position).setVisibility(View.INVISIBLE);
-
-            // Check if this is the page you want.
-            if (mFragments[position] instanceof ExploreFragment) {
-                if(Version.PARENT)
-                    setActionBarTitle(getResources().getString(R.string.module_explore),"");
-                else {
-                    getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-                    getSupportActionBar().setTitle("");
-                }
-            } else if (mFragments[position] instanceof UserListFragment) {
-                setActionBarTitle(getResources().getString(R.string.module_teacher), "");
-                if(!Version.PARENT)
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            } else if (mFragments[position] instanceof HobbyFragment) {
-                setActionBarTitle(getResources().getString(R.string.module_hobby),"");
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            } else if (mFragments[position] instanceof AboutmeFragment) {
-                setActionBarTitle(getResources().getString(R.string.module_aboutme),"");
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    }
+//    private class MyPageChangeListener implements ViewPager.OnPageChangeListener
+//    {
+//        @Override
+//        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//        }
+//
+//        @Override
+//        public void onPageSelected(int position) {
+//            //Clear the badge icon
+////            badgeViews.get(position).setVisibility(View.INVISIBLE);
+//
+//            // Check if this is the page you want.
+//            if (mFragments[position] instanceof ExploreFragment) {
+//                    setActionBarTitle(getResources().getString(R.string.module_explore),"");
+//            } else if (mFragments[position] instanceof UserListFragment) {
+//                setActionBarTitle(getResources().getString(R.string.module_teacher), "");
+//                if(!Version.PARENT)
+//                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//            } else if (mFragments[position] instanceof HobbyFragment) {
+//                setActionBarTitle(getResources().getString(R.string.module_hobby),"");
+//                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//            } else if (mFragments[position] instanceof AboutmeFragment) {
+//                setActionBarTitle(getResources().getString(R.string.module_aboutme),"");
+//                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//            }
+//        }
+//
+//        @Override
+//        public void onPageScrollStateChanged(int state) {
+//
+//        }
+//    }
 
     //This is hack for overflow menu not showing
     private void getOverflowMenu() {
@@ -785,22 +772,9 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    public void setActionBarTitle(String title, String upLeverTitle)
+    public void setActionBarTitle(String title)
     {
-        if(Version.PARENT) {
             getSupportActionBar().setTitle(title);
-//            View view = getSupportActionBar().getCustomView();
-//            TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-//            textView.setText(title);
-//            mUpperLeverTitle = upLeverTitle;
-//            mCurrentTitle = title;
-        } else {
-            //Teacher App: First Tab do not have title
-            if(upLeverTitle.equals(getResources().getString(R.string.module_explore)))
-                getSupportActionBar().setTitle("");
-            else
-                getSupportActionBar().setTitle(title);
-        }
     }
 
     private void showStartupPage()

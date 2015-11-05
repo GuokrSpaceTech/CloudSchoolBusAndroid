@@ -42,9 +42,7 @@ public class HobbyFragment extends BaseFragment implements AdvancedWebView.Liste
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mUrl        = "http://api36.yunxiaoche.com/page/intrest/index";
-        mTitle      = getString(R.string.module_hobby);
-        mParams     = "?sid="+ mApplication.mConfig.getSid();
+
 
         super.onCreate(savedInstanceState);
     }
@@ -115,8 +113,10 @@ public class HobbyFragment extends BaseFragment implements AdvancedWebView.Liste
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mUrl        = "http://api36.yunxiaoche.com/page/intrest/index";
+        mTitle      = getString(R.string.module_hobby);
+        mParams     = "?sid="+ mApplication.mConfig.getSid();
         ((MainActivity)mParentContext).getSupportActionBar().setTitle(mTitle);
-        ((MainActivity)mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
     }
 
     @Override

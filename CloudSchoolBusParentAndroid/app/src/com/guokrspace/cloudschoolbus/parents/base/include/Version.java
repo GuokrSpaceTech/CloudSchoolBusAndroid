@@ -8,9 +8,9 @@ public class Version {
 	/** 产品最后更新时间*/
 	public final static String productLastUpdateDate = "20150929";
 	/** 产品版本号(用来更新的产品版本号)*/
-	public final static String versionCode = "4";
+	public final static String versionCode = "17";
 	/** 版本描述，用来上传参数和显示，显示的时候讲前面的a去掉*/
-	public final static String versionName = "a3.5.1";
+	public final static String versionName = "a3.6.0";
 
 	// 产品描述
 	public final static String desc = "云中校车";

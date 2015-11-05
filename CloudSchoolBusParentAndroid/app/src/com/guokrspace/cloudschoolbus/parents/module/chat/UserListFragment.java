@@ -60,11 +60,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     private MaterialListView listview;
     private MainActivity mainActivity;
     private String userName;
-    private String mCurrentClassid;
-    private boolean mIsParent;
-    private Menu mMenu;
     private View rootView;
-    private boolean isInMiddleOfUpdateView;
     private boolean isConverstaionFragmentCreated;
 
     private Handler mHandler;
@@ -83,8 +79,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                             if (mainActivity != null)
                                 mainActivity.setBadge(1, 0);
                         }
-
-                        if (isInMiddleOfUpdateView) break;
 
                         if (!mFragment.isVisible()) break;
 
@@ -194,7 +188,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     }
 
     public void onDestroyView() {
-        // TODO Auto-generated method stub
         super.onDestroyView();
 
         //内嵌的Fragment
@@ -219,9 +212,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
              * 设置会话界面操作的监听器。
              */
             RongIM.getInstance().setConversationBehaviorListener(new MyConversationBehaviorListener());
-
         }
-
         //
         if (RongCloudEvent.getInstance() != null)
             RongCloudEvent.getInstance().setmListener(this);
@@ -315,16 +306,13 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                     if (fragment != null) {
                         getFragmentManager().popBackStack();
                     }
-
-
-                        mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
+                    mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
 
                 } catch (IllegalStateException ignored) {
                     // There's no way to avoid getting this if saveInstanceState has already been called.
                 }
                 break;
         }
-
         return false;
     }
 
@@ -374,7 +362,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     }
 
     private void setUpChattingPageActionbar() {
-            mainActivity.setActionBarTitle(userName, getResources().getString(R.string.module_teacher));
+            mainActivity.setActionBarTitle(userName);
     }
 
     @Override

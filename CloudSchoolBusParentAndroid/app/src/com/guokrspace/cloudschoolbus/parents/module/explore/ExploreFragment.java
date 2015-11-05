@@ -109,18 +109,18 @@ public class ExploreFragment extends BaseFragment {
             switch (msg.what) {
                 case HandlerConstant.MSG_ONREFRESH:
                     clearAppBadgetCount(mParentContext);
-                    setActionBarTitle(getResources().getString(R.string.module_explore));
+//                    setActionBarTitle(getResources().getString(R.string.module_explore));
                     filterCards(null);
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     break;
                 case HandlerConstant.MSG_ONLOADMORE:
                     hideWaitDialog();
-                    setActionBarTitle(getResources().getString(R.string.module_explore));
+//                    setActionBarTitle(getResources().getString(R.string.module_explore));
                     filterCards(null);
                     break;
                 case HandlerConstant.MSG_ONCACHE:
-                    setActionBarTitle(getResources().getString(R.string.module_explore));
+//                    setActionBarTitle(getResources().getString(R.string.module_explore));
                     hideWaitDialog();
                     filterCards(null);
                     if (mSwipeRefreshLayout.isRefreshing())
@@ -143,7 +143,7 @@ public class ExploreFragment extends BaseFragment {
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     String errorMsg;
-                    if(Version.DEBUG) {
+                    if (Version.DEBUG) {
                         if (msg.obj instanceof JSONObject) {
                             JSONObject jsonObject = (JSONObject) msg.obj;
                             errorMsg = jsonObject.toString();
@@ -168,23 +168,21 @@ public class ExploreFragment extends BaseFragment {
                     button.setBackgroundColor(getResources().getColor(R.color.button_disable));
                     button.setEnabled(false);
 
-                    String messageid = (String)button.getTag();
+                    String messageid = (String) button.getTag();
 
                     //Update the DB
                     List<MessageEntity> messages = mApplication.mDaoSession.getMessageEntityDao()
                             .queryBuilder().where(MessageEntityDao.Properties.Messageid.eq(messageid))
                             .list();
-                    if(messages.size()>0) {
+                    if (messages.size() > 0) {
                         messages.get(0).setIsconfirm("2");
                         mApplication.mDaoSession.getMessageEntityDao().update(messages.get(0));
                     }
 
                     //Update the memory
                     int i = 0;
-                    for(MessageEntity message : mMesageEntities)
-                    {
-                        if(message.getMessageid().equals(messageid))
-                        {
+                    for (MessageEntity message : mMesageEntities) {
+                        if (message.getMessageid().equals(messageid)) {
                             mMesageEntities.get(i).setIsconfirm("2");
                         }
                         i++;
@@ -234,21 +232,15 @@ public class ExploreFragment extends BaseFragment {
 
         ((MainActivity) mParentContext).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        if (Version.DEBUG) {
-            ClearCache();
+        mMesageEntities = ServerInteractions.getInstance().GetMessagesFromCache();
+        if (mMesageEntities.size() > 0) {
+            MessageEntity messageEntity = mMesageEntities.get(0);
+            mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
+            ServerInteractions.getInstance().GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
+            mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
+        } else if (mMesageEntities.size() == 0) {
             ServerInteractions.getInstance().GetLastestMessagesFromServer(mHandler);
             mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
-        } else {
-            mMesageEntities = ServerInteractions.getInstance().GetMessagesFromCache();
-            if(mMesageEntities.size()>0) {
-                MessageEntity messageEntity = mMesageEntities.get(0);
-                mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
-                ServerInteractions.getInstance().GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
-                mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
-            } else if (mMesageEntities.size() == 0) {
-                ServerInteractions.getInstance().GetLastestMessagesFromServer(mHandler);
-                mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
-            }
         }
 
         setHasOptionsMenu(true);
@@ -371,7 +363,7 @@ public class ExploreFragment extends BaseFragment {
 
     public void filterCards(@Nullable String type) {
 
-        if(type == null) //Do not know the type, just use the current type
+        if (type == null) //Do not know the type, just use the current type
         {
             type = mCurrentDisplayingCardType;
         } else {
@@ -383,7 +375,7 @@ public class ExploreFragment extends BaseFragment {
         List<MessageEntity> messageEntityList;
 
 
-        if(Version.PARENT) {
+        if (Version.PARENT) {
             String studentid = DataWrapper.getInstance().findCurrentStudentid();
             if (type.equals("All")) {
                 messageEntityList = queryBuilder
@@ -505,9 +497,8 @@ public class ExploreFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setActionBarTitle(String title)
-    {
-        if(Version.PARENT) {
+    public void setActionBarTitle(String title) {
+        if (Version.PARENT) {
             MainActivity mainActivity = (MainActivity) mParentContext;
             mainActivity.getSupportActionBar().setTitle(title);
 //            View view = mainActivity.getSupportActionBar().getCustomView();
@@ -519,14 +510,13 @@ public class ExploreFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void onChildrenSwitched(InfoSwitchedEvent event)
-    {
+    public void onChildrenSwitched(InfoSwitchedEvent event) {
         mCurrentChild = event.getCurrentChild();
 
         /**
          * Todo:
          */
-        if(Version.PARENT) {
+        if (Version.PARENT) {
 //            String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
 //            filterCardsChild(studentId);
             filterCards(null);
@@ -536,30 +526,26 @@ public class ExploreFragment extends BaseFragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if(menu != null)
-        {
+        if (menu != null) {
             setOverflowIconVisible(menu);
         }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MainActivity mainActivity = (MainActivity)mParentContext;
+        MainActivity mainActivity = (MainActivity) mParentContext;
 
-            mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
-            inflater.inflate(R.menu.main, menu);
+        mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
+        inflater.inflate(R.menu.main, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public void setOverflowIconVisible(Menu menu)
-    {
-        try
-        {
-            Class clazz=Class.forName("android.support.v7.internal.view.menu.MenuBuilder");
-            Field field=clazz.getDeclaredField("mOptionalIconsVisible");
-            if(field!=null)
-            {
+    public void setOverflowIconVisible(Menu menu) {
+        try {
+            Class clazz = Class.forName("android.support.v7.internal.view.menu.MenuBuilder");
+            Field field = clazz.getDeclaredField("mOptionalIconsVisible");
+            if (field != null) {
                 field.setAccessible(true);
                 field.set(menu, true);
             }
@@ -574,8 +560,7 @@ public class ExploreFragment extends BaseFragment {
         }
     }
 
-    private void clearAppBadgetCount(Context context)
-    {
+    private void clearAppBadgetCount(Context context) {
         SharedPreferences preferences = context.getSharedPreferences("cloudschoolbuspref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("unreadmessages", 0);
@@ -583,36 +568,34 @@ public class ExploreFragment extends BaseFragment {
         ShortcutBadger.with(context).remove();
     }
 
-    private void initMessageTypes()
-    {
-        String[]  messageTypes = {"All","Article", "Notice", "Active", "Punch", "Report", "OpenClass", "Food", "Schedule"};
+    private void initMessageTypes() {
+        String[] messageTypes = {"All", "Article", "Notice", "Active", "Punch", "Report", "OpenClass", "Food", "Schedule"};
         Integer[] resIcon = {0, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_event, R.drawable.ic_attendance,
                 R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
-        Integer[]  descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.activity, R.string.attendancetype,
+        Integer[] descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.activity, R.string.attendancetype,
                 R.string.report, R.string.openclass, R.string.food, R.string.schedule};
 
-        int i=0;
+        int i = 0;
     }
 
-    public String cardType(String type)
-    {
+    public String cardType(String type) {
         String cardtype = "";
 
-        if(type.equals("Article"))
+        if (type.equals("Article"))
             cardtype = getResources().getString(R.string.picturetype);
-        if(type.equals("Notice"))
+        if (type.equals("Notice"))
             cardtype = getResources().getString(R.string.noticetype);
-        else if(type.equals("Punch"))
+        else if (type.equals("Punch"))
             cardtype = getResources().getString(R.string.attendancetype);
-        else if(type.equals("OpenClass"))
+        else if (type.equals("OpenClass"))
             cardtype = getResources().getString(R.string.openclass);
-        else if(type.equals("Report"))
+        else if (type.equals("Report"))
             cardtype = getResources().getString(R.string.report);
-        else if(type.equals("Food"))
+        else if (type.equals("Food"))
             cardtype = getResources().getString(R.string.food);
-        else if(type.equals("Schedule"))
+        else if (type.equals("Schedule"))
             cardtype = getResources().getString(R.string.schedule);
-        else if(type.equals("Active"))
+        else if (type.equals("Active"))
             cardtype = getResources().getString(R.string.activity);
         return cardtype;
     }
@@ -622,10 +605,10 @@ public class ExploreFragment extends BaseFragment {
         String teacherAvatarString = message.getSenderEntity().getAvatar();
         card.setTeacherAvatarUrl(teacherAvatarString);
         card.setTeacherName(message.getSenderEntity().getName());
-            if(mApplication.mSchools.size()>0)
-                card.setKindergarten(mApplication.mSchools.get(0).getName());
-            else
-                card.setKindergarten("");
+        if (mApplication.mSchools.size() > 0)
+            card.setKindergarten(mApplication.mSchools.get(0).getName());
+        else
+            card.setKindergarten("");
 
         card.setCardType(cardType(message.getApptype()));
         card.setSentTime(message.getSendtime());
@@ -638,16 +621,14 @@ public class ExploreFragment extends BaseFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(pictureUrls!=null)
+        if (pictureUrls != null)
             card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls,
                     message.getDescription(), message.getTitle()));
 
         List<TagEntity> tagEntities = new ArrayList<>();
-        if(message.getTagids()!=null && message.getTagids().contains(","))
-        {
+        if (message.getTagids() != null && message.getTagids().contains(",")) {
             String tagids[] = message.getTagids().split(",");
-            for(String tagid:tagids)
-            {
+            for (String tagid : tagids) {
                 tagEntities.addAll(mApplication.mDaoSession.getTagEntityDao().queryBuilder().where(TagEntityDao.Properties.Tagid.eq(tagid)).list());
             }
         }
@@ -661,7 +642,7 @@ public class ExploreFragment extends BaseFragment {
             public void onItemClick(View view, final int position) {
                 animation(view);
                 SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
-                        .setMessage((String)view.getTag())
+                        .setMessage((String) view.getTag())
                         .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
             }
 
@@ -684,8 +665,7 @@ public class ExploreFragment extends BaseFragment {
         return card;
     }
 
-    public NoticeCard BuildNoticeCard(final MessageEntity messageEntity, final Handler handler)
-    {
+    public NoticeCard BuildNoticeCard(final MessageEntity messageEntity, final Handler handler) {
         NoticeCard noticeCard = new NoticeCard(mParentContext);
         String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
         noticeCard.setTeacherAvatarUrl(teacherAvatarString);
@@ -708,8 +688,7 @@ public class ExploreFragment extends BaseFragment {
         return noticeCard;
     }
 
-    public ActivityCard BuildActivityCard(final MessageEntity messageEntity, final Handler handler)
-    {
+    public ActivityCard BuildActivityCard(final MessageEntity messageEntity, final Handler handler) {
         ActivityCard theCard = new ActivityCard(mParentContext);
         String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
         theCard.setTeacherAvatarUrl(teacherAvatarString);
@@ -731,8 +710,7 @@ public class ExploreFragment extends BaseFragment {
         return theCard;
     }
 
-    public AttendanceRecordCard BuildAttendanceCard(MessageEntity messageEntity)
-    {
+    public AttendanceRecordCard BuildAttendanceCard(MessageEntity messageEntity) {
         AttendanceRecordCard attendanceRecordCard = new AttendanceRecordCard(mParentContext);
         String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
         attendanceRecordCard.setTeacherAvatarUrl(teacherAvatarString);
@@ -766,8 +744,7 @@ public class ExploreFragment extends BaseFragment {
         return attendanceRecordCard;
     }
 
-    public StreamingNoticeCard BuildStreamingNoticeCard(MessageEntity messageEntity)
-    {
+    public StreamingNoticeCard BuildStreamingNoticeCard(MessageEntity messageEntity) {
         StreamingNoticeCard streamingNoticeCard = new StreamingNoticeCard(mParentContext);
         streamingNoticeCard.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
         streamingNoticeCard.setKindergartenName(messageEntity.getSenderEntity().getName());
@@ -782,7 +759,7 @@ public class ExploreFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 MainActivity mainActivity = (MainActivity) mParentContext;
-                mainActivity.setActionBarTitle(getResources().getString(R.string.openclass), getResources().getString(R.string.module_explore));
+                mainActivity.setActionBarTitle(getResources().getString(R.string.openclass));
                 StreamingChannelsFragment fragment = StreamingChannelsFragment.newInstance(ipcpara);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.article_module_layout, fragment);
@@ -794,11 +771,10 @@ public class ExploreFragment extends BaseFragment {
         return streamingNoticeCard;
     }
 
-    public ReportListCard BuildReportListCard(final MessageEntity messageEntity)
-    {
+    public ReportListCard BuildReportListCard(final MessageEntity messageEntity) {
         ReportListCard reportListCard = new ReportListCard(mParentContext);
         String teacherAvatarString = "";
-        if(messageEntity.getSenderEntity()!=null) {
+        if (messageEntity.getSenderEntity() != null) {
             teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
             reportListCard.setTeacherAvatarUrl(teacherAvatarString);
             reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
@@ -830,8 +806,7 @@ public class ExploreFragment extends BaseFragment {
         mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
     }
 
-    public FoodNoticeCard BuildFoodNoticeCard(final MessageEntity messageEntity)
-    {
+    public FoodNoticeCard BuildFoodNoticeCard(final MessageEntity messageEntity) {
         FoodNoticeCard card = new FoodNoticeCard(mParentContext);
         card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
         card.setKindergartenName(messageEntity.getSenderEntity().getName());
@@ -855,8 +830,7 @@ public class ExploreFragment extends BaseFragment {
         return card;
     }
 
-    public ScheduleNoticeCard BuildScheduleNoticeCard(final MessageEntity messageEntity)
-    {
+    public ScheduleNoticeCard BuildScheduleNoticeCard(final MessageEntity messageEntity) {
         ScheduleNoticeCard card = new ScheduleNoticeCard(mParentContext);
         card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
         card.setKindergartenName(messageEntity.getSenderEntity().getName());
