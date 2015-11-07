@@ -5,10 +5,10 @@
           android:title="@string/parents"
           android:icon="@drawable/ic_supervisor_account_white_24dp"
           android:orderInCategory="100"
-          app:showAsAction="always"/>
+          app:showAsAction="collapseActionView"/>
     <item android:id="@+id/action_teacher"
           android:title="@string/teachers"
           android:icon="@drawable/ic_perm_identity_white_24dp"
           android:orderInCategory="100"
-          app:showAsAction="always" />
+          app:showAsAction="collapseActionView" />
 </menu>

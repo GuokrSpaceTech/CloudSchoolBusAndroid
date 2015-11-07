@@ -1,9 +1,11 @@
 package com.guokrspace.cloudschoolbus.teacher.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -13,6 +15,8 @@ import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.teacher.R;
 import com.squareup.picasso.Picasso;
+
+import org.solovyev.android.views.llm.DividerItemDecoration;
 
 import java.text.SimpleDateFormat;
 
@@ -127,7 +131,7 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(card.getContext());
         linearLayoutManager.setOrientation(HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-
+        recyclerView.addItemDecoration(new SpacesItemDecoration(2));
         // specify an adapter (see also next example)
         recyclerView.setAdapter(card.getTagAdapter());
 
@@ -136,7 +140,27 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
         }
 
         //ShareButton
-        ImageView shareButton = (ImageView) findViewById(R.id.share_button);
-        shareButton.setOnClickListener(card.getmShareButtonClickListener());
+//        ImageView shareButton = (ImageView) findViewById(R.id.share_button);
+//        shareButton.setOnClickListener(card.getmShareButtonClickListener());
+    }
+
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+
+            // Add top margin only for the first item to avoid double space between items
+//            if(parent.getChildPosition(view) == 0)
+//                outRect.top = space;
+        }
     }
 }

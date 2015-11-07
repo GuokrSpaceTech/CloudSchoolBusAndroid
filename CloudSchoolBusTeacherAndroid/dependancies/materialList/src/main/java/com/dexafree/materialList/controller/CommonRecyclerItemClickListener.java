@@ -11,6 +11,8 @@ import android.view.View;
 public class CommonRecyclerItemClickListener implements RecyclerView.OnItemTouchListener{
 
     private RecyclerView mRecyclerView;
+    private static long timestamp;
+    long delta;
 
     public static abstract interface OnItemClickListener {
         public void onItemClick(View view, int position);
@@ -31,22 +33,24 @@ public class CommonRecyclerItemClickListener implements RecyclerView.OnItemTouch
 
             @Override
             public void onLongPress(MotionEvent e){
-                View childView = (View)mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-
-                if(childView != null && mListener != null){
-                    mListener.onItemLongClick(childView, mRecyclerView.getChildPosition(childView));
-                }
+//                View childView = (View)mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+//
+//                if(childView != null && mListener != null){
+//                    mListener.onItemLongClick(childView, mRecyclerView.getChildPosition(childView));
+//                }
             }
         });
     }
 
     @Override
-    public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e){
-        View childView = (View)view.findChildViewUnder(e.getX(), e.getY());
-
-        if(childView != null && mListener != null && mGestureDetector.onTouchEvent(e)){
-            mListener.onItemClick(childView, view.getChildPosition(childView));
-        }
+    public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+        View childView = (View) view.findChildViewUnder(e.getX(), e.getY());
+        delta = System.currentTimeMillis() - timestamp;
+        timestamp = System.currentTimeMillis();
+        if (delta > 500)
+            if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
+                mListener.onItemClick(childView, view.getChildPosition(childView));
+            }
 
         return false;
     }

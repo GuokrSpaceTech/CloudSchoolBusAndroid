@@ -17,9 +17,11 @@
 package com.guokrspace.cloudschoolbus.teacher;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -63,6 +65,7 @@ import com.guokrspace.cloudschoolbus.teacher.module.chat.UserListFragment;
 import com.guokrspace.cloudschoolbus.teacher.module.classes.ClassFragment;
 import com.guokrspace.cloudschoolbus.teacher.module.explore.ExploreFragment;
 import com.guokrspace.cloudschoolbus.teacher.module.hobby.HobbyFragment;
+import com.guokrspace.cloudschoolbus.teacher.module.photo.service.UploadFileHelper;
 import com.guokrspace.cloudschoolbus.teacher.protocols.CloudSchoolBusRestClient;
 import com.guokrspace.cloudschoolbus.teacher.widget.BadgeView;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -111,6 +114,8 @@ public class MainActivity extends BaseActivity implements
     private static final int MSG_SID_RENEW_FAIL = 4;
     private static final int REQUEST_CODE = 1;
 
+    Boolean mIsBound;
+
     MainActivity c = this;
 
     private Handler handler = new Handler(new Handler.Callback() {
@@ -151,6 +156,53 @@ public class MainActivity extends BaseActivity implements
         getOverflowMenu();
         setContentView(R.layout.activity_main);
         BusProvider.getInstance().register(this);
+        doBindService();
+    }
+
+    private UploadFileHelper mBoundService;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the service object we can use to
+            // interact with the service.  Because we have bound to a explicit
+            // service that we know is running in our own process, we can
+            // cast its IBinder to a concrete class and directly access it.
+            mBoundService = ((UploadFileHelper.LocalBinder)service).getService();
+            mBoundService.setContext(mContext);
+            mBoundService.startUploadFileService();
+
+            // Tell the user about this for our demo.
+//            Toast.makeText(Binding.this, R.string.local_service_connected,
+//                    Toast.LENGTH_SHORT).show();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            // Because it is running in our same process, we should never
+            // see this happen.
+            mBoundService = null;
+//            Toast.makeText(Binding.this, R.string.local_service_disconnected,
+//                    Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    void doBindService() {
+        // Establish a connection with the service.  We use an explicit
+        // class name because we want a specific service implementation that
+        // we know will be running in our own process (and thus won't be
+        // supporting component replacement by other applications).
+        bindService(new Intent(this, UploadFileHelper.class), mConnection, Context.BIND_AUTO_CREATE);
+        mIsBound = true;
+    }
+
+    void doUnbindService() {
+        if (mIsBound) {
+            // Detach our existing connection.
+            unbindService(mConnection);
+            mIsBound = false;
+        }
     }
 
     @Override
@@ -159,21 +211,15 @@ public class MainActivity extends BaseActivity implements
         if(RongIM.getInstance()!=null)
             RongIM.getInstance().logout();
         PushManager.stopWork(mContext);
+        doUnbindService();
         super.onDestroy();
     }
 
     private void initFragments() {
-        if(Version.PARENT) {
-            mFragments[0] = ExploreFragment.newInstance(null, null);
-            mFragments[1] = UserListFragment.newInstance();
-            mFragments[2] = HobbyFragment.newInstance(null,null,null);
-            mFragments[3] = AboutmeFragment.newInstance();
-        }else {
             mFragments[0] = ExploreFragment.newInstance(null, null);
             mFragments[1] = ClassFragment.newInstance();
             mFragments[2] = UserListFragment.newInstance();
             mFragments[3] = AboutmeFragment.newInstance();
-        }
     }
 
     void setupViews() {
@@ -196,17 +242,15 @@ public class MainActivity extends BaseActivity implements
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        if(Version.PARENT)
-            getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
-        else
-            getSupportActionBar().setTitle("");
+
+        getSupportActionBar().setTitle("");
 
     }
 
     private void setListeners()
     {
-//        RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
-        tabs.delegatePageListener = new MyPageChangeListener();
+        RongIM.setOnReceiveMessageListener(new MyReceiveMessageListener());
+//        tabs.delegatePageListener = new MyPageChangeListener();
         tabs.delegateOnTabClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,11 +259,6 @@ public class MainActivity extends BaseActivity implements
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
                     theFragment.filterCards("All");
-
-                    if(!Version.PARENT)
-                        getSupportActionBar().setSelectedNavigationItem(0);//Select all
-                    else
-                        setActionBarTitle(getResources().getString(R.string.module_explore),"");
                 }
                 clearBadge(mPosition);
             }
@@ -265,15 +304,15 @@ public class MainActivity extends BaseActivity implements
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 if(getSupportFragmentManager().getBackStackEntryCount()==0) {
-                    //兴趣爱好直接是WebviewFragment, 返回需要特殊处理
-                    if(mPosition==2 && mFragments[mPosition].isVisible())
+                    //WebviewFragment, 返回需要特殊处理
+/*                    if(mPosition==2 && mFragments[mPosition].isVisible())
                     {
                         boolean ret = ((HobbyFragment)mFragments[mPosition]).onKeyDown(keyCode, event);
                         if(ret==true) //到了顶级页面
                             exit_diaglog();
-                    } else {
+                    } else {*/
                         exit_diaglog();
-                    }
+//                    }
                 }
                 else {
                     getSupportFragmentManager().popBackStack();
@@ -445,13 +484,9 @@ public class MainActivity extends BaseActivity implements
         @Override
         public Fragment getItem(int position) {
 
-            if (Version.PARENT) {
-                ICONS = new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
-                        R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
-            } else {
+
                 ICONS = new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_hobby,
                         R.drawable.selector_ic_tab_teacher, R.drawable.selector_ic_tab_aboutme};
-            }
 
             return mFragments[position];
         }
@@ -459,13 +494,9 @@ public class MainActivity extends BaseActivity implements
         @Override
         public int getPageIconResId(int position) {
             if (ICONS.length == 0) {
-                if (Version.PARENT) {
-                    ICONS = new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_teacher,
-                            R.drawable.selector_ic_tab_hobby, R.drawable.selector_ic_tab_aboutme};
-                } else {
+
                     ICONS = new int[]{R.drawable.selector_ic_tab_explore, R.drawable.selector_ic_tab_hobby,
                             R.drawable.selector_ic_tab_teacher, R.drawable.selector_ic_tab_aboutme};
-                }
             }
             return ICONS[position];
         }
@@ -515,21 +546,12 @@ public class MainActivity extends BaseActivity implements
      */
     public void CheckLoginCredential() throws JSONException {
 
-        if(Version.PARENT) {
-            if (mApplication.mConfig == null || mApplication.mSchools == null || mApplication.mClasses == null) {
-                //Ask for login
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
-            } else
-                LoginSuccessHandles();
-        } else {
             if (mApplication.mConfig == null || mApplication.mSchoolsT == null || mApplication.mClassesT == null) {
                 //Ask for login
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
             } else
                 LoginSuccessHandles();
-        }
     }
 
     /**
@@ -624,7 +646,7 @@ public class MainActivity extends BaseActivity implements
         String token = response.getString("token");
         String imToken = response.getString("rongtoken");
         ConfigEntity oldConfigEntity =  mApplication.mDaoSession.getConfigEntityDao().queryBuilder().limit(1).list().get(0);
-        ConfigEntity newConfigEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken,oldConfigEntity.getCurrentChild());
+        ConfigEntity newConfigEntity = new ConfigEntity(null,sid,token,mApplication.mConfig.getMobile(),mApplication.mConfig.getUserid(),imToken,oldConfigEntity.getCurrentuser());
         mApplication.mDaoSession.getConfigEntityDao().insertOrReplace(newConfigEntity);
         mApplication.mConfig.setSid(response.getString("sid"));
         mApplication.mConfig.setToken(token);
@@ -713,47 +735,47 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    private class MyPageChangeListener implements ViewPager.OnPageChangeListener
-    {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            //Clear the badge icon
-//            badgeViews.get(position).setVisibility(View.INVISIBLE);
-
-            // Check if this is the page you want.
-            if (mFragments[position] instanceof ExploreFragment) {
-                if(Version.PARENT)
-                    setActionBarTitle(getResources().getString(R.string.module_explore),"");
-                else {
-                    getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-                    getSupportActionBar().setTitle("");
-                }
-            } else if (mFragments[position] instanceof UserListFragment) {
-                setActionBarTitle(getResources().getString(R.string.module_teacher), "");
-                if(!Version.PARENT)
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            } else if (mFragments[position] instanceof HobbyFragment) {
-                setActionBarTitle(getResources().getString(R.string.module_hobby),"");
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            } else if (mFragments[position] instanceof AboutmeFragment) {
-                setActionBarTitle(getResources().getString(R.string.module_aboutme),"");
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            } else if (mFragments[position] instanceof ClassFragment) {
-                getSupportActionBar().setTitle(getResources().getString(R.string.module_class));
-                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    }
+//    private class MyPageChangeListener implements ViewPager.OnPageChangeListener
+//    {
+//        @Override
+//        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//        }
+//
+//        @Override
+//        public void onPageSelected(int position) {
+//            //Clear the badge icon
+////            badgeViews.get(position).setVisibility(View.INVISIBLE);
+//
+//            // Check if this is the page you want.
+//            if (mFragments[position] instanceof ExploreFragment) {
+//                if(Version.PARENT)
+//                    setActionBarTitle(getResources().getString(R.string.module_explore),"");
+//                else {
+//                    getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//                    getSupportActionBar().setTitle("");
+//                }
+//            } else if (mFragments[position] instanceof UserListFragment) {
+//                setActionBarTitle(getResources().getString(R.string.module_teacher), "");
+//                if(!Version.PARENT)
+//                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//            } else if (mFragments[position] instanceof HobbyFragment) {
+//                setActionBarTitle(getResources().getString(R.string.module_hobby),"");
+//                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//            } else if (mFragments[position] instanceof AboutmeFragment) {
+//                setActionBarTitle(getResources().getString(R.string.module_aboutme),"");
+//                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//            } else if (mFragments[position] instanceof ClassFragment) {
+//                getSupportActionBar().setTitle(getResources().getString(R.string.module_class));
+//                getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//            }
+//        }
+//
+//        @Override
+//        public void onPageScrollStateChanged(int state) {
+//
+//        }
+//    }
 
     //This is hack for overflow menu not showing
     private void getOverflowMenu() {

@@ -39,7 +39,7 @@ public class EditCommentView extends BaseLinearLayout {
 	private EditText mCommentEditText;
 	private TextView mNumberTextView;
 	private GridView mGridView;
-	private TagSelectAdapter mTagSelectAdapter;
+	public TagSelectAdapter mTagSelectAdapter;
 	private ImageThumbRecycleViewAdapter mPictureThumbnailsAdapter;
 	private ArrayList<Picture> mPictures;
     private RecyclerView.OnItemTouchListener  mThumbNailClickListener;
@@ -166,19 +166,19 @@ public class EditCommentView extends BaseLinearLayout {
 				outRect.top = space;
 		}
 	}
-
-    /**
-     * 返回当前选中的index
-     *
-     * @return
-     */
-    public void updateTagSelectedDb(String pickey) {
-        for (int i = 0; i < mApplication.mTagsT.size(); i++) {
-            if ( mTagSelectAdapter.getmSeletions()[i]) {
-                DaoSession db = ((SelectStudentActivity) mContext).mApplication.mDaoSession;
-                mApplication.mTagsT.get(i).setPickey(pickey);
-                db.getTagsEntityTDao().update(mApplication.mTagsT.get(i));
-            }
-        }
-    }
+//
+//    /**
+//     * 返回当前选中的index
+//     *
+//     * @return
+//     */
+//    public void updateTagSelectedDb(String pickey) {
+//        for (int i = 0; i < mApplication.mTagsT.size(); i++) {
+//            if ( mTagSelectAdapter.getmSeletions()[i]) {
+//                DaoSession db = ((SelectStudentActivity) mContext).mApplication.mDaoSession;
+//                mApplication.mTagsT.get(i).setPickey(pickey);
+//                db.getTagsEntityTDao().update(mApplication.mTagsT.get(i));
+//            }
+//        }
+//    }
 }

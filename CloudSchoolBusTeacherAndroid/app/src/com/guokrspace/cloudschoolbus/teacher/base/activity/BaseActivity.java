@@ -178,7 +178,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 						String imToken = response.getString("imToken");
 						ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
 						ConfigEntity oldConfigEntity = configEntityDao.queryBuilder().limit(1).list().get(0);
-						ConfigEntity configEntity = new ConfigEntity(null, mApplication.mConfig.getToken(), sid, mApplication.mConfig.getMobile(), userid, imToken, oldConfigEntity.getCurrentChild());
+						ConfigEntity configEntity = new ConfigEntity(null, mApplication.mConfig.getToken(), sid, mApplication.mConfig.getMobile(), userid, imToken, oldConfigEntity.getCurrentuser());
 						configEntityDao.update(configEntity);
 					} catch (org.json.JSONException e) {
 						e.printStackTrace();

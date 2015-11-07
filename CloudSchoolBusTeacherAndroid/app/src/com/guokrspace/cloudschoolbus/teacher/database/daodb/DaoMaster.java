@@ -20,10 +20,6 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
         ConfigEntityDao.createTable(db, ifNotExists);
-        StudentEntityDao.createTable(db, ifNotExists);
-        TeacherEntityDao.createTable(db, ifNotExists);
-        ClassEntityDao.createTable(db, ifNotExists);
-        SchoolEntityDao.createTable(db, ifNotExists);
         SchoolEntityTDao.createTable(db, ifNotExists);
         ClassEntityTDao.createTable(db, ifNotExists);
         StudentEntityTDao.createTable(db, ifNotExists);
@@ -40,7 +36,6 @@ public class DaoMaster extends AbstractDaoMaster {
         UploadArticleFileEntityDao.createTable(db, ifNotExists);
         LastIMMessageEntityDao.createTable(db, ifNotExists);
         SenderEntityDao.createTable(db, ifNotExists);
-        TagEntityDao.createTable(db, ifNotExists);
         MessageEntityDao.createTable(db, ifNotExists);
         ArticleEntityDao.createTable(db, ifNotExists);
         ImageEntityDao.createTable(db, ifNotExists);
@@ -56,10 +51,6 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
         ConfigEntityDao.dropTable(db, ifExists);
-        StudentEntityDao.dropTable(db, ifExists);
-        TeacherEntityDao.dropTable(db, ifExists);
-        ClassEntityDao.dropTable(db, ifExists);
-        SchoolEntityDao.dropTable(db, ifExists);
         SchoolEntityTDao.dropTable(db, ifExists);
         ClassEntityTDao.dropTable(db, ifExists);
         StudentEntityTDao.dropTable(db, ifExists);
@@ -76,7 +67,6 @@ public class DaoMaster extends AbstractDaoMaster {
         UploadArticleFileEntityDao.dropTable(db, ifExists);
         LastIMMessageEntityDao.dropTable(db, ifExists);
         SenderEntityDao.dropTable(db, ifExists);
-        TagEntityDao.dropTable(db, ifExists);
         MessageEntityDao.dropTable(db, ifExists);
         ArticleEntityDao.dropTable(db, ifExists);
         ImageEntityDao.dropTable(db, ifExists);
@@ -119,10 +109,6 @@ public class DaoMaster extends AbstractDaoMaster {
     public DaoMaster(SQLiteDatabase db) {
         super(db, SCHEMA_VERSION);
         registerDaoClass(ConfigEntityDao.class);
-        registerDaoClass(StudentEntityDao.class);
-        registerDaoClass(TeacherEntityDao.class);
-        registerDaoClass(ClassEntityDao.class);
-        registerDaoClass(SchoolEntityDao.class);
         registerDaoClass(SchoolEntityTDao.class);
         registerDaoClass(ClassEntityTDao.class);
         registerDaoClass(StudentEntityTDao.class);
@@ -139,7 +125,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(UploadArticleFileEntityDao.class);
         registerDaoClass(LastIMMessageEntityDao.class);
         registerDaoClass(SenderEntityDao.class);
-        registerDaoClass(TagEntityDao.class);
         registerDaoClass(MessageEntityDao.class);
         registerDaoClass(ArticleEntityDao.class);
         registerDaoClass(ImageEntityDao.class);

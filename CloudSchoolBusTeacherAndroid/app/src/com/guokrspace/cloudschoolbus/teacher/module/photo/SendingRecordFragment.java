@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 
 import com.android.support.debug.DebugLog;
@@ -23,6 +24,8 @@ import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.teacher.MainActivity;
 import com.guokrspace.cloudschoolbus.teacher.R;
 import com.guokrspace.cloudschoolbus.teacher.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagsEntityT;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagsEntityTDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.teacher.event.FileUploadedEvent;
@@ -36,7 +39,7 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SentRecordFragment extends BaseFragment {
+public class SendingRecordFragment extends BaseFragment {
 
 	/** 更新上传列表 */
     private static final int MENU_CONTEXT_DELETE_ID = 0xF;
@@ -50,15 +53,14 @@ public class SentRecordFragment extends BaseFragment {
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.fragment_sent_record, null);
-		setViewData(view);
         setHasOptionsMenu(true);
-		return view;
+        setViewData(view);
+        return view;
 	}
 
 
     @Override
 	protected void setViewData(View view) {
-
 		mListView = (MaterialListView) view.findViewById(R.id.material_listview);
 		UploadFileHelper.getInstance().setContext(mParentContext);
 		UploadFileHelper.getInstance().setFragment(mFragment);
@@ -70,9 +72,17 @@ public class SentRecordFragment extends BaseFragment {
             mListView.add(card);
         }
 
+        TextView promptTextview = (TextView)view.findViewById(R.id.prompt);
+        if(mUploadQ.size()==0)
+        {
+            promptTextview.setVisibility(View.VISIBLE);
+            promptTextview.setText(mParentContext.getResources().getString(R.string.allisuploaded));
+        } else {
+            promptTextview.setVisibility(View.GONE);
+        }
+
 		setListener(view);
 
-        setHasOptionsMenu(true);
 	}
 
 	private void noResult() {
@@ -113,7 +123,7 @@ public class SentRecordFragment extends BaseFragment {
 			if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
 				UploadFileHelper.getInstance().setContext(mParentContext);
 				UploadFileHelper.getInstance().setFragment(mFragment);
-//				UploadFileHelper.getInstance().uploadFileService();
+//				UploadFileHelper.getInstance().startUploadFileService();
 			}
 		}
 	};
@@ -208,7 +218,15 @@ public class SentRecordFragment extends BaseFragment {
             pictures.add(uploadFile.getFbody());
         }
         SentPictureAdapter imageAdapter = new SentPictureAdapter(mParentContext,article.getUploadArticleFileEntityList());
-        TagDisplyAdapter tagsAdapter = new TagDisplyAdapter(article.getTagsEntityTList());
+
+        List<TagsEntityT> tagEntities = new ArrayList<>();
+        if (article.getTagids() != null && article.getTagids().contains(",")) {
+            String tagids[] = article.getTagids().split(",");
+            for (String tagid : tagids) {
+                tagEntities.addAll(mApplication.mDaoSession.getTagsEntityTDao().queryBuilder().where(TagsEntityTDao.Properties.Tagid.eq(tagid)).list());
+            }
+        }
+        TagDisplyAdapter tagsAdapter = new TagDisplyAdapter(tagEntities);
 
         card.setImageAdapter(imageAdapter);
         card.setTagAdapter(tagsAdapter);

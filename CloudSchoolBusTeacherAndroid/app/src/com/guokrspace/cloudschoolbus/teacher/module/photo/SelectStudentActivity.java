@@ -19,11 +19,11 @@ import android.widget.Toast;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.avast.android.dialogs.iface.ISimpleDialogListener;
 import com.dexafree.materialList.controller.CommonRecyclerItemClickListener;
-import com.guokrspace.cloudschoolbus.teacher.MainActivity;
 import com.guokrspace.cloudschoolbus.teacher.R;
 import com.guokrspace.cloudschoolbus.teacher.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.teacher.base.activity.BaseActivity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntityT;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagsEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleFileEntity;
 import com.guokrspace.cloudschoolbus.teacher.event.BusProvider;
@@ -40,7 +40,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class SelectStudentActivity extends BaseActivity implements ISimpleDialogListener{
 
@@ -55,7 +58,7 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
 
     private static final int REQUEST_SIMPLE_DIALOG = 42;
 
-    Boolean mIsBound;
+//    Boolean mIsBound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,13 +120,13 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         getSupportActionBar().setTitle(getResources().getString(R.string.upload));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        doBindService();
+//        doBindService();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        doUnbindService();
+//        doUnbindService();
     }
 
     @Override
@@ -144,22 +147,27 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
 
         if (id == R.id.action_upload) {
 
-            item.setEnabled(false);
+//            item.setEnabled(false);
 
             String pickey = System.currentTimeMillis() + mApplication.mConfig.getUserid();
 
             mCommentStr = mCommentView.getCommentText();
 
-            mCommentView.updateTagSelectedDb(pickey);
-            mStudentView.updateStudentSelectedDb(pickey);
+            //Get the student selections
+            HashMap<Integer, StudentEntityT> map = mStudentView.mStudentSelectAdapter.getmSelections();
+            String studentids = generateStudentidstring(map);
 
-            addUploadQueue(mPictures, mCommentStr, pickey);
+            //Get the Tag selections
+            String tagids = getTagidString(mCommentView.mTagSelectAdapter.mPhotoTagList, mCommentView.mTagSelectAdapter.getmSeletions());
+
+            addUploadQueue(mPictures, mCommentStr, pickey, studentids, tagids);
 
             BusProvider.getInstance().post(new IsUploadingEvent());
 
-            if(mIsBound)
-                mBoundService.uploadFileService();
-
+//            if(mIsBound) {
+//                mBoundService.startUploadFileService();
+//                mBoundService.setContext(mContext);
+//            }
 //            this.overridePendingTransition(R.anim.scalefromcorner, R.anim.scaletocorner);
 
             finish();
@@ -267,9 +275,9 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         return super.onKeyDown(keyCode, event);
     }
 
-    public void addUploadQueue(final ArrayList<Picture> pictureList, final String content, final String pickey)
+    public void addUploadQueue(final ArrayList<Picture> pictureList, final String content, final String pickey, final String studentids, final String tagids)
     {
-        int currentclass = mApplication.mConfig.getCurrentChild();
+        int currentclass = mApplication.mConfig.getCurrentuser();
         String classid = mApplication.mTeacherClassDutys.get(currentclass).getClassid();
 
         UploadArticleEntity uploadArticle = new UploadArticleEntity();
@@ -279,6 +287,8 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         uploadArticle.setClassid(classid);
         uploadArticle.setContent(content);
         uploadArticle.setSendtime(System.currentTimeMillis() / 1000 + "");
+        uploadArticle.setStudentids(studentids);
+        uploadArticle.setTagids(tagids);
 
         mApplication.mDaoSession.getUploadArticleEntityDao().insert(uploadArticle);
 
@@ -304,47 +314,92 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         }
     }
 
-    private UploadFileHelper mBoundService;
+//    private UploadFileHelper mBoundService;
+//
+//    private ServiceConnection mConnection = new ServiceConnection() {
+//        public void onServiceConnected(ComponentName className, IBinder service) {
+//            // This is called when the connection with the service has been
+//            // established, giving us the service object we can use to
+//            // interact with the service.  Because we have bound to a explicit
+//            // service that we know is running in our own process, we can
+//            // cast its IBinder to a concrete class and directly access it.
+//            mBoundService = ((UploadFileHelper.LocalBinder)service).getService();
+//
+//            // Tell the user about this for our demo.
+////            Toast.makeText(Binding.this, R.string.local_service_connected,
+////                    Toast.LENGTH_SHORT).show();
+//        }
+//
+//        public void onServiceDisconnected(ComponentName className) {
+//            // This is called when the connection with the service has been
+//            // unexpectedly disconnected -- that is, its process crashed.
+//            // Because it is running in our same process, we should never
+//            // see this happen.
+//            mBoundService = null;
+////            Toast.makeText(Binding.this, R.string.local_service_disconnected,
+////                    Toast.LENGTH_SHORT).show();
+//        }
+//    };
+//
+//    void doBindService() {
+//        // Establish a connection with the service.  We use an explicit
+//        // class name because we want a specific service implementation that
+//        // we know will be running in our own process (and thus won't be
+//        // supporting component replacement by other applications).
+//        bindService(new Intent(this, UploadFileHelper.class), mConnection, Context.BIND_AUTO_CREATE);
+//        mIsBound = true;
+//    }
+//
+//    void doUnbindService() {
+//        if (mIsBound) {
+//            // Detach our existing connection.
+//            unbindService(mConnection);
+//            mIsBound = false;
+//        }
+//    }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // This is called when the connection with the service has been
-            // established, giving us the service object we can use to
-            // interact with the service.  Because we have bound to a explicit
-            // service that we know is running in our own process, we can
-            // cast its IBinder to a concrete class and directly access it.
-            mBoundService = ((UploadFileHelper.LocalBinder)service).getService();
+    public String generateStudentidstring( HashMap<Integer, StudentEntityT> map)
+    {
+        List<StudentEntityT> students = mApplication.mStudentsT;
+        Iterator it = map.entrySet().iterator();
+        String retStr = "";
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
 
-            // Tell the user about this for our demo.
-//            Toast.makeText(Binding.this, R.string.local_service_connected,
-//                    Toast.LENGTH_SHORT).show();
+            if((int)pair.getKey() == 0) //Select all students
+            {
+                for (StudentEntityT student : students) {
+                    retStr += student.getStudentid() + ",";
+                }
+                break;
+            } else {
+                StudentEntityT studentEntityT = (StudentEntityT)pair.getValue();
+                retStr += studentEntityT.getStudentid() + ",";
+            }
         }
 
-        public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has been
-            // unexpectedly disconnected -- that is, its process crashed.
-            // Because it is running in our same process, we should never
-            // see this happen.
-            mBoundService = null;
-//            Toast.makeText(Binding.this, R.string.local_service_disconnected,
-//                    Toast.LENGTH_SHORT).show();
+        if (!retStr.equals("")) {
+            int end = retStr.lastIndexOf(',');
+            retStr = retStr.substring(0, end);
         }
-    };
 
-    void doBindService() {
-        // Establish a connection with the service.  We use an explicit
-        // class name because we want a specific service implementation that
-        // we know will be running in our own process (and thus won't be
-        // supporting component replacement by other applications).
-        bindService(new Intent(this, UploadFileHelper.class), mConnection, Context.BIND_AUTO_CREATE);
-        mIsBound = true;
+        return retStr;
     }
 
-    void doUnbindService() {
-        if (mIsBound) {
-            // Detach our existing connection.
-            unbindService(mConnection);
-            mIsBound = false;
+    public String getTagidString(List<TagsEntityT> tags, boolean[] selections)
+    {
+        String retStr = "";
+        for(int i=0; i<tags.size(); i++)
+        {
+            if(selections[i])
+               retStr += tags.get(i).getTagid() + ",";
         }
+
+        if (!retStr.equals("")) {
+            int end = retStr.lastIndexOf(',');
+            retStr = retStr.substring(0, end);
+        }
+
+        return retStr;
     }
 }

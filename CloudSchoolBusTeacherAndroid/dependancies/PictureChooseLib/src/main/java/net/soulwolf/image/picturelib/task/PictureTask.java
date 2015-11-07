@@ -233,7 +233,7 @@ public class PictureTask {
 
                 picture.setPicturePath(dataString);
                 picture.pictureIds = idString;
-                picture.timestamp = Long.parseLong(timestamp);
+                picture.timestamp = Long.parseLong((timestamp==null)?"0":timestamp);
 
                 recentlyPictures.add(picture);
 

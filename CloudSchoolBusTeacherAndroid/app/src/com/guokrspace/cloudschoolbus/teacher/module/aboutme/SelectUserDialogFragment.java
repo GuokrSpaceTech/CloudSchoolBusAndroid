@@ -35,7 +35,6 @@ import com.guokrspace.cloudschoolbus.teacher.base.include.Version;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ConfigEntityDao;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.teacher.event.BusProvider;
 import com.guokrspace.cloudschoolbus.teacher.event.InfoSwitchedEvent;
 import com.squareup.picasso.Picasso;
@@ -50,12 +49,9 @@ public class SelectUserDialogFragment extends DialogFragment {
 
     private static final String USERINFO = "userinfo";
     private static final String TAG = SelectUserDialogFragment.class.getName();
-    private List<StudentEntity> mChildren;
     private List<ClassEntityT> mClasses;
-    private int currentChild;
 
     private DynamicGridView gridView;
-    private Button cancelButton;
 
     public static SelectUserDialogFragment newInstance(ArrayList<?> infos, String type) {
         SelectUserDialogFragment f = new SelectUserDialogFragment();
@@ -74,8 +70,6 @@ public class SelectUserDialogFragment extends DialogFragment {
         String type = getArguments().getString("type");
         if(type.equals("class"))
             mClasses = (ArrayList<ClassEntityT>)infos;
-        else if(type.equals("student"))
-            mChildren = (ArrayList<StudentEntity>)infos;
     }
 
     @Override
@@ -88,10 +82,7 @@ public class SelectUserDialogFragment extends DialogFragment {
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
 
-        if(mChildren!=null)
-            gridView.setAdapter(new SwitchAdapter(getActivity(), mChildren, getResources().getInteger(R.integer.column_count)));
-        else
-            gridView.setAdapter(new SwitchAdapter(getActivity(), mClasses,  getResources().getInteger(R.integer.column_count)));
+        gridView.setAdapter(new SwitchAdapter(getActivity(), mClasses,  getResources().getInteger(R.integer.column_count)));
 
         //add callback to stop edit mode if needed
         gridView.setOnDropListener(new DynamicGridView.OnDropListener()
@@ -154,10 +145,8 @@ public class SelectUserDialogFragment extends DialogFragment {
                 holder = (ClassViewHolder) convertView.getTag();
             }
 
-            if(getItem(position) instanceof StudentEntity) {
-                StudentEntity childInfo = (StudentEntity) getItem(position);
-                holder.build(childInfo.getCnname(), childInfo.getAvatar());
-            } else if(getItem(position) instanceof ClassEntityT) {
+
+            if(getItem(position) instanceof ClassEntityT) {
                 ClassEntityT theClass = (ClassEntityT)getItem(position);
                 holder.build(theClass.getClassname(), "");
             }
@@ -194,12 +183,11 @@ public class SelectUserDialogFragment extends DialogFragment {
         ConfigEntityDao configEntityDao = theApplication.mDaoSession.getConfigEntityDao();
         List<ConfigEntity> configEntitys = configEntityDao.queryBuilder().list();
         if(configEntitys.size()>0) {
-            configEntitys.get(0).setCurrentChild(current);
+            configEntitys.get(0).setCurrentuser(current);
             configEntityDao.update(configEntitys.get(0));
             theApplication.mConfig = configEntitys.get(0);
             BusProvider.getInstance().post(new InfoSwitchedEvent(current));
         }
-
         dismiss();
     }
 }

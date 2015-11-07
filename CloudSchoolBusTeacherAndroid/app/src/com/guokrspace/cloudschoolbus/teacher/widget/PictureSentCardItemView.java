@@ -68,6 +68,7 @@ public class PictureSentCardItemView extends CardItemView<PictureSentCard> {
             }
 
             gridView.setAdapter(card.getImageAdapter());
+
         }
 
         //Tags

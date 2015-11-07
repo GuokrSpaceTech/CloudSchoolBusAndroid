@@ -17,7 +17,6 @@ import com.guokrspace.cloudschoolbus.teacher.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.SenderEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.SenderEntityDao;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.entity.Timeline;
 import com.guokrspace.cloudschoolbus.teacher.event.BusProvider;
 import com.guokrspace.cloudschoolbus.teacher.event.SidExpireEvent;
@@ -46,7 +45,7 @@ public class ServerInteractions {
     private CustomWaitDialog mCustomWaitDialog;
 
     private static final ServerInteractions SERVER_INTERACT = new ServerInteractions();
-    private static CloudSchoolBusParentsApplication mApplication=null;
+    private static CloudSchoolBusParentsApplication mApplication = null;
     private static Context mContext = null;
     private List<MessageEntity> mMesageEntities = null;
 
@@ -62,25 +61,24 @@ public class ServerInteractions {
         OLD_FLAG, NEW_FLAG
     }
 
-    public String cardType(String type)
-    {
+    public String cardType(String type) {
         String cardtype = "";
 
-        if(type.equals("Article"))
+        if (type.equals("Article"))
             cardtype = mContext.getResources().getString(R.string.picturetype);
-        if(type.equals("Notice"))
+        if (type.equals("Notice"))
             cardtype = mContext.getResources().getString(R.string.noticetype);
-        else if(type.equals("Punch"))
+        else if (type.equals("Punch"))
             cardtype = mContext.getResources().getString(R.string.attendancetype);
-        else if(type.equals("OpenClass"))
+        else if (type.equals("OpenClass"))
             cardtype = mContext.getResources().getString(R.string.openclass);
-        else if(type.equals("Report"))
+        else if (type.equals("Report"))
             cardtype = mContext.getResources().getString(R.string.report);
-        else if(type.equals("Food"))
+        else if (type.equals("Food"))
             cardtype = mContext.getResources().getString(R.string.food);
-        else if(type.equals("Schedule"))
+        else if (type.equals("Schedule"))
             cardtype = mContext.getResources().getString(R.string.schedule);
-        else if(type.equals("Active"))
+        else if (type.equals("Active"))
             cardtype = mContext.getResources().getString(R.string.activity);
         return cardtype;
     }
@@ -101,16 +99,15 @@ public class ServerInteractions {
 //		showWaitDialog("", null);
 
         HashMap<String, String> params = new HashMap<String, String>();
-        if(messageid!=null && flag.equals(OldNewFlag.NEW_FLAG))
+        if (messageid != null && flag.equals(OldNewFlag.NEW_FLAG))
             params.put("newid", messageid);
 
-        if(messageid!=null && flag.equals(OldNewFlag.OLD_FLAG))
+        if (messageid != null && flag.equals(OldNewFlag.OLD_FLAG))
             params.put("oldid", messageid);
 
         CloudSchoolBusRestClient.get(ProtocolDef.METHOD_timeline, params, new JsonHttpResponseHandler() {
             MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
             SenderEntityDao senderEntityDao = mApplication.mDaoSession.getSenderEntityDao();
-            TagEntityDao tagEntityDao = mApplication.mDaoSession.getTagEntityDao();
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -154,9 +151,10 @@ public class ServerInteractions {
                     Timeline message = timelines.get(i);
                     if (!cardType(message.getApptype()).equals("")) {
                         Timeline.Sender sender = message.getSender();
+
                         MessageEntity messageEntity = new MessageEntity(message.getMessageid(), message.getTitle(),
                                 message.getDescription(), message.getIsconfirm(), message.getSendtime(), message.getApptype(),
-                                message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), sender.getId());
+                                message.getStudentid(), message.getIsmass(), message.getIsreaded(), message.getBody(), message.getTag(), sender.getId());
 
                         SenderEntity senderEntity = new SenderEntity(sender.getId(), sender.getRole(), sender.getAvatar(), sender.getClassname(), sender.getName());
                         if (senderEntity.getId() != null
@@ -218,8 +216,7 @@ public class ServerInteractions {
         });
     }
 
-    public List<MessageEntity> GetMessagesFromCache()
-    {
+    public List<MessageEntity> GetMessagesFromCache() {
 //        if(Version.PARENT) {
 //            int current = mApplication.mConfig.getCurrentChild();
 //            String currentstudentid = null;
@@ -234,9 +231,9 @@ public class ServerInteractions {
 //                        .list();
 //            }
 //        } else {
-            mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-                    .orderDesc(MessageEntityDao.Properties.Messageid)
-                    .list();
+        mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+                .orderDesc(MessageEntityDao.Properties.Messageid)
+                .list();
 //        }
 
         return mMesageEntities;
@@ -257,7 +254,7 @@ public class ServerInteractions {
         GetMessagesFromServer("0", OldNewFlag.NEW_FLAG, handler);
     }
 
-    public void changeAvatarUser(final String userid, final Object image, final android.os.Handler handler){
+    public void changeAvatarUser(final String userid, final Object image, final android.os.Handler handler) {
         if (!mApplication.networkStatusEvent.isNetworkConnected()) {
             handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
@@ -269,25 +266,23 @@ public class ServerInteractions {
         if (image instanceof String) {
             if (image != null) {
 //			params.put("fbody", ImageUtil.getPicString(imageFilePath, 512));
-                File file = new File((String)image);
+                File file = new File((String) image);
                 try {
                     params.put("fbody", file);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }
-        } else if (image instanceof Bitmap)
-        {
+        } else if (image instanceof Bitmap) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ((Bitmap)image).compress(Bitmap.CompressFormat.JPEG, 80, bos);
+            ((Bitmap) image).compress(Bitmap.CompressFormat.JPEG, 80, bos);
             params.put("fbody", new ByteArrayInputStream(bos.toByteArray()));
         }
 
         String requestMethod = "";
-        if(Version.PARENT)
-        {
+        if (Version.PARENT) {
             requestMethod = ProtocolDef.METHOD_changeAvartarStudent;
-            params.put("studentid",userid);
+            params.put("studentid", userid);
         } else {
             requestMethod = ProtocolDef.METHOD_changeAvartar;
         }
@@ -356,10 +351,10 @@ public class ServerInteractions {
             return;
         }
 
-        showWaitDialog("",null);
+        showWaitDialog("", null);
 
         HashMap<String, String> params = new HashMap<String, String>();
-        if(messageid!=null) params.put("messageid", messageid);
+        if (messageid != null) params.put("messageid", messageid);
 
         CloudSchoolBusRestClient.get(ProtocolDef.METHOD_noticeconfirm, params, new JsonHttpResponseHandler() {
             @Override
@@ -421,15 +416,14 @@ public class ServerInteractions {
         });
     }
 
-    public void QRCodeLogin(final String sequenceno, final Handler handler)
-    {
+    public void QRCodeLogin(final String sequenceno, final Handler handler) {
         if (!mApplication.networkStatusEvent.isNetworkConnected()) {
             handler.sendEmptyMessage(HandlerConstant.MSG_NO_NETOWRK);
             return;
         }
 
         HashMap<String, String> params = new HashMap<String, String>();
-        if(sequenceno!=null) params.put("sequence", sequenceno);
+        if (sequenceno != null) params.put("sequence", sequenceno);
 
         CloudSchoolBusRestClient.get(ProtocolDef.METHOD_qrcodelogin, params, new JsonHttpResponseHandler() {
             @Override

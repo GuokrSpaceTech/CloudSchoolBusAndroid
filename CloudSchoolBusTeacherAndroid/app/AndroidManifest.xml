@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.guokrspace.cloudschoolbus.teacher"
-          android:versionCode="10"
-          android:versionName="3.5.3">
+          android:versionCode="17"
+          android:versionName="3.6.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -43,8 +43,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.guokrspace.cloudschoolbus.teacher.LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:screenOrientation="portrait"
+            android:name="com.guokrspace.cloudschoolbus.teacher.LoginActivity">
         </activity>
         <activity
             android:name="com.guokrspace.cloudschoolbus.teacher.module.classes.Streaming.IpcSelectionActivity"
@@ -59,10 +59,12 @@
             android:name="com.guokrspace.cloudschoolbus.teacher.base.activity.BaseWebViewActivity">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name="com.guokrspace.cloudschoolbus.teacher.module.photo.SelectStudentActivity"
             android:label="@string/title_activity_select_student">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name="com.guokrspace.cloudschoolbus.teacher.module.qrcode.CaptureActivity">
         </activity>
         <service
@@ -136,34 +138,11 @@
             android:name="com.baidu.android.pushservice.CommandService"
             android:exported="true" />
         <!-- push结束 -->
-
-
+        
         <!-- 在百度开发者中心查询应用的API Key -->
         <meta-data
             android:name="api_key"
             android:value="TnbKjnQlMKKrj5g0iyopnHIB" />
-
-        <activity
-            android:name="com.mob.tools.MobUIShell"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-            <intent-filter>
-                <data android:scheme="tencent100371282" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.guokrspace.cloudschoolbus.teacher.wxapi.WXEntryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

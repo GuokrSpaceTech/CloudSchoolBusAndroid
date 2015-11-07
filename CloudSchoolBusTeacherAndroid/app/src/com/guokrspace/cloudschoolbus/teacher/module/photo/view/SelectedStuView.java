@@ -10,6 +10,7 @@ import android.widget.GridView;
 import com.guokrspace.cloudschoolbus.teacher.R;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.DaoSession;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntityT;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.teacher.module.photo.SelectStudentActivity;
 import com.guokrspace.cloudschoolbus.teacher.module.photo.adapter.StudentSelectAdapter;
 
@@ -28,12 +29,9 @@ import java.util.Map;
 public class SelectedStuView extends BaseLinearLayout {
 
 	private GridView mGridView;
-	private StudentSelectAdapter mStudentSelectAdapter;
+	public StudentSelectAdapter mStudentSelectAdapter;
 	private AdapterView.OnItemClickListener mItemClickListener;
-
-
 	private List<StudentEntityT> mStudents;
-
 
 	public SelectedStuView(Context context,  AttributeSet attrs) {
 		super(context, attrs);
@@ -69,31 +67,51 @@ public class SelectedStuView extends BaseLinearLayout {
 		mGridView.setOnItemClickListener(mItemClickListener);
 	}
 
-	public void updateStudentSelectedDb(String pickey) {
-        DaoSession db = ((SelectStudentActivity)mContext).mApplication.mDaoSession;
-        HashMap map = mStudentSelectAdapter.getmSelections();
-        Iterator it = map.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-
-            if((int)pair.getKey() == 0) //Select all students
-            {
-                for(StudentEntityT student:mStudents)
-                {
-                    student.setPickey(pickey);
-                    db.getStudentEntityTDao().update(student);
-                }
-
-            } else {
-                StudentEntityT student = (StudentEntityT)pair.getValue();
-                student.setPickey(pickey);
-                db.getStudentEntityTDao().update(student);
-            }
-        }
-    }
+//	public void updateStudentSelectedDb(String pickey) {
+//        DaoSession db = ((SelectStudentActivity)mContext).mApplication.mDaoSession;
+//        HashMap map = mStudentSelectAdapter.getmSelections();
+//        Iterator it = map.entrySet().iterator();
+//        while (it.hasNext()) {
+//            Map.Entry pair = (Map.Entry) it.next();
+//
+//            if((int)pair.getKey() == 0) //Select all students
+//            {
+//                generateStudentidString(mStudents);
+//
+//                db.get
+//
+//                for(StudentEntityT student:mStudents)
+//                {
+////                    student.setPickey(pickey);
+//                    db.getStudentEntityTDao().update(student);
+//                }
+//
+//            } else {
+//                StudentEntityT student = (StudentEntityT)pair.getValue();
+//                student.setPickey(pickey);
+//                db.getStudentEntityTDao().update(student);
+//            }
+//        }
+//    }
 
     public boolean hasSelection()
     {
         return (mStudentSelectAdapter.getmSelections().isEmpty());
     }
+
+//    public String generateStudentidString(HashMap map<>)
+//    {
+//        String retStr = "";
+//        for(StudentEntityT student : students)
+//        {
+//            retStr += student.getStudentid() + ",";
+//        }
+//
+//        if(!retStr.equals("")) {
+//            int end = retStr.lastIndexOf(',');
+//            retStr = retStr.substring(0, end);
+//        }
+//
+//        return retStr;
+//    }
 }

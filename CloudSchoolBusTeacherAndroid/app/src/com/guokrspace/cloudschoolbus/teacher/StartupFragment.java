@@ -74,7 +74,7 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
 
     @Override
     public void onResume() {
-        if(isAppReady) {
+        if (isAppReady) {
             getFragmentManager().popBackStackImmediate();
         }
         super.onResume();
@@ -84,25 +84,20 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        MainActivity mainActivity = (MainActivity)mParentContext;
+        MainActivity mainActivity = (MainActivity) mParentContext;
         mainActivity.getSupportActionBar().hide();
 
         View root = inflater.inflate(R.layout.fragment_startup, container, false);
         String startupImageUrl = "";
-        if(Version.PARENT) {
-            if (mApplication.mSchools.size() > 0)
-                startupImageUrl = mApplication.mSchools.get(0).getCover();
-        }else{
-            if (mApplication.mSchoolsT.size() > 0)
-                startupImageUrl = mApplication.mSchoolsT.get(0).getCover();
-        }
 
-        final ImageView mImgBackgroud = (ImageView)root.findViewById(R.id.imageView2);
-        final ImageView mImageLogo = (ImageView)root.findViewById(R.id.imageView3);
+        if (mApplication.mSchoolsT.size() > 0)
+            startupImageUrl = mApplication.mSchoolsT.get(0).getCover();
+
+        final ImageView mImgBackgroud = (ImageView) root.findViewById(R.id.imageView2);
+        final ImageView mImageLogo = (ImageView) root.findViewById(R.id.imageView3);
 
         final String finalStartupImageUrl = startupImageUrl;
-        if(!startupImageUrl.equals("") && !startupImageUrl.isEmpty() && !startupImageUrl.equals("http://.") && startupImageUrl != null)
-        {
+        if (!startupImageUrl.equals("") && !startupImageUrl.isEmpty() && !startupImageUrl.equals("http://.") && startupImageUrl != null) {
             Picasso.with(mParentContext)
                     .load(finalStartupImageUrl)
                     .networkPolicy(NetworkPolicy.OFFLINE)
@@ -112,6 +107,7 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
                             mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
                             mImgBackgroud.setAlpha(1L);
                         }
+
                         @Override
                         public void onError() {
                             //Try again online if cache failed
@@ -120,8 +116,12 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
                                     .into(mImageLogo, new Callback() {
                                         @Override
                                         public void onSuccess() {
-                                            mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
-                                            mImgBackgroud.setAlpha(1L);
+                                            try {
+                                                mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
+                                                mImgBackgroud.setAlpha(1L);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -154,11 +154,10 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
     }
 
     @Subscribe
-    public void onReceiveImReadyEvent(ImReadyEvent event)
-    {
+    public void onReceiveImReadyEvent(ImReadyEvent event) {
         isAppReady = true;
-        MainActivity mainActivity = (MainActivity)mParentContext;
-        if( mainActivity!=null )
+        MainActivity mainActivity = (MainActivity) mParentContext;
+        if (mainActivity != null)
             mainActivity.getSupportActionBar().show();
         try {
             getFragmentManager().popBackStackImmediate();

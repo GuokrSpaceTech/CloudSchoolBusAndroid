@@ -16,8 +16,8 @@ import java.util.List;
 public class TagSelectAdapter extends BaseAdapter {
 
 	private Context mContext;
-	private List<TagsEntityT> mPhotoTagList;
-    private boolean[] mSeletions;
+	public List<TagsEntityT> mPhotoTagList;
+    public boolean[] mSeletions;
 
 	public TagSelectAdapter(Context context, List<TagsEntityT> tags) {
 		mContext = context;

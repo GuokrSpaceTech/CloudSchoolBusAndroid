@@ -36,7 +36,6 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
     };
 
     private Query<TagsEntityT> schoolEntityT_TagsEntityTListQuery;
-    private Query<TagsEntityT> uploadArticleEntity_TagsEntityTListQuery;
 
     public TagsEntityTDao(DaoConfig config) {
         super(config);
@@ -168,20 +167,6 @@ public class TagsEntityTDao extends AbstractDao<TagsEntityT, String> {
         }
         Query<TagsEntityT> query = schoolEntityT_TagsEntityTListQuery.forCurrentThread();
         query.setParameter(0, schoolid);
-        return query.list();
-    }
-
-    /** Internal query to resolve the "tagsEntityTList" to-many relationship of UploadArticleEntity. */
-    public List<TagsEntityT> _queryUploadArticleEntity_TagsEntityTList(String pickey) {
-        synchronized (this) {
-            if (uploadArticleEntity_TagsEntityTListQuery == null) {
-                QueryBuilder<TagsEntityT> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Pickey.eq(null));
-                uploadArticleEntity_TagsEntityTListQuery = queryBuilder.build();
-            }
-        }
-        Query<TagsEntityT> query = uploadArticleEntity_TagsEntityTListQuery.forCurrentThread();
-        query.setParameter(0, pickey);
         return query.list();
     }
 

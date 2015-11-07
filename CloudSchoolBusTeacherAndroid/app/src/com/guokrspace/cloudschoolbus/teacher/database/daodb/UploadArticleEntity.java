@@ -18,6 +18,8 @@ public class UploadArticleEntity {
     private String teacherid;
     private String content;
     private String sendtime;
+    private String studentids;
+    private String tagids;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -26,8 +28,6 @@ public class UploadArticleEntity {
     private transient UploadArticleEntityDao myDao;
 
     private List<UploadArticleFileEntity> uploadArticleFileEntityList;
-    private List<TagsEntityT> tagsEntityTList;
-    private List<StudentEntityT> studentEntityTList;
 
     public UploadArticleEntity() {
     }
@@ -36,13 +36,15 @@ public class UploadArticleEntity {
         this.pickey = pickey;
     }
 
-    public UploadArticleEntity(String pickey, String pictype, String classid, String teacherid, String content, String sendtime) {
+    public UploadArticleEntity(String pickey, String pictype, String classid, String teacherid, String content, String sendtime, String studentids, String tagids) {
         this.pickey = pickey;
         this.pictype = pictype;
         this.classid = classid;
         this.teacherid = teacherid;
         this.content = content;
         this.sendtime = sendtime;
+        this.studentids = studentids;
+        this.tagids = tagids;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -101,6 +103,22 @@ public class UploadArticleEntity {
         this.sendtime = sendtime;
     }
 
+    public String getStudentids() {
+        return studentids;
+    }
+
+    public void setStudentids(String studentids) {
+        this.studentids = studentids;
+    }
+
+    public String getTagids() {
+        return tagids;
+    }
+
+    public void setTagids(String tagids) {
+        this.tagids = tagids;
+    }
+
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<UploadArticleFileEntity> getUploadArticleFileEntityList() {
         if (uploadArticleFileEntityList == null) {
@@ -121,50 +139,6 @@ public class UploadArticleEntity {
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetUploadArticleFileEntityList() {
         uploadArticleFileEntityList = null;
-    }
-
-    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<TagsEntityT> getTagsEntityTList() {
-        if (tagsEntityTList == null) {
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            TagsEntityTDao targetDao = daoSession.getTagsEntityTDao();
-            List<TagsEntityT> tagsEntityTListNew = targetDao._queryUploadArticleEntity_TagsEntityTList(pickey);
-            synchronized (this) {
-                if(tagsEntityTList == null) {
-                    tagsEntityTList = tagsEntityTListNew;
-                }
-            }
-        }
-        return tagsEntityTList;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    public synchronized void resetTagsEntityTList() {
-        tagsEntityTList = null;
-    }
-
-    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<StudentEntityT> getStudentEntityTList() {
-        if (studentEntityTList == null) {
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            StudentEntityTDao targetDao = daoSession.getStudentEntityTDao();
-            List<StudentEntityT> studentEntityTListNew = targetDao._queryUploadArticleEntity_StudentEntityTList(pickey);
-            synchronized (this) {
-                if(studentEntityTList == null) {
-                    studentEntityTList = studentEntityTListNew;
-                }
-            }
-        }
-        return studentEntityTList;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    public synchronized void resetStudentEntityTList() {
-        studentEntityTList = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */

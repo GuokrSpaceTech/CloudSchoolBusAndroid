@@ -4,6 +4,6 @@
     android:layout_width="wrap_content"
     android:layout_height="24dp"
     android:layout_margin="5dp"
-    android:background="@drawable/btn_photo_tag_xml"
-    android:enabled="false"
-    android:textColor="@android:color/white"></Button>
+    android:background="@android:color/darker_gray"
+    android:textColor="@android:color/white">
+</Button>

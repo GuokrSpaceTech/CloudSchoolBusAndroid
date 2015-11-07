@@ -22,7 +22,6 @@ import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
-
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import java.net.URL;
@@ -31,6 +30,10 @@ import java.util.List;
 import ru.truba.touchgallery.GalleryWidget.BasePagerAdapter.OnItemChangeListener;
 import ru.truba.touchgallery.GalleryWidget.GalleryViewPager;
 import ru.truba.touchgallery.GalleryWidget.UrlPagerAdapter;
+
+//import cn.sharesdk.framework.Platform;
+//import cn.sharesdk.framework.ShareSDK;
+//import cn.sharesdk.onekeyshare.OnekeyShare;
 
 /**
  * Created by Yang Kai on 15/9/5.

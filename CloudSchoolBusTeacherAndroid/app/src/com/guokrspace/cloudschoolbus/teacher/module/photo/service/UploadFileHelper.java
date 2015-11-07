@@ -10,12 +10,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
 import com.android.support.debug.DebugLog;
 import com.guokrspace.cloudschoolbus.teacher.CloudSchoolBusParentsApplication;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntityT;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagsEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleFileEntity;
@@ -26,16 +23,12 @@ import com.guokrspace.cloudschoolbus.teacher.protocols.ProtocolDef;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import net.soulwolf.image.picturelib.model.Picture;
-import net.soulwolf.image.picturelib.view.cropwindow.handle.Handle;
-
 import org.apache.http.Header;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,19 +41,24 @@ public class UploadFileHelper extends Service {
     private Context mContext;
     private Fragment mFragment;
     private Thread thread;
+    private int IDLE_INTERVAL = 5000;
+    private int BUSY_INTERVAL = 1000;
 	private CloudSchoolBusParentsApplication mApplication;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
-            if(message.what == MSG_KICKOFF)
+            if(message.what == MSG_UPLOAD)
             {
-                uploadFileService();
+                if( uploadNextFile() == 0 ) //no file to upload
+                {
+                    handler.sendEmptyMessageDelayed(MSG_UPLOAD,IDLE_INTERVAL);
+                }
             }
             return false;
         }
     });
-    private static int MSG_KICKOFF = 1;
+    private static int MSG_UPLOAD = 1;
 
     private static UploadFileHelper uploadFileHelper = new UploadFileHelper();
 
@@ -104,8 +102,10 @@ public class UploadFileHelper extends Service {
     public void onCreate() {
         super.onCreate();
 
-        handler.sendEmptyMessage(MSG_KICKOFF);
+//        handler.sendEmptyMessage(MSG_KICKOFF);
     }
+
+
 
     public void setFragment(Fragment fragment) {
         mFragment = fragment;
@@ -114,34 +114,41 @@ public class UploadFileHelper extends Service {
 	/**
 	 * 开启上传文件，每次只上传一个其余等待,在setUploadFileDB方法之后调用
 	 */
-	public void uploadFileService() {
-//		if (null == mContext) {
-//            throw new NullPointerException(
-//                    "no call method setContext(Context context)");
-//        }
+	public void startUploadFileService() {
+		if (null == mContext) {
+            throw new NullPointerException(
+                    "no call method setContext(Context context)");
+        }
 
-        uploadNextFile();
-
+        handler.sendEmptyMessageDelayed(MSG_UPLOAD, IDLE_INTERVAL);
 	}
 
-    private void uploadNextFile() {
+    private int uploadNextFile() {
         //Check uploadable files
-        mApplication = (CloudSchoolBusParentsApplication) getApplicationContext();
         List<UploadArticleEntity> uploadArticles = mApplication.mDaoSession.getUploadArticleEntityDao().queryBuilder().list();
         for (UploadArticleEntity uploadArticle : uploadArticles) {
             List<UploadArticleFileEntity> uploadFiles = uploadArticle.getUploadArticleFileEntityList();
             for (UploadArticleFileEntity uploadFile : uploadFiles) {
                 if (uploadFile.getIsSuccess() == null) {
                     uploadFile(uploadFile);
-                    break;
+                    return 1;
                 }
             }
         }
+
+        //no file found
+        return 0;
     }
 
     public void retryFailedFile(UploadArticleFileEntity uploadFile)
     {
-        uploadFile(uploadFile);
+        markUploadNull(uploadFile);
+    }
+
+    public void removeFailedFile(UploadArticleFileEntity uploadFile)
+    {
+        mApplication.mDaoSession.getUploadArticleFileEntityDao().delete(uploadFile);
+        mApplication.mDaoSession.clear();
     }
 
 	private synchronized void uploadFile(final UploadArticleFileEntity uploadFile) {
@@ -166,13 +173,13 @@ public class UploadFileHelper extends Service {
                 //Remove the upload Q in DB
                 MarkUplodSuccess(uploadFile);
 
-                //Notify the fragment or activity to update list view
+//                //Notify the fragment or activity to update list view
                 FileUploadedEvent event = new FileUploadedEvent(uploadFile);
                 event.setIsSuccess(true);
                 BusProvider.getInstance().post(event);
 
                 //Kick off next load
-                uploadNextFile();
+                handler.sendEmptyMessageDelayed(MSG_UPLOAD, BUSY_INTERVAL);
             }
 
             @Override
@@ -182,7 +189,7 @@ public class UploadFileHelper extends Service {
                 //Remove the upload Q in DB
                 markUploadFailure(uploadFile);
 
-                //Notify the fragment or activity to update list view
+//                //Notify the fragment or activity to update list view
                 FileUploadedEvent event = new FileUploadedEvent(uploadFile);
                 mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadFile);
 
@@ -190,14 +197,14 @@ public class UploadFileHelper extends Service {
                 BusProvider.getInstance().post(event);
 
                 //Kick off next load
-                uploadNextFile();
+                handler.sendEmptyMessageDelayed(MSG_UPLOAD, BUSY_INTERVAL);
             }
 
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
                 int progress = (int) (((double) bytesWritten / (double) totalSize) * 100);
-//                SentRecordFragment fragment = (SentRecordFragment) mFragment;
+//                SendingRecordFragment fragment = (SendingRecordFragment) mFragment;
 //                View view = fragment.mUploadFileAdapter.getFirstView();
 //                if (null != view) {
 //                    TextView progressTextView = (TextView) view
@@ -212,15 +219,14 @@ public class UploadFileHelper extends Service {
 
     private synchronized void setArticleParameters(final UploadArticleEntity uploadArticle) {
 
-//        DebugLog.logI("uploadFile11111111111111111111111111111111111");
         RequestParams params = new RequestParams();
 
         params.put("pickey", uploadArticle.getPickey());
         params.put("pictype", uploadArticle.getPictype());
         params.put("classid", uploadArticle.getClassid());
         params.put("teacherid", uploadArticle.getTeacherid());
-        params.put("studentids", generateStudentidstring(uploadArticle));
-        params.put("tagids", generateTagidString(uploadArticle));
+        params.put("studentids", uploadArticle.getStudentids());
+        params.put("tagids", uploadArticle.getTagids());
         params.put("content", uploadArticle.getContent());
 
 //        DebugLog.logI("mMethod : " + ProtocolDef.METHOD_over + " RequestParams : " + params.toString());
@@ -294,6 +300,15 @@ public class UploadFileHelper extends Service {
         } else {
             DebugLog.logI("UploadQ out of sync");
         }
+
+        try {
+            File file = new File(mApplication.mCacheDir, uploadfile.getFname() + ".small.jpg");
+            file.delete();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
     public void markUploadFailure(UploadArticleFileEntity uploadfile)
@@ -302,69 +317,47 @@ public class UploadFileHelper extends Service {
         mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadfile);
     }
 
+    //Add back to upload Q
+    public void markUploadNull(UploadArticleFileEntity uploadfile)
+    {
+        uploadfile.setIsSuccess(null);
+        mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadfile);
+    }
+
 
     private void markUploadAriticleSuccess(UploadArticleEntity uploadArticle)
     {
-//        mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
-//        mApplication.mDaoSession.clear();
-    }
-
-    public String generateStudentidstring(UploadArticleEntity article)
-    {
-        String retStr = "";
-        for(StudentEntityT student : article.getStudentEntityTList())
-        {
-            retStr += student.getStudentid() + ",";
-        }
-
-        if(!retStr.equals("")) {
-            int end = retStr.lastIndexOf(',');
-            retStr = retStr.substring(0, end);
-        }
-
-        return retStr;
-    }
-
-    public String generateTagidString(UploadArticleEntity article)
-    {
-        String retStr = "";
-        for(TagsEntityT tag : article.getTagsEntityTList())
-        {
-            retStr += tag.getTagid() + ",";
-        }
-
-        if(!retStr.equals("")) {
-            int end = retStr.lastIndexOf(',');
-            retStr = retStr.substring(0, end);
-        }
-
-        return retStr;
+        mApplication.mDaoSession.getUploadArticleEntityDao().delete(uploadArticle);
+        mApplication.mDaoSession.clear();
     }
 
     public String compressUploadSource(UploadArticleFileEntity fileEntity)
     {
 
         File compressFile = new File(mApplication.mCacheDir, fileEntity.getFname() + ".small.jpg");
-        try {
-            compressFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return fileEntity.getFbody();
+
+        if(!compressFile.exists()) {
+            try {
+                compressFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return fileEntity.getFbody();
+            }
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inDither = false;                     //Disable Dithering mode
+            opts.inPurgeable = true;                   //Tell to gc that whether it needs free memory, the Bitmap can be cleared
+            opts.inInputShareable = true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
+            opts.inTempStorage = new byte[32 * 1024];
+            Bitmap bmp = BitmapFactory.decodeFile(fileEntity.getFbody(), opts);
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(compressFile);
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+                return fileEntity.getFbody();
+            }
+            bmp.compress(Bitmap.CompressFormat.JPEG, 70, fos);
         }
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inDither = false;                     //Disable Dithering mode
-        opts.inPurgeable = true;                   //Tell to gc that whether it needs free memory, the Bitmap can be cleared
-        opts.inInputShareable = true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
-        opts.inTempStorage = new byte[32 * 1024];
-        Bitmap bmp = BitmapFactory.decodeFile(fileEntity.getFbody(),opts);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(compressFile);
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            return fileEntity.getFbody();
-        }
-        bmp.compress(Bitmap.CompressFormat.JPEG, 70, fos);
         return compressFile.getAbsolutePath();
     }
 }

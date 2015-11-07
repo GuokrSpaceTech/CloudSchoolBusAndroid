@@ -91,7 +91,7 @@ public class UploadListFragment extends BaseFragment {
         registerForContextMenu(mListView);
 
         //Kickoff the upload process
-//        mBoundService.uploadFileService();
+//        mBoundService.startUploadFileService();
 
 		setListener(view);
 
@@ -133,7 +133,7 @@ public class UploadListFragment extends BaseFragment {
 			if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
 //				UploadFileHelper.getInstance().setContext(mParentContext);
 //				UploadFileHelper.getInstance().setFragment(mFragment);
-//				UploadFileHelper.getInstance().uploadFileService();
+//				UploadFileHelper.getInstance().startUploadFileService();
 			}
 		}
 	};

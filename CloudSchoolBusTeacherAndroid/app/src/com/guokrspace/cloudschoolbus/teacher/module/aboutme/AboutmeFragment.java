@@ -13,6 +13,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,14 +38,12 @@ import com.guokrspace.cloudschoolbus.teacher.base.ServerInteractions;
 import com.guokrspace.cloudschoolbus.teacher.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.teacher.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.teacher.base.include.HandlerConstant;
-import com.guokrspace.cloudschoolbus.teacher.base.include.Version;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassEntityT;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.teacher.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.teacher.event.InfoSwitchedEvent;
 import com.guokrspace.cloudschoolbus.teacher.event.IsUploadingEvent;
-import com.guokrspace.cloudschoolbus.teacher.module.photo.SentRecordFragment;
+import com.guokrspace.cloudschoolbus.teacher.module.photo.SendingRecordFragment;
 import com.guokrspace.cloudschoolbus.teacher.module.qrcode.CaptureActivity;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -66,8 +65,7 @@ import java.util.List;
 public class AboutmeFragment extends BaseFragment implements
         IListDialogListener,
         ISimpleDialogCancelListener,
-        ISimpleDialogListener,OnPicturePickListener
-{
+        ISimpleDialogListener, OnPicturePickListener {
 
     //Styled Dialog defines
     private static final int REQUEST_PROGRESS = 1;
@@ -85,7 +83,7 @@ public class AboutmeFragment extends BaseFragment implements
 
     private ImageView imageViewAvatar;
     private TextView textViewUserName;
-    private Button  buttonKindergarten;
+    private Button buttonKindergarten;
     private LinearLayout layoutSwitch;
     private TextView textViewCache;
     private LinearLayout layoutClearCache;
@@ -94,6 +92,7 @@ public class AboutmeFragment extends BaseFragment implements
     private LinearLayout layoutQRCode;
     private ImageView redDotIcon;
     private Button logoutButton;
+    private TextView classNameTextView;
     private int currentChild;
     private boolean isUploading = false;
 
@@ -111,10 +110,10 @@ public class AboutmeFragment extends BaseFragment implements
                 case HandlerConstant.MSG_AVATAR_STUDENT_OK:
                     imageViewAvatar.setImageBitmap(bitMap);
                     Bundle bundle = msg.getData();
-                    String avatarurl = (String)bundle.get("filepath");
-                    String userid    = (String)bundle.get("userid");
-                    String localPath = (String)bundle.get("cache");
-                    if(userid!=null && avatarurl!=null) {
+                    String avatarurl = (String) bundle.get("filepath");
+                    String userid = (String) bundle.get("userid");
+                    String localPath = (String) bundle.get("cache");
+                    if (userid != null && avatarurl != null) {
                         saveUserAvatarInfo(userid, avatarurl);
                         updateUserInfoUI();
                         File file = new File(localPath);
@@ -148,8 +147,7 @@ public class AboutmeFragment extends BaseFragment implements
         }
     });
 
-    public static AboutmeFragment newInstance()
-    {
+    public static AboutmeFragment newInstance() {
         AboutmeFragment fragment = new AboutmeFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -162,7 +160,8 @@ public class AboutmeFragment extends BaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if (getArguments() != null) {}
+        if (getArguments() != null) {
+        }
 
         mPictureProcess = new PictureProcess(this, mApplication.getCacheDir());
         super.onCreate(savedInstanceState);
@@ -172,42 +171,27 @@ public class AboutmeFragment extends BaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_aboutme, container, false);
-        layoutSwitch = (LinearLayout)root.findViewById(R.id.linearLayoutSwitchuser);
-        layoutClearCache = (LinearLayout)root.findViewById(R.id.linearLayoutClearcache);
-        layoutUploadRecord = (LinearLayout)root.findViewById(R.id.linearLayoutUploadRecord);
-        layoutHelpFeedback = (LinearLayout)root.findViewById(R.id.linearLayoutHelp);
-        layoutQRCode  = (LinearLayout)root.findViewById(R.id.linearLayoutQRCode);
-        logoutButton = (Button)root.findViewById(R.id.logoutButton);
-        imageViewAvatar = (ImageView)root.findViewById(R.id.child_avatar);
-        textViewUserName = (TextView)root.findViewById(R.id.child_name);
-        textViewCache = (TextView)root.findViewById(R.id.textViewCacheSize);
-        buttonKindergarten = (Button)root.findViewById(R.id.kindergarten_name);
-        redDotIcon = (ImageView)root.findViewById(R.id.red_dot);
-        if(isUploading == false)
+        layoutSwitch = (LinearLayout) root.findViewById(R.id.linearLayoutSwitchuser);
+        layoutClearCache = (LinearLayout) root.findViewById(R.id.linearLayoutClearcache);
+        layoutUploadRecord = (LinearLayout) root.findViewById(R.id.linearLayoutUploadRecord);
+        layoutHelpFeedback = (LinearLayout) root.findViewById(R.id.linearLayoutHelp);
+        layoutQRCode = (LinearLayout) root.findViewById(R.id.linearLayoutQRCode);
+        logoutButton = (Button) root.findViewById(R.id.logoutButton);
+        imageViewAvatar = (ImageView) root.findViewById(R.id.child_avatar);
+        textViewUserName = (TextView) root.findViewById(R.id.child_name);
+        textViewCache = (TextView) root.findViewById(R.id.textViewCacheSize);
+        buttonKindergarten = (Button) root.findViewById(R.id.kindergarten_name);
+        redDotIcon = (ImageView) root.findViewById(R.id.red_dot);
+        classNameTextView = (TextView)root.findViewById(R.id.class_name_textview);
+        if (isUploading == false)
             redDotIcon.setVisibility(View.INVISIBLE);
         else
             redDotIcon.setVisibility(View.VISIBLE);
 
-        if(Version.PARENT)
-            currentChild = mApplication.mConfig.getCurrentChild();
-
         /* Get the current user's avatar */
         updateUserInfoUI();
 
-        if(Version.PARENT) {
-            buttonKindergarten.setText(mApplication.mSchools.get(0).getName());
-            layoutUploadRecord.setVisibility(View.GONE);
-            View divider = root.findViewById(R.id.divider3);
-            divider.setVisibility(View.GONE);
-            divider = root.findViewById(R.id.divider2);
-            divider.setVisibility(View.GONE);
-            TextView switchTextView = (TextView)root.findViewById(R.id.switchTextView);
-            switchTextView.setText(getResources().getString(R.string.switch_child));
-            layoutQRCode.setVisibility(View.GONE);
-        }
-        else {
-            buttonKindergarten.setText(mApplication.mSchoolsT.get(0).getName());
-        }
+        buttonKindergarten.setText(mApplication.mSchoolsT.get(0).getName());
 
         textViewCache.setText(getDBSize());
 
@@ -218,8 +202,7 @@ public class AboutmeFragment extends BaseFragment implements
         return root;
     }
 
-    private void setListeners()
-    {
+    private void setListeners() {
         layoutSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -247,7 +230,7 @@ public class AboutmeFragment extends BaseFragment implements
         layoutHelpFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)mParentContext).pager.lock();
+                ((MainActivity) mParentContext).pager.lock();
                 WebviewFragment fragment = WebviewFragment.newInstance(getResources().getString(R.string.aboutmeurl), getResources().getString(R.string.companyweb), "");
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_aboutme_container, fragment);
@@ -259,9 +242,9 @@ public class AboutmeFragment extends BaseFragment implements
         layoutUploadRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)mParentContext).pager.lock();
+                ((MainActivity) mParentContext).pager.lock();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_aboutme_container, new SentRecordFragment(), "sentrecord");
+                transaction.replace(R.id.fragment_aboutme_container, new SendingRecordFragment(), "sentrecord");
                 transaction.addToBackStack("sentrecord");
                 transaction.commit();
                 isUploading = false;
@@ -269,8 +252,6 @@ public class AboutmeFragment extends BaseFragment implements
             }
         });
 
-        if(!Version.PARENT)
-        {
             layoutQRCode.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -279,7 +260,6 @@ public class AboutmeFragment extends BaseFragment implements
                     startActivityForResult(intent, 3001);
                 }
             });
-        }
 
         layoutClearCache.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,12 +283,13 @@ public class AboutmeFragment extends BaseFragment implements
     @Override
     public void onListItemSelected(CharSequence value, int number, int requestCode) {
         if (requestCode == REQUEST_LIST_SIMPLE || requestCode == REQUEST_LIST_SINGLE) {
-            if(value.equals(getResources().getString(R.string.picture_ops_album)))
+            if (value.equals(getResources().getString(R.string.picture_ops_album)))
                 doSelectImageFromLocal();
-            else if(value.equals(getResources().getString(R.string.picture_ops_take_pic)))
+            else if (value.equals(getResources().getString(R.string.picture_ops_take_pic)))
                 doTakePhoto();
         }
     }
+
     @Override
     public void onCancelled(int requestCode) {
 
@@ -316,7 +297,6 @@ public class AboutmeFragment extends BaseFragment implements
 
     /**
      * 拍照获取图片
-     *
      */
     private void doTakePhoto() {
         try {
@@ -358,41 +338,34 @@ public class AboutmeFragment extends BaseFragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        ((MainActivity)mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.module_aboutme));
+        ((MainActivity) mParentContext).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        ((MainActivity) mParentContext).getSupportActionBar().setTitle(getResources().getString(R.string.module_aboutme));
         menu.clear();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
-            ((MainActivity)mParentContext).pager.unlock();
+                ((MainActivity) mParentContext).pager.unlock();
                 break;
-                default:break;
+            default:
+                break;
         }
         return false;
     }
 
-    private void showSwithUserDialog()
-    {
+    private void showSwithUserDialog() {
         SelectUserDialogFragment theDialogFragment = null;
-        if (Version.PARENT) {
-            theDialogFragment  = SelectUserDialogFragment.newInstance((ArrayList) mApplication.mStudents, "student");
-        } else {
-            ArrayList<ClassEntityT> classes = DataWrapper.getInstance().findMyClass();
-            theDialogFragment = SelectUserDialogFragment.newInstance(classes, "class");
-        }
-
+        ArrayList<ClassEntityT> classes = DataWrapper.getInstance().findMyClass();
+        theDialogFragment = SelectUserDialogFragment.newInstance(classes, "class");
         theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyFragmentDialogStyle);
-
         theDialogFragment.show(getFragmentManager(), "");
     }
 
 
     //Signout
-    public void signout()
-    {
+    public void signout() {
         SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.altersignout))
                 .setPositiveButtonText(getResources().getString(R.string.OKAY)).setNegativeButtonText(getResources().getString(R.string.cancel))
                 .setTargetFragment(mFragment, REQUEST_SIMPLE_DIALOG).show();
@@ -409,86 +382,72 @@ public class AboutmeFragment extends BaseFragment implements
             mApplication.clearConfig();
             mApplication.clearData();
             mApplication.clearBaseinfo();
-            ((MainActivity)mParentContext).finish();
+            ((MainActivity) mParentContext).finish();
             Intent intent = new Intent(mParentContext, MainActivity.class);
             startActivity(intent);
         }
     }
+
     @Override
     public void onNegativeButtonClicked(int requestCode) {
         if (requestCode == REQUEST_SIMPLE_DIALOG) {
         }
     }
+
     @Override
     public void onNeutralButtonClicked(int requestCode) {
 
     }
 
     @Subscribe
-    public void onAvatarChanged(AvatarChangedEvent event)
-    {
+    public void onAvatarChanged(AvatarChangedEvent event) {
         Bitmap avatarBitmap = event.getBitMap();
         imageViewAvatar.setImageBitmap(avatarBitmap);
     }
 
     @Subscribe
-    public void onChildrenSwitched(InfoSwitchedEvent event)
-    {
+    public void onChildrenSwitched(InfoSwitchedEvent event) {
         currentChild = event.getCurrentChild();
         updateUserInfoUI();
     }
 
-    @Subscribe public void onUserIsUploadingEvent(IsUploadingEvent event)
-    {
+    @Subscribe
+    public void onUserIsUploadingEvent(IsUploadingEvent event) {
         //Just set a red dot
         isUploading = true;
     }
 
-    private void updateUserInfoUI()
-    {
+    private void updateUserInfoUI() {
         /* Get the current child's avatar */
-        StudentEntity studentEntity = null;
         String avatar = "";
-        if(Version.PARENT) {
-            studentEntity = mApplication.mStudents.get(currentChild);
 
-            avatar = studentEntity.getAvatar();
-
-            if(avatar!=null && !avatar.isEmpty())
-                Picasso.with(mParentContext).load(avatar).fit().centerCrop().into(imageViewAvatar);
-
-            if (studentEntity.getNikename() == null)
-                textViewUserName.setText(studentEntity.getCnname());
-            else
-                textViewUserName.setText(studentEntity.getNikename());
-
-        } else {
-            TeacherEntityT user = null;
-            for(TeacherEntityT teacher:mApplication.mTeachersT) {
-                if (teacher.getTeacherid().equals(mApplication.mConfig.getUserid())) {
-                    user = teacher;
-                    break;
-                }
-            }
-
-            if(user!=null) {
-                if(user.getAvatar()!=null && !user.getAvatar().isEmpty())
-                    Picasso.with(mParentContext).load(user.getAvatar()).into(imageViewAvatar);
-                textViewUserName.setText(user.getRealname());
+        TeacherEntityT user = null;
+        for (TeacherEntityT teacher : mApplication.mTeachersT) {
+            if (teacher.getTeacherid().equals(mApplication.mConfig.getUserid())) {
+                user = teacher;
+                break;
             }
         }
+
+        if (user != null) {
+            if (user.getAvatar() != null && !user.getAvatar().isEmpty())
+                Picasso.with(mParentContext).load(user.getAvatar()).centerCrop().fit().into(imageViewAvatar);
+            textViewUserName.setText(user.getRealname());
+        }
+
+        classNameTextView.setText(DataWrapper.getInstance().findCurrentClass().getClassname());
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private String getDBSize()
-    {
+    private String getDBSize() {
         String dbName = mApplication.mDBhelper.getDatabaseName();
 
-        double fileSize = mParentContext.getDatabasePath(dbName).length();;
+        double fileSize = mParentContext.getDatabasePath(dbName).length();
+        ;
         String fileSizeString = "0";
         try {
             //Baseinfo size
-            fileSize = fileSize / 1024 / 1024 - 0.2;
+            fileSize = fileSize / 1024 / 1024 - 0.1;
             DecimalFormat df = new DecimalFormat("0.00");
             fileSizeString = df.format(fileSize) + "M";
         } catch (Exception e) {
@@ -505,29 +464,14 @@ public class AboutmeFragment extends BaseFragment implements
     }
 
     private void saveUserAvatarInfo(String userid, String url) {
-
-        if(Version.PARENT)
-        {
-            for(StudentEntity student : mApplication.mStudents)
-            {
-                if(student.getStudentid().equals(userid))
-                {
-                    student.setAvatar(url);
-                    mApplication.mDaoSession.getStudentEntityDao().update(student);
-                    break;
-                }
+        for (TeacherEntityT teacher : mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list()) {
+            if (teacher.getTeacherid().equals(userid)) {
+                teacher.setAvatar(url);
+                mApplication.mDaoSession.getTeacherEntityTDao().update(teacher);
+                break;
             }
-            mApplication.mStudents = mApplication.mDaoSession.getStudentEntityDao().queryBuilder().list();
-        } else {
-            for (TeacherEntityT teacher : mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list()) {
-                if (teacher.getTeacherid().equals(userid)) {
-                    teacher.setAvatar(url);
-                    mApplication.mDaoSession.getTeacherEntityTDao().update(teacher);
-                    break;
-                }
-            }
-            mApplication.mTeachersT = mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list();
         }
+        mApplication.mTeachersT = mApplication.mDaoSession.getTeacherEntityTDao().queryBuilder().list();
     }
 
     @Override
@@ -565,16 +509,9 @@ public class AboutmeFragment extends BaseFragment implements
         }
 
 
-        if(bitmapFilePath!=null)
-        {
-            if(Version.PARENT) {
-                int currentchild = mApplication.mConfig.getCurrentChild();
-                String studentid = mApplication.mStudents.get(currentchild).getStudentid();
-                ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
-            } else {
-                String teacherid = DataWrapper.getInstance().getMyself().getTeacherid();
-                ServerInteractions.getInstance().changeAvatarUser(teacherid, bitmapFilePath, mHandler);
-            }
+        if (bitmapFilePath != null) {
+            String teacherid = DataWrapper.getInstance().getMyself().getTeacherid();
+            ServerInteractions.getInstance().changeAvatarUser(teacherid, bitmapFilePath, mHandler);
         }
 
     }

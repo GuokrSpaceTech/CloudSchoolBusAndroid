@@ -59,7 +59,10 @@ public class MaterialListView extends RecyclerView {
 		mDismissListener = new SwipeDismissRecyclerViewTouchListener(this, new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
 			@Override
 			public boolean canDismiss(final int position) {
-				return ((IMaterialListAdapter) getAdapter()).getCard(position).isDismissible();
+				if(((IMaterialListAdapter) getAdapter()).getCard(position)!=null)
+				    return ((IMaterialListAdapter) getAdapter()).getCard(position).isDismissible();
+				else
+					return false;
 			}
 
 			@Override

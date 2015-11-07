@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_toggle_font"
         android:icon="@drawable/ic_font_download_white_24dp"
-        android:title="@string/noticetype"
+        android:title="字体"
         app:showAsAction="always|withText" />
 </menu>
 

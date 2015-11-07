@@ -35,26 +35,6 @@ public class DataWrapper {
         mApplication = application;
     }
 
-    public void switchChildren(int currentChild)
-    {
-        ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
-        ConfigEntity oldConfigEntity = configEntityDao.queryBuilder().limit(1).list().get(0);
-        oldConfigEntity.setCurrentChild(currentChild);
-        ConfigEntity newConfigEntity = oldConfigEntity;
-        configEntityDao.update(newConfigEntity);
-        mApplication.mConfig = newConfigEntity;
-
-        BusProvider.getInstance().post(new InfoSwitchedEvent(currentChild));
-    }
-
-    //This function only works in parent app
-    public String findCurrentStudentid()
-    {
-        int current =  mApplication.mConfig.getCurrentChild();
-        String studentId = mApplication.mStudents.get(current).getStudentid();
-        return studentId;
-    }
-
     public TeacherEntityT getMyself()
     {
         TeacherEntityT entity = null;
@@ -89,7 +69,7 @@ public class DataWrapper {
     {
         ClassEntityT retEntity=null;
 
-        int current = mApplication.mConfig.getCurrentChild();
+        int current = mApplication.mConfig.getCurrentuser();
 
         String classid = mApplication.mTeacherClassDutys.get(current).getClassid();
 

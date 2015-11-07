@@ -40,7 +40,8 @@ import com.guokrspace.cloudschoolbus.teacher.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.teacher.base.include.Version;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.MessageEntityDao;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagEntity;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagsEntityT;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagsEntityTDao;
 import com.guokrspace.cloudschoolbus.teacher.entity.ActivityBody;
 import com.guokrspace.cloudschoolbus.teacher.entity.AttendanceRecord;
 import com.guokrspace.cloudschoolbus.teacher.entity.Food;
@@ -79,8 +80,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.onekeyshare.OnekeyShare;
 import de.greenrobot.dao.query.QueryBuilder;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -149,7 +148,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                     if (mSwipeRefreshLayout.isRefreshing())
                         mSwipeRefreshLayout.setRefreshing(false);
                     String errorMsg;
-                    if(Version.DEBUG) {
+                    if (Version.DEBUG) {
                         if (msg.obj instanceof JSONObject) {
                             JSONObject jsonObject = (JSONObject) msg.obj;
                             errorMsg = jsonObject.toString();
@@ -174,23 +173,21 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                     button.setBackgroundColor(getResources().getColor(R.color.button_disable));
                     button.setEnabled(false);
 
-                    String messageid = (String)button.getTag();
+                    String messageid = (String) button.getTag();
 
                     //Update the DB
                     List<MessageEntity> messages = mApplication.mDaoSession.getMessageEntityDao()
                             .queryBuilder().where(MessageEntityDao.Properties.Messageid.eq(messageid))
                             .list();
-                    if(messages.size()>0) {
+                    if (messages.size() > 0) {
                         messages.get(0).setIsconfirm("2");
                         mApplication.mDaoSession.getMessageEntityDao().update(messages.get(0));
                     }
 
                     //Update the memory
                     int i = 0;
-                    for(MessageEntity message : mMesageEntities)
-                    {
-                        if(message.getMessageid().equals(messageid))
-                        {
+                    for (MessageEntity message : mMesageEntities) {
+                        if (message.getMessageid().equals(messageid)) {
                             mMesageEntities.get(i).setIsconfirm("2");
                         }
                         i++;
@@ -246,7 +243,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
             mMesageEntities = ServerInteractions.getInstance().getmMesageEntities();
         } else {
             mMesageEntities = ServerInteractions.getInstance().GetMessagesFromCache();
-            if(mMesageEntities.size()>0) {
+            if (mMesageEntities.size() > 0) {
                 MessageEntity messageEntity = mMesageEntities.get(0);
                 mHandler.sendEmptyMessage(HandlerConstant.MSG_ONCACHE);
                 ServerInteractions.getInstance().GetNewMessagesFromServer(messageEntity.getMessageid(), mHandler);
@@ -377,7 +374,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
 
     public void filterCards(@Nullable String type) {
 
-        if(type == null) //Do not know the type, just use the current type
+        if (type == null) //Do not know the type, just use the current type
         {
             type = mCurrentDisplayingCardType;
         } else {
@@ -388,27 +385,12 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
         List<MessageEntity> messageEntityList;
 
-
-        if(Version.PARENT) {
-            String studentid = DataWrapper.getInstance().findCurrentStudentid();
-            if (type.equals("All")) {
-                messageEntityList = queryBuilder
-                        .where(MessageEntityDao.Properties.Studentid.eq(studentid))
-                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
-            } else {
-                messageEntityList = queryBuilder
-                        .where(MessageEntityDao.Properties.Apptype.eq(type), MessageEntityDao.Properties.Studentid.eq(studentid))
-                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
-            }
+        if (type.equals("All")) {
+            messageEntityList = queryBuilder.orderDesc(MessageEntityDao.Properties.Messageid).list();
         } else {
-            if (type.equals("All")) {
-                messageEntityList = queryBuilder.orderDesc(MessageEntityDao.Properties.Messageid).list();
-            } else {
-                messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type))
-                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
-            }
+            messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type))
+                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
         }
-
 
         mMaterialListView.clear();
         for (int i = 0; i < messageEntityList.size(); i++) {
@@ -508,8 +490,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                 setActionBarTitle(getResources().getString(R.string.activity));
                 break;
             case R.id.action_take_photo:
-                 //Prevent multiple touches
-                item.setEnabled(false);
+                //Prevent multiple touches
                 mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
                 mPictureProcess.setClip(false);
                 mPictureProcess.setMaxPictureCount(9);
@@ -519,9 +500,8 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         return super.onOptionsItemSelected(item);
     }
 
-    public void setActionBarTitle(String title)
-    {
-        if(Version.PARENT) {
+    public void setActionBarTitle(String title) {
+        if (Version.PARENT) {
             MainActivity mainActivity = (MainActivity) mParentContext;
             mainActivity.getSupportActionBar().setTitle(title);
 //            View view = mainActivity.getSupportActionBar().getCustomView();
@@ -533,14 +513,13 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     }
 
     @Subscribe
-    public void onChildrenSwitched(InfoSwitchedEvent event)
-    {
+    public void onChildrenSwitched(InfoSwitchedEvent event) {
         mCurrentChild = event.getCurrentChild();
 
         /**
          * Todo:
          */
-        if(Version.PARENT) {
+        if (Version.PARENT) {
 //            String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
 //            filterCardsChild(studentId);
             filterCards(null);
@@ -550,47 +529,38 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if(menu != null)
-        {
+        if (menu != null) {
             setOverflowIconVisible(menu);
         }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MainActivity mainActivity = (MainActivity)mParentContext;
+        MainActivity mainActivity = (MainActivity) mParentContext;
 
-        if(Version.PARENT) {
-            mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_explore));
-            inflater.inflate(R.menu.main, menu);
-        }else {
-            inflater.inflate(R.menu.main_teacher, menu);
+        inflater.inflate(R.menu.main_teacher, menu);
 
-            //Setup the spinner menu
-            initMessageTypes();
+        //Setup the spinner menu
+        initMessageTypes();
 
-            MenuSpinnerAdapter mSpinnerAdapter = new MenuSpinnerAdapter(mParentContext, mMessageTypes);
-            mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, new ActionBar.OnNavigationListener() {
-                @Override
-                public boolean onNavigationItemSelected(int i, long l) {
-                    filterCards(mMessageTypes.get(i).messageType);
-                    return false;
-                }
-            });
-            mainActivity.getSupportActionBar().setTitle("");
-        }
+        MenuSpinnerAdapter mSpinnerAdapter = new MenuSpinnerAdapter(mParentContext, mMessageTypes);
+        mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, new ActionBar.OnNavigationListener() {
+            @Override
+            public boolean onNavigationItemSelected(int i, long l) {
+                filterCards(mMessageTypes.get(i).messageType);
+                return false;
+            }
+        });
+        mainActivity.getSupportActionBar().setTitle("");
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public void setOverflowIconVisible(Menu menu)
-    {
-        try
-        {
-            Class clazz=Class.forName("android.support.v7.internal.view.menu.MenuBuilder");
-            Field field=clazz.getDeclaredField("mOptionalIconsVisible");
-            if(field!=null)
-            {
+    public void setOverflowIconVisible(Menu menu) {
+        try {
+            Class clazz = Class.forName("android.support.v7.internal.view.menu.MenuBuilder");
+            Field field = clazz.getDeclaredField("mOptionalIconsVisible");
+            if (field != null) {
                 field.setAccessible(true);
                 field.set(menu, true);
             }
@@ -605,8 +575,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         }
     }
 
-    private void clearAppBadgetCount(Context context)
-    {
+    private void clearAppBadgetCount(Context context) {
         SharedPreferences preferences = context.getSharedPreferences("cloudschoolbuspref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("unreadmessages", 0);
@@ -614,17 +583,16 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         ShortcutBadger.with(context).remove();
     }
 
-    private void initMessageTypes()
-    {
-        String[]  messageTypes = {"All","Article", "Notice", "Active", "Punch", "Report", "OpenClass", "Food", "Schedule"};
+    private void initMessageTypes() {
+        String[] messageTypes = {"All", "Article", "Notice", "Active", "Punch", "Report", "OpenClass", "Food", "Schedule"};
         Integer[] resIcon = {0, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_event, R.drawable.ic_attendance,
                 R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
-        Integer[]  descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.activity, R.string.attendancetype,
+        Integer[] descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.activity, R.string.attendancetype,
                 R.string.report, R.string.openclass, R.string.food, R.string.schedule};
 
-        int i=0;
+        int i = 0;
         mMessageTypes.clear();
-        for(String type:messageTypes) {
+        for (String type : messageTypes) {
             MenuSpinnerAdapter.MessageType messageType = new MenuSpinnerAdapter.MessageType();
             messageType.messageType = type;
             messageType.description = getResources().getString(descriptions[i]);
@@ -634,54 +602,24 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         }
     }
 
-    public void showShare() {
-        ShareSDK.initSDK(mParentContext);
-        OnekeyShare oks = new OnekeyShare();
-        //关闭sso授权
-        oks.disableSSOWhenAuthorize();
-
-// 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
-//		oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
-        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-        oks.setTitle(getString(R.string.share));
-        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
-        oks.setTitleUrl("http://sharesdk.cn");
-        // text是分享文本，所有平台都需要这个字段
-        oks.setText("我是分享文本");
-        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-        oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
-        // url仅在微信（包括好友和朋友圈）中使用
-        oks.setUrl("http://sharesdk.cn");
-        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-        oks.setComment("我是测试评论文本");
-        // site是分享此内容的网站名称，仅在QQ空间使用
-        oks.setSite(getString(R.string.app_name));
-        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-        oks.setSiteUrl("http://sharesdk.cn");
-
-// 启动分享GUI
-        oks.show(mParentContext);
-    }
-
-    public String cardType(String type)
-    {
+    public String cardType(String type) {
         String cardtype = "";
 
-        if(type.equals("Article"))
+        if (type.equals("Article"))
             cardtype = getResources().getString(R.string.picturetype);
-        if(type.equals("Notice"))
+        if (type.equals("Notice"))
             cardtype = getResources().getString(R.string.noticetype);
-        else if(type.equals("Punch"))
+        else if (type.equals("Punch"))
             cardtype = getResources().getString(R.string.attendancetype);
-        else if(type.equals("OpenClass"))
+        else if (type.equals("OpenClass"))
             cardtype = getResources().getString(R.string.openclass);
-        else if(type.equals("Report"))
+        else if (type.equals("Report"))
             cardtype = getResources().getString(R.string.report);
-        else if(type.equals("Food"))
+        else if (type.equals("Food"))
             cardtype = getResources().getString(R.string.food);
-        else if(type.equals("Schedule"))
+        else if (type.equals("Schedule"))
             cardtype = getResources().getString(R.string.schedule);
-        else if(type.equals("Active"))
+        else if (type.equals("Active"))
             cardtype = getResources().getString(R.string.activity);
         return cardtype;
     }
@@ -691,17 +629,11 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         String teacherAvatarString = message.getSenderEntity().getAvatar();
         card.setTeacherAvatarUrl(teacherAvatarString);
         card.setTeacherName(message.getSenderEntity().getName());
-        if(Version.PARENT) {
-            if(mApplication.mSchools.size()>0)
-                card.setKindergarten(mApplication.mSchools.get(0).getName());
-            else
-                card.setKindergarten("");
-        } else {
-            if(mApplication.mSchoolsT.size()>0)
-                card.setKindergarten(mApplication.mSchoolsT.get(0).getName());
-            else
-                card.setKindergarten("");
-        }
+        if (mApplication.mSchoolsT.size() > 0)
+            card.setKindergarten(mApplication.mSchoolsT.get(0).getName());
+        else
+            card.setKindergarten("");
+
         card.setCardType(cardType(message.getApptype()));
         card.setSentTime(message.getSendtime());
         card.setTitle(message.getTitle());
@@ -713,10 +645,19 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(pictureUrls!=null)
+        if (pictureUrls != null)
             card.setImageAdapter(new ImageAdapter(mParentContext, pictureUrls,
-                    message.getDescription(), message.getTitle()));        final List<TagEntity> tagEntities = message.getTagEntityList();
-        TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities);
+                    message.getDescription(), message.getTitle()));
+
+        List<TagsEntityT> tagEntities = new ArrayList<>();
+        if (message.getTagids() != null && message.getTagids().contains(",")) {
+            String tagids[] = message.getTagids().split(",");
+            for (String tagid : tagids) {
+                tagEntities.addAll(mApplication.mDaoSession.getTagsEntityTDao().queryBuilder().where(TagsEntityTDao.Properties.Tagid.eq(tagid)).list());
+            }
+        }
+
+        TagRecycleViewAdapter adapter = new TagRecycleViewAdapter(tagEntities, mParentContext);
         card.setTagAdapter(adapter);
 
         CommonRecyclerItemClickListener tagClickListener = new CommonRecyclerItemClickListener(mParentContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
@@ -724,7 +665,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
             public void onItemClick(View view, int position) {
                 animation(view);
                 SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager())
-                        .setMessage(tagEntities.get(position).getTagnamedesc())
+                        .setMessage((String) view.getTag())
                         .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
             }
 
@@ -735,19 +676,18 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         });
         card.setmOnItemSelectedListener(tagClickListener);
 
-        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showShare();
-            }
-        };
-        card.setmShareButtonClickListener(shareButtonClickListener);
+//        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showShare();
+//            }
+//        };
+//        card.setmShareButtonClickListener(shareButtonClickListener);
 
         return card;
     }
 
-    public NoticeCard BuildNoticeCard(final MessageEntity messageEntity, final Handler handler)
-    {
+    public NoticeCard BuildNoticeCard(final MessageEntity messageEntity, final Handler handler) {
         NoticeCard noticeCard = new NoticeCard(mParentContext);
         String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
         noticeCard.setTeacherAvatarUrl(teacherAvatarString);
@@ -770,8 +710,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         return noticeCard;
     }
 
-    public ActivityCard BuildActivityCard(final MessageEntity messageEntity, final Handler handler)
-    {
+    public ActivityCard BuildActivityCard(final MessageEntity messageEntity, final Handler handler) {
         ActivityCard theCard = new ActivityCard(mParentContext);
         String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
         theCard.setTeacherAvatarUrl(teacherAvatarString);
@@ -793,8 +732,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         return theCard;
     }
 
-    public AttendanceRecordCard BuildAttendanceCard(MessageEntity messageEntity)
-    {
+    public AttendanceRecordCard BuildAttendanceCard(MessageEntity messageEntity) {
         AttendanceRecordCard attendanceRecordCard = new AttendanceRecordCard(mParentContext);
         String teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
         attendanceRecordCard.setTeacherAvatarUrl(teacherAvatarString);
@@ -810,8 +748,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         return attendanceRecordCard;
     }
 
-    public StreamingNoticeCard BuildStreamingNoticeCard(MessageEntity messageEntity)
-    {
+    public StreamingNoticeCard BuildStreamingNoticeCard(MessageEntity messageEntity) {
         StreamingNoticeCard streamingNoticeCard = new StreamingNoticeCard(mParentContext);
         streamingNoticeCard.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
         streamingNoticeCard.setKindergartenName(messageEntity.getSenderEntity().getName());
@@ -838,11 +775,10 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         return streamingNoticeCard;
     }
 
-    public ReportListCard BuildReportListCard(final MessageEntity messageEntity)
-    {
+    public ReportListCard BuildReportListCard(final MessageEntity messageEntity) {
         ReportListCard reportListCard = new ReportListCard(mParentContext);
         String teacherAvatarString = "";
-        if(messageEntity.getSenderEntity()!=null) {
+        if (messageEntity.getSenderEntity() != null) {
             teacherAvatarString = messageEntity.getSenderEntity().getAvatar();
             reportListCard.setTeacherAvatarUrl(teacherAvatarString);
             reportListCard.setTeacherName(messageEntity.getSenderEntity().getName());
@@ -874,8 +810,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         mPictureProcess.onProcessResult(requestCode, resultCode, data); //This only handles the picturechooselib activity results
     }
 
-    public FoodNoticeCard BuildFoodNoticeCard(final MessageEntity messageEntity)
-    {
+    public FoodNoticeCard BuildFoodNoticeCard(final MessageEntity messageEntity) {
         FoodNoticeCard card = new FoodNoticeCard(mParentContext);
         card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
         card.setKindergartenName(messageEntity.getSenderEntity().getName());
@@ -899,8 +834,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         return card;
     }
 
-    public ScheduleNoticeCard BuildScheduleNoticeCard(final MessageEntity messageEntity)
-    {
+    public ScheduleNoticeCard BuildScheduleNoticeCard(final MessageEntity messageEntity) {
         ScheduleNoticeCard card = new ScheduleNoticeCard(mParentContext);
         card.setKindergartenAvatar(messageEntity.getSenderEntity().getAvatar());
         card.setKindergartenName(messageEntity.getSenderEntity().getName());
@@ -928,18 +862,18 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     //Listener for the image chooser
     @Override
     public void onSuccess(List<Picture> pictures) {
-        if(Version.DEBUG){
+        if (Version.DEBUG) {
             TLog.i("", "OnSuccess:%s", pictures);
         }
         Intent intent = new Intent(mParentContext, SelectStudentActivity.class);
-        intent.putExtra("pictures", (ArrayList)pictures);
+        intent.putExtra("pictures", (ArrayList) pictures);
         startActivity(intent);
 
     }
 
     @Override
     public void onError(Exception e) {
-        TLog.e("","onError",e);
+        TLog.e("", "onError", e);
     }
 
     @Override
@@ -949,11 +883,12 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
 
     @Override
     public void onSuccessString(List<String> pictures) {
-        if(Version.DEBUG){
+        if (Version.DEBUG) {
             TLog.i("", "OnSuccess:%s", pictures);
         }
         Intent intent = new Intent(mParentContext, SelectStudentActivity.class);
-        intent.putExtra("pictures", (ArrayList)pictures);
-        startActivity(intent);    }
+        intent.putExtra("pictures", (ArrayList) pictures);
+        startActivity(intent);
+    }
 
 }

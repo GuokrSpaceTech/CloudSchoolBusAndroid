@@ -70,6 +70,7 @@ public class ClassFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        position = getArguments().getInt(ARG_POSITION);
+        mActionBar = ((MainActivity)mParentContext).getSupportActionBar();
     }
 
     @Override
@@ -84,17 +85,13 @@ public class ClassFragment extends BaseFragment {
         mClassName = (TextView)root.findViewById(R.id.class_name);
         mSchoolName = (TextView)root.findViewById(R.id.kindergarten_name);
 
-        currentUser = mApplication.mConfig.getCurrentChild();
+        currentUser = mApplication.mConfig.getCurrentuser();
         mClassName.setText(DataWrapper.getInstance().findCurrentClass(currentUser).getClassname());
         if(mApplication.mSchoolsT.size()>0) {
             mSchoolName.setText(mApplication.mSchoolsT.get(0).getName());
         }
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
-
-//        gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(),
-//                new ArrayList<>(Arrays.asList(ClassifyComponent.classifyModules)),
-//                getResources().getInteger(R.integer.column_count)));
 
         gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(), mApplication.mClassModules,
                 getResources().getInteger(R.integer.column_count)));
@@ -198,7 +195,6 @@ public class ClassFragment extends BaseFragment {
 //            ClassifyModule classifyModule = (ClassifyModule) getItem(position);
             ClassModuleEntity classifyModule = (ClassModuleEntity) getItem(position);
 
-
             holder.build(classifyModule.getTitle(), classifyModule.getIcon());
             return convertView;
         }
@@ -269,7 +265,13 @@ public class ClassFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Picasso.with(mParentContext).load(DataWrapper.getInstance().getMyself().getAvatar()).fit().centerCrop().into(mTeacherAvatar);
+        String avatar = DataWrapper.getInstance().getMyself().getAvatar();
+        if(avatar.contains("http://") || avatar.contains("https://")) {
+            Picasso.with(mParentContext).load(avatar).fit().centerCrop().into(mTeacherAvatar);
+        }
+
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        mActionBar.setTitle(getResources().getString(R.string.module_class));
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -32,7 +32,6 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Lon
         public final static Property Userid = new Property(3, String.class, "userid", false, "USERID");
     };
 
-    private Query<LastIMMessageEntity> teacherEntity_LastIMMessageEntityListQuery;
     private Query<LastIMMessageEntity> parentEntityT_LastIMMessageEntityListQuery;
     private Query<LastIMMessageEntity> teacherEntityT_LastIMMessageEntityListQuery;
 
@@ -132,20 +131,6 @@ public class LastIMMessageEntityDao extends AbstractDao<LastIMMessageEntity, Lon
         return true;
     }
     
-    /** Internal query to resolve the "lastIMMessageEntityList" to-many relationship of TeacherEntity. */
-    public List<LastIMMessageEntity> _queryTeacherEntity_LastIMMessageEntityList(String userid) {
-        synchronized (this) {
-            if (teacherEntity_LastIMMessageEntityListQuery == null) {
-                QueryBuilder<LastIMMessageEntity> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Userid.eq(null));
-                teacherEntity_LastIMMessageEntityListQuery = queryBuilder.build();
-            }
-        }
-        Query<LastIMMessageEntity> query = teacherEntity_LastIMMessageEntityListQuery.forCurrentThread();
-        query.setParameter(0, userid);
-        return query.list();
-    }
-
     /** Internal query to resolve the "lastIMMessageEntityList" to-many relationship of ParentEntityT. */
     public List<LastIMMessageEntity> _queryParentEntityT_LastIMMessageEntityList(String userid) {
         synchronized (this) {

@@ -94,6 +94,7 @@ public class MaterialListAdapter extends RecyclerView.Adapter<MaterialListAdapte
 	}
 
 	public Card getCard(int position) {
+		if(position == -1) return null;
 		return mCardList.get(position);
 	}
 

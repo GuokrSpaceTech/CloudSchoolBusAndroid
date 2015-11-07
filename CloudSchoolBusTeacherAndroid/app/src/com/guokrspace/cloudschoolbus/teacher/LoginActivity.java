@@ -23,27 +23,19 @@ import com.guokrspace.cloudschoolbus.teacher.base.activity.BaseActivity;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.teacher.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.teacher.base.include.Version;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassEntity;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassModuleEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.MessageTypeEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ParentEntityT;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.SchoolEntity;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.SchoolEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.SchoolEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentClassRelationEntity;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntity;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentParentRelationEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.TagsEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherDutyClassRelationEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherDutyEntity;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherEntity;
-import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.teacher.entity.BaseInfoT;
 import com.guokrspace.cloudschoolbus.teacher.entity.Baseinfo;
@@ -391,11 +383,6 @@ public class LoginActivity extends BaseActivity {
 
         CloudSchoolBusRestClient.get(ProtocolDef.METHOD_baseinfo, params, new JsonHttpResponseHandler() {
 
-                    SchoolEntityDao schoolEntityDao = mApplication.mDaoSession.getSchoolEntityDao();
-                    ClassEntityDao classEntityDao = mApplication.mDaoSession.getClassEntityDao();
-                    TeacherEntityDao teacherEntityDao = mApplication.mDaoSession.getTeacherEntityDao();
-                    StudentEntityDao studentEntityDao = mApplication.mDaoSession.getStudentEntityDao();
-
                     public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
                         String retCode = "";
 
@@ -413,55 +400,10 @@ public class LoginActivity extends BaseActivity {
                         }
 
                         Object baseinfo;
-                        if(Version.PARENT) {
-                             baseinfo = FastJsonTools.getObject(response.toString(), Baseinfo.class);
-                        }else{
-                             baseinfo = FastJsonTools.getObject(response.toString(), BaseInfoT.class);
-                        }
+                        baseinfo = FastJsonTools.getObject(response.toString(), BaseInfoT.class);
 
                         //Save School Information
-                        if(baseinfo instanceof Baseinfo ) {
-
-                            for (SchoolInfo schoolInfo : ((Baseinfo)baseinfo).getSchools()) {
-                                SchoolEntity schoolEntity = new SchoolEntity();
-                                schoolEntity.setId(schoolInfo.getSchoolid());
-                                schoolEntity.setAddress(schoolInfo.getAddress());
-                                schoolEntity.setLogo(schoolInfo.getLogo());
-                                schoolEntity.setCover(schoolInfo.getCover());
-                                schoolEntity.setName(schoolInfo.getSchoolname());
-
-                                schoolEntityDao.insertOrReplace(schoolEntity);
-                                //Save Class Information
-                                List<ClassInfo> classes =schoolInfo.getClasses();
-                                for (int j = 0; j < classes.size(); j++) {
-                                    ClassInfo classinfo = classes.get(j);
-                                    ClassEntity classEntity = new ClassEntity(classes.get(j).getClassid(), classes.get(j).getClassname(), schoolEntity.getId());
-                                    classEntityDao.insertOrReplace(classEntity);
-
-                                    //Save teacher information
-                                    List<Teacher> teachers = classes.get(j).getTeacher();
-                                    for (int k = 0; k < teachers.size(); k++) {
-                                        TeacherEntity teacherEntity = new TeacherEntity(teachers.get(k).getId(), teachers.get(k).getDuty(),
-                                                teachers.get(k).getAvatar(), teachers.get(k).getName() ,classEntity.getClassid());
-                                        teacherEntityDao.insertOrReplace(teacherEntity);
-                                    }
-
-                                    //Students(Student and class are many2many relationship)
-                                    List<Student> students = ((Baseinfo)baseinfo).getStudents(); //Student list from server
-                                    List<String> studentInClass = classinfo.getStudent(); //Studentid in class
-                                    // if found a student in class, instantiate the student entity for the DB
-                                    for (int m = 0; m < studentInClass.size(); m++) {
-                                        String studentid = studentInClass.get(m);
-                                        for (int n = 0; n < students.size(); n++) {
-                                            if (studentid.equals(students.get(n).getStudentid())) {
-                                                StudentEntity studentEntity = new StudentEntity(students.get(n).getCnname(), students.get(n).getBirthday(), students.get(n).getSex(), students.get(n).getAvatar(), students.get(n).getNickname(), studentid, classEntity.getClassid());
-                                                studentEntityDao.insertOrReplace(studentEntity);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else if (baseinfo instanceof BaseInfoT) {
+                        if (baseinfo instanceof BaseInfoT) {
                             HashMap<String,School> schoolsmap = ((BaseInfoT)baseinfo).getSchools();
                             Iterator<Map.Entry<String, School>> iterator = schoolsmap.entrySet().iterator();
                             while (iterator.hasNext()) {
