@@ -42,6 +42,7 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 
 import com.alibaba.fastjson.JSONException;
+import com.android.support.handlerui.HandlerToastUI;
 import com.astuetz.PagerSlidingTabStrip;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.baidu.android.pushservice.PushConstants;
@@ -70,6 +71,10 @@ import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.update.UmengUpdateAgent;
+import com.umeng.update.UmengUpdateListener;
+import com.umeng.update.UpdateResponse;
+import com.umeng.update.UpdateStatus;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -156,6 +161,10 @@ public class MainActivity extends BaseActivity implements
         BusProvider.getInstance().register(this);
 
         api = WXAPIFactory.createWXAPI(this, Version.APP_ID, true);
+
+        UmengUpdateAgent.update(this);
+
+        checkVersion();
 
 //        api.registerApp(Version.APP_ID);
     }
@@ -847,4 +856,31 @@ public class MainActivity extends BaseActivity implements
         return (int) (dip * mContext.getResources().getDisplayMetrics().density + 0.5f);
     }
 
+
+    // 检测是否有最新的APK版本
+    private void checkVersion() {
+        UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
+            @Override
+            public void onUpdateReturned(int updateStatus,
+                                         UpdateResponse updateInfo) {
+                switch (updateStatus) {
+                    case UpdateStatus.Yes: // has update
+                        UmengUpdateAgent.showUpdateDialog(mContext,
+                                updateInfo);
+                        break;
+                    case UpdateStatus.No: // has no update
+                        HandlerToastUI.getHandlerToastUI(mContext, "太棒了，你使用是已是最新版本！");
+                        break;
+                    case UpdateStatus.NoneWifi: // none wifi
+                        HandlerToastUI.getHandlerToastUI(mContext, "没有wifi连接，只在wifi下更新！");
+                        break;
+                    case UpdateStatus.Timeout: // time out
+                        HandlerToastUI.getHandlerToastUI(mContext, "亲，你的网络不给力哦！");
+                        break;
+                }
+            }
+        });
+
+        UmengUpdateAgent.update(mContext);
+    }
 }

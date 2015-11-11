@@ -443,7 +443,7 @@ public class ExploreFragment extends BaseFragment {
             return BuildReportListCard(messageEntity);
         } else if (messageEntity.getApptype().equals("Food")) {
             return BuildFoodNoticeCard(messageEntity);
-        } else if (messageEntity.getApptype().equals("Schedule")) {
+        } else if (messageEntity.getApptype().equals("Course")) {
             return BuildScheduleNoticeCard(messageEntity);
         } else if (messageEntity.getApptype().equals("Active"))
             return BuildActivityCard(messageEntity, mHandler);
