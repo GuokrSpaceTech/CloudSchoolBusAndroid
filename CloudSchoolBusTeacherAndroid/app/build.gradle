@@ -20,6 +20,7 @@ dependencies {
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
     compile 'jp.wasabeef:picasso-transformations:1.2.1'
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
+    compile 'com.umeng.analytics:analytics:latest.integration'
 }
 
 android {

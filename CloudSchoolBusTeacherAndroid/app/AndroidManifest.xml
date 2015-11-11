@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.guokrspace.cloudschoolbus.teacher"
-          android:versionCode="17"
+          android:versionCode="18"
           android:versionName="3.6.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -138,11 +138,21 @@
             android:name="com.baidu.android.pushservice.CommandService"
             android:exported="true" />
         <!-- push结束 -->
-        
+
+        <service
+            android:name="com.umeng.update.net.DownloadingService"
+            android:process=":DownloadingService" >
+        </service>
+
+        <activity
+            android:name="com.umeng.update.UpdateDialogActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+
         <!-- 在百度开发者中心查询应用的API Key -->
-        <meta-data
-            android:name="api_key"
-            android:value="TnbKjnQlMKKrj5g0iyopnHIB" />
+        <meta-data android:name="api_key" android:value="TnbKjnQlMKKrj5g0iyopnHIB" />
+        <meta-data android:value="564340c467e58ed0f700228e" android:name="UMENG_APPKEY"/>
+        <!--<meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/>-->
     </application>
 
 </manifest>
