@@ -12,6 +12,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 
 import com.android.support.debug.DebugLog;
+import com.android.support.utils.ImageUtil;
 import com.guokrspace.cloudschoolbus.teacher.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.UploadArticleEntityDao;
@@ -335,6 +336,11 @@ public class UploadFileHelper extends Service {
     {
 
         File compressFile = new File(mApplication.mCacheDir, fileEntity.getFname() + ".small.jpg");
+        File origFile = new File(fileEntity.getFbody());
+
+        int[] dimension = ImageUtil.getImageBounds(origFile);
+
+        int compressRatio = ImageUtil.reckonThumbnail(dimension[0],dimension[1], 1024, 768);
 
         if(!compressFile.exists()) {
             try {
@@ -343,11 +349,13 @@ public class UploadFileHelper extends Service {
                 e.printStackTrace();
                 return fileEntity.getFbody();
             }
+
             BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.inDither = false;                     //Disable Dithering mode
-            opts.inPurgeable = true;                   //Tell to gc that whether it needs free memory, the Bitmap can be cleared
-            opts.inInputShareable = true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
-            opts.inTempStorage = new byte[32 * 1024];
+            opts.inSampleSize = compressRatio;
+//            opts.inDither = false;                     //Disable Dithering mode
+//            opts.inPurgeable = true;                   //Tell to gc that whether it needs free memory, the Bitmap can be cleared
+//            opts.inInputShareable = true;              //Which kind of reference will be used to recover the Bitmap data after being clear, when it will be used in the future
+//            opts.inTempStorage = new byte[32 * 1024];
             Bitmap bmp = BitmapFactory.decodeFile(fileEntity.getFbody(), opts);
             FileOutputStream fos = null;
             try {
@@ -356,7 +364,7 @@ public class UploadFileHelper extends Service {
                 e.printStackTrace();
                 return fileEntity.getFbody();
             }
-            bmp.compress(Bitmap.CompressFormat.JPEG, 70, fos);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         }
         return compressFile.getAbsolutePath();
     }

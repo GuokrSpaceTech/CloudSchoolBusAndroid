@@ -61,7 +61,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     private MainActivity mainActivity;
     private String userName;
     private String mCurrentClassid;
-    private String mCurrentClassName;
     private boolean mIsParent;
     private View rootView;
     private Menu mMenu;
@@ -116,6 +115,9 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                 ((MainActivity) mParentContext).pager.lock();
                 fragment = new ConversationFragment();
                 isConverstaionFragmentCreated = true;
+
+                //Hide the option menu
+                mMenu.setGroupVisible(0,false);
 
                 Uri uri = Uri.parse("rong://" + getActivity().getApplicationInfo().packageName).buildUpon()
                         .appendPath("conversation").appendPath(io.rong.imlib.model.Conversation.ConversationType.PRIVATE.getName().toLowerCase())
@@ -311,6 +313,9 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                 } catch (IllegalStateException ignored) {
                     // There's no way to avoid getting this if saveInstanceState has already been called.
                 }
+
+                //Unhide the option menu
+                mMenu.setGroupVisible(0,true);
 
                 break;
             case R.id.action_teacher:
