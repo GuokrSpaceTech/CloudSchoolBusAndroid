@@ -56,9 +56,9 @@ abstract public class BaseActivity extends ActionBarActivity {
 		if(activeInfo!=null)
 		{
 			mApplication.networkStatusEvent.setIsNetworkConnected(true);
-			if(wifiInfo.isConnected())
+			if(wifiInfo!=null && wifiInfo.isConnected())
 				mApplication.networkStatusEvent.setIsWifiConnected(true);
-			if(mobileInfo.isConnected())
+			if(mobileInfo!=null && mobileInfo.isConnected())
 				mApplication.networkStatusEvent.setIsMobileNetworkConnected(true);
 		}
 

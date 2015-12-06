@@ -375,24 +375,15 @@ public class ExploreFragment extends BaseFragment {
         List<MessageEntity> messageEntityList;
 
 
-        if (Version.PARENT) {
-            String studentid = DataWrapper.getInstance().findCurrentStudentid();
-            if (type.equals("All")) {
-                messageEntityList = queryBuilder
-                        .where(MessageEntityDao.Properties.Studentid.eq(studentid))
-                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
-            } else {
-                messageEntityList = queryBuilder
-                        .where(MessageEntityDao.Properties.Apptype.eq(type), MessageEntityDao.Properties.Studentid.eq(studentid))
-                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
-            }
+        String studentid = DataWrapper.getInstance().findCurrentStudentid();
+        if (type.equals("All")) {
+            messageEntityList = queryBuilder
+                    .where(MessageEntityDao.Properties.Studentid.eq(studentid))
+                    .orderRaw("MESSAGEID+1 DESC").list();
         } else {
-            if (type.equals("All")) {
-                messageEntityList = queryBuilder.orderDesc(MessageEntityDao.Properties.Messageid).list();
-            } else {
-                messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type))
-                        .orderDesc(MessageEntityDao.Properties.Messageid).list();
-            }
+            messageEntityList = queryBuilder
+                    .where(MessageEntityDao.Properties.Apptype.eq(type), MessageEntityDao.Properties.Studentid.eq(studentid))
+                    .orderRaw("MESSAGEID+1 DESC").list();
         }
 
 

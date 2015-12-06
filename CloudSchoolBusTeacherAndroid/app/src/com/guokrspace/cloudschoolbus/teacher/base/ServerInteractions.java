@@ -37,6 +37,9 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 
+import de.greenrobot.dao.query.Query;
+import de.greenrobot.dao.query.WhereCondition;
+
 /**
  * Created by kai on 10/8/15.
  */
@@ -217,24 +220,12 @@ public class ServerInteractions {
     }
 
     public List<MessageEntity> GetMessagesFromCache() {
-//        if(Version.PARENT) {
-//            int current = mApplication.mConfig.getCurrentChild();
-//            String currentstudentid = null;
-//            if(mApplication.mStudents.size()>(current)) {
-//                currentstudentid = mApplication.mStudents.get(current).getStudentid();
-//            }
 
-//            if(currentstudentid!=null) {
-//                mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-//                        .orderDesc(MessageEntityDao.Properties.Messageid)
-//                        .where(MessageEntityDao.Properties.Studentid.eq(currentstudentid))
-//                        .list();
-//            }
-//        } else {
-        mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-                .orderDesc(MessageEntityDao.Properties.Messageid)
-                .list();
-//        }
+//        mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+//                .orderDesc(MessageEntityDao.Properties.Messageid)
+//                .list();
+
+        mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder().orderRaw("MESSAGEID+1 DESC").build().list();
 
         return mMesageEntities;
     }
