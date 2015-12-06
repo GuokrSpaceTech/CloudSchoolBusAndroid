@@ -69,6 +69,7 @@ import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
@@ -165,6 +166,17 @@ public class MainActivity extends BaseActivity implements
         checkVersion();
 
 //        api.registerApp(Version.APP_ID);
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    public void onPause()
+    {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
