@@ -77,8 +77,7 @@ public class SelectUserDialogFragment extends DialogFragment {
 
         View root = inflater.inflate(R.layout.fragment_switch_children_layout, container, false);
 
-        if(Version.PARENT) getDialog().setTitle(getResources().getString(R.string.switch_child));
-        else getDialog().setTitle(getResources().getString(R.string.switch_class));
+        getDialog().setTitle(getResources().getString(R.string.switch_class));
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
 
@@ -109,7 +108,6 @@ public class SelectUserDialogFragment extends DialogFragment {
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                gridView.startEditMode(position);
                 return true;
             }
         });
@@ -117,7 +115,7 @@ public class SelectUserDialogFragment extends DialogFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switchUser(position);
+                switchClass(position);
             }
         });
         return root;
@@ -176,7 +174,7 @@ public class SelectUserDialogFragment extends DialogFragment {
         }
     }
 
-    public void switchUser(int current)
+    public void switchClass(int current)
     {
         CloudSchoolBusParentsApplication theApplication =
                 (CloudSchoolBusParentsApplication) getActivity().getApplicationContext();

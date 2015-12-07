@@ -248,9 +248,13 @@ public class ServerInteractions {
     public List<MessageEntity> GetMessagesFromCache()
     {
 
+//        mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
+//                    .orderDesc(MessageEntityDao.Properties.Messageid)
+//                    .list();
+
         mMesageEntities = mApplication.mDaoSession.getMessageEntityDao().queryBuilder()
-                    .orderDesc(MessageEntityDao.Properties.Messageid)
-                    .list();
+                .orderRaw("MESSAGEID+1 DESC")
+                .list();
 
         return mMesageEntities;
     }

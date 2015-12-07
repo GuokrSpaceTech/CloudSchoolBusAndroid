@@ -104,8 +104,12 @@ public class StartupFragment extends BaseFragment implements Handler.Callback {
                     .into(mImageLogo, new Callback() {
                         @Override
                         public void onSuccess() {
-                            mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
-                            mImgBackgroud.setAlpha(1L);
+                            try {
+                                mImgBackgroud.setBackgroundColor(getResources().getColor(android.R.color.white));
+                                mImgBackgroud.setAlpha(1L);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override

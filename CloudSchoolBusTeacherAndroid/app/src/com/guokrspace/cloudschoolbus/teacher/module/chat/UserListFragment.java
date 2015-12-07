@@ -61,7 +61,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     private MainActivity mainActivity;
     private String userName;
     private String mCurrentClassid;
-    private String mCurrentClassName;
     private boolean mIsParent;
     private View rootView;
     private Menu mMenu;
@@ -116,6 +115,9 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                 ((MainActivity) mParentContext).pager.lock();
                 fragment = new ConversationFragment();
                 isConverstaionFragmentCreated = true;
+
+                //Hide the option menu
+                mMenu.setGroupVisible(0,false);
 
                 Uri uri = Uri.parse("rong://" + getActivity().getApplicationInfo().packageName).buildUpon()
                         .appendPath("conversation").appendPath(io.rong.imlib.model.Conversation.ConversationType.PRIVATE.getName().toLowerCase())
@@ -312,6 +314,9 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
                     // There's no way to avoid getting this if saveInstanceState has already been called.
                 }
 
+                //Unhide the option menu
+                mMenu.setGroupVisible(0,true);
+
                 break;
             case R.id.action_teacher:
                 mIsParent = false;
@@ -327,7 +332,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
 
         return false;
     }
-
 
     //Select contact group either parents or teachers
     private void selectContacts(String classid, boolean mIsParent) {
@@ -398,33 +402,12 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     }
 
     private void setupTeacherActionBar(String username) {
-        //Keycode Back cause 2 times of KeyCode Events
-//        if(!mMenu.hasVisibleItems()) {
-//            mainActivity.getMenuInflater().inflate(R.menu.menu_contacts, mMenu);
-//            if (DataWrapper.getInstance().findMyClass().size() > 1) {
-//                mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-//                SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, DataWrapper.getInstance().findMyClass());
-//
-//                ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
-//                    @Override
-//                    public boolean onNavigationItemSelected(int i, long l) {
-//                        mCurrentClassid = DataWrapper.getInstance().findMyClass().get(i).getClassid();
-//                        selectContacts(mCurrentClassid, mIsParent);
-//                        return false;
-//                    }
-//                };
-//                mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
-//                mainActivity.getSupportActionBar().setTitle("");
-//            } else {
-//                mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         if (username != null && !username.isEmpty())
             mainActivity.getSupportActionBar().setTitle(username);
         else if (mIsParent)
             mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_parents));
         else
             mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
-//            }
-//        }
     }
 
     @Override
@@ -436,9 +419,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     @Subscribe
     public void onUserSwitchEvent(InfoSwitchedEvent event) {
         mCurrentClassid = DataWrapper.getInstance().findCurrentClass(event.getCurrentChild()).getClassid();
-        mIsParent = true;
-        selectContacts(mCurrentClassid, mIsParent);
-        setupTeacherActionBar("");
+        selectContacts(mCurrentClassid,mIsParent);
     }
 
     private class MyConversationBehaviorListener implements RongIM.ConversationBehaviorListener {

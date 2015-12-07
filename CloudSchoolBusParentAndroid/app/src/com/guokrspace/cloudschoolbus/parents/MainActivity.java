@@ -30,8 +30,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -71,6 +69,7 @@ import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
@@ -169,6 +168,17 @@ public class MainActivity extends BaseActivity implements
 //        api.registerApp(Version.APP_ID);
     }
 
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    public void onPause()
+    {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
     @Override
     protected void onDestroy() {
         BusProvider.getInstance().unregister(this);
@@ -219,8 +229,11 @@ public class MainActivity extends BaseActivity implements
                 if(mPosition==0)
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
-                    theFragment.filterCards("All");
-                    setActionBarTitle(getResources().getString(R.string.module_explore));
+
+                    if(theFragment.isAdded()) {
+                        theFragment.filterCards("All");
+                        setActionBarTitle(getResources().getString(R.string.module_explore));
+                    }
                 }
                 clearBadge(mPosition);
             }

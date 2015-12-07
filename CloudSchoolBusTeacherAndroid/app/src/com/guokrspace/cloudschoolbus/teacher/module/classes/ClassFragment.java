@@ -270,8 +270,11 @@ public class ClassFragment extends BaseFragment {
             Picasso.with(mParentContext).load(avatar).fit().centerCrop().into(mTeacherAvatar);
         }
 
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        mActionBar.setTitle(getResources().getString(R.string.module_class));
+        if(isAdded()) {
+            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            mActionBar.setTitle(getResources().getString(R.string.module_class));
+        }
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 

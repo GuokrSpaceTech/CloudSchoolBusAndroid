@@ -386,10 +386,10 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         List<MessageEntity> messageEntityList;
 
         if (type.equals("All")) {
-            messageEntityList = queryBuilder.orderDesc(MessageEntityDao.Properties.Messageid).list();
+            messageEntityList = queryBuilder.orderRaw("MESSAGEID+1 DESC").list();  //Note: convert string messageid into int
         } else {
-            messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type))
-                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
+            messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Apptype.eq(type)) //Note: convert string messageid into int
+                    .orderRaw("MESSAGEID+1 DESC").list();
         }
 
         mMaterialListView.clear();
@@ -513,7 +513,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     }
 
     @Subscribe
-    public void onChildrenSwitched(InfoSwitchedEvent event) {
+    public void onClassSwitched(InfoSwitchedEvent event) {
         mCurrentChild = event.getCurrentChild();
 
         /**
