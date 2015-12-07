@@ -513,7 +513,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     }
 
     @Subscribe
-    public void onChildrenSwitched(InfoSwitchedEvent event) {
+    public void onClassSwitched(InfoSwitchedEvent event) {
         mCurrentChild = event.getCurrentChild();
 
         /**

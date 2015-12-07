@@ -333,7 +333,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
         return false;
     }
 
-
     //Select contact group either parents or teachers
     private void selectContacts(String classid, boolean mIsParent) {
 
@@ -403,33 +402,12 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     }
 
     private void setupTeacherActionBar(String username) {
-        //Keycode Back cause 2 times of KeyCode Events
-//        if(!mMenu.hasVisibleItems()) {
-//            mainActivity.getMenuInflater().inflate(R.menu.menu_contacts, mMenu);
-//            if (DataWrapper.getInstance().findMyClass().size() > 1) {
-//                mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-//                SpinnerAdapter mSpinnerAdapter = new ClassSpinnerAdapter(mParentContext, DataWrapper.getInstance().findMyClass());
-//
-//                ActionBar.OnNavigationListener mOnNavgationListener = new ActionBar.OnNavigationListener() {
-//                    @Override
-//                    public boolean onNavigationItemSelected(int i, long l) {
-//                        mCurrentClassid = DataWrapper.getInstance().findMyClass().get(i).getClassid();
-//                        selectContacts(mCurrentClassid, mIsParent);
-//                        return false;
-//                    }
-//                };
-//                mainActivity.getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, mOnNavgationListener);
-//                mainActivity.getSupportActionBar().setTitle("");
-//            } else {
-//                mainActivity.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         if (username != null && !username.isEmpty())
             mainActivity.getSupportActionBar().setTitle(username);
         else if (mIsParent)
             mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_parents));
         else
             mainActivity.getSupportActionBar().setTitle(getResources().getString(R.string.module_teacher));
-//            }
-//        }
     }
 
     @Override
@@ -441,9 +419,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
     @Subscribe
     public void onUserSwitchEvent(InfoSwitchedEvent event) {
         mCurrentClassid = DataWrapper.getInstance().findCurrentClass(event.getCurrentChild()).getClassid();
-        mIsParent = true;
-        selectContacts(mCurrentClassid, mIsParent);
-        setupTeacherActionBar("");
+        selectContacts(mCurrentClassid,mIsParent);
     }
 
     private class MyConversationBehaviorListener implements RongIM.ConversationBehaviorListener {

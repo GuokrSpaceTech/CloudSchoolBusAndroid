@@ -1,5 +1,8 @@
 package com.guokrspace.cloudschoolbus.teacher.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**

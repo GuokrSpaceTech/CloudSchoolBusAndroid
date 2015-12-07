@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.guokrspace.cloudschoolbus.teacher"
-          android:versionCode="21"
+          android:versionCode="22"
           android:versionName="3.6.1">
 
     <uses-permission android:name="android.permission.INTERNET" />

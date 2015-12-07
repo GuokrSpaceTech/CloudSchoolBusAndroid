@@ -229,8 +229,11 @@ public class MainActivity extends BaseActivity implements
                 if(mPosition==0)
                 {
                     ExploreFragment theFragment =  (ExploreFragment)mFragments[0];
-                    theFragment.filterCards("All");
-                    setActionBarTitle(getResources().getString(R.string.module_explore));
+
+                    if(theFragment.isAdded()) {
+                        theFragment.filterCards("All");
+                        setActionBarTitle(getResources().getString(R.string.module_explore));
+                    }
                 }
                 clearBadge(mPosition);
             }

@@ -503,10 +503,9 @@ public class AboutmeFragment extends BaseFragment implements
 
         if(bitmapFilePath!=null)
         {
-                int currentchild = mApplication.mConfig.getCurrentuser();
-                String studentid = mApplication.mStudents.get(currentchild).getStudentid();
-                ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
-
+            int currentchild = mApplication.mConfig.getCurrentuser();
+            String studentid = mApplication.mStudents.get(currentchild).getStudentid();
+            ServerInteractions.getInstance().changeAvatarUser(studentid, bitmapFilePath, mHandler);
         }
 
     }
