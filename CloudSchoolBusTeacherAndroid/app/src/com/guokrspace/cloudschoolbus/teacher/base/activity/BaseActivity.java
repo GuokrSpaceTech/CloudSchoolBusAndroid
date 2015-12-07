@@ -21,6 +21,7 @@ import com.guokrspace.cloudschoolbus.teacher.protocols.CloudSchoolBusRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.otto.Subscribe;
+import com.umeng.analytics.MobclickAgent;
 
 import org.apache.http.Header;
 
@@ -67,6 +68,18 @@ abstract public class BaseActivity extends ActionBarActivity {
 
 	protected void init() {
 
+	}
+
+	@Override
+	protected void onPause() {
+		MobclickAgent.onPause(mContext);
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		MobclickAgent.onResume(mContext);
+		super.onResume();
 	}
 
 	/**

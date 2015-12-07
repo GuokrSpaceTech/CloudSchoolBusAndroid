@@ -7,20 +7,21 @@ dependencies {
     compile project(':AndroidSupport')
     compile project(':android-styled-dialogs')
     compile project(':dynamicgrid')
-    compile 'com.loopj.android:android-async-http:1.4.8'
-    compile 'de.greenrobot:greendao:1.3.7'
-    compile 'de.greenrobot:greendao-generator:1.3.1'
-    compile 'com.squareup:otto:1.3.5'
     compile project(':materialList')
-    compile 'de.hdodenhof:circleimageview:1.3.0'
     compile project(':Android-AdvancedWebView-master')
     compile project(':IMKit')
     compile project(':AndroidTouchGallery')
     compile project(':PictureChooseLib')
+    compile 'com.loopj.android:android-async-http:1.4.8'
+    compile 'de.greenrobot:greendao:1.3.7'
+    compile 'de.greenrobot:greendao-generator:1.3.1'
+    compile 'com.squareup:otto:1.3.5'
+    compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
     compile 'jp.wasabeef:picasso-transformations:1.2.1'
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.android.support:support-v4:23.1.0'
 }
 
 android {

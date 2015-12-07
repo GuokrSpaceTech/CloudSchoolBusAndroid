@@ -1,7 +1,12 @@
 package com.guokrspace.cloudschoolbus.teacher.widget;
 
 import android.content.Context;
+import android.os.Message;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +21,8 @@ import com.squareup.picasso.Picasso;
  * Created by Yang Kai on 15/7/14.
  */
 public class NoticeCardItemView extends CardItemView<NoticeCard> {
+
+    GestureDetectorCompat mDetector;
 
     public NoticeCardItemView(Context context) {
         super(context);
@@ -116,5 +123,17 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
                 confirmButton.setVisibility(View.INVISIBLE);
             }
         }
+
+        mDetector = new GestureDetectorCompat(card.getContext(), new MyGestureListener(card.getContext(),(String)description.getText()));
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        boolean retVal = mDetector.onTouchEvent(event);
+        // Be sure to call the superclass implementation
+        return retVal || super.onTouchEvent(event);
     }
 }
+

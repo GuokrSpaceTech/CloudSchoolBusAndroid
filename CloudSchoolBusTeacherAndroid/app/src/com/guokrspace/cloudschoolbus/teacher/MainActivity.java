@@ -213,17 +213,6 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    @Override
-    protected void onPause() {
-        MobclickAgent.onPause(mContext);
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        MobclickAgent.onResume(mContext);
-        super.onResume();
-    }
 
     @Override
     protected void onDestroy() {
@@ -398,6 +387,7 @@ public class MainActivity extends BaseActivity implements
                 if (RongIM.getInstance() != null)
                     RongIM.getInstance().logout();
 
+                MobclickAgent.onKillProcess(mContext);
                 android.os.Process.killProcess(android.os.Process.myPid());
             }
         });

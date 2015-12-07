@@ -16,4 +16,6 @@
     <color name="text_blue">#157efb</color>
     <color name="button_enable">#2392C1</color>
     <color name="list_gray_text_color">#848484</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

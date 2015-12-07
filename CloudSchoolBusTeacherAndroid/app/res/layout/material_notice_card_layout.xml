@@ -104,6 +104,8 @@
                     android:layout_below="@+id/titleTextView"
                     android:padding="@dimen/small_padding"
                     android:textColor="@color/description_color"
+                    android:maxLines="20"
+                    android:ellipsize="end"
                     android:textSize="@dimen/description_size"
                     tools:text="Test description" />
 

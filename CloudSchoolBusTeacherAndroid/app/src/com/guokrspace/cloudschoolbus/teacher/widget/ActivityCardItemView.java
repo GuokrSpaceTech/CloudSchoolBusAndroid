@@ -79,7 +79,7 @@ public class ActivityCardItemView extends CardItemView<ActivityCard> {
         }
 
         // Description
-        TextView description = (TextView) findViewById(R.id.text_content);
+        DoubleTappableTextView description = (DoubleTappableTextView) findViewById(R.id.text_content);
         description.setText(card.getDescription());
         if (card.getDescriptionColor() != -1) {
             description.setTextColor(card.getDescriptionColor());
