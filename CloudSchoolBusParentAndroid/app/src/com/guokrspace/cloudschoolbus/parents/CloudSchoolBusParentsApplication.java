@@ -20,6 +20,8 @@ import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.StudentEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.TeacherEntityDao;
+import com.guokrspace.cloudschoolbus.parents.event.BaseinfoErrorEvent;
+import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.NetworkStatusEvent;
 import com.guokrspace.cloudschoolbus.parents.protocols.CloudSchoolBusRestClient;
 
@@ -118,7 +120,6 @@ public class CloudSchoolBusParentsApplication extends Application {
         classEntityDao.deleteAll();
         teacherEntityDao.deleteAll();
         studentEntityDao.deleteAll();
-
     }
 
     public void clearConfig() {

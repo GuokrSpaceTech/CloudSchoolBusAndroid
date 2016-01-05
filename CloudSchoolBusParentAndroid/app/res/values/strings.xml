@@ -104,4 +104,9 @@
 
     <string name="fonttoggler">改变字体</string>
 
+    <string name="noschool">缺乏学校信息,请联系园方检查后台数据配置。</string>
+    <string name="noclass">缺乏班级班级信息,请联系园方检查后台数据配置。</string>
+    <string name="noteacher">缺乏教师信息,请联系园方检查后台数据配置。</string>
+    <string name="nostudent">缺乏孩子信息,请联系园方检查后台数据配置。</string>
+
 </resources>

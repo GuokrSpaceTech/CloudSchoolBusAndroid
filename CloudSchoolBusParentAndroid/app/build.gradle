@@ -34,6 +34,7 @@ android {
         renderscriptSupportModeEnabled true
         applicationId "com.guokrspace.cloudschoolbus.parents"
     }
+
     signingConfigs {
         release
         debug
