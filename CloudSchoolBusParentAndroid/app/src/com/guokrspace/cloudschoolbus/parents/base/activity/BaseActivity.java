@@ -123,7 +123,7 @@ abstract public class BaseActivity extends ActionBarActivity {
 
         mApplication.initBaseinfo();
 
-        mApplication.initCacheFile();
+//        mApplication.initCacheFile();
 	}
 
 	@Subscribe

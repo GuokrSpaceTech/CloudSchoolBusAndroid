@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.support.handlerui.HandlerToastUI;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.parents.base.RongCloudEvent;
 import com.guokrspace.cloudschoolbus.parents.base.activity.BaseActivity;
@@ -113,9 +114,10 @@ public class LoginActivity extends BaseActivity {
                         break;
                     case HandlerConstant.MSG_REG_FAIL:
                         showProgress(false);
-                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                                .setMessage(getResources().getString(R.string.invalid_mobile))
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        HandlerToastUI.getHandlerToastUI(mContext, getResources().getString(R.string.invalid_mobile));
+//                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                                .setMessage(getResources().getString(R.string.invalid_mobile))
+//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                         showProgress(false);
                         break;
                     //Get Session ID
@@ -130,16 +132,18 @@ public class LoginActivity extends BaseActivity {
                     case HandlerConstant.MSG_VERIFY_FAIL:
                         showProgress(false);
                         threadStopFlag = true;
-                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                                .setMessage(getResources().getString(R.string.invalid_verify_code))
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        HandlerToastUI.getHandlerToastUI(mContext, getResources().getString(R.string.invalid_verify_code));
+//                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                                .setMessage(getResources().getString(R.string.invalid_verify_code))
+//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                         break;
                     case HandlerConstant.MSG_REG_SMS:
                         showProgress(false);
                         threadStopFlag = true;
-                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                                .setMessage(getResources().getString(R.string.SMS_oversend))
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        HandlerToastUI.getHandlerToastUI(mContext, getResources().getString(R.string.SMS_oversend));
+//                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                                .setMessage(getResources().getString(R.string.SMS_oversend))
+//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                         break;
                     //Get the base info
                     case HandlerConstant.MSG_BASEINFO_OK:
@@ -148,15 +152,17 @@ public class LoginActivity extends BaseActivity {
                         break;
                     case HandlerConstant.MSG_BASEINFO_FAIL:
                         showProgress(false);
-                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                                .setMessage(getResources().getString(R.string.failure_baseinfo))
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        HandlerToastUI.getHandlerToastUI(mContext, getResources().getString(R.string.failure_baseinfo));
+//                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                                .setMessage(getResources().getString(R.string.failure_baseinfo))
+//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                         break;
                     case HandlerConstant.MSG_NO_NETOWRK:
                         showProgress(false);
-                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                                .setMessage(getResources().getString(R.string.no_network))
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        HandlerToastUI.getHandlerToastUI(mContext, getResources().getString(R.string.no_network));
+//                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                                .setMessage(getResources().getString(R.string.no_network))
+//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                         break;
                     case HandlerConstant.MSG_TIMER_TICK:
                         mClicktoGetVerifyCodeButton.setText((String) msg.obj);
@@ -168,15 +174,17 @@ public class LoginActivity extends BaseActivity {
                         break;
                     case HandlerConstant.LOGIN_FAILED:
                         showProgress(false);
-                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                                .setMessage(getResources().getString(R.string.failure_unknown))
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        HandlerToastUI.getHandlerToastUI(mContext, getResources().getString(R.string.failure_unknown));
+//                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                                .setMessage(getResources().getString(R.string.failure_unknown))
+//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                         break;
                     default:
                         showProgress(false);
-                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
-                                .setMessage(getResources().getString(R.string.failure_unknown))
-                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
+                        HandlerToastUI.getHandlerToastUI(mContext, getResources().getString(R.string.failure_unknown));
+//                        SimpleDialogFragment.createBuilder(mContext, getSupportFragmentManager())
+//                                .setMessage(getResources().getString(R.string.failure_unknown))
+//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                         break;
                 }
                 return false;

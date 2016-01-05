@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.util.Log;
 
 import com.guokrspace.cloudschoolbus.teacher.base.RongCloudEvent;
@@ -75,9 +76,11 @@ public class CloudSchoolBusParentsApplication extends Application {
     public void initCacheFile() {
         if (android.os.Environment.getExternalStorageState().equals(
                 android.os.Environment.MEDIA_MOUNTED)) {
-            this.mCacheDir = getExternalCacheDir().getAbsolutePath();
+            if(getExternalFilesDir(Environment.DIRECTORY_PICTURES)!=null)
+                this.mCacheDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
         } else {
-            this.mCacheDir = getCacheDir().getAbsolutePath();
+            if(getFilesDir()!=null)
+                this.mCacheDir = getFilesDir().getAbsolutePath();
         }
     }
 

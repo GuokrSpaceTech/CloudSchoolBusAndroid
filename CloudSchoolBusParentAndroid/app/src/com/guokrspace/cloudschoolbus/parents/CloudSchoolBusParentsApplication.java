@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 
 
@@ -56,19 +57,21 @@ public class CloudSchoolBusParentsApplication extends Application {
 
         initBaseinfo();
 
-        initCacheFile();
+//        initCacheFile();
 
         initRongIM();
     }
 
-    public void initCacheFile() {
-        if (android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED)) {
-            this.mCacheDir = getExternalCacheDir().getAbsolutePath();
-        } else {
-            this.mCacheDir = getCacheDir().getAbsolutePath();
-        }
-    }
+//    public void initCacheFile() {
+//        if (android.os.Environment.getExternalStorageState().equals(
+//                android.os.Environment.MEDIA_MOUNTED)) {
+//            if(getExternalFilesDir(Environment.DIRECTORY_PICTURES)!=null)
+//                this.mCacheDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+//        } else {
+//            if(getFilesDir()!=null)
+//                this.mCacheDir = getFilesDir().getAbsolutePath();
+//        }
+//    }
 
     public void initDB() {
         SQLiteDatabase db;

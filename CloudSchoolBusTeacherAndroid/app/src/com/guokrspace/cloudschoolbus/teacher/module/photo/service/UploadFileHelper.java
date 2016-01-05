@@ -158,8 +158,6 @@ public class UploadFileHelper extends Service {
         params.put("fname", uploadFile.getFname());
         try {
             params.put("fbody", new File(compressUploadSource(uploadFile)));
-//            params.put("fbody", new File(uploadFile.getFbody()));
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -332,17 +330,15 @@ public class UploadFileHelper extends Service {
         mApplication.mDaoSession.clear();
     }
 
-    public String compressUploadSource(UploadArticleFileEntity fileEntity)
-    {
-
+    public String compressUploadSource(UploadArticleFileEntity fileEntity) throws FileNotFoundException {
         File compressFile = new File(mApplication.mCacheDir, fileEntity.getFname() + ".small.jpg");
         File origFile = new File(fileEntity.getFbody());
 
         int[] dimension = ImageUtil.getImageBounds(origFile);
 
-        int compressRatio = ImageUtil.reckonThumbnail(dimension[0],dimension[1], 1024, 768);
+        int compressRatio = ImageUtil.reckonThumbnail(dimension[0], dimension[1], 1024, 768);
 
-        if(!compressFile.exists()) {
+        if (!compressFile.exists()) {
             try {
                 compressFile.createNewFile();
             } catch (IOException e) {
