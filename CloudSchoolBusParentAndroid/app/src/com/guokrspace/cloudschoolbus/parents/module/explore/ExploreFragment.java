@@ -432,12 +432,13 @@ public class ExploreFragment extends BaseFragment {
             return BuildStreamingNoticeCard(messageEntity);
         } else if (messageEntity.getApptype().equals("Report")) {
             return BuildReportListCard(messageEntity);
-        } else if (messageEntity.getApptype().equals("Food")) {
-            return BuildFoodNoticeCard(messageEntity);
-        } else if (messageEntity.getApptype().equals("Course")) {
-            return BuildScheduleNoticeCard(messageEntity);
-        } else if (messageEntity.getApptype().equals("Active"))
-            return BuildActivityCard(messageEntity, mHandler);
+        }
+//        else if (messageEntity.getApptype().equals("Food")) {
+//            return BuildFoodNoticeCard(messageEntity);
+//        } else if (messageEntity.getApptype().equals("Course")) {
+//            return BuildScheduleNoticeCard(messageEntity);
+//        } else if (messageEntity.getApptype().equals("Active"))
+//            return BuildActivityCard(messageEntity, mHandler);
         else {
             SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(getResources().getString(R.string.unknow_message))
                     .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
@@ -460,18 +461,18 @@ public class ExploreFragment extends BaseFragment {
                 filterCards("Punch");
                 setActionBarTitle(getResources().getString(R.string.attendancetype));
                 break;
-            case R.id.action_schedule:
-                filterCards("Schedule");
-                setActionBarTitle(getResources().getString(R.string.schedule));
-                break;
+//            case R.id.action_schedule:
+//                filterCards("Schedule");
+//                setActionBarTitle(getResources().getString(R.string.schedule));
+//                break;
             case R.id.action_report:
                 setActionBarTitle(getResources().getString(R.string.report));
                 filterCards("Report");
                 break;
-            case R.id.action_food:
-                filterCards("Food");
-                setActionBarTitle(getResources().getString(R.string.food));
-                break;
+//            case R.id.action_food:
+//                filterCards("Food");
+//                setActionBarTitle(getResources().getString(R.string.food));
+//                break;
             case R.id.action_streaming:
                 filterCards("OpenClass");
                 setActionBarTitle(getResources().getString(R.string.openclass));
@@ -480,38 +481,27 @@ public class ExploreFragment extends BaseFragment {
                 filterCards("Article");
                 setActionBarTitle(getResources().getString(R.string.picturetype));
                 break;
-            case R.id.action_activity:
-                filterCards("Active");
-                setActionBarTitle(getResources().getString(R.string.activity));
-                break;
+//            case R.id.action_activity:
+//                filterCards("Active");
+//                setActionBarTitle(getResources().getString(R.string.activity));
+//                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void setActionBarTitle(String title) {
-        if (Version.PARENT) {
             MainActivity mainActivity = (MainActivity) mParentContext;
             mainActivity.getSupportActionBar().setTitle(title);
-//            View view = mainActivity.getSupportActionBar().getCustomView();
-//            TextView textView = (TextView) view.findViewById(R.id.abs_layout_titleTextView);
-//            textView.setText(title);
-//            mainActivity.mCurrentTitle = title;
-//            mainActivity.mUpperLeverTitle = preTitle;
-        }
     }
 
     @Subscribe
     public void onChildrenSwitched(InfoSwitchedEvent event) {
         mCurrentChild = event.getCurrentChild();
 
-        /**
-         * Todo:
+        /*
+         * filterCard自动完成孩子切换
          */
-        if (Version.PARENT) {
-//            String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
-//            filterCardsChild(studentId);
-            filterCards(null);
-        }
+        filterCards(null);
     }
 
     @Override

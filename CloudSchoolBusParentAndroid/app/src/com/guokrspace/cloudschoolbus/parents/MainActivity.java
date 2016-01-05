@@ -40,6 +40,7 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 
 import com.alibaba.fastjson.JSONException;
+import com.android.support.handlerui.HandlerPostUI;
 import com.android.support.handlerui.HandlerToastUI;
 import com.astuetz.PagerSlidingTabStrip;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
@@ -51,6 +52,7 @@ import com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushUtils;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
+import com.guokrspace.cloudschoolbus.parents.event.BaseinfoErrorEvent;
 import com.guokrspace.cloudschoolbus.parents.event.BusProvider;
 import com.guokrspace.cloudschoolbus.parents.event.IsUploadingEvent;
 import com.guokrspace.cloudschoolbus.parents.event.LoginResultEvent;
@@ -106,9 +108,6 @@ public class MainActivity extends BaseActivity implements
     private Fragment[] mFragments = {null, null, null, null};
     private int mPosition = 0;
 
-    public String mUpperLeverTitle="";
-    public String mCurrentTitle="";
-
     private Drawable oldBackground = null;
     private int currentColor = 0xF1A141;
 
@@ -137,6 +136,11 @@ public class MainActivity extends BaseActivity implements
 //                            .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
                     break;
                 case HandlerConstant.MSG_TIMER_TICK:
+                    break;
+                case HandlerConstant.MSG_BASEINFO_FAIL:
+                    BaseinfoErrorEvent event = (BaseinfoErrorEvent)msg.obj;
+                    HandlerToastUI.getHandlerToastUI(mContext, event.getErrMsg());
+                    exit_application();
                     break;
                 case HandlerConstant.MSG_TIMER_TIMEOUT:
                     //When startup page is off, show the main page
@@ -525,7 +529,6 @@ public class MainActivity extends BaseActivity implements
         setBadge(3, 0);
     }
 
-
     /**
      *
      * Check if use has logined before and saved all the credentials
@@ -624,6 +627,7 @@ public class MainActivity extends BaseActivity implements
         setupViews();
         setListeners();
         httpGetTokenSuccess(mApplication.mConfig.getImToken());
+        validateBaseInfo();
     }
 
     /**
@@ -839,6 +843,59 @@ public class MainActivity extends BaseActivity implements
     public void clearBadge(int position)
     {
         badgeViews.get(position).setVisibility(View.INVISIBLE);
+    }
+
+    private void validateBaseInfo()
+    {
+
+        //校验基础数据
+        BaseinfoErrorEvent event = new BaseinfoErrorEvent();
+        if(mApplication.mSchools.size() == 0 )
+        {
+            event.setErrCode(0);
+            event.setErrMsg(getResources().getString(R.string.noschool));
+        }
+        else if(mApplication.mClasses.size() == 0)
+        {
+            event.setErrCode(1);
+            event.setErrMsg(getResources().getString(R.string.noclass));
+        }
+        else if(mApplication.mTeachers.size() == 0)
+        {
+            event.setErrCode(2);
+            event.setErrMsg(getResources().getString(R.string.noteacher));
+        }
+        else if(mApplication.mStudents.size() == 0)
+        {
+            event.setErrCode(3);
+            event.setErrMsg(getResources().getString(R.string.nostudent));
+        }
+
+        if(event.getErrMsg()!=null)
+        {
+            Message msg = handler.obtainMessage();
+            msg.what = HandlerConstant.MSG_BASEINFO_FAIL;
+            msg.obj = event;
+            handler.sendMessage(msg);
+        }
+    }
+
+    private void exit_application()
+    {
+
+        /**
+         * Just clear the data, DB will stay open
+         * LoginActivity will re-init the Database
+         */
+        mApplication.clearConfig();
+        mApplication.clearData();
+        mApplication.clearBaseinfo();
+
+        Intent intent = new Intent(mContext,LoginActivity.class);
+        overridePendingTransition(0, 0);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        overridePendingTransition(0, 0);
+        startActivity(intent);
     }
 
     private void TimerTick(final int max_seconds) {

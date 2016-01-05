@@ -28,26 +28,26 @@
         android:icon="@drawable/ic_report"
         android:title="@string/report"
         app:showAsAction="collapseActionView|withText" />
-    <item
-        android:id="@+id/action_schedule"
-        android:icon="@drawable/ic_schedule"
-        android:title="@string/schedule"
-        app:showAsAction="collapseActionView|withText" />
-    <item
-        android:id="@+id/action_food"
-        android:icon="@drawable/ic_food"
-        android:title="@string/food"
-        app:showAsAction="collapseActionView|withText" />
+    <!--<item-->
+        <!--android:id="@+id/action_schedule"-->
+        <!--android:icon="@drawable/ic_schedule"-->
+        <!--android:title="@string/schedule"-->
+        <!--app:showAsAction="collapseActionView|withText" />-->
+    <!--<item-->
+        <!--android:id="@+id/action_food"-->
+        <!--android:icon="@drawable/ic_food"-->
+        <!--android:title="@string/food"-->
+        <!--app:showAsAction="collapseActionView|withText" />-->
     <item
         android:id="@+id/action_picture"
         android:icon="@drawable/ic_picture"
         android:title="@string/picture"
         app:showAsAction="collapseActionView|withText" />
-    <item
-        android:id="@+id/action_activity"
-        android:icon="@drawable/ic_event"
-        android:title="@string/activity"
-        app:showAsAction="collapseActionView|withText" />
+    <!--<item-->
+        <!--android:id="@+id/action_activity"-->
+        <!--android:icon="@drawable/ic_event"-->
+        <!--android:title="@string/activity"-->
+        <!--app:showAsAction="collapseActionView|withText" />-->
 </menu>
 
     <!--ifRoom、never、always、withText、collapseActionView-->
