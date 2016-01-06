@@ -882,7 +882,6 @@ public class MainActivity extends BaseActivity implements
 
     private void exit_application()
     {
-
         /**
          * Just clear the data, DB will stay open
          * LoginActivity will re-init the Database

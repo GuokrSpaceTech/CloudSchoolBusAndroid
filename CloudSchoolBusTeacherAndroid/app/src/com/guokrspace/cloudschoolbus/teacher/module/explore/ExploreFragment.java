@@ -465,18 +465,18 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                 filterCards("Punch");
                 setActionBarTitle(getResources().getString(R.string.attendancetype));
                 break;
-            case R.id.action_schedule:
-                filterCards("Schedule");
-                setActionBarTitle(getResources().getString(R.string.schedule));
-                break;
+//            case R.id.action_schedule:
+//                filterCards("Schedule");
+//                setActionBarTitle(getResources().getString(R.string.schedule));
+//                break;
             case R.id.action_report:
                 setActionBarTitle(getResources().getString(R.string.report));
                 filterCards("Report");
                 break;
-            case R.id.action_food:
-                filterCards("Food");
-                setActionBarTitle(getResources().getString(R.string.food));
-                break;
+//            case R.id.action_food:
+//                filterCards("Food");
+//                setActionBarTitle(getResources().getString(R.string.food));
+//                break;
             case R.id.action_streaming:
                 filterCards("OpenClass");
                 setActionBarTitle(getResources().getString(R.string.openclass));
@@ -485,10 +485,10 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                 filterCards("Article");
                 setActionBarTitle(getResources().getString(R.string.picturetype));
                 break;
-            case R.id.action_activity:
-                filterCards("Active");
-                setActionBarTitle(getResources().getString(R.string.activity));
-                break;
+//            case R.id.action_activity:
+//                filterCards("Active");
+//                setActionBarTitle(getResources().getString(R.string.activity));
+//                break;
             case R.id.action_take_photo:
                 //Prevent multiple touches
                 mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
@@ -519,11 +519,6 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         /**
          * Todo:
          */
-        if (Version.PARENT) {
-//            String studentId = mApplication.mStudents.get(mCurrentChild).getStudentid();
-//            filterCardsChild(studentId);
-            filterCards(null);
-        }
     }
 
     @Override
@@ -584,11 +579,11 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
     }
 
     private void initMessageTypes() {
-        String[] messageTypes = {"All", "Article", "Notice", "Active", "Punch", "Report", "OpenClass", "Food", "Schedule"};
-        Integer[] resIcon = {0, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_event, R.drawable.ic_attendance,
-                R.drawable.ic_report, R.drawable.ic_streaming, R.drawable.ic_food, R.drawable.ic_schedule};
-        Integer[] descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.activity, R.string.attendancetype,
-                R.string.report, R.string.openclass, R.string.food, R.string.schedule};
+        String[] messageTypes = {"All", "Article", "Notice", "Punch", "Report", "OpenClass"};
+        Integer[] resIcon = {0, R.drawable.ic_picture, R.drawable.ic_notice, R.drawable.ic_attendance,
+                R.drawable.ic_report, R.drawable.ic_streaming};
+        Integer[] descriptions = {R.string.all, R.string.picture, R.string.noticetype, R.string.attendancetype,
+                R.string.report, R.string.openclass};
 
         int i = 0;
         mMessageTypes.clear();
@@ -615,12 +610,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
             cardtype = getResources().getString(R.string.openclass);
         else if (type.equals("Report"))
             cardtype = getResources().getString(R.string.report);
-        else if (type.equals("Food"))
-            cardtype = getResources().getString(R.string.food);
-        else if (type.equals("Schedule"))
-            cardtype = getResources().getString(R.string.schedule);
-        else if (type.equals("Active"))
-            cardtype = getResources().getString(R.string.activity);
+
         return cardtype;
     }
 

@@ -77,12 +77,12 @@ public class ServerInteractions {
             cardtype = mContext.getResources().getString(R.string.openclass);
         else if (type.equals("Report"))
             cardtype = mContext.getResources().getString(R.string.report);
-        else if (type.equals("Food"))
-            cardtype = mContext.getResources().getString(R.string.food);
-        else if (type.equals("Schedule"))
-            cardtype = mContext.getResources().getString(R.string.schedule);
-        else if (type.equals("Active"))
-            cardtype = mContext.getResources().getString(R.string.activity);
+//        else if (type.equals("Food"))
+//            cardtype = mContext.getResources().getString(R.string.food);
+//        else if (type.equals("Schedule"))
+//            cardtype = mContext.getResources().getString(R.string.schedule);
+//        else if (type.equals("Active"))
+//            cardtype = mContext.getResources().getString(R.string.activity);
         return cardtype;
     }
 
