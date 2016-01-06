@@ -2,9 +2,11 @@ package com.guokrspace.cloudschoolbus.teacher.base;
 
 import com.guokrspace.cloudschoolbus.teacher.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassEntityT;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassModuleEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ConfigEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ParentEntityT;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.SchoolEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentClassRelationEntity;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.StudentParentRelationEntity;
@@ -12,6 +14,7 @@ import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherDutyClassRela
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.teacher.event.BusProvider;
 import com.guokrspace.cloudschoolbus.teacher.event.InfoSwitchedEvent;
+import com.guokrspace.cloudschoolbus.teacher.module.classes.ClassFragment;
 
 import java.util.ArrayList;
 
@@ -71,14 +74,9 @@ public class DataWrapper {
 
         int current = mApplication.mConfig.getCurrentuser();
 
-        String classid = mApplication.mTeacherClassDutys.get(current).getClassid();
-
-        for(ClassEntityT theClass: mApplication.mClassesT)
+        if(mApplication.mClassesT.size()>current)
         {
-            if(theClass.getClassid().equals(classid))
-            {
-                retEntity = theClass; break;
-            }
+            retEntity = mApplication.mClassesT.get(current);
         }
 
         return retEntity;
@@ -217,5 +215,48 @@ public class DataWrapper {
         ArrayList<StudentEntityT> students = DataWrapper.getInstance().findStudentsOfParents(parent);
 
         return findWhichStudentsInClass(students, classid);
+    }
+
+    public SchoolEntityT findSchool(String schoolid)
+    {
+        SchoolEntityT school = null;
+        for(SchoolEntityT schoolEntityT:mApplication.mSchoolsT)
+        {
+            if(schoolEntityT.getId().equals(schoolid)) {
+                school = schoolEntityT;
+            }
+        }
+        return school;
+    }
+
+    public SchoolEntityT findCurrentSchool()
+    {
+        ClassEntityT currentClass = DataWrapper.getInstance().findCurrentClass();
+
+        if(currentClass!=null) {
+            SchoolEntityT school = DataWrapper.getInstance().findSchool(currentClass.getSchoolid());
+            if (school != null)
+                return school;
+        }
+
+        return null;
+    }
+
+    public ArrayList<ClassModuleEntity> findClassModulesofCurrentSchool()
+    {
+
+        ArrayList<ClassModuleEntity> classModuleEntityArrayList = new ArrayList<>();
+
+        SchoolEntityT currentSchool = findCurrentSchool();
+
+        for(ClassModuleEntity module : mApplication.mClassModules)
+        {
+            if(module.getSchoolid().equals(currentSchool.getId()))
+            {
+                classModuleEntityArrayList.add(module);
+            }
+        }
+
+        return classModuleEntityArrayList;
     }
 }

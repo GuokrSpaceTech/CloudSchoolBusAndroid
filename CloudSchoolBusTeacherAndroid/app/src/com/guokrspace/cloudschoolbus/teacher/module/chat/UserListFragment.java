@@ -100,13 +100,8 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
             if (isConverstaionFragmentCreated == false) {
                 int position = (int) view.getTag();
                 String mTargetID = "";
-                if (mIsParent) {
-                    mTargetID = DataWrapper.getInstance().findParentsinClass(mCurrentClassid).get(position).getParentid();
-                    userName = DataWrapper.getInstance().findParentsinClass(mCurrentClassid).get(position).getNikename();
-                } else {
                     mTargetID = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
                     userName = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getNickname();
-                }
 
                 //setupTeacherActionBar
                 setupTeacherActionBar(userName);
@@ -211,7 +206,7 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
 
 
     private void initView(View v) {
-        mCurrentClassid = DataWrapper.getInstance().findCurrentClass(mApplication.mConfig.getCurrentuser()).getClassid();
+        mCurrentClassid = DataWrapper.getInstance().findCurrentClass().getClassid();
         mIsParent = true;
         selectContacts(mCurrentClassid, mIsParent);
     }

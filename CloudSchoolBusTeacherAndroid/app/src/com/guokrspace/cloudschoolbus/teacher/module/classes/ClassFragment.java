@@ -36,7 +36,9 @@ import com.guokrspace.cloudschoolbus.teacher.R;
 import com.guokrspace.cloudschoolbus.teacher.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.teacher.base.activity.BaseWebViewActivity;
 import com.guokrspace.cloudschoolbus.teacher.base.fragment.BaseFragment;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassModuleEntity;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.SchoolEntityT;
 import com.guokrspace.cloudschoolbus.teacher.event.InfoSwitchedEvent;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -44,6 +46,7 @@ import com.squareup.picasso.Picasso;
 import org.askerov.dynamicgrid.BaseDynamicGridAdapter;
 import org.askerov.dynamicgrid.DynamicGridView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClassFragment extends BaseFragment {
@@ -85,15 +88,17 @@ public class ClassFragment extends BaseFragment {
         mClassName = (TextView)root.findViewById(R.id.class_name);
         mSchoolName = (TextView)root.findViewById(R.id.kindergarten_name);
 
-        currentUser = mApplication.mConfig.getCurrentuser();
-        mClassName.setText(DataWrapper.getInstance().findCurrentClass(currentUser).getClassname());
-        if(mApplication.mSchoolsT.size()>0) {
-            mSchoolName.setText(mApplication.mSchoolsT.get(0).getName());
-        }
+        ClassEntityT currentClass = DataWrapper.getInstance().findCurrentClass();
+        if(currentClass!=null)
+            mClassName.setText(currentClass.getClassname());
+
+        SchoolEntityT currentSchool = DataWrapper.getInstance().findCurrentSchool();
+        if(currentSchool!=null)
+            mSchoolName.setText(currentSchool.getName());
 
         gridView = (DynamicGridView) root.findViewById(R.id.dynamic_grid);
 
-        gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(), mApplication.mClassModules,
+        gridView.setAdapter(new ClassifyDynamicAdapter(getActivity(), DataWrapper.getInstance().findClassModulesofCurrentSchool(),
                 getResources().getInteger(R.integer.column_count)));
 
         //add callback to stop edit mode if needed
@@ -127,7 +132,6 @@ public class ClassFragment extends BaseFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                ClassifyDynamicAdapter.ClassifyModule classifyModule = (ClassifyDynamicAdapter.ClassifyModule) parent.getAdapter().getItem(position);
 
                 ClassModuleEntity classModule = (ClassModuleEntity) parent.getAdapter().getItem(position);
                 if(classModule.getUrl()!="") {
@@ -282,7 +286,14 @@ public class ClassFragment extends BaseFragment {
     public void onUserSwitchEvent(InfoSwitchedEvent event)
     {
         currentUser = event.getCurrentChild();
-        mClassName.setText(DataWrapper.getInstance().findCurrentClass(currentUser).getClassname());
+
+        ClassEntityT currentClass = DataWrapper.getInstance().findCurrentClass();
+        if(currentClass!=null)
+            mClassName.setText(currentClass.getClassname());
+
+        SchoolEntityT currentSchool = DataWrapper.getInstance().findCurrentSchool();
+        if(currentSchool!=null)
+            mSchoolName.setText(currentSchool.getName());
     }
 
 

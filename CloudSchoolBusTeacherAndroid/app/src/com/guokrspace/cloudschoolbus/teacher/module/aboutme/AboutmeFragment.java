@@ -39,6 +39,7 @@ import com.guokrspace.cloudschoolbus.teacher.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.teacher.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.teacher.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.ClassEntityT;
+import com.guokrspace.cloudschoolbus.teacher.database.daodb.SchoolEntityT;
 import com.guokrspace.cloudschoolbus.teacher.database.daodb.TeacherEntityT;
 import com.guokrspace.cloudschoolbus.teacher.event.AvatarChangedEvent;
 import com.guokrspace.cloudschoolbus.teacher.event.InfoSwitchedEvent;
@@ -93,7 +94,7 @@ public class AboutmeFragment extends BaseFragment implements
     private ImageView redDotIcon;
     private Button logoutButton;
     private TextView classNameTextView;
-    private int currentChild;
+    private int currentClass;
     private boolean isUploading = false;
 
     private PictureProcess mPictureProcess;
@@ -191,7 +192,7 @@ public class AboutmeFragment extends BaseFragment implements
         /* Get the current user's avatar */
         updateUserInfoUI();
 
-        buttonKindergarten.setText(mApplication.mSchoolsT.get(0).getName());
+
 
         textViewCache.setText(getDBSize());
 
@@ -358,11 +359,24 @@ public class AboutmeFragment extends BaseFragment implements
     private void showSwithUserDialog() {
         SelectUserDialogFragment theDialogFragment = null;
         ArrayList<ClassEntityT> classes = DataWrapper.getInstance().findMyClass();
-        theDialogFragment = SelectUserDialogFragment.newInstance(classes, "class");
+        ArrayList<String> classStrArr = new ArrayList<>();
+        for(ClassEntityT classinfo : classes)
+        {
+            String classname = classinfo.getClassname();
+            SchoolEntityT school = DataWrapper.getInstance().findSchool(classinfo.getSchoolid());
+
+            if(school!=null)
+            {
+                classname += '\n' + school.getName();
+            }
+
+            classStrArr.add(classname);
+        }
+
+        theDialogFragment = SelectUserDialogFragment.newInstance(classStrArr);
         theDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyFragmentDialogStyle);
         theDialogFragment.show(getFragmentManager(), "");
     }
-
 
     //Signout
     public void signout() {
@@ -406,8 +420,8 @@ public class AboutmeFragment extends BaseFragment implements
     }
 
     @Subscribe
-    public void onChildrenSwitched(InfoSwitchedEvent event) {
-        currentChild = event.getCurrentChild();
+    public void onClassSwitched(InfoSwitchedEvent event) {
+        currentClass = event.getCurrentChild();
         updateUserInfoUI();
     }
 
@@ -436,6 +450,13 @@ public class AboutmeFragment extends BaseFragment implements
         }
 
         classNameTextView.setText(DataWrapper.getInstance().findCurrentClass().getClassname());
+
+        ClassEntityT currentClass = DataWrapper.getInstance().findCurrentClass();
+        if(currentClass!=null) {
+            SchoolEntityT school = DataWrapper.getInstance().findSchool(currentClass.getSchoolid());
+            if (school != null)
+                buttonKindergarten.setText(school.getName());
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

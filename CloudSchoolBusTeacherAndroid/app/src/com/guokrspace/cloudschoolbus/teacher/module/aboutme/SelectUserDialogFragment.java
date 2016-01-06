@@ -47,17 +47,16 @@ import java.util.List;
 
 public class SelectUserDialogFragment extends DialogFragment {
 
-    private static final String USERINFO = "userinfo";
+    private static final String CLASSTITLES = "classtitles";
     private static final String TAG = SelectUserDialogFragment.class.getName();
-    private List<ClassEntityT> mClasses;
+    private List<String> mClasses;
 
     private DynamicGridView gridView;
 
-    public static SelectUserDialogFragment newInstance(ArrayList<?> infos, String type) {
+    public static SelectUserDialogFragment newInstance(ArrayList<String> classtitles) {
         SelectUserDialogFragment f = new SelectUserDialogFragment();
         Bundle b = new Bundle();
-        b.putSerializable(USERINFO, infos);
-        b.putString("type",type);
+        b.putSerializable(CLASSTITLES, classtitles);
         f.setArguments(b);
         return f;
     }
@@ -66,10 +65,8 @@ public class SelectUserDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Object infos = getArguments().get(USERINFO);
-        String type = getArguments().getString("type");
-        if(type.equals("class"))
-            mClasses = (ArrayList<ClassEntityT>)infos;
+        List<String> infos = (List<String>)getArguments().get(CLASSTITLES);
+        mClasses = infos;
     }
 
     @Override
@@ -143,11 +140,7 @@ public class SelectUserDialogFragment extends DialogFragment {
                 holder = (ClassViewHolder) convertView.getTag();
             }
 
-
-            if(getItem(position) instanceof ClassEntityT) {
-                ClassEntityT theClass = (ClassEntityT)getItem(position);
-                holder.build(theClass.getClassname(), "");
-            }
+            holder.build((String)getItem(position), "");
 
             return convertView;
         }
@@ -164,11 +157,9 @@ public class SelectUserDialogFragment extends DialogFragment {
             void build(String title, String avatarUrl) {
                 titleText.setText(title);
 
-                if(!avatarUrl.equals("")) {
-                    //Trim the .
-                    if(avatarUrl.contains("jpg."))
-                    avatarUrl = avatarUrl.substring(0,avatarUrl.lastIndexOf('.'));
-                    Picasso.with(getContext()).load(avatarUrl).fit().centerCrop().into(image);
+                if(avatarUrl.equals(""))
+                {
+                    image.setImageResource(R.drawable.ic_house);
                 }
             }
         }
