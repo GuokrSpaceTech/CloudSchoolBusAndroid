@@ -41,9 +41,8 @@ import java.util.List;
 public class UploadFileHelper extends Service {
     private Context mContext;
     private Fragment mFragment;
-    private Thread thread;
-    private int IDLE_INTERVAL = 5000;
-    private int BUSY_INTERVAL = 1000;
+    private int IDLE_INTERVAL = 1000;
+    private int BUSY_INTERVAL = 5000;
 	private CloudSchoolBusParentsApplication mApplication;
 
     private Handler handler = new Handler(new Handler.Callback() {
@@ -102,10 +101,7 @@ public class UploadFileHelper extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-//        handler.sendEmptyMessage(MSG_KICKOFF);
     }
-
 
 
     public void setFragment(Fragment fragment) {
@@ -146,12 +142,6 @@ public class UploadFileHelper extends Service {
         markUploadNull(uploadFile);
     }
 
-    public void removeFailedFile(UploadArticleFileEntity uploadFile)
-    {
-        mApplication.mDaoSession.getUploadArticleFileEntityDao().delete(uploadFile);
-        mApplication.mDaoSession.clear();
-    }
-
 	private synchronized void uploadFile(final UploadArticleFileEntity uploadFile) {
 
 		RequestParams params = new RequestParams();
@@ -165,7 +155,7 @@ public class UploadFileHelper extends Service {
         params.put("pictype", uploadFile.getPictype());
         params.put("ftime", uploadFile.getFtime());
 
-//		DebugLog.logI("mMethod : " + ProtocolDef.METHOD_upload + " RequestParams : " + params.toString());
+		DebugLog.logE("mMethod : " + ProtocolDef.METHOD_upload + " RequestParams : " + params.toString());
 		CloudSchoolBusRestClient.upload(ProtocolDef.METHOD_upload, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -215,7 +205,6 @@ public class UploadFileHelper extends Service {
         });
 	}
 
-
     private synchronized void setArticleParameters(final UploadArticleEntity uploadArticle) {
 
         RequestParams params = new RequestParams();
@@ -228,7 +217,7 @@ public class UploadFileHelper extends Service {
         params.put("tagids", uploadArticle.getTagids());
         params.put("content", uploadArticle.getContent());
 
-//        DebugLog.logI("mMethod : " + ProtocolDef.METHOD_over + " RequestParams : " + params.toString());
+        DebugLog.logE("mMethod : " + ProtocolDef.METHOD_over + " RequestParams : " + params.toString());
         CloudSchoolBusRestClient.upload(ProtocolDef.METHOD_over, params, new AsyncHttpResponseHandler() {
 
             @Override
@@ -243,18 +232,6 @@ public class UploadFileHelper extends Service {
                 markUploadAriticleSuccess(uploadArticle);
             }
         });
-    }
-
-
-    public List<UploadArticleEntity> readUploadQ ()
-    {
-        return mApplication.mDaoSession.getUploadArticleEntityDao().queryBuilder().list();
-
-    }
-
-    public List<UploadArticleFileEntity> readUploadFileQ ()
-    {
-        return mApplication.mDaoSession.getUploadArticleFileEntityDao().queryBuilder().list();
     }
 
     //Get the articles sent including being sent
@@ -307,7 +284,6 @@ public class UploadFileHelper extends Service {
         {
             e.printStackTrace();
         }
-
     }
 
     public void markUploadFailure(UploadArticleFileEntity uploadfile)

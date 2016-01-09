@@ -99,6 +99,7 @@ public class UploadArticleFileEntity {
         return isSuccess;
     }
 
+    // Null：Not started True: success False: Fail or in progress
     public void setIsSuccess(@Nullable Boolean isSuccess) {
         this.isSuccess = isSuccess;
     }

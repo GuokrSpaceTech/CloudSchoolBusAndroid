@@ -55,14 +55,9 @@ public class DataWrapper {
     {
         ClassEntityT retEntity=null;
 
-        String classid = mApplication.mTeacherClassDutys.get(current).getClassid();
-
-        for(ClassEntityT theClass: mApplication.mClassesT)
+        if(mApplication.mClassesT.size()>current)
         {
-            if(theClass.getClassid().equals(classid))
-            {
-                retEntity = theClass; break;
-            }
+            retEntity = mApplication.mClassesT.get(current);
         }
 
         return retEntity;
@@ -108,7 +103,7 @@ public class DataWrapper {
                 if(relation.getClassid().equals(classid)) {
                     if (student.getStudentid().equals(relation.getStudentid()))
                     {
-                        //Found the student, then find the arents
+                        //Found the student
                         retStudents.add(student);
                         break;
                     }

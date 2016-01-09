@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 
+import com.android.support.handlerui.HandlerToastUI;
 import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.view.MaterialListView;
 import com.guokrspace.cloudschoolbus.teacher.MainActivity;
@@ -59,7 +60,6 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
 
     private MaterialListView listview;
     private MainActivity mainActivity;
-    private String userName;
     private String mCurrentClassid;
     private boolean mIsParent;
     private View rootView;
@@ -97,14 +97,29 @@ public class UserListFragment extends BaseFragment implements RongCloudEvent.OnR
             //Start the conversation fragment
             //For some reason, the fragment cannot be found, hence re-entry issue when quickly touch the list
             ConversationFragment fragment = (ConversationFragment) getFragmentManager().findFragmentByTag("Conversation");
+            String usertitle = "";
             if (isConverstaionFragmentCreated == false) {
                 int position = (int) view.getTag();
+
                 String mTargetID = "";
+                if (mIsParent) {
+                    List<ParentEntityT> parents = DataWrapper.getInstance().findParentsinClass(mCurrentClassid);
+                    if(parents.size() > position) {
+                        ParentEntityT parent = parents.get(position);
+                        mTargetID = parent.getParentid();
+                        ArrayList<StudentEntityT> students = DataWrapper.getInstance().findStudentsOfParents(parent);
+                        usertitle = generateStudentsNameSting(students);
+                    } else {
+                        HandlerToastUI.getHandlerToastUI(mParentContext,"基础数据错误");
+                        return;
+                    }
+                } else {
                     mTargetID = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getTeacherid();
-                    userName = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getNickname();
+                    usertitle = DataWrapper.getInstance().findTeachersinClass(mCurrentClassid).get(position).getNickname();
+                }
 
                 //setupTeacherActionBar
-                setupTeacherActionBar(userName);
+                setupTeacherActionBar(usertitle);
 
                 //Lock the swipe for the second level page
                 ((MainActivity) mParentContext).pager.lock();
