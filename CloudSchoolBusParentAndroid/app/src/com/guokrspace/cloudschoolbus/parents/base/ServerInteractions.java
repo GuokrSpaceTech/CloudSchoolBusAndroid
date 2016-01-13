@@ -537,7 +537,7 @@ public class ServerInteractions {
                             userid = response.getString("userid");
                         }
                         if(response.has("imToken")) {
-                            imToken = response.getString("imToken");
+                            imToken = response.getString("rongtoken");
                         }
 
                         if(isDebug)
