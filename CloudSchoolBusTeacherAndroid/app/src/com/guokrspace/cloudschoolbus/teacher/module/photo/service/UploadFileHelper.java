@@ -284,12 +284,15 @@ public class UploadFileHelper extends Service {
         {
             e.printStackTrace();
         }
+
+        mApplication.mDaoSession.clear();
     }
 
     public void markUploadFailure(UploadArticleFileEntity uploadfile)
     {
         uploadfile.setIsSuccess(false);
         mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadfile);
+        mApplication.mDaoSession.clear();
     }
 
     //Add back to upload Q
@@ -297,6 +300,7 @@ public class UploadFileHelper extends Service {
     {
         uploadfile.setIsSuccess(null);
         mApplication.mDaoSession.getUploadArticleFileEntityDao().update(uploadfile);
+        mApplication.mDaoSession.clear();
     }
 
 
