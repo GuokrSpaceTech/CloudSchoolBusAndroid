@@ -18,7 +18,10 @@ public class HandlerConstant {
     public static final int MSG_REG_SMS   = 19;
 
     public static final int MSG_VERIFY_OK = 10;
+    public static final int MSG_VERIFY_OK_DEBUG = 20;
     public static final int MSG_VERIFY_FAIL = 11;
+
+    public static final int MSG_LOGIN_OK_DEBUG = 21;
 
     public static final int MSG_BASEINFO_OK = 12;
     public static final int MSG_BASEINFO_FAIL = 13;

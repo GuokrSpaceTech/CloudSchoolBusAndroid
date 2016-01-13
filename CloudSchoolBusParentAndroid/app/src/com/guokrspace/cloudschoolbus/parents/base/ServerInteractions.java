@@ -14,6 +14,8 @@ import com.guokrspace.cloudschoolbus.parents.CloudSchoolBusParentsApplication;
 import com.guokrspace.cloudschoolbus.parents.R;
 import com.guokrspace.cloudschoolbus.parents.base.include.HandlerConstant;
 import com.guokrspace.cloudschoolbus.parents.base.include.Version;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntity;
+import com.guokrspace.cloudschoolbus.parents.database.daodb.ConfigEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntity;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.MessageEntityDao;
 import com.guokrspace.cloudschoolbus.parents.database.daodb.SenderEntity;
@@ -51,6 +53,8 @@ public class ServerInteractions {
     private static CloudSchoolBusParentsApplication mApplication=null;
     private static Context mContext = null;
     private List<MessageEntity> mMesageEntities = null;
+
+    public boolean isDebug = false;
 
     public static ServerInteractions getInstance() {
         return SERVER_INTERACT;
@@ -492,6 +496,76 @@ public class ServerInteractions {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 handler.sendEmptyMessage(HandlerConstant.MSG_SERVER_ERROR);
                 super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+    }
+
+    public void renew_sid(String mobile, final android.os.Handler handler) throws com.alibaba.fastjson.JSONException {
+
+        if(!mApplication.networkStatusEvent.isNetworkConnected()) {
+            return;
+        }
+
+        RequestParams params = new RequestParams();
+        params.put("token", mApplication.mConfig.getToken());
+        params.put("mobile",mobile);
+
+        CloudSchoolBusRestClient.post("login", params, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
+                String retCode = "";
+
+                for (int i = 0; i < headers.length; i++) {
+                    Header header = headers[i];
+                    if ("code".equalsIgnoreCase(header.getName())) {
+                        retCode = header.getValue();
+                        break;
+                    }
+                }
+
+                if (!retCode.equals("1")) {
+                    return;
+                } else {
+                    //Debug Feature only returns sid
+                    String sid = "",userid ="",imToken="";
+                    try {
+                        if(response.has("sid")) {
+                            sid = response.getString("sid");
+                        }
+                        if(response.has("userid")) {
+                            userid = response.getString("userid");
+                        }
+                        if(response.has("imToken")) {
+                            imToken = response.getString("imToken");
+                        }
+
+                        if(isDebug)
+                        {
+                            //无需保存在数据库里,目前仅仅保存sid
+                            mApplication.mConfig.setSid(sid);
+                            mApplication.mConfig.setImToken(imToken);
+                            mApplication.mConfig.setCurrentuser(0);
+                            CloudSchoolBusRestClient.updateSessionid(mApplication.mConfig.getSid());
+                            handler.sendEmptyMessage(HandlerConstant.MSG_LOGIN_OK_DEBUG);
+
+                        } else {
+                            ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
+                            if(configEntityDao.queryBuilder().limit(1).list().size()>0) {
+                                ConfigEntity oldConfigEntity = configEntityDao.queryBuilder().limit(1).list().get(0);
+                                ConfigEntity configEntity = new ConfigEntity(null, mApplication.mConfig.getToken(), sid, mApplication.mConfig.getMobile(), userid, imToken, oldConfigEntity.getCurrentuser());
+                                configEntityDao.update(configEntity);
+                            }
+                        }
+                    } catch (org.json.JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
     }

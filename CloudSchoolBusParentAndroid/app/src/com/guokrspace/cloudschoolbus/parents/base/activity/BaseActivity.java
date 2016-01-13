@@ -122,55 +122,5 @@ abstract public class BaseActivity extends ActionBarActivity {
         mApplication.initConfig();
 
         mApplication.initBaseinfo();
-
-//        mApplication.initCacheFile();
-	}
-
-	@Subscribe
-	public void renew_sid() throws JSONException {
-
-		if(!mApplication.networkStatusEvent.isNetworkConnected()) {
-			return;
-		}
-
-		RequestParams params = new RequestParams();
-		params.put("token", mApplication.mConfig.getToken());
-
-		CloudSchoolBusRestClient.post("login", params, new JsonHttpResponseHandler() {
-
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
-				String retCode = "";
-
-				for (int i = 0; i < headers.length; i++) {
-					Header header = headers[i];
-					if ("code".equalsIgnoreCase(header.getName())) {
-						retCode = header.getValue();
-						break;
-					}
-				}
-
-				if (!retCode.equals("1")) {
-					return;
-				} else {
-					try {
-						String sid = response.getString("sid");
-						String userid = response.getString("userid");
-						String imToken = response.getString("imToken");
-						ConfigEntityDao configEntityDao = mApplication.mDaoSession.getConfigEntityDao();
-						ConfigEntity oldConfigEntity = configEntityDao.queryBuilder().limit(1).list().get(0);
-						ConfigEntity configEntity = new ConfigEntity(null, mApplication.mConfig.getToken(), sid, mApplication.mConfig.getMobile(), userid, imToken, oldConfigEntity.getCurrentuser());
-						configEntityDao.update(configEntity);
-					} catch (org.json.JSONException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONObject errorResponse) {
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-			}
-		});
 	}
 }
