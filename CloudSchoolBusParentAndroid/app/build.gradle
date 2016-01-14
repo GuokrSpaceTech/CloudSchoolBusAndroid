@@ -90,7 +90,6 @@ if (propFile.exists()) {
         android.signingConfigs.debug.storePassword = props['STORE_PASSWORD']
         android.signingConfigs.debug.keyAlias = props['KEY_ALIAS']
         android.signingConfigs.debug.keyPassword = props['KEY_PASSWORD']
-
     } else {
         android.buildTypes.release.signingConfig = null
         android.buildTypes.debug.signingConfig = null

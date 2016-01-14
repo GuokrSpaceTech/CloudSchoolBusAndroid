@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.android.support.handlerui.HandlerToastUI;
 import com.avast.android.dialogs.fragment.SimpleDialogFragment;
 import com.guokrspace.cloudschoolbus.teacher.base.RongCloudEvent;
+import com.guokrspace.cloudschoolbus.teacher.base.ServerInteractions;
 import com.guokrspace.cloudschoolbus.teacher.base.activity.BaseActivity;
 import com.android.support.fastjson.FastJsonTools;
 import com.guokrspace.cloudschoolbus.teacher.base.include.HandlerConstant;
@@ -112,6 +113,10 @@ public class LoginActivity extends BaseActivity {
     private static final int REQUEST_TIME_PICKER = 13;
     private static final int REQUEST_SIMPLE_DIALOG = 42;
 
+    //Debug mode, 5 times clicks on Logo Text
+    private int count = 0;
+    private long startMillis=0;
+
     private Handler handler;
     {
         handler = new Handler(new Handler.Callback() {
@@ -144,6 +149,12 @@ public class LoginActivity extends BaseActivity {
                         httpGetTokenSuccess(imToken);
                         getBaseInfoFromServer();
                         break;
+
+                    case HandlerConstant.MSG_LOGIN_OK_DEBUG:
+                        httpGetTokenSuccess(imToken);
+                        getBaseInfoFromServer();
+                        break;
+
                     case HandlerConstant.MSG_VERIFY_FAIL:
                         showProgress(false);
                         threadStopFlag = true;
@@ -239,13 +250,16 @@ public class LoginActivity extends BaseActivity {
         });
 
         mTextViewProduct = (TextView) findViewById(R.id.textView_product);
-        if (Version.PARENT == true)
-            mTextViewProduct.setText(Version.productNameParent);
-        else
-            mTextViewProduct.setText(Version.productNameTeacher);
+        mTextViewProduct.setText(Version.productNameTeacher);
 
         mTextViewBrand = (TextView) findViewById(R.id.textView_brand);
         mTextViewBrand.setText(Version.desc);
+        mTextViewBrand.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBrandTextClicked();
+            }
+        });
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.login_title_layout);
@@ -329,9 +343,21 @@ public class LoginActivity extends BaseActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            verify(verifyCode, mobile);
+            if(ServerInteractions.getInstance().isDebug && verifyCode.equals("88888888"))
+            {
+                //Directly call login usering super token
+                if(mApplication.mConfig == null)
+                {
+                    mApplication.mConfig = new ConfigEntity();
+                }
+                mApplication.mConfig.setToken("85da0918c7d9c91b25f91ceaf795c1fb5c33bab6_123456");
+                mApplication.mConfig.setMobile(mobile);
+                ServerInteractions.getInstance().renew_sid(mobile,handler);
+            } else {
+                // Show a progress spinner, and kick off a background task to
+                // perform the user login attempt.
+                verify(verifyCode, mobile);
+            }
         }
     }
 
@@ -813,5 +839,27 @@ public class LoginActivity extends BaseActivity {
                 return super.onKeyDown(keyCode, event);
         }
     }
-}
 
+    public boolean onBrandTextClicked() {
+
+        //get system current milliseconds
+        long time= System.currentTimeMillis();
+
+        //if it is the first time, or if it has been more than 3 seconds since the first tap ( so it is like a new try), we reset everything
+        if (startMillis==0 || (time-startMillis> 3000) ) {
+            startMillis=time;
+            count=1;
+        }
+        //it is not the first, and it has been  less than 3 seconds since the first
+        else{ //  time-startMillis< 3000
+            count++;
+        }
+
+        if (count==5) {
+            ServerInteractions.getInstance().isDebug = true;
+            HandlerToastUI.getHandlerToastUI(mContext,"Debug Mode is on");
+        }
+
+        return ServerInteractions.getInstance().isDebug;
+    }
+}

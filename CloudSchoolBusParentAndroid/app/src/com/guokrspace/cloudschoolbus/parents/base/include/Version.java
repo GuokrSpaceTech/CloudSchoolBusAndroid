@@ -32,5 +32,4 @@ public class Version {
 
     public static final String APP_ID = "wxa970bb62c9962756";
 
-
 }

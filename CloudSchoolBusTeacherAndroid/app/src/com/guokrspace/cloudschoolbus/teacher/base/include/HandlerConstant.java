@@ -23,6 +23,8 @@ public class HandlerConstant {
     public static final int MSG_BASEINFO_OK = 12;
     public static final int MSG_BASEINFO_FAIL = 13;
 
+    public static final int MSG_LOGIN_OK_DEBUG = 21;
+
     public static final int MSG_TIMER_TICK = 14;
     public static final int MSG_TIMER_TIMEOUT = 15;
 
