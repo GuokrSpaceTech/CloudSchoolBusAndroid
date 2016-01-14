@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -90,6 +91,7 @@ public class GalleryActivityUrl extends BaseActivity implements IWXAPIEventHandl
 
         getSupportActionBar().setTitle(title);
         descTextView.setText(descritption);
+        descTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
         countTextView.setText(String.valueOf(position) + "/" + String.valueOf(items.size()));
         /*
          * Set the Adapter

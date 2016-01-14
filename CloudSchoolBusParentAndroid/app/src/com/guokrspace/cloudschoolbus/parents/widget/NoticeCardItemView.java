@@ -1,7 +1,15 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
+import android.text.method.MovementMethod;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -10,12 +18,14 @@ import android.widget.TextView;
 import com.android.support.utils.DateUtils;
 import com.dexafree.materialList.model.CardItemView;
 import com.guokrspace.cloudschoolbus.parents.R;
+import com.guokrspace.cloudschoolbus.parents.base.DoubleTapTextView;
+import com.guokrspace.cloudschoolbus.parents.base.activity.FullScreenTextActivity;
 import com.squareup.picasso.Picasso;
 
 /**
  * Created by Yang Kai on 15/7/14.
  */
-public class NoticeCardItemView extends CardItemView<NoticeCard> {
+public class NoticeCardItemView extends CardItemView<NoticeCard>{
 
     public NoticeCardItemView(Context context) {
         super(context);
@@ -78,8 +88,9 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
         }
 
         // Description
-        TextView description = (TextView) findViewById(R.id.text_content);
+        DoubleTapTextView description = (DoubleTapTextView) findViewById(R.id.text_content);
         description.setText(card.getDescription());
+        description.setmContent(card.getDescription());
         if (card.getDescriptionColor() != -1) {
             description.setTextColor(card.getDescriptionColor());
         }
@@ -91,6 +102,11 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
                 imageView.setImageDrawable(card.getDrawable());
             } else {
                 Picasso.with(getContext()).load(card.getUrlImage()).into(imageView);
+            }
+
+            if(card.getmMediaAttachmentClickListener() != null)
+            {
+                imageView.setOnClickListener(card.getmMediaAttachmentClickListener());
             }
         }
 

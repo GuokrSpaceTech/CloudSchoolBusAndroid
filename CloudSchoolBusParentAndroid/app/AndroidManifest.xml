@@ -53,6 +53,10 @@
         <activity
             android:name="com.guokrspace.cloudschoolbus.parents.base.activity.BaseWebViewActivity">
         </activity>
+        <activity
+            android:name="com.guokrspace.cloudschoolbus.parents.base.activity.FullScreenTextActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
 
         <!-- push应用定义消息receiver声明 -->
         <receiver android:name="com.guokrspace.cloudschoolbus.parents.base.baidupush.BaiduPushMessageReceiver" >

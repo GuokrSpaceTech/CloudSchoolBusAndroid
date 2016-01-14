@@ -657,9 +657,28 @@ public class ExploreFragment extends BaseFragment {
         noticeCard.setIsNeedConfirm(messageEntity.getIsconfirm());
         noticeCard.setTitle(messageEntity.getTitle());
         noticeCard.setDescription(messageEntity.getDescription());
-        NoticeBody noticeBody = FastJsonTools.getObject(messageEntity.getBody(), NoticeBody.class);
 
-        if (noticeBody != null) noticeCard.setDrawable(noticeBody.getPList().get(0));
+        NoticeBody noticeBody = FastJsonTools.getObject(messageEntity.getBody(), NoticeBody.class);
+        if (noticeBody != null && noticeBody.getPList().size()>0) {
+            String pictureUrl = noticeBody.getPList().get(0);
+            final ArrayList<String> picArr = new ArrayList<>();
+            picArr.add(pictureUrl);
+            noticeCard.setDrawable(pictureUrl);
+            noticeCard.setmMediaAttachmentClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mParentContext, GalleryActivityUrl.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("fileUrls", picArr);
+                    bundle.putInt("currentFile", 0);
+                    bundle.putString("description", "");
+                    bundle.putString("tilte", messageEntity.getTitle());
+                    intent.putExtras(bundle);
+                    mParentContext.startActivity(intent);
+                }
+            });
+        }
+
         noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,6 +78,7 @@ public class GalleryActivityUrl extends BaseActivity implements IWXAPIEventHandl
 
         getSupportActionBar().setTitle(title);
         descTextView.setText(descritption);
+        descTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
         countTextView.setText(String.valueOf(position) + "/" + String.valueOf(items.size()));
         /*
          * Set the Adapter
@@ -136,18 +138,6 @@ public class GalleryActivityUrl extends BaseActivity implements IWXAPIEventHandl
         getMenuInflater().inflate(R.menu.menu_share_platform, submenu.getSubMenu());
 
         return true;
-    }
-
-    private String title(int current, int total)
-    {
-        return getResources().getString(R.string.picturetype)+"("+ current + "/" + total +")";
-    }
-
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_share_platform, popup.getMenu());
-        popup.show();
     }
 
     private void wxsharefriend(final String url, final String descritption)

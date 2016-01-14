@@ -1,6 +1,7 @@
 package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -124,10 +125,9 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(card.getContext());
-        linearLayoutManager.setOrientation(HORIZONTAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        // use a Grip layout manager
+        GridLayoutManager layoutManager = new GridLayoutManager(card.getContext(), 3);
+        recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
         recyclerView.setAdapter(card.getTagAdapter());
