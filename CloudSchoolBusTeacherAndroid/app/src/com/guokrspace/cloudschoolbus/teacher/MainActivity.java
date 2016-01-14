@@ -236,7 +236,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initFragments() {
-            mFragments[0] = ExploreFragment.newInstance(null, null);
+            mFragments[0] = ExploreFragment.newInstance();
             mFragments[1] = ClassFragment.newInstance();
             mFragments[2] = UserListFragment.newInstance();
             mFragments[3] = AboutmeFragment.newInstance();

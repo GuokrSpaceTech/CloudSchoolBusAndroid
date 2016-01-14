@@ -34,6 +34,7 @@ import com.guokrspace.cloudschoolbus.teacher.MainActivity;
 import com.guokrspace.cloudschoolbus.teacher.MenuSpinnerAdapter;
 import com.guokrspace.cloudschoolbus.teacher.base.DataWrapper;
 import com.guokrspace.cloudschoolbus.teacher.base.ServerInteractions;
+import com.guokrspace.cloudschoolbus.teacher.base.activity.GalleryActivityUrl;
 import com.guokrspace.cloudschoolbus.teacher.base.fragment.BaseFragment;
 import com.guokrspace.cloudschoolbus.teacher.base.fragment.WebviewFragment;
 import com.guokrspace.cloudschoolbus.teacher.base.include.HandlerConstant;
@@ -162,9 +163,6 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
 //                        errorMsg = getResources().getString(R.string.server_error);
                     }
 
-//                    SimpleDialogFragment.createBuilder(mParentContext, getFragmentManager()).setMessage(errorMsg)
-//                                .setPositiveButtonText(getResources().getString(R.string.OKAY)).show();
-//                    hideWaitDialog();
                     break;
                 case HandlerConstant.MSG_CONFIRM_OK:
 
@@ -201,7 +199,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         }
     });
 
-    public static ExploreFragment newInstance(String param1, String param2) {
+    public static ExploreFragment newInstance() {
         ExploreFragment fragment = new ExploreFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -400,20 +398,6 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         }
     }
 
-//    public void filterCardsChild(String studentid) {
-//        MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
-//        QueryBuilder queryBuilder = messageEntityDao.queryBuilder();
-//        List<MessageEntity> messageEntityList;
-//        messageEntityList = queryBuilder.where(MessageEntityDao.Properties.Studentid.eq(studentid))
-//                    .orderDesc(MessageEntityDao.Properties.Messageid).list();
-//        mMaterialListView.clear();
-//        for (int i = 0; i < messageEntityList.size(); i++) {
-//            Card theCard = (Card) buildcard(messageEntityList.get(i), i);
-//            if (theCard != null)
-//                mMaterialListView.add(theCard);
-//        }
-//    }
-
     private void ClearCache() {
         final MessageEntityDao messageEntityDao = mApplication.mDaoSession.getMessageEntityDao();
         messageEntityDao.deleteAll();
@@ -465,18 +449,10 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                 filterCards("Punch");
                 setActionBarTitle(getResources().getString(R.string.attendancetype));
                 break;
-//            case R.id.action_schedule:
-//                filterCards("Schedule");
-//                setActionBarTitle(getResources().getString(R.string.schedule));
-//                break;
             case R.id.action_report:
                 setActionBarTitle(getResources().getString(R.string.report));
                 filterCards("Report");
                 break;
-//            case R.id.action_food:
-//                filterCards("Food");
-//                setActionBarTitle(getResources().getString(R.string.food));
-//                break;
             case R.id.action_streaming:
                 filterCards("OpenClass");
                 setActionBarTitle(getResources().getString(R.string.openclass));
@@ -485,12 +461,7 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
                 filterCards("Article");
                 setActionBarTitle(getResources().getString(R.string.picturetype));
                 break;
-//            case R.id.action_activity:
-//                filterCards("Active");
-//                setActionBarTitle(getResources().getString(R.string.activity));
-//                break;
             case R.id.action_take_photo:
-                //Prevent multiple touches
                 mPictureProcess.setPictureFrom(PictureFrom.GALLERY);
                 mPictureProcess.setClip(false);
                 mPictureProcess.setMaxPictureCount(9);
@@ -688,9 +659,28 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         noticeCard.setIsNeedConfirm(messageEntity.getIsconfirm());
         noticeCard.setTitle(messageEntity.getTitle());
         noticeCard.setDescription(messageEntity.getDescription());
-        NoticeBody noticeBody = FastJsonTools.getObject(messageEntity.getBody(), NoticeBody.class);
 
-        if (noticeBody != null) noticeCard.setDrawable(noticeBody.getPList().get(0));
+        NoticeBody noticeBody = FastJsonTools.getObject(messageEntity.getBody(), NoticeBody.class);
+        if (noticeBody != null && noticeBody.getPList().size()>0) {
+            String pictureUrl = noticeBody.getPList().get(0);
+            final ArrayList<String> picArr = new ArrayList<>();
+            picArr.add(pictureUrl);
+            noticeCard.setDrawable(pictureUrl);
+            noticeCard.setmMediaAttachmentClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mParentContext, GalleryActivityUrl.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("fileUrls", picArr);
+                    bundle.putInt("currentFile", 0);
+                    bundle.putString("description", "");
+                    bundle.putString("tilte", messageEntity.getTitle());
+                    intent.putExtras(bundle);
+                    mParentContext.startActivity(intent);
+                }
+            });
+        }
+
         noticeCard.setmConfirmButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

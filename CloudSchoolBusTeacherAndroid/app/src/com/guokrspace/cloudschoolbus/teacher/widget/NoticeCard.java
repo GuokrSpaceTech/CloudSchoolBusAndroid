@@ -18,6 +18,7 @@ public class NoticeCard extends SimpleCard {
     private String cardType;
     private String isNeedConfirm;
     private View.OnClickListener mConfirmButtonClickListener;
+    private View.OnClickListener mMediaAttachmentClickListener;
     private Context context;
 
     public NoticeCard(Context context) {
@@ -87,6 +88,14 @@ public class NoticeCard extends SimpleCard {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public View.OnClickListener getmMediaAttachmentClickListener() {
+        return mMediaAttachmentClickListener;
+    }
+
+    public void setmMediaAttachmentClickListener(View.OnClickListener mMediaAttachmentClickListener) {
+        this.mMediaAttachmentClickListener = mMediaAttachmentClickListener;
     }
 
     @Override

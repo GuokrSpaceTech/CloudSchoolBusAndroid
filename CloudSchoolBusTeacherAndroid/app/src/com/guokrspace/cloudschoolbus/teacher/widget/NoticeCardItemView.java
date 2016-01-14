@@ -92,6 +92,11 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
             } else {
                 Picasso.with(getContext()).load(card.getUrlImage()).into(imageView);
             }
+
+            if(card.getmMediaAttachmentClickListener() != null)
+            {
+                imageView.setOnClickListener(card.getmMediaAttachmentClickListener());
+            }
         }
 
         /*

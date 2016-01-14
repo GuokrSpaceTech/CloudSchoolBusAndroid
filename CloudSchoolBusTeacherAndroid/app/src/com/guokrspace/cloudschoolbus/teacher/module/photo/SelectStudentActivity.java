@@ -55,10 +55,7 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
     public MenuItem mUploadAction;
     private CommonRecyclerItemClickListener mThumbNailClickListener;
     public AdapterView.OnItemClickListener mStudentClickListener;
-
     private static final int REQUEST_SIMPLE_DIALOG = 42;
-
-//    Boolean mIsBound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
