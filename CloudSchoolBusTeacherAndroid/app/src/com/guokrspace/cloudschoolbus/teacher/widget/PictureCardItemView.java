@@ -2,6 +2,7 @@ package com.guokrspace.cloudschoolbus.teacher.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -127,13 +128,14 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(card.getContext());
-        linearLayoutManager.setOrientation(HORIZONTAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new SpacesItemDecoration(2));
+        // use a Grip layout manager
+        GridLayoutManager layoutManager = new GridLayoutManager(card.getContext(), 4);
+        recyclerView.setLayoutManager(layoutManager);
+
         // specify an adapter (see also next example)
         recyclerView.setAdapter(card.getTagAdapter());
+        recyclerView.addItemDecoration(new ItemDecorationAlbumColumns(4,4));
+        recyclerView.addOnItemTouchListener(card.getmOnItemSelectedListener());
 
         if (card.getTagAdapter().getItemCount() > 0) {
             recyclerView.addOnItemTouchListener(card.getmOnItemSelectedListener());

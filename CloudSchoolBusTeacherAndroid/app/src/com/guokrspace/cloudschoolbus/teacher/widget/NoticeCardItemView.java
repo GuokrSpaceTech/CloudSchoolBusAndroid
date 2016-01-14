@@ -78,8 +78,9 @@ public class NoticeCardItemView extends CardItemView<NoticeCard> {
         }
 
         // Description
-        TextView description = (TextView) findViewById(R.id.text_content);
+        DoubleTapTextView description = (DoubleTapTextView) findViewById(R.id.text_content);
         description.setText(card.getDescription());
+        description.setmContent(card.getDescription());
         if (card.getDescriptionColor() != -1) {
             description.setTextColor(card.getDescriptionColor());
         }

@@ -97,7 +97,7 @@
                     android:textSize="@dimen/title_size"
                     tools:text="Title" />
 
-                <TextView
+                <com.guokrspace.cloudschoolbus.teacher.widget.DoubleTapTextView
                     android:id="@+id/text_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -105,7 +105,10 @@
                     android:padding="@dimen/small_padding"
                     android:textColor="@color/description_color"
                     android:textSize="@dimen/description_size"
-                    tools:text="Test description" />
+                    android:maxLines="20"
+                    android:scrollbars="vertical"
+                    tools:text="Test description"
+                    android:ellipsize="end" />
 
                 <View
                     android:id="@+id/cardDivider"
