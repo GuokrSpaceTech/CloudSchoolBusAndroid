@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.support.handlerui.HandlerToastUI;
@@ -28,8 +29,8 @@ public class TagRecycleViewAdapter extends RecyclerView.Adapter<TagRecycleViewAd
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public Button mTagButton;
-        public ViewHolder(Button v) {
+        public TextView mTagButton;
+        public ViewHolder(TextView v) {
             super(v);
             mTagButton = v;
         }
@@ -49,7 +50,7 @@ public class TagRecycleViewAdapter extends RecyclerView.Adapter<TagRecycleViewAd
                 .inflate(R.layout.tag_button, parent, false);
         // set the view's size, margins, paddings and layout parameters
 
-        ViewHolder vh = new ViewHolder((Button)v);
+        ViewHolder vh = new ViewHolder((TextView)v);
         return vh;
     }
 

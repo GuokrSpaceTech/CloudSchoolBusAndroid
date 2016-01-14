@@ -97,7 +97,7 @@
                     android:textSize="@dimen/title_size"
                     tools:text="Title" />
 
-                <com.guokrspace.cloudschoolbus.parents.base.DoubleTapTextView
+                <com.guokrspace.cloudschoolbus.parents.widget.DoubleTapTextView
                     android:id="@+id/text_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"

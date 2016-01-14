@@ -93,8 +93,9 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
         }
 
         // Description
-        TextView description = (TextView) findViewById(R.id.text_content);
+        DoubleTapTextView description = (DoubleTapTextView) findViewById(R.id.text_content);
         description.setText(card.getDescription());
+        description.setmContent(card.getDescription());
         if (card.getDescriptionColor() != -1) {
             description.setTextColor(card.getDescriptionColor());
         }
@@ -126,11 +127,12 @@ public class PictureCardItemView extends CardItemView<PictureCard> {
         recyclerView.setHasFixedSize(true);
 
         // use a Grip layout manager
-        GridLayoutManager layoutManager = new GridLayoutManager(card.getContext(), 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(card.getContext(), 4);
         recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
         recyclerView.setAdapter(card.getTagAdapter());
+        recyclerView.addItemDecoration(new ItemDecorationAlbumColumns(4,4));
         recyclerView.addOnItemTouchListener(card.getmOnItemSelectedListener());
 
         //ShareButton

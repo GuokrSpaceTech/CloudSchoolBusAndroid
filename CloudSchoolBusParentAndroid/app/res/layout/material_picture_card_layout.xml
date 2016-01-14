@@ -103,14 +103,16 @@
                     android:numColumns="3"
                     android:verticalSpacing="@dimen/timeline_thumb_pic_spacing" />
 
-                <TextView
+                <com.guokrspace.cloudschoolbus.parents.widget.DoubleTapTextView
                     android:id="@+id/text_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/dynamic_grid"
                     android:textColor="@color/description_color"
-                    android:maxLines="30"
-                    android:textSize="@dimen/description_size" />
+                    android:layout_marginRight="4dp"
+                    android:maxLines="20"
+                    android:textSize="@dimen/description_size"
+                    android:ellipsize="end"/>
             </RelativeLayout>
 
             <LinearLayout
@@ -118,7 +120,9 @@
                 android:layout_width="fill_parent"
                 android:layout_height="60dp"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="4dp"
                 android:layout_marginLeft="50dp"
+                android:layout_marginRight="4dp"
                 android:layout_below="@+id/card_body"
                 android:orientation="horizontal">
 

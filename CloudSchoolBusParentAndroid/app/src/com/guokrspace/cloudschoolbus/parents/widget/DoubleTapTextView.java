@@ -1,4 +1,4 @@
-package com.guokrspace.cloudschoolbus.parents.base;
+package com.guokrspace.cloudschoolbus.parents.widget;
 
 import android.content.Context;
 import android.content.Intent;

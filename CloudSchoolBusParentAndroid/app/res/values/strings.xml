@@ -24,7 +24,7 @@
     <string name="picture_ops_album">选择本地相册</string>
     <string name="no_content">没有要发送内容</string>
     <string name="picture_ops_take_pic">拍照</string>
-    <string name="OKAY">好的</string>
+    <string name="OKAY">我知道了</string>
     <string name="action_contact">通信录(%s)</string>
     <string name="realtime_streaming">在线直播中......</string>
     <string name="headerCode">Code</string>
