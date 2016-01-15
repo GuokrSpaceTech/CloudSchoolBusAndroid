@@ -637,14 +637,6 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         });
         card.setmOnItemSelectedListener(tagClickListener);
 
-//        View.OnClickListener shareButtonClickListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showShare();
-//            }
-//        };
-//        card.setmShareButtonClickListener(shareButtonClickListener);
-
         return card;
     }
 

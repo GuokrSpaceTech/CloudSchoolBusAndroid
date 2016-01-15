@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.v4.app.Fragment;
@@ -60,7 +61,7 @@ public class PictureProcess {
 
     static final int CLIP_REQUEST_CODE   = 1106;
 
-    static final String TEMP_FILE_SUFFIX = ".temp";
+    static final String TEMP_FILE_SUFFIX = ".jpg";
 
     protected int mTitleBarBackground = 0xFFF4982E;
 
@@ -84,7 +85,7 @@ public class PictureProcess {
 
     protected File mCropPath;
 
-    protected File mCacheDir;
+    protected File mFileDir;
 
     public PictureProcess(Context context,File cacheDir){
         this(null,context,cacheDir);
@@ -102,7 +103,7 @@ public class PictureProcess {
         this(fragment, null);
     }
 
-    PictureProcess(Fragment fragment,Context context,File cacheDir){
+    PictureProcess(Fragment fragment,Context context,File fileDir){
         if(fragment == null && context == null){
             throw new IllegalArgumentException("fragment == null && context == null");
         }
@@ -113,16 +114,17 @@ public class PictureProcess {
             this.mContext = (Activity) context;
         }
         ImageLoadTask.init(mContext);
-        if(cacheDir == null){
+        if(fileDir == null){
             if(android.os.Environment.getExternalStorageState().equals(
                     android.os.Environment.MEDIA_MOUNTED)){
-                this.mCacheDir = mContext.getExternalCacheDir();
-            }else {
-                this.mCacheDir = mContext.getCacheDir();
+                File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                this.mFileDir = storageDir;
+            } else {
+                TLog.e(LOG_TAG,"CacheDir failure!");
             }
         }else {
-            this.mCacheDir = cacheDir;
-            if(!mCacheDir.mkdirs()){
+            this.mFileDir = fileDir;
+            if(!mFileDir.mkdirs()){
                 TLog.e(LOG_TAG,"CacheDir mkdirs failure!");
             }
         }
@@ -131,6 +133,9 @@ public class PictureProcess {
     public void onProcessResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == PictureProcess.CAMERA_REQUEST_CODE){
             if(resultCode == Activity.RESULT_OK && mCameraPath != null){
+
+                //Add this picture to global content database
+                galleryAddPic(mCameraPath.getAbsolutePath());
                 if(isClip){
                     cropPicture(mCameraPath);
                 }else {
@@ -214,7 +219,7 @@ public class PictureProcess {
     }
 
     protected File getCropPath() {
-        File file = new File(mCacheDir,String.format("%s%s",Utils.getTempFileName(),TEMP_FILE_SUFFIX));
+        File file = new File(mFileDir,String.format("%s%s",Utils.getTempFileName(),TEMP_FILE_SUFFIX));
         if(file.exists()){
             if(!file.delete()){
                 TLog.e(LOG_TAG,"CropPath delete failure!");
@@ -260,7 +265,7 @@ public class PictureProcess {
     }
 
     protected void executeCamera() {
-        this.mCameraPath = new File(mCacheDir,String.format("%s%s", Utils.getTempFileName(),TEMP_FILE_SUFFIX));
+        this.mCameraPath = new File(mFileDir,String.format("%s%s", Utils.getTempFileName(),TEMP_FILE_SUFFIX));
         if(mCameraPath.exists()){
             if(!mCameraPath.delete()){
                 TLog.e(LOG_TAG,"CameraPath delete failure!");
@@ -317,5 +322,13 @@ public class PictureProcess {
     public void shutdown() {
         ImageLoadTask.getInstance().shutdown();
         mOnPicturePickListener = null;
+    }
+
+    private void galleryAddPic(String photoPath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(photoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        mContext.sendBroadcast(mediaScanIntent);
     }
 }

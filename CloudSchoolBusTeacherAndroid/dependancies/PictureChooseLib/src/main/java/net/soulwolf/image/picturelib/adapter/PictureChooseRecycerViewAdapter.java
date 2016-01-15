@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -35,6 +36,8 @@ import net.soulwolf.image.picturelib.R;
 import net.soulwolf.image.picturelib.listener.RecyclerItemClickListener;
 import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.utils.Utils;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +60,13 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
         // each data item is just a string in this case
         public ImageView mPictureView;
         public FrameLayout mPictureState;
+        public TextView mNoteTextView;
 
         public ViewHolder(View v) {
             super(v);
             mPictureView = (ImageView) v.findViewById(R.id.pi_picture_choose_item_image);
             mPictureState = (FrameLayout) v.findViewById(R.id.pi_picture_choose_item_select);
+            mNoteTextView = (TextView) v.findViewById(R.id.pi_picture_choose_item_note);
         }
     }
 
@@ -90,11 +95,19 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         if(mDataset.get(position).isDrawable) {
+            if(position == 0)
             holder.mPictureView.setImageDrawable(mDataset.get(position).drawable);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+            holder.mPictureView.setLayoutParams(layoutParams);
+            holder.mNoteTextView.setVisibility(View.VISIBLE);
+            holder.mNoteTextView.setText("拍摄照片");
             Picasso.with(mContext).cancelRequest(holder.mPictureView);
             holder.mPictureView.invalidate();
+            holder.mNoteTextView.forceLayout();
         } else {
             holder.mPictureView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            holder.mNoteTextView.setVisibility(View.INVISIBLE);
             String url = mDataset.get(position).getPicturePath();
             if (url == null) url = mDataset.get(position).getThumbPath();
             //      ImageLoadTask.getInstance().display(holder.mPictureView, Utils.urlFromFile(url));

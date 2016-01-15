@@ -1,7 +1,6 @@
 package net.soulwolf.image.picturelib.ui;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +26,7 @@ import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.rx.ResponseHandler;
 import net.soulwolf.image.picturelib.task.PictureTask;
 import net.soulwolf.image.picturelib.utils.Constants;
+import net.soulwolf.image.picturelib.utils.ItemDecorationAlbumColumns;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,6 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
             mMaxPictureCount = getIntent().getIntExtra(Constants.MAX_PICTURE_COUNT, 1);
             mTitleBarBackground = getIntent().getIntExtra(Constants.TITLE_BAR_BACKGROUND, mTitleBarBackground);
         }
-//        mPictureGrid = (GridView) findViewById(R.id.pi_picture_choose_grid);
         mPictureGridRV = (RecyclerView) findViewById(R.id.pi_picture_choose_grid);
         mPictureGridRV.setHorizontalScrollBarEnabled(true);
         setTitleBarBackground(mTitleBarBackground);
@@ -77,17 +76,13 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
         mPictureList = new ArrayList<>();
 
-//        mPictureChooseAdapter = new PictureChooseAdapter(this, mPictureList, mMaxPictureCount);
         mPictureChooseRVAdapter = new PictureChooseRecycerViewAdapter(this,mPictureList);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
         mPictureGridRV.setLayoutManager(gridLayoutManager);
-        mPictureGridRV.addItemDecoration(new SpacesItemDecoration(2));
+        mPictureGridRV.addItemDecoration(new ItemDecorationAlbumColumns(2,3));
         mPictureGridRV.setHasFixedSize(true);
-//        mPictureGrid.setAdapter(mPictureChooseAdapter);
         mPictureGridRV.setAdapter(mPictureChooseRVAdapter);
-//        mPictureGrid.setOnItemClickListener(this);
         RecyclerItemClickListener mRvListener = new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -104,7 +99,6 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                         }
                         mPictureChooseRVAdapter.addPictureChoose(view, position);
                     }
-                    //mPictureChooseAdapter.notifyDataSetChanged();
                     if (mPictureChooseRVAdapter.pictureChooseSize() == 0) {
                         setTitleText(getString(R.string.ps_picture_choose));
                     } else {
@@ -133,30 +127,15 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     private void updatePictureList(List<Picture> paths) {
         mPictureList.clear();
         if(paths != null){
+
+            //Add first Camera Icon
             Picture cameraIcon = new Picture();
             cameraIcon.isDrawable = true;
             cameraIcon.drawable = getResources().getDrawable(R.drawable.ic_camera_icon);
             mPictureList.add(cameraIcon);
             mPictureList.addAll(paths);
-//            mPictureChooseAdapter.notifyDataSetChanged();
             mPictureChooseRVAdapter.notifyDataSetChanged();
         }
-    }
-
-    private void getRecentlyPicture() {
-        PictureTask.getRecentlyPicture(getContentResolver(), 30)
-                .subscribe(new ResponseHandler<List<Picture>>() {
-                    @Override
-                    public void onSuccess(List<Picture> strings) throws Exception {
-                        updatePictureList(strings);
-                    }
-
-                    @Override
-                    public void onFailure(Throwable error) {
-                        super.onFailure(error);
-                        Toast.makeText(getApplicationContext(), R.string.ps_load_image_error, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     private void getAllPictures() {
@@ -298,7 +277,6 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
         mPictureProcess.setClip(false);
         mPictureProcess.setMaxPictureCount(1);
         mPictureProcess.execute(this);
-
     }
 
     @Override
@@ -324,25 +302,5 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     @Override
     public void onCancel() {
 
-    }
-
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view,
-                                   RecyclerView parent, RecyclerView.State state) {
-            outRect.left = space;
-            outRect.right = space;
-            outRect.bottom = space;
-
-            // Add top margin only for the first item to avoid double space between items
-            if(parent.getChildPosition(view) == 0)
-                outRect.top = space;
-        }
     }
 }

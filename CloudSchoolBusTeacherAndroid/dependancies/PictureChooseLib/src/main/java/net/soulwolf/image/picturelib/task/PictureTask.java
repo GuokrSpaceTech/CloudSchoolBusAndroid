@@ -77,6 +77,46 @@ public class PictureTask {
         });
     }
 
+    public static Observable<List<Picture>> getNextBatchPictures(final ContentResolver resolver,final int maxCount, final String dateModified){
+        return ObservableWrapper.create(new Observable.OnSubscribe<List<Picture>>() {
+            @Override
+            public void call(Subscriber<? super List<Picture>> subscriber) {
+                try{
+                    subscriber.onStart();
+                    List<Picture> pictures = getNextBatchPictureModel(resolver, maxCount, dateModified);
+
+                    if(DEBUG){
+                        TLog.i(LOG_TAG,"getRecentlyPicture :perform:%s",pictures);
+                    }
+                    subscriber.onNext(pictures);
+                    subscriber.onCompleted();
+                }catch (Exception e){
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    public static Observable<List<Picture>> getPreviousBatchPictures(final ContentResolver resolver,final int maxCount, final String dateModified){
+        return ObservableWrapper.create(new Observable.OnSubscribe<List<Picture>>() {
+            @Override
+            public void call(Subscriber<? super List<Picture>> subscriber) {
+                try{
+                    subscriber.onStart();
+                    List<Picture> pictures = getPreviousBatchPictureModel(resolver, maxCount, dateModified);
+
+                    if(DEBUG){
+                        TLog.i(LOG_TAG,"getRecentlyPicture :perform:%s",pictures);
+                    }
+                    subscriber.onNext(pictures);
+                    subscriber.onCompleted();
+                }catch (Exception e){
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
 
     public static Observable<List<Picture>> getAllPictures(final ContentResolver resolver){
         return ObservableWrapper.create(new Observable.OnSubscribe<List<Picture>>() {
@@ -141,6 +181,122 @@ public class PictureTask {
                 MediaStore.Images.Media.BUCKET_ID + " = ?",
 //                new String[]{"image/jpg", "image/jpeg", "image/png", CAMERA_IMAGE_BUCKET_ID},
                 new String[]{CAMERA_IMAGE_BUCKET_ID},
+                MediaStore.Images.Media.DATE_MODIFIED);
+
+        if(cursor == null){
+            return null;
+        }
+
+        if (cursor.moveToLast()) {
+            while (true) {
+                int id = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID);
+                String idString = cursor.getString(id);
+                int data = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
+                String dataString = cursor.getString(data);
+                int tmCol = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATE_MODIFIED);
+                String timestamp = cursor.getString(tmCol);
+
+                Cursor cursorThumb = cr.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                        new String[]{MediaStore.Images.Thumbnails._ID, MediaStore.Images.Thumbnails.IMAGE_ID, MediaStore.Images.Thumbnails.DATA},// 指定所要查询的字段
+                        MediaStore.Images.Thumbnails.IMAGE_ID + " = ?", // 查询条件
+                        new String[]{idString}, // 查询条件中问号对应的值
+                        null);
+                Picture picture = new Picture();
+                if(cursorThumb.getCount()>0) {
+                    cursorThumb.moveToFirst();
+                    int thumbId = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
+                    int thumbData = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
+                    String thumbIdString = cursorThumb.getString(thumbId);
+                    String thumbDataString = cursorThumb.getString(thumbData);
+                    picture.thumbIds = thumbIdString;
+                    picture.thumbPath = thumbDataString;
+                }
+
+                picture.setPicturePath(dataString);
+                picture.pictureIds = idString;
+                picture.timestamp = Long.parseLong(timestamp);
+
+                recentlyPictures.add(picture);
+
+                if (recentlyPictures.size() >= maxCount || !cursor.moveToPrevious()) {
+                    break;
+                }
+            }
+        }
+
+        Utils.closeQuietly(cursor);
+
+        return recentlyPictures;
+    }
+
+    private static List<Picture> getNextBatchPictureModel(ContentResolver cr,int maxCount, String dateModified) {
+        List<Picture> recentlyPictures = new ArrayList<>();
+
+        String MIME_TYPE = MediaStore.Images.Media.MIME_TYPE;
+        Cursor cursor = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.ImageColumns._ID, MediaStore.Images.ImageColumns.DATE_MODIFIED, MediaStore.Images.ImageColumns.DATA},
+//                "("+MIME_TYPE + "=? or " + MIME_TYPE + "=? or " + MIME_TYPE + "=? ) and " + MediaStore.Images.Media.BUCKET_ID + " = ?",
+                MediaStore.Images.Media.BUCKET_ID + " = ? AND " + MediaStore.Images.Media.DATE_MODIFIED + "< ?",
+//                new String[]{"image/jpg", "image/jpeg", "image/png", CAMERA_IMAGE_BUCKET_ID},
+                new String[]{CAMERA_IMAGE_BUCKET_ID, dateModified},
+                MediaStore.Images.Media.DATE_MODIFIED);
+
+        if(cursor == null){
+            return null;
+        }
+
+        if (cursor.moveToLast()) {
+            while (true) {
+                int id = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID);
+                String idString = cursor.getString(id);
+                int data = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
+                String dataString = cursor.getString(data);
+                int tmCol = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATE_MODIFIED);
+                String timestamp = cursor.getString(tmCol);
+
+                Cursor cursorThumb = cr.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                        new String[]{MediaStore.Images.Thumbnails._ID, MediaStore.Images.Thumbnails.IMAGE_ID, MediaStore.Images.Thumbnails.DATA},// 指定所要查询的字段
+                        MediaStore.Images.Thumbnails.IMAGE_ID + " = ?", // 查询条件
+                        new String[]{idString}, // 查询条件中问号对应的值
+                        null);
+                Picture picture = new Picture();
+                if(cursorThumb.getCount()>0) {
+                    cursorThumb.moveToFirst();
+                    int thumbId = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
+                    int thumbData = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
+                    String thumbIdString = cursorThumb.getString(thumbId);
+                    String thumbDataString = cursorThumb.getString(thumbData);
+                    picture.thumbIds = thumbIdString;
+                    picture.thumbPath = thumbDataString;
+                }
+
+                picture.setPicturePath(dataString);
+                picture.pictureIds = idString;
+                picture.timestamp = Long.parseLong(timestamp);
+
+                recentlyPictures.add(picture);
+
+                if (recentlyPictures.size() >= maxCount || !cursor.moveToPrevious()) {
+                    break;
+                }
+            }
+        }
+
+        Utils.closeQuietly(cursor);
+
+        return recentlyPictures;
+    }
+
+    private static List<Picture> getPreviousBatchPictureModel(ContentResolver cr,int maxCount, String dateModified) {
+        List<Picture> recentlyPictures = new ArrayList<>();
+
+        String MIME_TYPE = MediaStore.Images.Media.MIME_TYPE;
+        Cursor cursor = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.ImageColumns._ID, MediaStore.Images.ImageColumns.DATE_MODIFIED, MediaStore.Images.ImageColumns.DATA},
+//                "("+MIME_TYPE + "=? or " + MIME_TYPE + "=? or " + MIME_TYPE + "=? ) and " + MediaStore.Images.Media.BUCKET_ID + " = ?",
+                MediaStore.Images.Media.BUCKET_ID + " = ? AND " + MediaStore.Images.Media.DATE_MODIFIED + "> ?",
+//                new String[]{"image/jpg", "image/jpeg", "image/png", CAMERA_IMAGE_BUCKET_ID},
+                new String[]{CAMERA_IMAGE_BUCKET_ID, dateModified},
                 MediaStore.Images.Media.DATE_MODIFIED);
 
         if(cursor == null){
