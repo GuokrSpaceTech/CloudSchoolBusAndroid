@@ -275,8 +275,10 @@ public class ClassFragment extends BaseFragment {
         }
 
         if(isAdded()) {
-            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            mActionBar.setTitle(getResources().getString(R.string.module_class));
+            if(mActionBar!=null) {
+                mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                mActionBar.setTitle(getResources().getString(R.string.module_class));
+            }
         }
 
         super.onCreateOptionsMenu(menu, inflater);

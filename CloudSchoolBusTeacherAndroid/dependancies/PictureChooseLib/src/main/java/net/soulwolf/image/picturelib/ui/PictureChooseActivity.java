@@ -41,10 +41,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
 
     public static final int GALLERY_REQUEST_CODE = 1023;
 
-    GridView mPictureGrid;
     RecyclerView mPictureGridRV;
-
-    GalleryViewPager mViewPager;
 
     ArrayList<Picture> mPictureList;
 
@@ -124,7 +121,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
         getAllPictures();
     }
 
-    private void updatePictureList(List<Picture> paths) {
+    private void updatePictureList(List<Picture> paths, String folder) {
         mPictureList.clear();
         if(paths != null){
 
@@ -134,6 +131,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
             cameraIcon.drawable = getResources().getDrawable(R.drawable.ic_camera_icon);
             mPictureList.add(cameraIcon);
             mPictureList.addAll(paths);
+            mPictureChooseRVAdapter.changeFolder(folder);
             mPictureChooseRVAdapter.notifyDataSetChanged();
         }
     }
@@ -143,7 +141,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                 .subscribe(new ResponseHandler<List<Picture>>() {
                     @Override
                     public void onSuccess(List<Picture> strings) throws Exception {
-                        updatePictureList(strings);
+                        updatePictureList(strings,"default");
                     }
 
                     @Override
@@ -154,7 +152,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                 });
     }
 
-    private void getPictureForGallery(String folderPath) {
+    private void getPictureForGallery(final String folderPath) {
         PictureTask.getPictureForGallery(folderPath)
                 .subscribe(new ResponseHandler<List<String>>() {
                     @Override
@@ -166,7 +164,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                             pictures.add(picture);
                         }
 
-                        updatePictureList(pictures);
+                        updatePictureList(pictures, folderPath);
                     }
 
                     @Override
@@ -200,9 +198,7 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
     @Override
     protected void onLeftClick(View view) {
         super.onRightClick(view);
-//        ArrayList<Picture> list = mPictureChooseRVAdapter.getPictureChoosePath();
         Intent data = new Intent();
-//        data.putExtra(Constants.PICTURE_CHOOSE_LIST, list);
         setResult(RESULT_CANCEL, data);
         finish();
     }

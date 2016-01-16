@@ -1,67 +1,34 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/main_layout"
-    android:background="@color/pc_default_pager">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@+id/main_layout"
+             android:background="@color/pc_default_pager">
 
     <LinearLayout
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/pl_title_bar_layout" />
-
-
-
-        <!--<GridView-->
-            <!--android:id="@+id/pi_picture_choose_grid"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginLeft="2dp"-->
-            <!--android:layout_marginRight="2dp"-->
-            <!--android:layout_marginTop="2dp"-->
-            <!--android:horizontalSpacing="1dp"-->
-            <!--android:numColumns="3"-->
-            <!--android:verticalSpacing="1dp" />-->
+        <include layout="@layout/pl_title_bar_layout"
+                 android:layout_height="0dp"
+                 android:layout_weight="1"
+                 android:layout_width="fill_parent"/>
 
         <FrameLayout
+            android:layout_below="@+id/pi_title_bar"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="bottom">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/pi_picture_choose_grid"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="9">
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/pi_bottom_bar"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/pc_bottom_bar"
-                android:layout_gravity="bottom">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/pi_picture_choose_grid"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"/>
 
-                <Button
-                    android:id="@+id/pi_bottom_bar_left"
-                    android:layout_width="wrap_content"
-                    android:background="@drawable/pd_title_bar_action_selector"
-                    android:padding="5dp"
-                    android:gravity="center"
-                    android:layout_height="match_parent"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp"/>
-
-                <Button
-                    android:id="@+id/pi_bottom_bar_right"
-                    android:layout_width="wrap_content"
-                    android:padding="5dp"
-                    android:gravity="center"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/pd_title_bar_action_selector"
-                    android:textColor="@android:color/white"
-                    android:textSize="15sp"/>
-            </RelativeLayout>
+            <include layout="@layout/pl_bottom_bar_layout"
+                     android:layout_gravity="bottom"
+                     android:layout_width="fill_parent"
+                     android:layout_height="40dp"/>
         </FrameLayout>
-
     </LinearLayout>
 </FrameLayout>

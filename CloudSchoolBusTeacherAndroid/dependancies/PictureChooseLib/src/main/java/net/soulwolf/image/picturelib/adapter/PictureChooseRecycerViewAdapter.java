@@ -19,6 +19,7 @@
 package net.soulwolf.image.picturelib.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,11 @@ import net.soulwolf.image.picturelib.utils.Utils;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -52,6 +57,8 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
     private Context mContext;
     private List<Picture> mDataset;
     private List<Integer> mPictureChoose;
+    private HashMap<String, List<Picture>> mPictureChooseMap;
+    private String mCurrentFolder;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -75,6 +82,7 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
         this.mDataset = myDataset;
         this.mContext = context;
         this.mPictureChoose = new ArrayList<>();
+        this.mPictureChooseMap = new HashMap<>();
     }
 
     // Create new views (invoked by the layout manager)
@@ -96,7 +104,7 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
         // - replace the contents of the view with that element
         if(mDataset.get(position).isDrawable) {
             if(position == 0)
-            holder.mPictureView.setImageDrawable(mDataset.get(position).drawable);
+                holder.mPictureView.setImageDrawable(mDataset.get(position).drawable);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
             holder.mPictureView.setLayoutParams(layoutParams);
@@ -118,7 +126,7 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
                     .into(holder.mPictureView);
         }
 
-        if(mPictureChoose.contains(position)){
+        if(this.contains(position)){
             if(holder.mPictureState.getVisibility() != View.VISIBLE){
                 holder.mPictureState.setVisibility(View.VISIBLE);
             }
@@ -136,14 +144,17 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
     }
 
     public void addPictureChoose(View view,int position){
-            this.mPictureChoose.add(position);
-            FrameLayout pictureState = (FrameLayout)view.findViewById(R.id.pi_picture_choose_item_select);
-            pictureState.setVisibility(View.VISIBLE);
+//        this.mPictureChoose.add(position);
+        this.mPictureChooseMap.get(mCurrentFolder).add(mDataset.get(position));
+
+        FrameLayout pictureState = (FrameLayout)view.findViewById(R.id.pi_picture_choose_item_select);
+        pictureState.setVisibility(View.VISIBLE);
     }
 
-    public void removePictureChoose(View view,Object v){
+    public void removePictureChoose(View view,int position){
         FrameLayout pictureState = (FrameLayout)view.findViewById(R.id.pi_picture_choose_item_select);
-        this.mPictureChoose.remove(v);
+//        this.mPictureChoose.remove(position);
+        this.mPictureChooseMap.get(mCurrentFolder).remove(mDataset.get(position));
         pictureState.setVisibility(View.GONE);
     }
 
@@ -152,7 +163,13 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
     }
 
     public int pictureChooseSize(){
-        return this.mPictureChoose.size();
+        int size = 0;
+        //return this.mPictureChoose.size();
+        for(Map.Entry<String,List<Picture>> entry : mPictureChooseMap.entrySet())
+        {
+            size += entry.getValue().size();
+        }
+        return size;
     }
 
     public ArrayList<Picture> getPictureChoosePath(){
@@ -160,7 +177,13 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
         for (int position:mPictureChoose){
             pictures.add(mDataset.get(position));
         }
-        return pictures;
+
+        ArrayList<Picture> selectedPictures = new ArrayList<>();
+        for (Map.Entry<String,List<Picture>> entry : mPictureChooseMap.entrySet()) {
+            selectedPictures.addAll(entry.getValue());
+        }
+
+        return selectedPictures;
     }
 
     public List<Picture> getmPictureList() {
@@ -172,7 +195,24 @@ public class PictureChooseRecycerViewAdapter extends RecyclerView.Adapter<Pictur
     }
 
     public boolean contains(int position){
-        return this.mPictureChoose.contains(position);
+        //return this.mPictureChoose.contains(position);
+        return this.mPictureChooseMap.get(mCurrentFolder).contains(mDataset.get(position));
+    }
+
+    public void changeFolder(String folder)
+    {
+        this.mCurrentFolder = folder;
+
+        Boolean found = false;
+        for (Map.Entry<String,List<Picture>> entry : mPictureChooseMap.entrySet()) {
+            if(entry.getKey().equals(folder))
+                found = true;
+        }
+
+        if(!found)
+        {
+            mPictureChooseMap.put(folder,new ArrayList<Picture>());
+        }
     }
 
 }

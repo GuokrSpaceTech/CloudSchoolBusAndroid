@@ -9,7 +9,9 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -43,7 +45,7 @@ public class EditCommentView extends BaseLinearLayout {
 	private ImageThumbRecycleViewAdapter mPictureThumbnailsAdapter;
 	private ArrayList<Picture> mPictures;
     private RecyclerView.OnItemTouchListener  mThumbNailClickListener;
-    private RecyclerView thumbNails;
+    public RecyclerView thumbNails;
 
 	public EditCommentView(Context context, ArrayList<Picture> pictures) {
 		super(context);
@@ -162,8 +164,8 @@ public class EditCommentView extends BaseLinearLayout {
 			outRect.bottom = space;
 
 			// Add top margin only for the first item to avoid double space between items
-			if(parent.getChildPosition(view) == 0)
-				outRect.top = space;
+//			if(parent.getChildPosition(view) == 0)
+//				outRect.top = space;
 		}
 	}
 //

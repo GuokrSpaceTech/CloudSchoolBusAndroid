@@ -6,8 +6,8 @@
         android:allowBackup="true"
         android:label="@string/app_name" >
         <activity
-            android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:launchMode="singleTop"
             android:name="net.soulwolf.image.picturelib.ui.PictureChooseActivity"/>
         <activity
             android:launchMode="singleTop"

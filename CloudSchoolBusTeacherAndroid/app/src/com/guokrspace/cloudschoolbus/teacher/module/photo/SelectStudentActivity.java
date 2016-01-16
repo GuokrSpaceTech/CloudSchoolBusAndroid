@@ -7,10 +7,13 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
@@ -32,6 +35,7 @@ import com.guokrspace.cloudschoolbus.teacher.module.photo.service.UploadFileHelp
 import com.guokrspace.cloudschoolbus.teacher.module.photo.view.EditCommentView;
 import com.guokrspace.cloudschoolbus.teacher.module.photo.view.SelectedStuView;
 
+import net.soulwolf.image.picturelib.listener.RecyclerItemClickListener;
 import net.soulwolf.image.picturelib.model.Picture;
 import net.soulwolf.image.picturelib.ui.BigImageGalleryFragment;
 
@@ -62,6 +66,7 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_student);
 
+        //Get Pictures
         Intent intent = getIntent();
 
         ArrayList<?> data = (ArrayList<?>)intent.getSerializableExtra("pictures");
@@ -76,13 +81,27 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             }
             mPictures.add(i, picture);
         }
+
+        //Top View
+        mCommentView = new EditCommentView(this, mPictures);
+
+        //Bottom View
+        String classid = DataWrapper.getInstance().findCurrentClass().getClassid();
+        List<StudentEntityT> students = DataWrapper.getInstance().findStudentsinClass(classid);
+        mStudentView = new SelectedStuView(this , students);
+
+        //Add both Views
+        RelativeLayout container = (RelativeLayout)findViewById(R.id.mainLayout);
+        container.addView(mCommentView);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        mCommentView.setId(getResources().getInteger(R.integer.content_edit));
+        params.addRule(RelativeLayout.BELOW, mCommentView.getId());
+        container.addView(mStudentView, params);
+
+       //Init Listeners
         mThumbNailClickListener = new CommonRecyclerItemClickListener(mContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.mainFrameLayout,new BigImageGalleryFragment().newInstance(mPictures,position,false,R.color.accent));
-                transaction.addToBackStack("big_picture");
-                transaction.commit();
             }
 
             @Override
@@ -90,19 +109,30 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
 
             }
         });
-
-        mCommentView = new EditCommentView(this, mPictures);
         mCommentView.setmThumbNailClickListener(mThumbNailClickListener);
 
-        String classid = DataWrapper.getInstance().findCurrentClass().getClassid();
-        List<StudentEntityT> students = DataWrapper.getInstance().findStudentsinClass(classid);
-        mStudentView = new SelectedStuView(this , students);
-        RelativeLayout container = (RelativeLayout)findViewById(R.id.mainLayout);
-        container.addView(mCommentView);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        mCommentView.setId(getResources().getInteger(R.integer.content_edit));
-        params.addRule(RelativeLayout.BELOW, mCommentView.getId());
-        container.addView(mStudentView, params);
+        //This is really strange, w/o additional addOnItemTouchListener, always cause nullpointer exception.
+        mCommentView.thumbNails.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                if(getSupportFragmentManager().getBackStackEntryCount()==0)
+                {
+                    View childView = (View) rv.findChildViewUnder(e.getX(), e.getY());
+                    int position = rv.getChildPosition(childView);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.add(R.id.mainFrameLayout, new BigImageGalleryFragment().newInstance(mPictures, position, false, R.color.accent));
+                    transaction.addToBackStack("big_picture");
+                    transaction.commit();
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+                Log.e("", "");
+            }
+        });
+
         mStudentClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -116,8 +146,6 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         mStudentView.setmItemClickListener(mStudentClickListener);
         getSupportActionBar().setTitle(getResources().getString(R.string.upload));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        doBindService();
     }
 
     @Override

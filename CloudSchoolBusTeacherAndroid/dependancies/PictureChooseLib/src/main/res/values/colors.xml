@@ -8,4 +8,5 @@
     <color name="pc_gallery_bg">#FF16C2DD</color>
     <color name="black_translucent">#50000000</color>
     <color name="pc_bottom_bar">#8016C2DD</color>
+    <color name="pc_app_theme_color">#F1A141</color>
 </resources>

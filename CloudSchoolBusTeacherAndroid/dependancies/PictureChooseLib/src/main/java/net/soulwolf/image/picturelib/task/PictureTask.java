@@ -165,7 +165,7 @@ public class PictureTask {
         ArrayList<String> pictures = new ArrayList<String>();
         for (String name:pictureNames){
             if(Utils.isPicture(name) && !TextUtils.isEmpty(name)){
-                pictures.add(Utils.and(galleryPath,File.separator,name));
+                pictures.add(0,Utils.and(galleryPath,File.separator,name));
             }
         }
         return pictures;

@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pi_title_bar"
+    android:id="@+id/pi_status_bar"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@color/pc_title_bar">
+    android:layout_height="wrap_content"
+                android:padding="8dp"
+    android:background="#A09a9a9a"
+    >
 
     <Button
         android:id="@+id/pi_bottom_bar_left"
         android:layout_width="wrap_content"
-        android:background="@drawable/pd_title_bar_action_selector"
-        android:padding="5dp"
+        android:background="@drawable/pc_status_bar_action_selector"
+        android:text="wenjiaja"
         android:gravity="center"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:textColor="@android:color/white"
         android:textSize="15sp"/>
 
     <Button
         android:id="@+id/pi_bottom_bar_right"
         android:layout_width="wrap_content"
-        android:padding="5dp"
         android:gravity="center"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:background="@drawable/pd_title_bar_action_selector"
+        android:background="@drawable/pc_status_bar_action_selector"
         android:textColor="@android:color/white"
-        android:textSize="15sp"/>
+        android:textSize="12sp"
+        android:visibility="invisible"/>
+
 </RelativeLayout>
