@@ -830,7 +830,6 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         return card;
     }
 
-
     //Listener for the image chooser
     @Override
     public void onSuccess(List<Picture> pictures) {
@@ -862,5 +861,4 @@ public class ExploreFragment extends BaseFragment implements OnPicturePickListen
         intent.putExtra("pictures", (ArrayList) pictures);
         startActivity(intent);
     }
-
 }

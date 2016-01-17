@@ -2,6 +2,7 @@ package net.soulwolf.image.picturelib.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -99,13 +100,14 @@ public class PictureChooseActivity extends BaseActivity implements AdapterView.O
                     if (mPictureChooseRVAdapter.pictureChooseSize() == 0) {
                         setTitleText(getString(R.string.ps_picture_choose));
                     } else {
-                        setTitleText(getString(R.string.ps_picture_choose_count
-                                , mPictureChooseRVAdapter.pictureChooseSize()));
+                        setTitleText(getString(R.string.ps_picture_choose_count, mPictureChooseRVAdapter.pictureChooseSize()));
                     }
                 }
 
                 if(mPictureChooseRVAdapter.pictureChooseSize()>0)
                     mActionRight.setEnabled(true);
+                else
+                    mActionRight.setEnabled(false);
             }
 
             @Override

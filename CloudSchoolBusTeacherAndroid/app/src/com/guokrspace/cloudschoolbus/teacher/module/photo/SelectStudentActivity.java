@@ -57,7 +57,6 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
     private SelectedStuView mStudentView;
     private String mCommentStr;
     public MenuItem mUploadAction;
-    private CommonRecyclerItemClickListener mThumbNailClickListener;
     public AdapterView.OnItemClickListener mStudentClickListener;
     private static final int REQUEST_SIMPLE_DIALOG = 42;
 
@@ -99,39 +98,20 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         container.addView(mStudentView, params);
 
        //Init Listeners
-        mThumbNailClickListener = new CommonRecyclerItemClickListener(mContext, new CommonRecyclerItemClickListener.OnItemClickListener() {
+        mCommentView.thumbNails.addOnItemTouchListener(new RecyclerItemClickListener(mContext, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        });
-        mCommentView.setmThumbNailClickListener(mThumbNailClickListener);
-
-        //This is really strange, w/o additional addOnItemTouchListener, always cause nullpointer exception.
-        mCommentView.thumbNails.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                if(getSupportFragmentManager().getBackStackEntryCount()==0)
-                {
-                    View childView = (View) rv.findChildViewUnder(e.getX(), e.getY());
-                    int position = rv.getChildPosition(childView);
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.add(R.id.mainFrameLayout, new BigImageGalleryFragment().newInstance(mPictures, position, false, R.color.accent));
                     transaction.addToBackStack("big_picture");
                     transaction.commit();
-                }
-                return false;
             }
 
             @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-                Log.e("", "");
+            public void onItemLongClick(View view, int position) {
+                Log.e("","");
             }
-        });
+        }));
 
         mStudentClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -143,6 +123,7 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
                     mUploadAction.setEnabled(true);
             }
         };
+
         mStudentView.setmItemClickListener(mStudentClickListener);
         getSupportActionBar().setTitle(getResources().getString(R.string.upload));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -171,9 +152,6 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
         int id = item.getItemId();
 
         if (id == R.id.action_upload) {
-
-//            item.setEnabled(false);
-
             String pickey = System.currentTimeMillis() + mApplication.mConfig.getUserid();
 
             mCommentStr = mCommentView.getCommentText();
@@ -188,12 +166,6 @@ public class SelectStudentActivity extends BaseActivity implements ISimpleDialog
             addUploadQueue(mPictures, mCommentStr, pickey, studentids, tagids);
 
             BusProvider.getInstance().post(new IsUploadingEvent());
-
-//            if(mIsBound) {
-//                mBoundService.startUploadFileService();
-//                mBoundService.setContext(mContext);
-//            }
-//            this.overridePendingTransition(R.anim.scalefromcorner, R.anim.scaletocorner);
 
             finish();
 
